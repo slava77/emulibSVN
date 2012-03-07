@@ -1,0 +1,108 @@
+# ascii dump of database
+
+# DpType
+TypeName
+fwGasSystem_CSC_GAS.fwGasSystem_CSC_GAS	1#1
+	fsm_state	25#8
+	isError	23#6
+	disabled_channels	29#9
+fwGasSystem_CSC_GAS_d.fwGasSystem_CSC_GAS_d	1#1
+	State	21#2
+	Status	23#3
+	off_channels	5#4
+	heartbeat	21#5
+fwGasMixer_CSC_GAS_data.fwGasMixer_CSC_GAS_data	1#1
+	State	21#2
+	Interlock	23#3
+	LiquidLevel	22#4
+	EvaporatorTemperature	22#5
+	OutPressure	22#6
+	TotalFlow	22#7
+	off_channels	5#8
+	Line1Ratio	22#9
+	Line1InputPressure	22#10
+	Line1LFmfcFeedback	22#11
+	Line1HFmfcFeedback	22#12
+	Line1WaterTankLevel	22#13
+	Line2Ratio	22#14
+	Line2InputPressure	22#15
+	Line2LFmfcFeedback	22#16
+	Line2HFmfcFeedback	22#17
+	Line2WaterTankLevel	22#18
+	Line3Ratio	22#19
+	Line3InputPressure	22#20
+	Line3LFmfcFeedback	22#21
+	Line3HFmfcFeedback	22#22
+	Line3WaterTankLevel	22#23
+fwGasDistribution_CSC_GAS_data.fwGasDistribution_CSC_GAS_data	1#1
+	State	21#2
+	BUSource	23#3
+	TotalInputFlow	22#4
+	off_channels	5#5
+fwGasDistributionRack_CSC_GAS_data.fwGasDistributionRack_CSC_GAS_data	1#1
+	InPressure22	22#2
+	ChPressure	22#3
+	RegPressure	22#4
+	StateRack	21#5
+	InPressure24	22#6
+	OutManifoldPressure	22#7
+	off_channels	5#8
+fwGasDistributionChannel_CSC_GAS_data.fwGasDistributionChannel_CSC_GAS_data	1#1
+	Pressure	22#2
+	InFlow	22#3
+	OutFlow	22#4
+	Isolation-Valve	22#5
+	off_channels	5#6
+fwGasPreDistribution_CSC_GAS_data.fwGasPreDistribution_CSC_GAS_data	1#1
+	State	21#2
+	InPressure	22#3
+	OutPressure	22#4
+	off_channels	5#5
+fwGasPump_CSC_GAS_data.fwGasPump_CSC_GAS_data	1#1
+	State	21#2
+	InPressure	22#3
+	PressureSetpoint	22#4
+	OutPressure	22#5
+	off_channels	5#6
+	Pump1Input-Flow	22#7
+	Pump1Current-Speed	22#8
+	Pump1Current-Load	22#9
+	Pump1Current-Speed2	22#10
+	Pump1Current-Load2	22#11
+	Pump1UpperTemperature	22#12
+	Pump1LowerTemperature	22#13
+	Pump1OutTemperature	22#14
+	Pump1EngineTemperature	22#15
+	Pump2Input-Flow	22#16
+	Pump2Current-Speed	22#17
+	Pump2Current-Load	22#18
+	Pump2Current-Speed2	22#19
+	Pump2Current-Load2	22#20
+	Pump2UpperTemperature	22#21
+	Pump2LowerTemperature	22#22
+	Pump2OutTemperature	22#23
+	Pump2EngineTemperature	22#24
+fwGasExhaust_CSC_GAS_data.fwGasExhaust_CSC_GAS_data	1#1
+	State	21#2
+	OutFlow	22#3
+	BufferPressure	22#4
+	CirculationPressure	22#5
+	CirculationFlow	22#6
+	off_channels	5#7
+fwGasPurifier_CSC_GAS_data.fwGasPurifier_CSC_GAS_data	1#1
+	State	21#2
+	off_channels	5#3
+	ColAState	21#4
+	ColARunVolume	22#5
+	ColAInternal-TopTemp	22#6
+	ColAInternalMiddle-Temp	22#7
+	ColAExternalTemp	22#8
+	ColAInFlow	22#9
+	ColAOutPressure	22#10
+	ColBState	21#11
+	ColBRunVolume	22#12
+	ColBInternal-TopTemp	22#13
+	ColBInternalMiddle-Temp	22#14
+	ColBExternalTemp	22#15
+	ColBInFlow	22#16
+	ColBOutPressure	22#17

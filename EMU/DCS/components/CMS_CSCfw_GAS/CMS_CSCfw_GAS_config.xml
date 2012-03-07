@@ -1,0 +1,30 @@
+<component_configuration>
+    <append_managers>
+        <manager>
+            <type>PVSS00dip</type>
+            <num>50</num>
+            <options>-dns cms-cent-dcs-17,cms-cent-dcs-18 -dip_dp_config DIPConfig_CMS_CSC_Gas</options>
+            <restart>2</restart>
+            <counter>2</counter>
+            <sec_to_kill>30</sec_to_kill>
+        </manager>
+        <manager>
+            <type>PVSS00ctrl</type>
+            <num>51</num>
+            <options>CMS_CSCfw_GAS/emu_gasMonitor.ctl</options>
+            <restart>2</restart>
+            <counter>2</counter>
+            <sec_to_kill>30</sec_to_kill>
+        </manager>
+    </append_managers>
+    <target>
+        <system_name>cms_csc_dcs_09</system_name>
+        <configuration>
+            <tag>Gas_v4.0</tag>
+            <db>default</db>
+            <pattern>*</pattern>
+            <logical>false</logical>
+            <hardware>true</hardware>
+        </configuration>
+    </target>
+</component_configuration>

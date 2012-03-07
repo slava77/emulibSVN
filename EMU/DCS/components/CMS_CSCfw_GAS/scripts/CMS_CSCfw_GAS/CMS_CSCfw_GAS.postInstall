@@ -1,85 +1,60 @@
-#uses "CMS_CSCfw_HV_CC/emuDcs.ctl"
-#uses "CMS_CSCfw_HV_CC/emuDcs2.ctl"
-#uses "CMS_CSCfw_HV_CC/emuDcs3.ctl"
-#uses "CMS_CSCfw_HV_CC/emuDcs4.ctl"
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_fsm.ctl"
+#uses "fwInstallationUtils.ctl"
 
- #uses "CMS_CSCfw_LV_CRB/mudcs9XAlertReconfigAllSlowControls.ctl"
+const string EMU_FSM_TYPE_TOP = "EMUGrouping";
+const string EMU_FSM_DOMAIN_TOP = "CMS_CSC";
+const string EMU_FSM_DOMAIN_INFRA = "CMS_CSC_INFRA";
 
-#uses "CMS_CSCfw_GAS/emuGas.ctl"
-#uses "CMS_CSCfw_GAS/mudcs0GasCreateAllTypes.ctl"
-#uses "CMS_CSCfw_GAS/mudcs1GasDipConfig.ctl"
-#uses "CMS_CSCfw_GAS/mudcs2GasFsmCreate.ctl"
-#uses "CMS_CSCfw_GAS/mudcs3GasAlert.ctl"
-#uses "CMS_CSCfw_GAS/mudcs4GasArchive.ctl"
-#uses "CMS_CSCfw_GAS/mudcs5GasSetPanels.ctl"
+const string FSM_GAS_NODE_NAME = "CSC Gas";
+const string FSM_GAS_DP = "CscGas/CSC_GAS_MONITOR";
+const string FSM_GAS_DPT = "fwGasSystem_CSC_GAS";
+const string FSM_COOLING_NODE = "CSC_COOLING";
+const string FSM_COOLING_DP = "CscCooling/CSC_COOLING_MONITOR";
+const string FSM_COOLING_DPT = "fwCooling_CSC_COOLING";
 
-#uses "aes.ctl"
+const string COMPONENT_NAME = "CMS_CSCfw_GAS";
 
-main(){
-return;
-  dpCreate("CMS_CSC_GAS","MUDCS_STRING"); 
-  string configDp = "DIPConfig_CMS_CSCfw_GAS";
-  if (! dpExists(configDp) ) {
-      dpCreate(configDp, "_FwDipConfig");
-  }
-  fwInstallation_appendManager(TRUE, "EMU dip manager", "PVSS00dip", 
-     "always", 30, 2, 2, "-num 20 -dns cms-cent-dcs-17,cms-cent-dcs-18");
+main() {
+
+  emu_info(COMPONENT_NAME + " PostInstall: Starting");
   
-//    fwInstallation_appendManager(TRUE, "EMU sim  dip manager", "PVSS00sim", 
-//"always", 30, 2, 2, "-num 13");
- 
-//   delay(15); 
-//  
-//   string os=getenv("OS");
-// 
-//  if(os=="Linux"){
-//   system("PVSS00ctrl -num 16 CMS_CSCfw_GAS/mudcsCreate_GAS.ctl &");
-//        
-//  }
-//  else{ 
-//   system("cmd /c PVSS00ctrl -num 16 CMS_CSCfw_GAS/mudcsCreate_GAS.ctl");
-//  }
-//   
-  
-  if (!dpExists("MYWARNING_GAS")) {
-    dpCreate("MYWARNING_GAS", "MUDCS_STRING");
-  }
+  dyn_string ex;
 
-  dpSet("MYWARNING_GAS.value", "postinstall started");
-  DebugTN("postinstall started");
+  emu_info(COMPONENT_NAME + " PostInstall: Loading configurations...");
+  fwInstallationUtils_loadConfigurations(COMPONENT_NAME, ex);
+  if (emu_checkException(ex)) { emu_info(COMPONENT_NAME + " PostInstall: aborted"); return; }
+  emu_info(COMPONENT_NAME + " PostInstall: Finished loading configurations");
+
+  emu_info(COMPONENT_NAME + " PostInstall: Creating FSM...");
+  emugas_createFsm(ex);
+  if (emu_checkException(ex)) { emu_info(COMPONENT_NAME + " PostInstall: aborted"); return; }
+  emu_info(COMPONENT_NAME + " PostInstall: Finished creating FSM");
   
-  //=== deletion =============
-  dpSet("MYWARNING_GAS.value", "starting mudcsGasFsmDelete()");
-  DebugTN("starting mudcsGasFsmDelete()");
-  mudcsGasFsmDelete();
-  dpSet("MYWARNING_GAS.value", "starting mudcsDipConfig(false)");
-  DebugTN("starting mudcsDipConfig(false)");
-   mudcsDipConfig(false); 
-  dpSet("MYWARNING_GAS.value", "starting mudcsDeleteGas_dps(true)");
-  DebugTN("starting mudcsDeleteGas_dps(true)");
-  mudcsDeleteGas_dps(true);
- 
-  //=== creation ==============
+  emu_info(COMPONENT_NAME + " PostInstall: Creating managers from the installation DB");
+  fwInstallationUtils_appendManagers(COMPONENT_NAME, ex);
+  if (emu_checkException(ex)) { emu_info(COMPONENT_NAME + " PostInstall: aborted"); return; }
+  emu_info(COMPONENT_NAME + " PostInstall: Finished creating managers from the installation DB");
   
-  dpSet("MYWARNING_GAS.value", "starting GasSystem_main()");
-  DebugTN("starting GasSystem_main()");
-  GasSystem_main();
-  dpSet("MYWARNING_GAS.value", "starting mudcsDipConfig(true)");
-  DebugTN("starting mudcsDipConfig(true)");
-  mudcsDipConfig(true); 
-  dpSet("MYWARNING_GAS.value", "starting mudcsGasCreateFsmMain()");
-  DebugTN("starting mudcsGasCreateFsmMain()");
-  mudcsGasCreateFsmMain();
-  dpSet("MYWARNING_GAS.value", "starting mudcsGasAlertCreateMain(true)");
-  DebugTN("starting mudcsGasAlertCreateMain(true)");
-  mudcsGasAlertCreateMain(true);
-  dpSet("MYWARNING_GAS.value", "starting mudcsGasArchiveMain(true)");
-  DebugTN("starting mudcsGasArchiveMain(true)");
-  mudcsGasArchiveMain(true);
-  dpSet("MYWARNING_GAS.value", "starting mudcsGasFsmPanelsAndFsmAliasesSetMain()");
-  DebugTN("starting mudcsGasFsmPanelsAndFsmAliasesSetMain()");
-  mudcsGasFsmPanelsAndFsmAliasesSetMain();  
- 
-  dpSet("MYWARNING_GAS.value", "postinstall finished");
-  DebugTN("postinstall finished");
+  emu_info(COMPONENT_NAME + " PostInstall: Configuring alert classes");
+//  emuAlert_updateAllAlertClassesForType("CscHvChamber");
+  emu_info(COMPONENT_NAME + " PostInstall: Finished configuring alert classes");
+  
+  emu_info(COMPONENT_NAME + " PostInstall: DONE");
+}
+
+void emugas_createFsm(dyn_string &ex) {
+
+  // logical nodes  
+  emuFsm_createFsmNode("FSM", EMU_FSM_DOMAIN_TOP, EMU_FSM_TYPE_TOP, 1);  
+  emuFsm_createFsmNode(EMU_FSM_DOMAIN_TOP, EMU_FSM_DOMAIN_INFRA, EMU_FSM_TYPE_TOP, 1);
+
+  // device nodes
+  emuFsm_createFsmNode(EMU_FSM_DOMAIN_INFRA, FSM_GAS_DP, FSM_GAS_DPT, false);
+  if (emu_checkException(ex)) { return; }  
+  fwFsmTree_setNodeLabel(FSM_GAS_DP, FSM_GAS_NODE_NAME);
+  
+  //finish   
+  fwFsmTree_generateAll();
+  fwFsmTree_refreshTree();
 }
