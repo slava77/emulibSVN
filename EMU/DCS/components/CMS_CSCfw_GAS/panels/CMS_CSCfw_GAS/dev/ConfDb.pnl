@@ -1,0 +1,296 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 593 173 N "_3DFace" 0
+E E E E E 1 -1 -1 0  0 0
+""0  1
+E "#uses \"CMS_CSC_common/emu_common.ctl\"" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"btnSaveToDb"
+""
+1 300 20 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  298 18 542 102
+
+T 
+1
+LANG:1 14 Save to confDB
+"#uses \"fwConfigurationDB/fwConfigurationDB.ctl\"
+#uses \"fwConfigurationDB/fwConfigurationDB_DeviceConfiguration.ctl\"
+
+main()
+{
+  dyn_string ex;
+  fwConfigurationDB_checkInit(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  dyn_string devices;
+  
+  if (chkSaveGas.state(0)) {
+    // *** GAS ***
+    emu_dynAppend(devices, dpNames(\"CSC_GAS_MONITOR\", \"fwGasSystem_CSC_GAS_d\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"fwGasPurifier_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"fwGasPump_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"fwGasPreDistribution_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"fwGasMixer_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"fwGasExhaust_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"fwGasDistribution_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"fwGasDistributionRack_CSC_GAS_data\"));
+    emu_dynAppend(devices, dpNames(\"*\", \"fwGasDistributionChannel_CSC_GAS_data\"));
+    
+    // include the plc thing as well, but better to put it inside the CSC_GAS_MONITOR
+    //emu_dynAppend(devices, dpNames(\"HvServerStatus\", \"CscCommonString\"));
+    
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscGas\", ex));
+    if (emu_checkException(ex)) { return; }
+
+    emu_dynAppend(devices, dpNames(\"DIPConfig_CMS_CSC_Gas\", \"_FwDipConfig\"));  
+    
+    saveConfiguration(devices, \"Gas\", editVersion.text, ex, chkJustPrint.state(0));
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  if (chkSaveCooling.state(0)) {
+  }
+  
+  emu_info(\"DONE saving devices to conf DB as version \" + editVersion.text);
+}
+
+/**
+  * @return devices from the specified node of the hardware hierarchy (also optionally matching a given pattern)
+  */
+dyn_string getDevicesFromHardwareHierarchy(string rootNode, dyn_string &ex, string pattern = \"\") {
+  dyn_string deviceList;
+  fwConfigurationDB_getHierarchyFromPVSS(rootNode, fwDevice_HARDWARE, deviceList, ex);
+  if (emu_checkException(ex)) { return; }
+
+  dyn_string ret;
+  if (pattern != \"\") {
+    for (int i=1; i <= dynlen(deviceList); i++) {
+      string device = deviceList[i];
+      if (patternMatch(pattern, device)) {
+        dynAppend(ret, device);
+      }
+    }
+  } else {
+    ret = deviceList;
+  }
+  
+  return ret;
+}
+
+/**
+  * Saves given devices to configuration DB (if justPrint=true, it won't actually save the devices, but just print the list instead)
+  */
+void saveConfiguration(dyn_string devices, string name, string version, dyn_string &exceptionInfo, bool justPrint = FALSE) {
+  string confName = name + \"_v\" + version;
+  emu_info(\"Saving these devices to conf DB with name \" + confName);
+  emu_info(devices);
+  if (!justPrint) {
+    fwConfigurationDB_saveDeviceConfiguration(devices, confName, fwDevice_HARDWARE, exceptionInfo);
+    if (emu_checkException(exceptionInfo)) { return; }
+  }
+}" 0
+ E E E
+2 1
+"PRIMITIVE_TEXT2"
+""
+1 22 32 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 22 32 70 48
+0 2 2 "0s" 0 0 0 192 0 0  22 32 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 version:
+14 2
+"editVersion"
+""
+1 80 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  78 28 142 56
+3 "0s" 0 0 0 0 0 -1  E "main()
+{
+  this.text = \"1.0\";
+}" 0
+ E
+20 3
+"chkJustPrint"
+""
+1 20 130 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 128 252 152
+1
+T 
+1
+LANG:1 32 Just print - don't actually save
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+EE20 4
+"chkSaveGas"
+""
+1 20 70 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+4 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 68 172 92
+1
+T 
+1
+LANG:1 16 Save GAS devices
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+"main()
+{
+  this.state(0, true);
+}" 0
+E20 5
+"chkSaveCooling"
+""
+1 20 100 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+5 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  18 98 212 122
+1
+T 
+1
+LANG:1 20 Save COOLING devices
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+"main()
+{
+  this.state(0, true);
+}" 0
+E20 6
+"chkImSure"
+""
+1 300 110 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  298 108 532 132
+1
+T 
+1
+LANG:1 32 I'm sure - enable the big button
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+0
+E"main(int button, int state)
+{
+  btnSaveToDb.enabled = this.state(0);
+}" 0
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0
