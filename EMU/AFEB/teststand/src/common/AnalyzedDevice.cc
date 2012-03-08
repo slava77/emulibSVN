@@ -1,10 +1,14 @@
 #include "AFEB/teststand/AnalyzedDevice.h"
+#include "AFEB/teststand/Legend.h"
 #include "AFEB/teststand/utils/String.h"
 #include "AFEB/teststand/utils/IO.h"
 #include "AFEB/teststand/utils/System.h"
 #include "xcept/Exception.h"
 
 #include "TMath.h"
+#include "TPDF.h"
+#include "TCanvas.h"
+#include "TStyle.h"
 
 #include <iomanip>
 
@@ -198,6 +202,14 @@ valarray<double> AFEB::teststand::AnalyzedDevice::getInternalCapacitances() cons
   return v;
 }
 
+TH1D AFEB::teststand::AnalyzedDevice::histogramContents( const TH1D* h ) const {
+  TH1D hh( "hh", h->GetTitle(), 100, h->GetMinimum(), h->GetMaximum() );
+  for ( int iBin=1; iBin<=h->GetNbinsX(); ++iBin ){
+    hh.Fill( h->GetBinContent( iBin ) );
+  }
+  return hh;
+}
+
 string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
   stringstream ss;
   // Loop over measurements:
@@ -230,34 +242,108 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
 
       // Get the threshold histogram...
       string histogramName = string( "threshold__" ) + fileName;
-      TH1D *thresholdHistogram;
-      f.GetObject( histogramName.c_str(), thresholdHistogram );
+      TH1D *thresholdVsChannel;
+      f.GetObject( histogramName.c_str(), thresholdVsChannel );      
+      for ( int iBin=1; iBin<=thresholdVsChannel->GetNbinsX(); ++iBin ){
+	 // Transform the contents from DAC units to charge
+	thresholdVsChannel->SetBinContent( iBin, chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdVsChannel->GetBinContent( iBin ) ).first,
+								    (*m)->getInjectionCapacitor() ) );
+	thresholdVsChannel->SetBinError( iBin, chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdVsChannel->GetBinError( iBin ) ).first,
+								  (*m)->getInjectionCapacitor() ) ); // Actually, the error should only be multuplied by the first derivative of the transformation, but the difference is very small if any.
+      }
+
       // ...and the noise histogram...
       histogramName = string( "noise__" ) + fileName;
-      TH1D *noiseHistogram;
-      f.GetObject( histogramName.c_str(), noiseHistogram );
+      TH1D *noiseVsChannel;
+      f.GetObject( histogramName.c_str(), noiseVsChannel );
+      for ( int iBin=1; iBin<=noiseVsChannel->GetNbinsX(); ++iBin ){
+	 // Transform the contents from DAC units to charge
+	noiseVsChannel->SetBinContent( iBin, chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseVsChannel->GetBinContent( iBin ) ).first,
+								    (*m)->getInjectionCapacitor() ) );
+	noiseVsChannel->SetBinError( iBin, chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseVsChannel->GetBinError( iBin ) ).first,
+								  (*m)->getInjectionCapacitor() ) ); // Actually, the error should only be multuplied by the first derivative of the transformation, but the difference is very small if any.
+      }
+
       // ...and the chi^2/ndf histogram:
       histogramName = string( "chi2ndf__" ) + fileName;
-      TH1D *chi2ndfHistogram;
-      f.GetObject( histogramName.c_str(), chi2ndfHistogram );
+      TH1D *chi2ndfVsChannel;
+      f.GetObject( histogramName.c_str(), chi2ndfVsChannel );
       
+      TCanvas canvas("canvas","canvas",1000,1400);
+      canvas.Divide( 1, 4 );
+      Legend legend;
       // Loop over the channels
       for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
 	ss << "    <ad:channel number=\""    << noshowpos << setw(2) << iChannel
 	   <<              "\" threshold=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
-	   <<                                chargeFromVoltage( pulseDAC_->mV_from_DACUnit( thresholdHistogram->GetBinContent( iChannel+1 ) ).first,
-								(*m)->getInjectionCapacitor() )
+	   <<                                thresholdVsChannel->GetBinContent( iChannel+1 )
 	   <<              "\" noise=\""
-	   <<                                chargeFromVoltage( pulseDAC_->mV_from_DACUnit( noiseHistogram    ->GetBinContent( iChannel+1 ) ).first,
-								(*m)->getInjectionCapacitor() )
+	   <<                                noiseVsChannel    ->GetBinContent( iChannel+1 )
 	   <<              "\" chi2ndf=\""
-	   <<                                                                               chi2ndfHistogram  ->GetBinContent( iChannel+1 )
+	   <<                                chi2ndfVsChannel  ->GetBinContent( iChannel+1 )
 	   <<     "\"/>" << endl;
+	
+	canvas.cd( 1 );
 	TH1D *efficiencyHistogram;
 	histogramName = string( "effVsAmpl__" ) + fileName + "__ch_" + utils::stringFrom<int>( iChannel );
 	f.GetObject( histogramName.c_str(), efficiencyHistogram );
+	// Copy it and transform the X axis from DAC units to charge
+	TH1D effVsCharge( *efficiencyHistogram );
+	effVsCharge.GetXaxis()->Set( efficiencyHistogram->GetXaxis()->GetNbins(),
+				     chargeFromVoltage( pulseDAC_->mV_from_DACUnit( efficiencyHistogram->GetXaxis()->GetXmin() ).first, 
+							(*m)->getInjectionCapacitor() ),
+				     chargeFromVoltage( pulseDAC_->mV_from_DACUnit( efficiencyHistogram->GetXaxis()->GetXmax() ).first, 
+							(*m)->getInjectionCapacitor() ) );
+	effVsCharge.SetTitle( string( "Threshold curves at U=" + utils::stringFrom<double>( thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first ) + " mV" ).c_str() );
+	effVsCharge.SetXTitle( string( "input charge [fC] to " + (*m)->getInjectionCapacitorString() + " capacitor" ).c_str() );
+	effVsCharge.SetYTitle( "count" );
+	effVsCharge.SetLineColor( legend.getColor( iChannel ) );
+	effVsCharge.SetLineStyle( legend.getStyle( iChannel ) );
+	legend.AddEntry( efficiencyHistogram,  utils::stringFrom<int>( iChannel ).c_str(), "l" ); // Use efficiencyHistogram as effVsCharge will be already out of scope when legend is drawn.
+	effVsCharge.DrawCopy( (iChannel==0?"l":"lsame") );
       } // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
-      
+
+      canvas.cd( 1 );
+      legend.Draw();
+
+      canvas.cd( 2 )->Divide( 2, 1 );
+      canvas.cd( 2 )->cd( 1 );
+      thresholdVsChannel->SetMinimum( 0. );
+      thresholdVsChannel->SetMaximum( 1.5 * thresholdVsChannel->GetBinContent( thresholdVsChannel->GetMaximumBin() ) );
+      thresholdVsChannel->DrawCopy( "pe" );
+      canvas.cd( 2 )->cd( 2 );
+      gStyle->SetOptStat( 1110 );
+      TH1D hc = histogramContents( thresholdVsChannel );
+      hc.SetXTitle( "threshold [fC]" );
+      hc.DrawCopy();
+
+      canvas.cd( 3 )->Divide( 2, 1 );
+      canvas.cd( 3 )->cd( 1 );
+      noiseVsChannel->SetMinimum( 0. );
+      noiseVsChannel->SetMaximum( 1.5 * noiseVsChannel->GetBinContent( noiseVsChannel->GetMaximumBin() ) );
+      noiseVsChannel->DrawCopy( "pe" );
+      canvas.cd( 3 )->cd( 2 );
+      hc = histogramContents( noiseVsChannel );
+      hc.SetXTitle( "noise [fC]" );
+      hc.DrawCopy();
+
+      canvas.cd( 4 )->Divide( 2, 1 );
+      canvas.cd( 4 )->cd( 1 );
+      chi2ndfVsChannel->SetMinimum( 0. );
+      chi2ndfVsChannel->SetMaximum( 1.5 * chi2ndfVsChannel->GetBinContent( chi2ndfVsChannel->GetMaximumBin() ) );
+      chi2ndfVsChannel->SetYTitle( "#chi^{2} / ndf" );
+      chi2ndfVsChannel->DrawCopy( "p" );
+      canvas.cd( 4 )->cd( 2 );
+      hc = histogramContents( chi2ndfVsChannel );
+      hc.SetXTitle( "#chi^{2} / ndf" );
+      hc.DrawCopy();
+
+      canvas.cd();
+      TPDF pdf( ( fileName+".pdf" ).c_str() );
+      //pdf.Range( 20, 28 );
+      //pdf.NewPage();
+      canvas.Draw();
+      pdf.Close();
     } // if ( (*m)->getType() == Measurement::count_vs_dac )
 
     if ( (*m)->getType() == Measurement::time_vs_dac ){
@@ -268,12 +354,12 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
       TProfile *timesHistogram;
       f.GetObject( histogramName.c_str(), timesHistogram );
       // Profile hist needs projecting:
-      TH1D *timesVsADC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
-      TH1D *timesVsCharge = new TH1D( "timesVsCharge", "timesVsCharge", timesVsADC->GetNbinsX(), 
-				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge(                          1 ) ).first,
+      TH1D *timesVsDAC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
+      TH1D *timesVsCharge = new TH1D( "timesVsCharge", "timesVsCharge", timesVsDAC->GetNbinsX(), 
+				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsDAC->GetBinLowEdge(                          1 ) ).first,
 							 (*m)->getInjectionCapacitor()
 							 ),
-				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinLowEdge ( timesVsADC->GetNbinsX()+1 ) ).first,
+				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsDAC->GetBinLowEdge ( timesVsDAC->GetNbinsX()+1 ) ).first,
 							 (*m)->getInjectionCapacitor()
 							 )
 				      );
@@ -285,7 +371,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
       vector<valarray<double> > rmsTimes;  // rmsTimes[iCharge][iChannel]
       for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
 	bins.push_back( timesVsCharge->FindBin( nominalInputCharges_[iCharge] ) );
-	realCharges.push_back( chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinCenter( bins.back() ) ).first,
+	realCharges.push_back( chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsDAC->GetBinCenter( bins.back() ) ).first,
 						  (*m)->getInjectionCapacitor() ) );
 	meanTimes.push_back( valarray<double>( nChannels_ ) ); // prepare container
 	rmsTimes .push_back( valarray<double>( nChannels_ ) ); // prepare container
@@ -293,14 +379,14 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
       // Find the bins for the ends of range for slew calculation:
       int binInputChargeRangeStart = max(                          1, timesVsCharge->FindBin( nominalInputChargeRangeStart_ ) );
       int binInputChargeRangeEnd   = min( timesVsCharge->GetNbinsX(), timesVsCharge->FindBin( nominalInputChargeRangeEnd_   ) );
-      double inputChargeRangeStart = chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinCenter( binInputChargeRangeStart ) ).first,
+      double inputChargeRangeStart = chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsDAC->GetBinCenter( binInputChargeRangeStart ) ).first,
 							(*m)->getInjectionCapacitor() );
-      double inputChargeRangeEnd   = chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsADC->GetBinCenter( binInputChargeRangeEnd   ) ).first,
+      double inputChargeRangeEnd   = chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsDAC->GetBinCenter( binInputChargeRangeEnd   ) ).first,
 							(*m)->getInjectionCapacitor() );
       valarray<double> meanSpan( nChannels_ );
       valarray<double> rmsSpan ( nChannels_ );
 
-      delete timesVsADC;
+      delete timesVsDAC;
       delete timesVsCharge;
 
       // Loop over the channels and get the mean and rms of the times at the specified input charges,
@@ -310,24 +396,24 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
 	histogramName = string( "timeVsAmpl__" ) + fileName + "__ch_" + utils::stringFrom<int>( iChannel );
 	f.GetObject( histogramName.c_str(), timesHistogram );
 	// Profile hist needs projecting:
-	TH1D *timesVsADC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
+	TH1D *timesVsDAC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
 	// Get the mean and rms of times at the specified input charges:
 	for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
-	  meanTimes[iCharge][iChannel] = (*m)->nanosecondsFromTDCUnits( timesVsADC->GetBinContent( bins[iCharge] ) );
-	  rmsTimes [iCharge][iChannel] = (*m)->nanosecondsFromTDCUnits( timesVsADC->GetBinError  ( bins[iCharge] ) );
+	  meanTimes[iCharge][iChannel] = (*m)->nanosecondsFromTDCUnits( timesVsDAC->GetBinContent( bins[iCharge] ) );
+	  rmsTimes [iCharge][iChannel] = (*m)->nanosecondsFromTDCUnits( timesVsDAC->GetBinError  ( bins[iCharge] ) );
 	}
 	// Get the min and max of mean and rms of times in the specified input charge range: 
 	double minMean = 999999., maxMean = -999999.;
 	double minRMS  = 999999., maxRMS  = -999999.;
 	for ( int iBin = binInputChargeRangeStart; iBin <= binInputChargeRangeEnd; ++iBin ){
-	  if ( timesVsADC->GetBinContent( iBin ) < minMean ) minMean = timesVsADC->GetBinContent( iBin );
-	  if ( timesVsADC->GetBinContent( iBin ) > maxMean ) maxMean = timesVsADC->GetBinContent( iBin );
-	  if ( timesVsADC->GetBinError  ( iBin ) < minRMS  ) minRMS  = timesVsADC->GetBinError  ( iBin );
-	  if ( timesVsADC->GetBinError  ( iBin ) > maxRMS  ) maxRMS  = timesVsADC->GetBinError  ( iBin );
+	  if ( timesVsDAC->GetBinContent( iBin ) < minMean ) minMean = timesVsDAC->GetBinContent( iBin );
+	  if ( timesVsDAC->GetBinContent( iBin ) > maxMean ) maxMean = timesVsDAC->GetBinContent( iBin );
+	  if ( timesVsDAC->GetBinError  ( iBin ) < minRMS  ) minRMS  = timesVsDAC->GetBinError  ( iBin );
+	  if ( timesVsDAC->GetBinError  ( iBin ) > maxRMS  ) maxRMS  = timesVsDAC->GetBinError  ( iBin );
 	}
 	meanSpan[iChannel] = (*m)->nanosecondsFromTDCUnits( maxMean - minMean );
 	rmsSpan [iChannel] = (*m)->nanosecondsFromTDCUnits( maxRMS  - minRMS  );
-	delete timesVsADC;
+	delete timesVsDAC;
       } // for ( int iChannel=0; iChannel<nChannels_; ++iChannel )
 
       // cout << "meanTimes" << endl << meanTimes << endl;

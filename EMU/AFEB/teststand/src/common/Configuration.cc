@@ -241,14 +241,14 @@ string AFEB::teststand::Configuration::resultsXML(){
       // ...threshold,... 
       ss << "<a:statistics>" << endl;
       map<string,double> stat = r->second->getThresholdStats();
-      ss << "<a:parameter name=\"threshold [ADC units]\"";
+      ss << "<a:parameter name=\"threshold [DAC units]\"";
       for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
 	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
       }
       ss << "/>" << endl;
       // ...noise,...
       stat = r->second->getNoiseStats();
-      ss << "<a:parameter name=\"noise [ADC units]\"";
+      ss << "<a:parameter name=\"noise [DAC units]\"";
       for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
 	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
       }

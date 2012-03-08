@@ -42,7 +42,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 		      measurement_->getAmplitudeMin() + ( nAmp - 0.5 ) * measurement_->getAmplitudeStep()
 		      );
   pulses_->SetXTitle( "channel" );
-  pulses_->SetYTitle( "amplitude [ADC units]" );
+  pulses_->SetYTitle( "amplitude [DAC units]" );
   pulses_->SetZTitle( "count" );
   pulses_->SetTitleOffset( 0.8, "x" );
   pulses_->SetTitleOffset( 0.5, "y" );
@@ -63,7 +63,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   name.str("");
   name << "threshold__" << fileName_;
   title.str("");
-  title << "measured threshold for " << testedDevice_->getType()
+  title << "Measured threshold for " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
   threshold_ = new TH1D( name.str().c_str(),
 			 title.str().c_str(),
@@ -86,7 +86,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   name.str("");
   name << "noise__" << fileName_;
   title.str("");
-  title << "measured noise for " << testedDevice_->getType()
+  title << "Measured noise for " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
   noise_ = new TH1D( name.str().c_str(),
 		     title.str().c_str(),
@@ -106,7 +106,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   name.str("");
   name << "efficiency__" << fileName_;
   title.str("");
-  title << "measured efficiency for " << testedDevice_->getType()
+  title << "Measured efficiency for " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
   efficiency_ = new TH1D( name.str().c_str(),
 			  title.str().c_str(),
@@ -128,7 +128,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   name.str("");
   name << "chi2ndf__" << fileName_;
   title.str("");
-  title << "S-curve fit's chi^2/ndf for " << testedDevice_->getType()
+  title << "Threshold curve fit's #chi^{2}/ndf for " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
   chi2ndf_ = new TH1D( name.str().c_str(),
 		       title.str().c_str(),
@@ -197,7 +197,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 				measurement_->getTDCTimeMax(),
 				"S" ); // Important: spread option (not error on mean)! We'll need to quote RMS!
                              // "" ); // error on mean
-    t->SetXTitle( "amplitude [ADC units]" );
+    t->SetXTitle( "amplitude [DAC units]" );
     t->SetYTitle( "time [TDC units]" );
     t->SetStats( kFALSE );
     if ( iChannel / nStyles < nColors ) t->SetLineColor( color[ iChannel/nStyles ] );
@@ -215,7 +215,7 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 			nAmp,
 			measurement_->getAmplitudeMin() -          0.5   * measurement_->getAmplitudeStep(),
 			measurement_->getAmplitudeMin() + ( nAmp - 0.5 ) * measurement_->getAmplitudeStep() );
-    e->SetXTitle( "amplitude [ADC units]" );
+    e->SetXTitle( "amplitude [DAC units]" );
     e->SetYTitle( "efficiency" );
     e->SetStats( kFALSE );
     if ( iChannel / nStyles < nColors ) e->SetLineColor( color[ iChannel/nStyles ] );
@@ -541,7 +541,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetGridx();
   gPad->SetGridy();
   threshold.SetTitle("");
-  threshold.SetYTitle("threshold:#circ, noise:#Box [ADC]");
+  threshold.SetYTitle("threshold:#circ, noise:#Box [DAC]");
   threshold.DrawCopy("p e");
   noise.DrawCopy("same p e");
   // cout << "Efficiency before adjustment"; efficiency.Print("all");
@@ -706,9 +706,9 @@ void AFEB::teststand::Results::saveInOldFormat( const string directory ){
 
 map<string,pair<double,double> > AFEB::teststand::Results::getParameters( const int channel ) const {
   map<string,pair<double,double> > values;
-  values["threshold [ADC]"      ] = make_pair<double,double>( threshold_    ->GetBinContent( channel+1 ),
+  values["threshold [DAC]"      ] = make_pair<double,double>( threshold_    ->GetBinContent( channel+1 ),
 							      threshold_    ->GetBinError  ( channel+1 ) );
-  values["noise [ADC]"          ] = make_pair<double,double>( noise_        ->GetBinContent( channel+1 ),
+  values["noise [DAC]"          ] = make_pair<double,double>( noise_        ->GetBinContent( channel+1 ),
 							      noise_        ->GetBinError  ( channel+1 ) );
   values["efficiency"           ] = make_pair<double,double>( efficiency_   ->GetBinContent( channel+1 ),
 							      efficiency_   ->GetBinError  ( channel+1 ) );

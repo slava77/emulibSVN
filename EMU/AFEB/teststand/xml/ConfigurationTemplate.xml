@@ -72,13 +72,13 @@
     <meta:tag name="c:PulseGenerator">
       <meta:attr name="capacitor" value="internal" description="Inject pulses through the device's internal capacitor."/>
       <meta:attr name="capacitor" value="external" description="Inject pulses through the external capacitor."/>
-      <meta:attr name="amplitudeMin" units="ADC" description="The lowest pulse amplitude in ADC units."/>
-      <meta:attr name="amplitudeMax" units="ADC" description="The highest pulse amplitude in ADC units."/>
-      <meta:attr name="amplitudeStep" units="ADC" description="The pulse amplitude increment in ADC units."/>
+      <meta:attr name="amplitudeMin" units="DAC" description="The lowest pulse amplitude in DAC units."/>
+      <meta:attr name="amplitudeMax" units="DAC" description="The highest pulse amplitude in DAC units."/>
+      <meta:attr name="amplitudeStep" units="DAC" description="The pulse amplitude increment in DAC units."/>
       <meta:attr name="nPulses" description="The number of pulses at each amplitude."/>
     </meta:tag>
     <meta:tag name="c:SignalConverter">
-      <meta:attr name="thresholdValue" units="ADC" description="The device's threshold is to be set to this value expressed in ADC units."/>
+      <meta:attr name="thresholdValue" units="DAC" description="The device's threshold is to be set to this value expressed in DAC units."/>
     </meta:tag>
     <meta:tag name="c:">
       <meta:attr name="" units="" description=""/>

@@ -19,7 +19,7 @@
     <meta:attr name="capacitor" value="external" description="Pulses were injected through the external capacitor."/>
     <meta:attr name="capacitor" value="internal" description="Pulses were injected through the device's internal capacitor."/>
     <meta:attr name="nPulses" description="Number of pulses at each amplitude."/>
-    <meta:attr name="setThreshold" units="ADC" description="Device's discriminator threshold value set in ADC units."/>
+    <meta:attr name="setThreshold" units="DAC" description="Device's discriminator threshold value set in DAC units."/>
     <meta:attr name="setThresholdVoltage" units="mV" description="Device's discriminator threshold value set in mV."/>
   </meta:tag>
   <meta:tag name="ad:channel">

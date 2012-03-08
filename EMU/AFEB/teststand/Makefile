@@ -41,6 +41,7 @@ Sources = \
 	Results.cc \
 	Analysis.cc \
 	DAC.cc \
+	Legend.cc \
 	version.cc \
 	utils/DOM.cc \
 	utils/Cgi.cc \

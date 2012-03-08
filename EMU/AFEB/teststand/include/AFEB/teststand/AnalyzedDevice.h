@@ -92,13 +92,14 @@ namespace AFEB { namespace teststand {
 
       void addThresholdMeasurement( const int iChannel,
 				    const pair<double,double> V_setThreshold ,
-				    const pair<double,double> V_measuredThreshold,
-				    const pair<double,double> V_measuredNoise );
+				    const pair<double,double> Q_measuredThreshold,
+				    const pair<double,double> Q_measuredNoise );
       // valarray<double> getThresholds() const;
       valarray<double> getNoises() const;
       valarray<double> getGains() const;
       valarray<double> getOffsets() const;
       valarray<double> getInternalCapacitances() const;
+      TH1D histogramContents( const TH1D* h ) const;
       string measurementsToXML() const;
       string statisticsToXML( const string& name, const valarray<double>& values ) const;
       double getMaxMeasuredThreshold( const double setThreshold );
