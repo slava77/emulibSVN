@@ -46,6 +46,7 @@ void initAcConstants() {
 E "// Common libs
 #uses \"CMS_CSC_common/emu_common.ctl\"
 #uses \"CMS_CSC_common/emu_accessControl.ctl\"
+#uses \"CMS_CSC_MiddleLayer/emu_x2p.ctl\"
 
 /** for access control - arrays of control and expert control buttons which should be under access control */
 dyn_string controlButtons;
