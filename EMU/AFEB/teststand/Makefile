@@ -106,17 +106,16 @@ fitterTest:
 	$(BUILD_HOME)/AFEB/teststand/test/common/fitterTest.cc \
 	$(BUILD_HOME)/AFEB/teststand/src/common/fit/StraightLine2D.cxx
 
+# To run it:
+#     LD_LIBRARY_PATH=$BUILD_HOME/AFEB/teststand/lib/$XDAQ_OS/$XDAQ_PLATFORM:$XDAQ_ROOT/lib:$ROOTSYS/lib $BUILD_HOME/AFEB/teststand/test/$XDAQ_OS/$XDAQ_PLATFORM/analyze.exe <results_directory>
 analyze:
 	mkdir -p $(BUILD_HOME)/AFEB/teststand/test/$(XDAQ_OS)/$(XDAQ_PLATFORM)
-	g++ $(ROOTCFLAGS) $(ROOTLIBS) $(ROOTGLIBS) -I$(BUILD_HOME)/AFEB/teststand/include -I$(XDAQ_ROOT)/include  -I$(XDAQ_ROOT)/include/$(XDAQ_OS) \
+	g++ $(ROOTCFLAGS) $(ROOTLIBS) $(ROOTGLIBS) -I$(BUILD_HOME)/AFEB/Jorway/include -I$(BUILD_HOME)/AFEB/teststand/include -I$(XDAQ_ROOT)/include  -I$(XDAQ_ROOT)/include/$(XDAQ_OS) \
 	-L $(XDAQ_ROOT)/lib \
-	-lxcept -ltoolbox -llog4cplus -lxdata -lxerces-c -lxalan-c -lxalanMsg -lxoap -lasyncresolv -lmimetic -lconfig -luuid \
+	-lxcept -ltoolbox -llog4cplus -lxdata -lxerces-c -lxalan-c -lxalanMsg -lxoap -lasyncresolv -lmimetic -lconfig -luuid -lxdaq  -lxgi -lcgicc -llogudpappender -llogxmlappender -lpthttp -lpeer \
+	-L $(BUILD_HOME)/$(XDAQ_PLATFORM)/lib -lAFEBteststand \
 	-o $(BUILD_HOME)/AFEB/teststand/test/$(XDAQ_OS)/$(XDAQ_PLATFORM)/analyze.exe \
-	$(BUILD_HOME)/AFEB/teststand/test/common/analyze.cc \
-	$(BUILD_HOME)/AFEB/teststand/src/common/Analysis.cc \
-	$(BUILD_HOME)/AFEB/teststand/src/common/utils/DOM.cc \
-	$(BUILD_HOME)/AFEB/teststand/src/common/utils/String.cc \
-	$(BUILD_HOME)/AFEB/teststand/src/common/utils/System.cc
+	$(BUILD_HOME)/AFEB/teststand/test/common/analyze.cc
 
 include $(XDAQ_ROOT)/config/Makefile.rules
 include $(XDAQ_ROOT)/config/mfRPM.rules
