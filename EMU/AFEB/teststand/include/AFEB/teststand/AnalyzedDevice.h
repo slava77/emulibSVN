@@ -100,7 +100,7 @@ namespace AFEB { namespace teststand {
       valarray<double> getOffsets() const;
       valarray<double> getInternalCapacitances() const;
       TH1D histogramContents( const TH1D* h ) const;
-      string measurementsToXML() const;
+      string measurementsToXMLAndPlots( const string& analyzedResultsDir ) const;
       string statisticsToXML( const string& name, const valarray<double>& values ) const;
       double getMaxMeasuredThreshold( const double setThreshold );
     };

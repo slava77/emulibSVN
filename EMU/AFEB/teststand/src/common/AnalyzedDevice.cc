@@ -210,7 +210,7 @@ TH1D AFEB::teststand::AnalyzedDevice::histogramContents( const TH1D* h ) const {
   return hh;
 }
 
-string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
+string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string& analyzedResultsDir ) const {
   stringstream ss;
   // Loop over measurements:
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
@@ -339,7 +339,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXML() const {
       hc.DrawCopy();
 
       canvas.cd();
-      TPDF pdf( ( fileName+".pdf" ).c_str() );
+      TPDF pdf( ( analyzedResultsDir+"/"+fileName+".pdf" ).c_str() );
       //pdf.Range( 20, 28 );
       //pdf.NewPage();
       canvas.Draw();
@@ -509,7 +509,7 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
      <<            "\" pulseDivisionFactor=\""   << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << pulseDivisionFactor_
      <<   "\"/>" << endl;
 
-  ss << measurementsToXML();
+  ss << measurementsToXMLAndPlots( analyzedResultsDir );
 
   size_t iChannel = 0;
   for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ){
