@@ -27,8 +27,8 @@
       <tr>
 	<td><xsl:apply-templates select="c:measurements"/></td>
 	<td>
-	  <xsl:apply-templates select="c:crate"/>
 	  <xsl:apply-templates select="c:inputs"/>
+	  <xsl:apply-templates select="c:crate"/>
 	</td>
       </tr>
       <tr>

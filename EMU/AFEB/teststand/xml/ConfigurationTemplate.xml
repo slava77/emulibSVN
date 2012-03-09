@@ -16,6 +16,22 @@
       <meta:attr name="tdcSlot" value="7" description="The crate slot in which the TDC reading out this device is inserted."/>
       <meta:attr name="tdcSlot" value="8" description="The crate slot in which the TDC reading out this device is inserted."/>
       <meta:attr name="tdcSlot" value="9" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="10" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="11" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="12" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="13" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="14" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="15" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="16" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="17" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="18" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="19" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="20" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="21" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="22" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="23" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="24" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" value="25" description="The crate slot in which the TDC reading out this device is inserted."/>
       <meta:attr name="tdcSocket" value="1" description="The TDC's upper input socket (channels 1-16)."/>
       <meta:attr name="tdcSocket" value="2" description="The TDC's lower input socket (channels 17-32)."/>
       <meta:attr name="signalConverterSlot" value="1" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
@@ -27,6 +43,22 @@
       <meta:attr name="signalConverterSlot" value="7" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
       <meta:attr name="signalConverterSlot" value="8" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
       <meta:attr name="signalConverterSlot" value="9" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="10" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="11" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="12" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="13" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="14" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="15" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="16" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="17" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="18" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="19" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="20" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="21" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="22" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="23" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="24" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" value="25" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
       <meta:attr name="signalConverterSocket" value="1" description="The signal converter's / threshold setter's upper input socket."/>
       <meta:attr name="signalConverterSocket" value="2" description="The signal converter's / threshold setter's lower input socket."/>
       <meta:attr name="pulseGeneratorSlot" value="1" description="The crate slot in which the pulse generator for this device is inserted."/>
@@ -38,6 +70,22 @@
       <meta:attr name="pulseGeneratorSlot" value="7" description="The crate slot in which the pulse generator for this device is inserted."/>
       <meta:attr name="pulseGeneratorSlot" value="8" description="The crate slot in which the pulse generator for this device is inserted."/>
       <meta:attr name="pulseGeneratorSlot" value="9" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="10" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="11" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="12" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="13" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="14" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="15" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="16" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="17" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="18" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="19" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="20" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="21" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="22" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="23" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="24" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" value="25" description="The crate slot in which the pulse generator for this device is inserted."/>
       <meta:attr name="pulseGeneratorSocket" value="1" description="The pulse generator's upper output socket for common external pulses."/>
       <meta:attr name="pulseGeneratorSocket" value="2" description="The pulse generator's lower output socket for common external pulses."/>
     </meta:tag>
@@ -94,49 +142,63 @@
   <c:crate number="1">
     <c:module slot="1"  name=""           id=""       type=""/>
     <c:module slot="2"  name=""           id=""       type=""/>
-    <c:module slot="3"  name="LeCroy3377" id="B58662" type="TDC"/>
+    <c:module slot="3"  name="LE32"       id="7"      type="PulseGenerator"/>
     <c:module slot="4"  name=""           id=""       type=""/>
-    <c:module slot="5"  name="LE32"       id="11"     type="SignalConverter"/>
-    <c:module slot="6"  name="LE32"       id="5"      type="PulseGenerator"/>
-    <c:module slot="7"  name="LeCroy3377" id="B58652" type="TDC"/>
-    <c:module slot="8"  name=""           id=""       type=""/>
-    <c:module slot="9"  name="LE32"       id="12"     type="SignalConverter"/>
+    <c:module slot="5"  name=""           id=""       type=""/>
+    <c:module slot="6"  name="LeCroy3377" id=""       type="TDC"/>
+    <c:module slot="7"  name=""           id=""       type=""/>
+    <c:module slot="8"  name="LE32"       id="5"      type="SignalConverter"/>
+    <c:module slot="9"  name="LeCroy3377" id=""       type="TDC"/>
     <c:module slot="10" name=""           id=""       type=""/>
-    <c:module slot="11" name="Jorway73A"  id=""       type="CrateController"/>
+    <c:module slot="11" name="LE32"       id="12"     type="SignalConverter"/>
+    <c:module slot="12" name="LeCroy3377" id=""       type="TDC"/>
+    <c:module slot="13" name=""           id=""       type=""/>
+    <c:module slot="14" name="LE32"       id="9"      type="SignalConverter"/>
+    <c:module slot="15" name="LeCroy3377" id=""       type="TDC"/>
+    <c:module slot="16" name=""           id=""       type=""/>
+    <c:module slot="17" name="LE32"       id="13"     type="SignalConverter"/>
+    <c:module slot="18" name=""           id=""       type=""/>
+    <c:module slot="19" name=""           id=""       type=""/>
+    <c:module slot="20" name=""           id=""       type=""/>
+    <c:module slot="21" name=""           id=""       type=""/>
+    <c:module slot="22" name=""           id=""       type=""/>
+    <c:module slot="23" name=""           id=""       type=""/>
+    <c:module slot="24" name=""           id=""       type=""/>
+    <c:module slot="25" name="Jorway73A"  id=""       type="CrateController"/>
   </c:crate>
 
   <c:inputs adaptorType="10AD16A" adaptorId="1">
-    <c:testedDevice socket="1"  id="01" tdcSlot="7" tdcSocket="1" signalConverterSlot="9" signalConverterSocket="1" pulseGeneratorSlot="6" pulseGeneratorSocket="1"/>
-    <c:testedDevice socket="2"  id="02" tdcSlot="7" tdcSocket="2" signalConverterSlot="9" signalConverterSocket="2" pulseGeneratorSlot="6" pulseGeneratorSocket="2"/>
-    <c:testedDevice socket="3"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
-    <c:testedDevice socket="4"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
-    <c:testedDevice socket="5"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
-    <c:testedDevice socket="6"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
-    <c:testedDevice socket="7"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
-    <c:testedDevice socket="8"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
+    <c:testedDevice socket="1"  id="" tdcSlot="6"   tdcSocket="1" signalConverterSlot="8"  signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="2"  id="" tdcSlot="6"   tdcSocket="2" signalConverterSlot="8"  signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="3"  id="" tdcSlot="9"   tdcSocket="1" signalConverterSlot="11" signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="4"  id="" tdcSlot="9"   tdcSocket="2" signalConverterSlot="11" signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="5"  id="" tdcSlot="12"  tdcSocket="1" signalConverterSlot="14" signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="6"  id="" tdcSlot="12"  tdcSocket="2" signalConverterSlot="14" signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="7"  id="" tdcSlot="15"  tdcSocket="1" signalConverterSlot="17" signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="8"  id="" tdcSlot="15"  tdcSocket="2" signalConverterSlot="17" signalConverterSocket="2" pulseGeneratorSlot="3"  pulseGeneratorSocket="1"/>
     <c:testedDevice socket="9"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
     <c:testedDevice socket="10" id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
   </c:inputs>
 
   <c:measurements>
     <c:condition name="Threshold scan" type="count_vs_dac" enabled="yes">
-      <c:PulseGenerator amplitudeMin="20" amplitudeMax="90" amplitudeStep="2" nPulses="400" capacitor="external"/>
-      <c:SignalConverter thresholdValue="50"/>
+      <c:PulseGenerator amplitudeMin="20" amplitudeMax="80" amplitudeStep="2" nPulses="400" capacitor="external"/>
+      <c:SignalConverter thresholdValue="46"/>
       <c:TDC timeMin="0" timeMax="120"/>
     </c:condition>
     <c:condition name="Threshold scan" type="count_vs_dac" enabled="yes">
-      <c:PulseGenerator amplitudeMin="40" amplitudeMax="140" amplitudeStep="2" nPulses="400" capacitor="external"/>
-      <c:SignalConverter thresholdValue="90"/>
+      <c:PulseGenerator amplitudeMin="60" amplitudeMax="130" amplitudeStep="2" nPulses="400" capacitor="external"/>
+      <c:SignalConverter thresholdValue="92"/>
       <c:TDC timeMin="0" timeMax="120"/>
     </c:condition>
     <c:condition name="Threshold scan" type="count_vs_dac" enabled="yes">
       <c:PulseGenerator amplitudeMin="20" amplitudeMax="90" amplitudeStep="2" nPulses="400" capacitor="internal"/>
-      <c:SignalConverter thresholdValue="50"/>
+      <c:SignalConverter thresholdValue="46"/>
       <c:TDC timeMin="0" timeMax="120"/>
     </c:condition>
     <c:condition name="Time response vs. pulse height" type="time_vs_dac" enabled="yes">
-      <c:PulseGenerator amplitudeMin="20" amplitudeMax="500" amplitudeStep="10" nPulses="400" capacitor="external"/>
-      <c:SignalConverter thresholdValue="50"/>
+      <c:PulseGenerator amplitudeMin="0" amplitudeMax="1000" amplitudeStep="20" nPulses="400" capacitor="external"/>
+      <c:SignalConverter thresholdValue="46"/>
       <c:TDC timeMin="0" timeMax="120"/>
     </c:condition>
   </c:measurements>

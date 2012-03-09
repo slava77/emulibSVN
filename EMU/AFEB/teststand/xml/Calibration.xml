@@ -25,231 +25,164 @@
   </c:adaptors>
 
   <c:DACs>
-    <c:DAC type="pulse" moduleName="LE32" moduleId="11" channel="1">
-	<c:value DACUnits=  "25" milliVolts=  "50"/>
-	<c:value DACUnits=  "50" milliVolts= "100"/>
-	<c:value DACUnits=  "75" milliVolts= "150"/>
-	<c:value DACUnits= "100" milliVolts= "200"/>
-	<c:value DACUnits= "150" milliVolts= "300"/>
-	<c:value DACUnits= "200" milliVolts= "400"/>
-	<c:value DACUnits= "250" milliVolts= "500"/>
-	<c:value DACUnits= "300" milliVolts= "600"/>
-	<c:value DACUnits= "350" milliVolts= "700"/>
-	<c:value DACUnits= "400" milliVolts= "800"/>
-	<c:value DACUnits= "450" milliVolts= "900"/>
-	<c:value DACUnits= "500" milliVolts="1000"/>
-	<c:value DACUnits= "600" milliVolts="1200"/>
-	<c:value DACUnits= "700" milliVolts="1400"/>
-	<c:value DACUnits= "800" milliVolts="1600"/>
-	<c:value DACUnits= "900" milliVolts="1800"/>
-	<c:value DACUnits="1000" milliVolts="2000"/>
-    </c:DAC>
-    <c:DAC type="pulse" moduleName="LE32" moduleId="11" channel="2">
-	<c:value DACUnits=  "25" milliVolts=  "50"/>
-	<c:value DACUnits=  "50" milliVolts= "100"/>
-	<c:value DACUnits=  "75" milliVolts= "150"/>
-	<c:value DACUnits= "100" milliVolts= "200"/>
-	<c:value DACUnits= "150" milliVolts= "300"/>
-	<c:value DACUnits= "200" milliVolts= "400"/>
-	<c:value DACUnits= "250" milliVolts= "500"/>
-	<c:value DACUnits= "300" milliVolts= "600"/>
-	<c:value DACUnits= "350" milliVolts= "700"/>
-	<c:value DACUnits= "400" milliVolts= "800"/>
-	<c:value DACUnits= "450" milliVolts= "900"/>
-	<c:value DACUnits= "500" milliVolts="1000"/>
-	<c:value DACUnits= "600" milliVolts="1200"/>
-	<c:value DACUnits= "700" milliVolts="1400"/>
-	<c:value DACUnits= "800" milliVolts="1600"/>
-	<c:value DACUnits= "900" milliVolts="1800"/>
-	<c:value DACUnits="1000" milliVolts="2000"/>
-    </c:DAC>
     <c:DAC type="pulse" moduleName="LE32" moduleId="5" channel="1">
-	<c:value DACUnits=  "25" milliVolts=  "50"/>
-	<c:value DACUnits=  "50" milliVolts= "100"/>
-	<c:value DACUnits=  "75" milliVolts= "150"/>
-	<c:value DACUnits= "100" milliVolts= "200"/>
-	<c:value DACUnits= "150" milliVolts= "300"/>
-	<c:value DACUnits= "200" milliVolts= "400"/>
-	<c:value DACUnits= "250" milliVolts= "500"/>
-	<c:value DACUnits= "300" milliVolts= "600"/>
-	<c:value DACUnits= "350" milliVolts= "700"/>
-	<c:value DACUnits= "400" milliVolts= "800"/>
-	<c:value DACUnits= "450" milliVolts= "900"/>
-	<c:value DACUnits= "500" milliVolts="1000"/>
-	<c:value DACUnits= "600" milliVolts="1200"/>
-	<c:value DACUnits= "700" milliVolts="1400"/>
-	<c:value DACUnits= "800" milliVolts="1600"/>
-	<c:value DACUnits= "900" milliVolts="1800"/>
-	<c:value DACUnits="1000" milliVolts="2000"/>
+	<c:value DACUnits="30"  milliVolts="59.06"/>
+	<c:value DACUnits="40"  milliVolts="78.20"/>
+	<c:value DACUnits="50"  milliVolts="98.00"/>
+	<c:value DACUnits="60"  milliVolts="116.58"/>
+	<c:value DACUnits="70"  milliVolts="135.70"/>
+	<c:value DACUnits="80"  milliVolts="155.16"/>
+	<c:value DACUnits="90"  milliVolts="174.92"/>
+	<c:value DACUnits="100" milliVolts="193.26"/>
+	<c:value DACUnits="110" milliVolts="212.99"/>
+	<c:value DACUnits="120" milliVolts="231.86"/>
     </c:DAC>
     <c:DAC type="pulse" moduleName="LE32" moduleId="5" channel="2">
-	<c:value DACUnits=  "25" milliVolts=  "50"/>
-	<c:value DACUnits=  "50" milliVolts= "100"/>
-	<c:value DACUnits=  "75" milliVolts= "150"/>
-	<c:value DACUnits= "100" milliVolts= "200"/>
-	<c:value DACUnits= "150" milliVolts= "300"/>
-	<c:value DACUnits= "200" milliVolts= "400"/>
-	<c:value DACUnits= "250" milliVolts= "500"/>
-	<c:value DACUnits= "300" milliVolts= "600"/>
-	<c:value DACUnits= "350" milliVolts= "700"/>
-	<c:value DACUnits= "400" milliVolts= "800"/>
-	<c:value DACUnits= "450" milliVolts= "900"/>
-	<c:value DACUnits= "500" milliVolts="1000"/>
-	<c:value DACUnits= "600" milliVolts="1200"/>
-	<c:value DACUnits= "700" milliVolts="1400"/>
-	<c:value DACUnits= "800" milliVolts="1600"/>
-	<c:value DACUnits= "900" milliVolts="1800"/>
-	<c:value DACUnits="1000" milliVolts="2000"/>
-    </c:DAC>
-    <c:DAC type="pulse" moduleName="LE32" moduleId="12" channel="1">
-	<c:value DACUnits=  "25" milliVolts=  "50"/>
-	<c:value DACUnits=  "50" milliVolts= "100"/>
-	<c:value DACUnits=  "75" milliVolts= "150"/>
-	<c:value DACUnits= "100" milliVolts= "200"/>
-	<c:value DACUnits= "150" milliVolts= "300"/>
-	<c:value DACUnits= "200" milliVolts= "400"/>
-	<c:value DACUnits= "250" milliVolts= "500"/>
-	<c:value DACUnits= "300" milliVolts= "600"/>
-	<c:value DACUnits= "350" milliVolts= "700"/>
-	<c:value DACUnits= "400" milliVolts= "800"/>
-	<c:value DACUnits= "450" milliVolts= "900"/>
-	<c:value DACUnits= "500" milliVolts="1000"/>
-	<c:value DACUnits= "600" milliVolts="1200"/>
-	<c:value DACUnits= "700" milliVolts="1400"/>
-	<c:value DACUnits= "800" milliVolts="1600"/>
-	<c:value DACUnits= "900" milliVolts="1800"/>
-	<c:value DACUnits="1000" milliVolts="2000"/>
-    </c:DAC>
-    <c:DAC type="pulse" moduleName="LE32" moduleId="12" channel="2">
-	<c:value DACUnits=  "25" milliVolts=  "50"/>
-	<c:value DACUnits=  "50" milliVolts= "100"/>
-	<c:value DACUnits=  "75" milliVolts= "150"/>
-	<c:value DACUnits= "100" milliVolts= "200"/>
-	<c:value DACUnits= "150" milliVolts= "300"/>
-	<c:value DACUnits= "200" milliVolts= "400"/>
-	<c:value DACUnits= "250" milliVolts= "500"/>
-	<c:value DACUnits= "300" milliVolts= "600"/>
-	<c:value DACUnits= "350" milliVolts= "700"/>
-	<c:value DACUnits= "400" milliVolts= "800"/>
-	<c:value DACUnits= "450" milliVolts= "900"/>
-	<c:value DACUnits= "500" milliVolts="1000"/>
-	<c:value DACUnits= "600" milliVolts="1200"/>
-	<c:value DACUnits= "700" milliVolts="1400"/>
-	<c:value DACUnits= "800" milliVolts="1600"/>
-	<c:value DACUnits= "900" milliVolts="1800"/>
-	<c:value DACUnits="1000" milliVolts="2000"/>
+	<c:value DACUnits="30"  milliVolts="58.30"/>
+	<c:value DACUnits="40"  milliVolts="78.40"/>
+	<c:value DACUnits="50"  milliVolts="97.70"/>
+	<c:value DACUnits="60"  milliVolts="117.75"/>
+	<c:value DACUnits="70"  milliVolts="137.40"/>
+	<c:value DACUnits="80"  milliVolts="156.98"/>
+	<c:value DACUnits="90"  milliVolts="177.08"/>
+	<c:value DACUnits="100" milliVolts="196.22"/>
+	<c:value DACUnits="110" milliVolts="215.53"/>
+	<c:value DACUnits="120" milliVolts="234.51"/>
     </c:DAC>
 
-    <c:DAC type="threshold" moduleName="LE32" moduleId="11" channel="1">
-	<c:value DACUnits=  "16" milliVolts= "50"/>
-	<c:value DACUnits=  "32" milliVolts="100"/>
-	<c:value DACUnits=  "48" milliVolts="150"/>
-	<c:value DACUnits=  "64" milliVolts="200"/>
-	<c:value DACUnits=  "80" milliVolts="250"/>
-	<c:value DACUnits=  "96" milliVolts="300"/>
-	<c:value DACUnits= "112" milliVolts="350"/>
-	<c:value DACUnits= "128" milliVolts="400"/>
-	<c:value DACUnits= "144" milliVolts="450"/>
-	<c:value DACUnits= "160" milliVolts="500"/>
-	<c:value DACUnits= "176" milliVolts="550"/>
-	<c:value DACUnits= "192" milliVolts="600"/>
-	<c:value DACUnits= "208" milliVolts="650"/>
-	<c:value DACUnits= "224" milliVolts="700"/>
-	<c:value DACUnits= "240" milliVolts="750"/>
-	<c:value DACUnits= "255" milliVolts="800"/>
+    <c:DAC type="pulse" moduleName="LE32" moduleId="7" channel="1">
+        <!-- measured on output for external pulse -->
+	<c:value DACUnits="30"  milliVolts="62.30"/>
+	<c:value DACUnits="40"  milliVolts="82.10"/>
+	<c:value DACUnits="50"  milliVolts="102.60"/>
+	<c:value DACUnits="60"  milliVolts="122.50"/>
+	<c:value DACUnits="70"  milliVolts="143.00"/>
+	<c:value DACUnits="80"  milliVolts="163.38"/>
+	<c:value DACUnits="90"  milliVolts="184.60"/>
+	<c:value DACUnits="100" milliVolts="204.59"/>
+	<c:value DACUnits="110" milliVolts="224.70"/>
+	<c:value DACUnits="120" milliVolts="245.35"/>
     </c:DAC>
-    <c:DAC type="threshold" moduleName="LE32" moduleId="11" channel="2">
-	<c:value DACUnits=  "16" milliVolts= "50"/>
-	<c:value DACUnits=  "32" milliVolts="100"/>
-	<c:value DACUnits=  "48" milliVolts="150"/>
-	<c:value DACUnits=  "64" milliVolts="200"/>
-	<c:value DACUnits=  "80" milliVolts="250"/>
-	<c:value DACUnits=  "96" milliVolts="300"/>
-	<c:value DACUnits= "112" milliVolts="350"/>
-	<c:value DACUnits= "128" milliVolts="400"/>
-	<c:value DACUnits= "144" milliVolts="450"/>
-	<c:value DACUnits= "160" milliVolts="500"/>
-	<c:value DACUnits= "176" milliVolts="550"/>
-	<c:value DACUnits= "192" milliVolts="600"/>
-	<c:value DACUnits= "208" milliVolts="650"/>
-	<c:value DACUnits= "224" milliVolts="700"/>
-	<c:value DACUnits= "240" milliVolts="750"/>
-	<c:value DACUnits= "255" milliVolts="800"/>
+
+    <c:DAC type="pulse" moduleName="LE32" moduleId="9" channel="1">
+	<c:value DACUnits="30"  milliVolts="59.52"/>
+	<c:value DACUnits="40"  milliVolts="79.20"/>
+	<c:value DACUnits="50"  milliVolts="97.89"/>
+	<c:value DACUnits="60"  milliVolts="117.62"/>
+	<c:value DACUnits="70"  milliVolts="137.80"/>
+	<c:value DACUnits="80"  milliVolts="156.40"/>
+	<c:value DACUnits="90"  milliVolts="176.40"/>
+	<c:value DACUnits="100" milliVolts="195.40"/>
+	<c:value DACUnits="110" milliVolts="214.90"/>
+	<c:value DACUnits="120" milliVolts="233.68"/>
+    </c:DAC>
+    <c:DAC type="pulse" moduleName="LE32" moduleId="9" channel="2">
+	<c:value DACUnits="30"  milliVolts="58.90"/>
+	<c:value DACUnits="40"  milliVolts="79.56"/>
+	<c:value DACUnits="50"  milliVolts="98.80"/>
+	<c:value DACUnits="60"  milliVolts="118.70"/>
+	<c:value DACUnits="70"  milliVolts="138.20"/>
+	<c:value DACUnits="80"  milliVolts="158.00"/>
+	<c:value DACUnits="90"  milliVolts="178.30"/>
+	<c:value DACUnits="100" milliVolts="197.80"/>
+	<c:value DACUnits="110" milliVolts="217.70"/>
+	<c:value DACUnits="120" milliVolts="237.00"/>
+    </c:DAC>
+
+    <c:DAC type="pulse" moduleName="LE32" moduleId="12" channel="1">
+	<c:value DACUnits="30"  milliVolts="60.08"/>
+	<c:value DACUnits="40"  milliVolts="79.55"/>
+	<c:value DACUnits="50"  milliVolts="99.03"/>
+	<c:value DACUnits="60"  milliVolts="118.59"/>
+	<c:value DACUnits="70"  milliVolts="138.30"/>
+	<c:value DACUnits="80"  milliVolts="157.78"/>
+	<c:value DACUnits="90"  milliVolts="177.26"/>
+	<c:value DACUnits="100" milliVolts="196.56"/>
+	<c:value DACUnits="110" milliVolts="216.62"/>
+	<c:value DACUnits="120" milliVolts="236.14"/>
+    </c:DAC>
+    <c:DAC type="pulse" moduleName="LE32" moduleId="12" channel="2">
+	<c:value DACUnits="30"  milliVolts="59.02"/>
+	<c:value DACUnits="40"  milliVolts="78.05"/>
+	<c:value DACUnits="50"  milliVolts="97.62"/>
+	<c:value DACUnits="60"  milliVolts="117.09"/>
+	<c:value DACUnits="70"  milliVolts="137.46"/>
+	<c:value DACUnits="80"  milliVolts="156.33"/>
+	<c:value DACUnits="90"  milliVolts="176.20"/>
+	<c:value DACUnits="100" milliVolts="195.45"/>
+	<c:value DACUnits="110" milliVolts="215.65"/>
+	<c:value DACUnits="120" milliVolts="234.02"/>
+    </c:DAC>
+
+    <c:DAC type="pulse" moduleName="LE32" moduleId="13" channel="1">
+	<c:value DACUnits="30"  milliVolts="58.93"/>
+	<c:value DACUnits="40"  milliVolts="78.17"/>
+	<c:value DACUnits="50"  milliVolts="97.62"/>
+	<c:value DACUnits="60"  milliVolts="116.70"/>
+	<c:value DACUnits="70"  milliVolts="136.90"/>
+	<c:value DACUnits="80"  milliVolts="156.10"/>
+	<c:value DACUnits="90"  milliVolts="175.90"/>
+	<c:value DACUnits="100" milliVolts="194.60"/>
+	<c:value DACUnits="110" milliVolts="214.10"/>
+	<c:value DACUnits="120" milliVolts="231.93"/>
+    </c:DAC>
+    <c:DAC type="pulse" moduleName="LE32" moduleId="13" channel="2">
+	<c:value DACUnits="30"  milliVolts="59.54"/>
+	<c:value DACUnits="40"  milliVolts="80.07"/>
+	<c:value DACUnits="50"  milliVolts="100.10"/>
+	<c:value DACUnits="60"  milliVolts="120.10"/>
+	<c:value DACUnits="70"  milliVolts="140.20"/>
+	<c:value DACUnits="80"  milliVolts="160.10"/>
+	<c:value DACUnits="90"  milliVolts="180.80"/>
+	<c:value DACUnits="100" milliVolts="200.30"/>
+	<c:value DACUnits="110" milliVolts="220.00"/>
+	<c:value DACUnits="120" milliVolts="240.20"/>
     </c:DAC>
 
     <c:DAC type="threshold" moduleName="LE32" moduleId="5" channel="1">
-	<c:value DACUnits=  "16" milliVolts= "50"/>
-	<c:value DACUnits=  "32" milliVolts="100"/>
-	<c:value DACUnits=  "48" milliVolts="150"/>
-	<c:value DACUnits=  "64" milliVolts="200"/>
-	<c:value DACUnits=  "80" milliVolts="250"/>
-	<c:value DACUnits=  "96" milliVolts="300"/>
-	<c:value DACUnits= "112" milliVolts="350"/>
-	<c:value DACUnits= "128" milliVolts="400"/>
-	<c:value DACUnits= "144" milliVolts="450"/>
-	<c:value DACUnits= "160" milliVolts="500"/>
-	<c:value DACUnits= "176" milliVolts="550"/>
-	<c:value DACUnits= "192" milliVolts="600"/>
-	<c:value DACUnits= "208" milliVolts="650"/>
-	<c:value DACUnits= "224" milliVolts="700"/>
-	<c:value DACUnits= "240" milliVolts="750"/>
-	<c:value DACUnits= "255" milliVolts="800"/>
+        <!-- measured with AFEB connected -->
+	<c:value DACUnits=  "46" milliVolts="142"/>
+	<c:value DACUnits=  "92" milliVolts="293"/>
     </c:DAC>
     <c:DAC type="threshold" moduleName="LE32" moduleId="5" channel="2">
-	<c:value DACUnits=  "16" milliVolts= "50"/>
-	<c:value DACUnits=  "32" milliVolts="100"/>
-	<c:value DACUnits=  "48" milliVolts="150"/>
-	<c:value DACUnits=  "64" milliVolts="200"/>
-	<c:value DACUnits=  "80" milliVolts="250"/>
-	<c:value DACUnits=  "96" milliVolts="300"/>
-	<c:value DACUnits= "112" milliVolts="350"/>
-	<c:value DACUnits= "128" milliVolts="400"/>
-	<c:value DACUnits= "144" milliVolts="450"/>
-	<c:value DACUnits= "160" milliVolts="500"/>
-	<c:value DACUnits= "176" milliVolts="550"/>
-	<c:value DACUnits= "192" milliVolts="600"/>
-	<c:value DACUnits= "208" milliVolts="650"/>
-	<c:value DACUnits= "224" milliVolts="700"/>
-	<c:value DACUnits= "240" milliVolts="750"/>
-	<c:value DACUnits= "255" milliVolts="800"/>
+        <!-- measured with AFEB connected -->
+	<c:value DACUnits=  "46" milliVolts="143"/>
+	<c:value DACUnits=  "92" milliVolts="293"/>
+    </c:DAC>
+
+    <c:DAC type="threshold" moduleName="LE32" moduleId="9" channel="1">
+        <!-- measured with AFEB connected -->
+	<c:value DACUnits=  "46" milliVolts="140"/>
+	<c:value DACUnits=  "92" milliVolts="289"/>
+    </c:DAC>
+    <c:DAC type="threshold" moduleName="LE32" moduleId="9" channel="2">
+        <!-- measured with AFEB connected -->
+	<c:value DACUnits=  "46" milliVolts="140"/>
+	<c:value DACUnits=  "92" milliVolts="289"/>
     </c:DAC>
 
     <c:DAC type="threshold" moduleName="LE32" moduleId="12" channel="1">
-	<c:value DACUnits=  "16" milliVolts= "50"/>
-	<c:value DACUnits=  "32" milliVolts="100"/>
-	<c:value DACUnits=  "48" milliVolts="150"/>
-	<c:value DACUnits=  "64" milliVolts="200"/>
-	<c:value DACUnits=  "80" milliVolts="250"/>
-	<c:value DACUnits=  "96" milliVolts="300"/>
-	<c:value DACUnits= "112" milliVolts="350"/>
-	<c:value DACUnits= "128" milliVolts="400"/>
-	<c:value DACUnits= "144" milliVolts="450"/>
-	<c:value DACUnits= "160" milliVolts="500"/>
-	<c:value DACUnits= "176" milliVolts="550"/>
-	<c:value DACUnits= "192" milliVolts="600"/>
-	<c:value DACUnits= "208" milliVolts="650"/>
-	<c:value DACUnits= "224" milliVolts="700"/>
-	<c:value DACUnits= "240" milliVolts="750"/>
-	<c:value DACUnits= "255" milliVolts="800"/>
+        <!-- measured with AFEB connected -->
+	<c:value DACUnits=  "46" milliVolts="141"/>
+	<c:value DACUnits=  "92" milliVolts="290"/>
     </c:DAC>
     <c:DAC type="threshold" moduleName="LE32" moduleId="12" channel="2">
-	<c:value DACUnits=  "16" milliVolts= "50"/>
-	<c:value DACUnits=  "32" milliVolts="100"/>
-	<c:value DACUnits=  "48" milliVolts="150"/>
-	<c:value DACUnits=  "64" milliVolts="200"/>
-	<c:value DACUnits=  "80" milliVolts="250"/>
-	<c:value DACUnits=  "96" milliVolts="300"/>
-	<c:value DACUnits= "112" milliVolts="350"/>
-	<c:value DACUnits= "128" milliVolts="400"/>
-	<c:value DACUnits= "144" milliVolts="450"/>
-	<c:value DACUnits= "160" milliVolts="500"/>
-	<c:value DACUnits= "176" milliVolts="550"/>
-	<c:value DACUnits= "192" milliVolts="600"/>
-	<c:value DACUnits= "208" milliVolts="650"/>
-	<c:value DACUnits= "224" milliVolts="700"/>
-	<c:value DACUnits= "240" milliVolts="750"/>
-	<c:value DACUnits= "255" milliVolts="800"/>
+        <!-- measured with AFEB connected -->
+	<c:value DACUnits=  "46" milliVolts="142"/>
+	<c:value DACUnits=  "92" milliVolts="294"/>
     </c:DAC>
+
+    <c:DAC type="threshold" moduleName="LE32" moduleId="13" channel="1">
+        <!-- measured with AFEB connected -->
+	<c:value DACUnits=  "46" milliVolts="139"/>
+	<c:value DACUnits=  "92" milliVolts="289"/>
+    </c:DAC>
+    <c:DAC type="threshold" moduleName="LE32" moduleId="13" channel="2">
+        <!-- measured with AFEB connected -->
+	<c:value DACUnits=  "46" milliVolts="139"/>
+	<c:value DACUnits=  "92" milliVolts="287"/>
+    </c:DAC>
+
   </c:DACs>
 
 </c:calibrations>
