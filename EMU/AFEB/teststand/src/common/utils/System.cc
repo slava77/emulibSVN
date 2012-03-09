@@ -80,18 +80,18 @@ string AFEB::teststand::utils::performExpansions( const string toExpand ){
 
 string AFEB::teststand::utils::getDateTime(){
   time_t t;
-  struct tm *tm;
+  struct tm tm;
 
-  time ( &t );
-  tm = localtime ( &t );
+  time( &t );
+  localtime_r( &t, &tm );
 
   stringstream ss;
-  ss << setfill('0') << setw(4) << tm->tm_year+1900 << "-"
-     << setfill('0') << setw(2) << tm->tm_mon+1     << "-"
-     << setfill('0') << setw(2) << tm->tm_mday      << "T"
-     << setfill('0') << setw(2) << tm->tm_hour      << ":"
-     << setfill('0') << setw(2) << tm->tm_min       << ":"
-     << setfill('0') << setw(2) << tm->tm_sec;
+  ss << setfill('0') << setw(4) << tm.tm_year+1900 << "-"
+     << setfill('0') << setw(2) << tm.tm_mon+1     << "-"
+     << setfill('0') << setw(2) << tm.tm_mday      << "T"
+     << setfill('0') << setw(2) << tm.tm_hour      << ":"
+     << setfill('0') << setw(2) << tm.tm_min       << ":"
+     << setfill('0') << setw(2) << tm.tm_sec;
 
   return ss.str();
 }
