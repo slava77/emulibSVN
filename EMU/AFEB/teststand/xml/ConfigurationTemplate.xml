@@ -7,93 +7,18 @@
       <meta:attr name="type" value="CMP16" description="16-channel pre-amp, shaper and discriminator chip"/>
       <meta:attr name="nChannels" value="16" description="Number of channels."/>
       <meta:attr name="nominalInternalCapacitance" units="pF" description="The nominal internal capacitance [pF]."/>
-      <meta:attr name="tdcSlot" value="1" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="2" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="3" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="4" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="5" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="6" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="7" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="8" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="9" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="10" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="11" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="12" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="13" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="14" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="15" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="16" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="17" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="18" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="19" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="20" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="21" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="22" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="23" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="24" description="The crate slot in which the TDC reading out this device is inserted."/>
-      <meta:attr name="tdcSlot" value="25" description="The crate slot in which the TDC reading out this device is inserted."/>
+      <meta:attr name="tdcSlot" minValue="1" maxValue="25" description="The crate slot in which the TDC reading out this device is inserted."/>
       <meta:attr name="tdcSocket" value="1" description="The TDC's upper input socket (channels 1-16)."/>
       <meta:attr name="tdcSocket" value="2" description="The TDC's lower input socket (channels 17-32)."/>
-      <meta:attr name="signalConverterSlot" value="1" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="2" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="3" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="4" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="5" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="6" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="7" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="8" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="9" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="10" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="11" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="12" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="13" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="14" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="15" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="16" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="17" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="18" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="19" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="20" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="21" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="22" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="23" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="24" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
-      <meta:attr name="signalConverterSlot" value="25" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
+      <meta:attr name="signalConverterSlot" minValue="1" maxValue="25" description="The crate slot in which the signal converter / threshold setter for this device is inserted."/>
       <meta:attr name="signalConverterSocket" value="1" description="The signal converter's / threshold setter's upper input socket."/>
       <meta:attr name="signalConverterSocket" value="2" description="The signal converter's / threshold setter's lower input socket."/>
-      <meta:attr name="pulseGeneratorSlot" value="1" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="2" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="3" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="4" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="5" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="6" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="7" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="8" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="9" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="10" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="11" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="12" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="13" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="14" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="15" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="16" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="17" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="18" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="19" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="20" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="21" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="22" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="23" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="24" description="The crate slot in which the pulse generator for this device is inserted."/>
-      <meta:attr name="pulseGeneratorSlot" value="25" description="The crate slot in which the pulse generator for this device is inserted."/>
+      <meta:attr name="pulseGeneratorSlot" minValue="1" maxValue="25" description="The crate slot in which the pulse generator for this device is inserted."/>
       <meta:attr name="pulseGeneratorSocket" value="1" description="The pulse generator's upper output socket for common external pulses."/>
       <meta:attr name="pulseGeneratorSocket" value="2" description="The pulse generator's lower output socket for common external pulses."/>
     </meta:tag>
     <meta:tag name="c:crate">
-      <meta:attr name="number" value="1" description="The crate number to be set on the crate controller."/>
-      <meta:attr name="number" value="2" description="The crate number to be set on the crate controller."/>
-      <meta:attr name="number" value="3" description="The crate number to be set on the crate controller."/>
-      <meta:attr name="number" value="4" description="The crate number to be set on the crate controller."/>
+      <meta:attr name="number" minValue="1" maxValue="4" description="The crate number to be set on the crate controller."/>
     </meta:tag>
     <meta:tag name="c:module">
       <meta:attr name="name" value="LeCroy3377" description="LeCroy Model 3377 32-channel CAMAC TDC"/>
