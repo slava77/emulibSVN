@@ -183,6 +183,9 @@ bool AFEB::teststand::Measurement::execute(){
 }
 
 bool AFEB::teststand::Measurement::countVsDAQ(){
+
+  time_t timeOfLastUpdate = 0;
+
   // All tested devices in one measurement are read out by the same TDC. Take the first device to get its.
   int nDeviceChannels = results_.begin()->first->getNChannels();
   Crate* crate = results_.begin()->first->getCrate();
@@ -276,9 +279,14 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
 
     } // for ( int iPulse = 0; iPulse < nPulses_; ++iPulse )
 
-    // Update stored results
-    for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
-      r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
+    // Update stored results for the first and last amplitude or if they were updated too ling ago
+    time_t now;
+    time( &now );
+    if ( now - timeOfLastUpdate > 1. || amplitude == amplitudeMin_ || amplitude == amplitudeMax_ ){
+      timeOfLastUpdate = now;
+      for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
+	r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
+      }
     }
 
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
@@ -298,6 +306,8 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
   for ( int iShort = 0; iShort < LeCroy3377::nShortsData / 2; ++iShort ){
     thresholdOffset[ iShort ] = rndm.Gaus( 0., 0.08 * ( amplitudeMax_ - amplitudeMin_ ) );
   }
+
+  time_t timeOfLastUpdate = 0;
 
   // Gradually crank up the pulse height:
   for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ ){
@@ -331,9 +341,14 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
 
     } // for ( int iPulse = 0; iPulse < nPulses_; ++iPulse )
 
-    // Update stored results
-    for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
-      r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
+    // Update stored results for the first and last amplitude or if they were updated too ling ago
+    time_t now;
+    time( &now );
+    if ( now - timeOfLastUpdate > 1. || amplitude == amplitudeMin_ || amplitude == amplitudeMax_ ){
+      timeOfLastUpdate = now;
+      for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
+	r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
+      }
     }
 
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
