@@ -28,8 +28,8 @@ namespace AFEB { namespace teststand {
       void saveResults( const string& destinationDir );
 
     private:
-      void collectAnalyzedDevices( const string& configXML );
-      void calibrateDACs( const string& configXML );
+      void collectAnalyzedDevices( const string& calibXML, const string& configXML );
+      void calibrateDACs( const string& calibXML, const string& configXML );
       void assignDACs();
       void calculateGain();
       void calculateInternalCapacitance();

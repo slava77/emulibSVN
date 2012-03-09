@@ -33,18 +33,20 @@
       </tr>
       <tr>
 	<td colspan="2">
-	  <table class="layout">
-	    <tr><th colspan="2">Calibrations</th></tr>
-	    <tr>
-	      <td><xsl:apply-templates select="c:calibrations/c:adaptors"/></td>
-	      <td>
-		<table class="layout">
-		  <xsl:call-template name="DACs"><xsl:with-param name="DACTYPE">pulse</xsl:with-param></xsl:call-template>
-		  <xsl:call-template name="DACs"><xsl:with-param name="DACTYPE">threshold</xsl:with-param></xsl:call-template>
-		</table>
-	      </td>
-	    </tr>
-	  </table>
+	  <xsl:if test="document('Calibration.xml')">
+	    <table class="layout">
+	      <tr><th colspan="2">Calibrations</th></tr>
+	      <tr>
+		<td><xsl:apply-templates select="document('Calibration.xml')/c:calibrations/c:adaptors"/></td>
+		<td>
+		  <table class="layout">
+		    <xsl:call-template name="DACs"><xsl:with-param name="DACTYPE">pulse</xsl:with-param></xsl:call-template>
+		    <xsl:call-template name="DACs"><xsl:with-param name="DACTYPE">threshold</xsl:with-param></xsl:call-template>
+		  </table>
+		</td>
+	      </tr>
+	    </table>
+	  </xsl:if>
 	</td>
       </tr>
     </table>
@@ -606,7 +608,7 @@
 	<sort select="@id"/>
 	<xsl:variable name="MODULENAME" select="@name"/>
 	<xsl:variable name="MODULEID" select="@id"/>
-	<xsl:for-each select="//c:configuration/c:calibrations/c:DACs/c:DAC[@type=$DACTYPE and @moduleName=$MODULENAME and @moduleId=$MODULEID]">
+	<xsl:for-each select="document('Calibration.xml')/c:calibrations/c:DACs/c:DAC[@type=$DACTYPE and @moduleName=$MODULENAME and @moduleId=$MODULEID]">
 	  <xsl:sort select="@channel"/>
 	  <td>
 	    <table class="DACs">

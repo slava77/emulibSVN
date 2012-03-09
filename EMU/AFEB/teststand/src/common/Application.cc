@@ -96,6 +96,7 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
     analyzedResultURLDir_ = resultBaseURLDir_.toString() + "/" + dateTimeAtConfiguring_ + "/analyzed";
     analyzedResultSystemDir_ = string( getenv(HTML_ROOT_.toString().c_str()) ) + analyzedResultURLDir_;
     AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + rawResultSystemDir_ );
+    copyCalibrationFileToResultsDir();
     configuration_ = new Configuration( configurationXML_, rawResultSystemDir_ );
     LOG4CPLUS_DEBUG( logger_, "Crate:" << endl << *configuration_->getCrate() );
   } catch ( xcept::Exception &e ){
@@ -460,6 +461,17 @@ void AFEB::teststand::Application::copyStyleFilesToResultsDir(){
   }
 }
 
+void AFEB::teststand::Application::copyCalibrationFileToResultsDir(){
+  stringstream command;
+  if ( getenv( HTML_ROOT_.toString().c_str() ) != NULL ){
+    string dir( getenv( HTML_ROOT_.toString().c_str() ) );
+    command << "cp "
+	    << dir << "/AFEB/teststand/xml/Calibration.xml "
+	    << rawResultSystemDir_;
+    AFEB::teststand::utils::execShellCommand( command.str() );
+    LOG4CPLUS_INFO( logger_, "Copied " <<  dir << "/AFEB/teststand/xml/Calibration.xml to " << rawResultSystemDir_ );
+  }
+}
 
 void AFEB::teststand::Application::loadConfigurationTemplate(){
 

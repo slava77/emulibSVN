@@ -131,6 +131,8 @@ private:
 
   void copyStyleFilesToResultsDir();
 
+  void copyCalibrationFileToResultsDir();
+
   string setProcessingInstruction( const string XML, const string xslURI )
     throw( xcept::Exception );
 
