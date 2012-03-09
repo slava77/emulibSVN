@@ -6,6 +6,8 @@
 #include "AFEB/teststand/DAC.h"
 #include "AFEB/teststand/Measurement.h"
 
+#include "TPDF.h"
+
 #include <valarray>
 #include <string>
 #include <vector>
@@ -100,7 +102,7 @@ namespace AFEB { namespace teststand {
       valarray<double> getOffsets() const;
       valarray<double> getInternalCapacitances() const;
       TH1D histogramContents( const TH1D* h ) const;
-      string measurementsToXMLAndPlots( const string& analyzedResultsDir ) const;
+      string measurementsToXMLAndPlots( const string& analyzedResultsDir, TPDF& pdf ) const;
       string statisticsToXML( const string& name, const valarray<double>& values ) const;
       double getMaxMeasuredThreshold( const double setThreshold );
     };

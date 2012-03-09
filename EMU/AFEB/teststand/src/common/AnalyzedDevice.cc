@@ -6,7 +6,6 @@
 #include "xcept/Exception.h"
 
 #include "TMath.h"
-#include "TPDF.h"
 #include "TCanvas.h"
 #include "TStyle.h"
 
@@ -210,7 +209,7 @@ TH1D AFEB::teststand::AnalyzedDevice::histogramContents( const TH1D* h ) const {
   return hh;
 }
 
-string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string& analyzedResultsDir ) const {
+string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string& analyzedResultsDir, TPDF& pdf ) const {
   stringstream ss;
   // Loop over measurements:
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
@@ -339,87 +338,134 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
       hc.DrawCopy();
 
       canvas.cd();
-      TPDF pdf( ( analyzedResultsDir+"/"+fileName+".pdf" ).c_str() );
-      //pdf.Range( 20, 28 );
-      //pdf.NewPage();
       canvas.Draw();
-      pdf.Close();
+      pdf.NewPage();
     } // if ( (*m)->getType() == Measurement::count_vs_dac )
 
     if ( (*m)->getType() == Measurement::time_vs_dac ){
 
-      // Find the bins corresponding to the charges at which the mean and RMS of time are to be reported. 
-      // Do it for the first channel only; they're the same for the other channels.
-      string histogramName = string( "timeVsAmpl__" ) + fileName + "__ch_0";
-      TProfile *timesHistogram;
-      f.GetObject( histogramName.c_str(), timesHistogram );
-      // Profile hist needs projecting:
-      TH1D *timesVsDAC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
-      TH1D *timesVsCharge = new TH1D( "timesVsCharge", "timesVsCharge", timesVsDAC->GetNbinsX(), 
-				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsDAC->GetBinLowEdge(                          1 ) ).first,
-							 (*m)->getInjectionCapacitor()
-							 ),
-				      chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsDAC->GetBinLowEdge ( timesVsDAC->GetNbinsX()+1 ) ).first,
-							 (*m)->getInjectionCapacitor()
-							 )
-				      );
+      TCanvas meanCanvas("meanCanvas","meanCanvas",1000,1400);
+      TCanvas rmsCanvas ("rmsCanvas" ,"rmsCanvas" ,1000,1400);
+      meanCanvas.Divide( 1, 4 );
+      rmsCanvas .Divide( 1, 4 );
+      Legend legend;
 
-      // Find the bins which the nominal input charge values would fall into, and get the charges corresponding the center of those bins:
+      // Some containers for finding the bins which the nominal input charge values would fall into, and getting the charges corresponding the center of those bins:
       vector<size_t> bins;                 // bins[iCharge]
       vector<double> realCharges;          // realCharges[iCharge]
       vector<valarray<double> > meanTimes; // meanTimes[iCharge][iChannel]
       vector<valarray<double> > rmsTimes;  // rmsTimes[iCharge][iChannel]
-      for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
-	bins.push_back( timesVsCharge->FindBin( nominalInputCharges_[iCharge] ) );
-	realCharges.push_back( chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsDAC->GetBinCenter( bins.back() ) ).first,
-						  (*m)->getInjectionCapacitor() ) );
-	meanTimes.push_back( valarray<double>( nChannels_ ) ); // prepare container
-	rmsTimes .push_back( valarray<double>( nChannels_ ) ); // prepare container
-      }
-      // Find the bins for the ends of range for slew calculation:
-      int binInputChargeRangeStart = max(                          1, timesVsCharge->FindBin( nominalInputChargeRangeStart_ ) );
-      int binInputChargeRangeEnd   = min( timesVsCharge->GetNbinsX(), timesVsCharge->FindBin( nominalInputChargeRangeEnd_   ) );
-      double inputChargeRangeStart = chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsDAC->GetBinCenter( binInputChargeRangeStart ) ).first,
-							(*m)->getInjectionCapacitor() );
-      double inputChargeRangeEnd   = chargeFromVoltage( pulseDAC_->mV_from_DACUnit( timesVsDAC->GetBinCenter( binInputChargeRangeEnd   ) ).first,
-							(*m)->getInjectionCapacitor() );
+      // For finding the bins for the ends of range for slew calculation:
+      int binInputChargeRangeStart = 0;
+      int binInputChargeRangeEnd = 0;
+      double inputChargeRangeStart = 0;
+      double inputChargeRangeEnd = 0;
       valarray<double> meanSpan( nChannels_ );
       valarray<double> rmsSpan ( nChannels_ );
 
-      delete timesVsDAC;
-      delete timesVsCharge;
-
+      //
       // Loop over the channels and get the mean and rms of the times at the specified input charges,
       // and the min and max of mean and rms of times in the specified input charge range
+      //
+      TH1D *meanTimeVsCharge = NULL;
+      TH1D  *rmsTimeVsCharge = NULL;
       for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
-	// Get the times histogram...
-	histogramName = string( "timeVsAmpl__" ) + fileName + "__ch_" + utils::stringFrom<int>( iChannel );
+	// Get the times histogram.
+	string histogramName = string( "timeVsAmpl__" ) + fileName + "__ch_" + utils::stringFrom<int>( iChannel );
+	TProfile *timesHistogram = NULL;
 	f.GetObject( histogramName.c_str(), timesHistogram );
-	// Profile hist needs projecting:
-	TH1D *timesVsDAC = timesHistogram->ProjectionX( "tp", "e" ); // Keep the original errors, which are actually the RMS in this case.
+	// Profile hists need projecting:
+	TH1D *meanTDCVsDAC = timesHistogram->ProjectionX( "tp", ""    ); // Keep the original errors, which are actually the RMS in this case.
+	TH1D *rmsTDCVsDAC  = timesHistogram->ProjectionX( "tp", "c=e" ); // Contents will be the errors, which are actually the RMS in this case.
+	// Copy and transform them:
+	meanTimeVsCharge = new TH1D( *meanTDCVsDAC );
+	rmsTimeVsCharge =  new TH1D( * rmsTDCVsDAC );
+	// Transform their horizontal, pulse amplitude axis:
+	meanTimeVsCharge->GetXaxis()->Set( meanTDCVsDAC->GetXaxis()->GetNbins(),
+					  chargeFromVoltage( pulseDAC_->mV_from_DACUnit( meanTDCVsDAC->GetXaxis()->GetXmin() ).first, (*m)->getInjectionCapacitor() ),
+					  chargeFromVoltage( pulseDAC_->mV_from_DACUnit( meanTDCVsDAC->GetXaxis()->GetXmax() ).first, (*m)->getInjectionCapacitor() ) );
+	rmsTimeVsCharge->GetXaxis()->Set( rmsTDCVsDAC->GetXaxis()->GetNbins(),
+					 chargeFromVoltage( pulseDAC_->mV_from_DACUnit( rmsTDCVsDAC->GetXaxis()->GetXmin() ).first, (*m)->getInjectionCapacitor() ),
+					 chargeFromVoltage( pulseDAC_->mV_from_DACUnit( rmsTDCVsDAC->GetXaxis()->GetXmax() ).first, (*m)->getInjectionCapacitor() ) );
+	// Transform their vertical, time axis:	
+	for ( int iBin=1; iBin<=meanTDCVsDAC->GetNbinsX(); ++iBin ){
+	  // Transform the contents from TDC units to time
+	  meanTimeVsCharge->SetBinContent( iBin, (*m)->nanosecondsFromTDCUnits( meanTDCVsDAC->GetBinContent( iBin ) ) );
+	  rmsTimeVsCharge-> SetBinContent( iBin, (*m)->nanosecondsFromTDCUnits(  rmsTDCVsDAC->GetBinContent( iBin ) ) );
+	}
+
+	gStyle->SetOptStat( 0 );
+
+	meanCanvas.cd( 1 );
+	meanTimeVsCharge->SetTitle( ("Mean time vs. input charge for "+type_+" of id "+id_).c_str() );
+	meanTimeVsCharge->SetXTitle( "input charge [fC]" );
+	meanTimeVsCharge->SetYTitle( "mean time [ns]" );
+	meanTimeVsCharge->SetLineColor( legend.getColor( iChannel ) );
+	meanTimeVsCharge->SetLineStyle( legend.getStyle( iChannel ) );
+	meanTimeVsCharge->DrawCopy( (iChannel==0?"l":"lsame") );
+	legend.AddEntry( meanTimeVsCharge, utils::stringFrom<int>( iChannel ).c_str(), "l" );
+	rmsCanvas.cd( 1 );
+	rmsTimeVsCharge->SetTitle( ("Time resolution vs. input charge for "+type_+" of id "+id_).c_str() );
+	rmsTimeVsCharge->SetXTitle( "input charge [fC]" );
+	rmsTimeVsCharge->SetYTitle( "time resolution [ns]" );
+	rmsTimeVsCharge->SetLineColor( legend.getColor( iChannel ) );
+	rmsTimeVsCharge->SetLineStyle( legend.getStyle( iChannel ) );
+	rmsTimeVsCharge->DrawCopy( (iChannel==0?"l":"lsame") );
+
+	// Find the bins corresponding to the charges at which the mean and RMS of time are to be reported. 
+	// Do it for the first channel only; they're the same for the other channels.
+	if ( iChannel == 0 ){
+	  for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
+	    cout << "iCharge " << iCharge << "    bin " << meanTimeVsCharge->FindBin( nominalInputCharges_[iCharge] ) << endl;
+	    bins.push_back( meanTimeVsCharge->FindBin( nominalInputCharges_[iCharge] ) );
+	    realCharges.push_back( meanTimeVsCharge->GetBinCenter( bins.back() ) );
+	    meanTimes.push_back( valarray<double>( nChannels_ ) ); // prepare container
+	    rmsTimes .push_back( valarray<double>( nChannels_ ) ); // prepare container
+	  }
+	  // Find the bins for the ends of range for slew calculation:
+	  binInputChargeRangeStart = max(                             1, meanTimeVsCharge->FindBin( nominalInputChargeRangeStart_ ) );
+	  binInputChargeRangeEnd   = min( meanTimeVsCharge->GetNbinsX(), meanTimeVsCharge->FindBin( nominalInputChargeRangeEnd_   ) );
+	  inputChargeRangeStart = meanTimeVsCharge->GetBinCenter( binInputChargeRangeStart );
+	  inputChargeRangeEnd   = meanTimeVsCharge->GetBinCenter( binInputChargeRangeEnd   );
+	  cout << "binInputChargeRangeStart " << binInputChargeRangeStart << "  binInputChargeRangeEnd " << binInputChargeRangeEnd << "  inputChargeRangeStart " << inputChargeRangeStart << "  inputChargeRangeEnd " << inputChargeRangeEnd << endl;
+	}
+
 	// Get the mean and rms of times at the specified input charges:
 	for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
-	  meanTimes[iCharge][iChannel] = (*m)->nanosecondsFromTDCUnits( timesVsDAC->GetBinContent( bins[iCharge] ) );
-	  rmsTimes [iCharge][iChannel] = (*m)->nanosecondsFromTDCUnits( timesVsDAC->GetBinError  ( bins[iCharge] ) );
+	  meanTimes[iCharge][iChannel] = meanTimeVsCharge->GetBinContent( bins[iCharge] );
+	  rmsTimes [iCharge][iChannel] = rmsTimeVsCharge-> GetBinContent( bins[iCharge] );
 	}
 	// Get the min and max of mean and rms of times in the specified input charge range: 
 	double minMean = 999999., maxMean = -999999.;
 	double minRMS  = 999999., maxRMS  = -999999.;
 	for ( int iBin = binInputChargeRangeStart; iBin <= binInputChargeRangeEnd; ++iBin ){
-	  if ( timesVsDAC->GetBinContent( iBin ) < minMean ) minMean = timesVsDAC->GetBinContent( iBin );
-	  if ( timesVsDAC->GetBinContent( iBin ) > maxMean ) maxMean = timesVsDAC->GetBinContent( iBin );
-	  if ( timesVsDAC->GetBinError  ( iBin ) < minRMS  ) minRMS  = timesVsDAC->GetBinError  ( iBin );
-	  if ( timesVsDAC->GetBinError  ( iBin ) > maxRMS  ) maxRMS  = timesVsDAC->GetBinError  ( iBin );
+	  if ( meanTimeVsCharge->GetBinContent( iBin ) < minMean ) minMean = meanTimeVsCharge->GetBinContent( iBin );
+	  if ( meanTimeVsCharge->GetBinContent( iBin ) > maxMean ) maxMean = meanTimeVsCharge->GetBinContent( iBin );
+	  if ( rmsTimeVsCharge-> GetBinContent( iBin ) < minRMS  ) minRMS  = rmsTimeVsCharge-> GetBinContent( iBin );
+	  if ( rmsTimeVsCharge-> GetBinContent( iBin ) > maxRMS  ) maxRMS  = rmsTimeVsCharge-> GetBinContent( iBin );
 	}
-	meanSpan[iChannel] = (*m)->nanosecondsFromTDCUnits( maxMean - minMean );
-	rmsSpan [iChannel] = (*m)->nanosecondsFromTDCUnits( maxRMS  - minRMS  );
-	delete timesVsDAC;
+	meanSpan[iChannel] = maxMean - minMean;
+	rmsSpan [iChannel] = maxRMS  - minRMS ;
+	delete meanTDCVsDAC;
+	delete rmsTDCVsDAC;
       } // for ( int iChannel=0; iChannel<nChannels_; ++iChannel )
+
+      meanCanvas.cd( 1 );
+      legend.Draw();
+      meanCanvas.Draw();
+      pdf.NewPage();
+      rmsCanvas.cd( 1 );
+      legend.Draw();
+      rmsCanvas.Draw();
+      delete meanTimeVsCharge;
+      delete  rmsTimeVsCharge;
 
       // cout << "meanTimes" << endl << meanTimes << endl;
       // cout << "rmsTimes" << endl << rmsTimes << endl;
 
+      //
       // Now write the values to XML;
+      //
       for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
 	ss << "    <ad:times nominalInputCharge=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << nominalInputCharges_[iCharge]
 	   <<            "\" realInputCharge=\""    << showpos << showpoint << setw(8) << setprecision(4) << fixed << realCharges[iCharge]
@@ -456,6 +502,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 
     } // if ( (*m)->getTestedDevice( id_ ) )
   } // for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m )
+
   return ss.str();
 }
 
@@ -489,6 +536,8 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
   command << "cp " << afebRootDir << "/AFEB/teststand/html/analyzedResults_XSLT.xml " << analyzedResultsDir;
   AFEB::teststand::utils::execShellCommand( command.str() );
   
+  TPDF pdf( ( analyzedResultsDir+"/"+id_+".pdf" ).c_str() );
+
   // Write results to XML
   stringstream ss;
   ss << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"        << endl
@@ -509,7 +558,7 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
      <<            "\" pulseDivisionFactor=\""   << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << pulseDivisionFactor_
      <<   "\"/>" << endl;
 
-  ss << measurementsToXMLAndPlots( analyzedResultsDir );
+  ss << measurementsToXMLAndPlots( analyzedResultsDir, pdf );
 
   size_t iChannel = 0;
   for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ){
@@ -542,6 +591,8 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
   ss << "</ad:device>" << endl;
 
   cout << ss.str();
+
+  pdf.Close();
 
   utils::writeFile( analyzedResultsDir + "/" + id_ + ".xml", ss.str() );
 
