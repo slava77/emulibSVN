@@ -272,6 +272,14 @@ public abstract class BeanTableManager implements Serializable {
         getTopPack().getPropertyFilters().clear();
     }
 
+    public void addPropertyQuery(String query) {
+        getTopPack().setPropertyQuery(query);
+    }
+    
+    public void removePropertyQuery() {
+        getTopPack().setPropertyQuery(null);
+    }
+    
     public ClassConverter getClassConverter() {
         return new ClassConverter(getClassFinder());
     }

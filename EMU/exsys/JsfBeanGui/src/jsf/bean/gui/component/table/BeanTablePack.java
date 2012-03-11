@@ -26,7 +26,9 @@ public class BeanTablePack implements Serializable {
     private final String title;
     private final String prefix;
     private Collection<BeanTablePackFilter> filters;
+    
     private Map<String, BeanTableFilter> propertyFilters = new HashMap<String, BeanTableFilter>();
+    private String propertyQuery = null;
 
     public BeanTablePack(BeanTableManager manager, Class<? extends EntityBeanBase> rowClass) throws Exception {
         this(null, null, manager, rowClass);
@@ -130,6 +132,18 @@ public class BeanTablePack implements Serializable {
         return propertyFilters;
     }
 
+    public String getPropertyQuery() {
+        return this.propertyQuery;
+    }
+    
+    public void setPropertyQuery(String propertyQuery) {
+        this.propertyQuery = propertyQuery;
+    }
+    
+    public boolean isPropertyQuery() {
+        return this.propertyQuery != null;
+    }
+    
     public JSONObject getSerializedFilter() throws Exception {
         
         JSONObject parentJson = new JSONObject();
