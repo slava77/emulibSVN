@@ -23,6 +23,8 @@ namespace AFEB { namespace teststand {
       void calculateGain();
       void calculateInternalCapacitance( const pair<double,double> V_setThreshold,
 					 const pair<double,double> V_measuredThreshold );
+      double getThresholdCharge( const double setThresholdVoltage );
+      double getSetThresholdVoltage( const double thresholdCharge ) const { return offset_ + gain_ * thresholdCharge; }
 
     private:
       double noise_;		///< noise [fC], i.e., the width of the efficiency S-curve

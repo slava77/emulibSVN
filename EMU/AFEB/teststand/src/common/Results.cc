@@ -72,9 +72,9 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 			 0. + testedDevice_->getNChannels() );
   threshold_->SetXTitle( "channel" );
   threshold_->SetYTitle( "threshold" );
-  threshold_->SetTitleOffset( 0.5, "y" );
-  threshold_->SetTitleSize( 0.08, "y" );
-  threshold_->SetLabelSize( 0.08, "y" );
+  // threshold_->SetTitleOffset( 0.5, "y" );
+  // threshold_->SetTitleSize( 0.08, "y" );
+  // threshold_->SetLabelSize( 0.08, "y" );
   threshold_->SetStats( kFALSE );
   threshold_->SetMarkerStyle( kOpenCircle );
   threshold_->SetMinimum( - 0.1 * measurement_->getAmplitudeMax() );
@@ -137,9 +137,9 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 		       0. + testedDevice_->getNChannels() );
   chi2ndf_->SetXTitle( "channel" );
   chi2ndf_->SetYTitle( "#chi^2/ndf" );
-  chi2ndf_->SetTitleOffset( 0.5, "y" );
-  chi2ndf_->SetTitleSize( 0.08, "y" );
-  chi2ndf_->SetLabelSize( 0.08, "y" );
+  // chi2ndf_->SetTitleOffset( 0.5, "y" );
+  // chi2ndf_->SetTitleSize( 0.08, "y" );
+  // chi2ndf_->SetLabelSize( 0.08, "y" );
   chi2ndf_->SetStats( kFALSE );
   chi2ndf_->SetMarkerStyle( kOpenCircle );
   chi2ndf_->GetXaxis()->CenterLabels( kTRUE );

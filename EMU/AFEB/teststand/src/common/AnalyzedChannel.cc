@@ -90,3 +90,9 @@ void AFEB::teststand::AnalyzedChannel::calculateInternalCapacitance( const pair<
   A( 0, 1 ) = - Q_threshold / TMath::Power( V_measuredThreshold.first, 2 );
   internalCapacitanceError_ = TMath::Sqrt( TMatrixD( A, TMatrixD::kMult, TMatrixD( Var, TMatrixD::kMultTranspose, A ) )( 0, 0 ) );
 }
+
+double AFEB::teststand::AnalyzedChannel::getThresholdCharge( const double setThresholdVoltage ){
+  TMatrixD x( 1, 1 );
+  x( 0, 0 ) = setThresholdVoltage;
+  return QofVfitter_.getY( x )( 0, 0 );
+}
