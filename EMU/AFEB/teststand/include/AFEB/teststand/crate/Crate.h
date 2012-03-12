@@ -18,7 +18,7 @@ namespace AFEB { namespace teststand {
 
     class Crate{
     public:
-      enum { maxModules_ = 24 };
+      enum { maxModules_ = 25 };
 
       friend ostream& operator<<( ostream& os, const AFEB::teststand::Crate& c );
 
