@@ -246,7 +246,7 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
   for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ ){
 
     pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitude );
-    pulseGenerator->enablePulses(  (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ) );
+    pulseGenerator->enablePulses  ( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ) );
     pulseGenerator->exec();
     tdc->Clear();
     tdc->EnableAcq();
@@ -282,7 +282,7 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
     // Update stored results for the first and last amplitude or if they were updated too ling ago
     time_t now;
     time( &now );
-    if ( now - timeOfLastUpdate > 1. || amplitude == amplitudeMin_ || amplitude == amplitudeMax_ ){
+    if ( now - timeOfLastUpdate > 10 || amplitude == amplitudeMin_ || amplitude == amplitudeMax_ ){
       timeOfLastUpdate = now;
       for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
 	r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
@@ -344,7 +344,7 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
     // Update stored results for the first and last amplitude or if they were updated too ling ago
     time_t now;
     time( &now );
-    if ( now - timeOfLastUpdate > 1. || amplitude == amplitudeMin_ || amplitude == amplitudeMax_ ){
+    if ( now - timeOfLastUpdate > 1 || amplitude == amplitudeMin_ || amplitude == amplitudeMax_ ){
       timeOfLastUpdate = now;
       for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
 	r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
