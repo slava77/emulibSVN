@@ -542,6 +542,9 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetGridy();
   threshold.SetTitle("");
   threshold.SetYTitle("threshold:#circ, noise:#Box [DAC]");
+  threshold.SetTitleOffset( 0.5, "y" );
+  threshold.SetTitleSize( 0.08, "y" );
+  threshold.SetLabelSize( 0.08, "y" );
   threshold.DrawCopy("p e");
   noise.DrawCopy("same p e");
   // cout << "Efficiency before adjustment"; efficiency.Print("all");
@@ -674,7 +677,7 @@ void AFEB::teststand::Results::save( const string directory ){
   f.cd();
 
   bsem_.take();
-  // times_->Write();
+  times_->Write();
   pulses_->Write();
   threshold_->Write();
   chi2ndf_->Write();
