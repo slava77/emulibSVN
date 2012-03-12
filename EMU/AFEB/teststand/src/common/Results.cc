@@ -269,7 +269,6 @@ void AFEB::teststand::Results::add( const int channel, int const amplitude, cons
   bsem_.give();
 }
 
-//double AFEB::teststand::Results::normalCDF( double *x, double *p ) const {
 double normalCDF( double *x, double *p ){
   // normal cumulative distrubtion function
   return p[2] * 0.5 * ( 1. + ROOT::Math::erf( ( x[0] - p[0] ) / ( TMath::Sqrt(2.) * p[1] ) ) );
@@ -356,7 +355,7 @@ double AFEB::teststand::Results::rms( const TH1D& hist, const double from, const
 }
 
 void AFEB::teststand::Results::fit( const double from, const double to ){
-  // Fit the threshold scan's S-curve with a normal CDF.
+  // Fit the threshold scan's efficiency curve with a normal CDF.
   bsem_.take();
   double lo = pulses_->GetYaxis()->GetXmin();
   double hi = pulses_->GetYaxis()->GetXmax();
@@ -369,13 +368,14 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
   double To   = TMath::Min( to  , p.GetBinCenter( p.GetNbinsX() )  );   
 
   const char* normalCDFname = "normalCDF";
-  //TF1 nCDF( "normalCDF", &AFEB::teststand::Results::normalCDF, lo, hi, 3, NULL );
   TF1 nCDF( normalCDFname, &normalCDF, lo, hi, 3, (const char*)NULL );
   nCDF.SetParNames( "mean", "sigma", "height" );
   double mean, sigma, height;
   nCDF.SetParameters( 0.5 * ( hi + lo ),
-		      0.1 * ( hi - lo ),
-		      measurement_->getNPulses() );
+  		      0.1 * ( hi - lo ),
+  		      measurement_->getNPulses() );
+  nCDF.FixParameter( 2, double( measurement_->getNPulses() ) ); // Fix the height or efficiency.
+
   if ( To != From ) nCDF.SetRange( From, To ); // fit only in the range measured so far
 
   // The array of amplitudes at which the efficiency plateau starts in each channel
@@ -414,9 +414,6 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 	threshold_ ->SetBinError( iChannelBin, 0. );
 	noise_     ->SetBinError( iChannelBin, 0. );
 	efficiency_->SetBinError( iChannelBin, 0.00001 ); // For some reason the efficiency histogram refuses to be plotted scaled to the others if the error is zero...
-	// // If sigma=0 (the Efficiency curve is a step function at the given resolution), take the increment
-	// // size for sigma, i.e., start the plateau 3 amplitude steps away from the transition.
-	// double plateauStart = mean + 3. * TMath::Max( sigma, double( measurement_->getAmplitudeStep() ) );
 
 	// Start it at twice the (apparent) threshold. 
 	// In time_vs_dac measurements we sure go up to a high enough amplitude to have a long plateau.
@@ -436,15 +433,20 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 	//      << " s = " << sigma 
 	//      << " h = " << height 
 	//      << endl;
-	nCDF.SetParameters( mean, sigma, height );
-	p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
+	// nCDF.SetParameters( mean, sigma, height ); // If we fit the efficiency, too.
+	nCDF.SetParameters( mean, sigma, double( measurement_->getNPulses() ) );
+	nCDF.FixParameter( 2, double( measurement_->getNPulses() ) ); // Fix the height.
+	//p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
+	p.Fit( &nCDF, "R" ); // use function range
 	threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
 	noise_     ->SetBinContent( iChannelBin, nCDF.GetParameter( 1 ) );
 	efficiency_->SetBinContent( iChannelBin, nCDF.GetParameter( 2 ) / measurement_->getNPulses() );
 	chi2ndf_   ->SetBinContent( iChannelBin, nCDF.GetChisquare() / ( pulses_->GetNbinsY() - 3 ) );
 	threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
 	noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
-	efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() );    
+	// efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() ); // If we fit the efficiency, too.
+	efficiency_->SetBinError( iChannelBin, 0.00001 ); // For some reason the efficiency histogram refuses to be plotted scaled to the others if the error is zero...
+
 	// Look at times beyond 3 stddev above transition.
 	plateauStarts[iChannelBin-1] = nCDF.GetParameter( 0 ) + 3. * nCDF.GetParameter( 1 );
       }
@@ -713,8 +715,8 @@ map<string,pair<double,double> > AFEB::teststand::Results::getParameters( const 
 							      threshold_    ->GetBinError  ( channel+1 ) );
   values["noise [DAC]"          ] = make_pair<double,double>( noise_        ->GetBinContent( channel+1 ),
 							      noise_        ->GetBinError  ( channel+1 ) );
-  values["efficiency"           ] = make_pair<double,double>( efficiency_   ->GetBinContent( channel+1 ),
-							      efficiency_   ->GetBinError  ( channel+1 ) );
+  // values["efficiency"           ] = make_pair<double,double>( efficiency_   ->GetBinContent( channel+1 ),
+  // 							      efficiency_   ->GetBinError  ( channel+1 ) ); // If we fit the efficiency.
   values["chi2ndf"              ] = make_pair<double,double>( chi2ndf_      ->GetBinContent( channel+1 ), 
 							      0.                                         );
   values["time on plateau [TDC]"] = make_pair<double,double>( timeOnPlateau_->GetBinContent( channel+1 ), 
