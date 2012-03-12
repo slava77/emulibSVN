@@ -24,7 +24,7 @@
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
 	<xsl:if test="a:application/@state='Enabled'">
-	  <meta http-equiv="refresh" content="3" />
+	  <meta http-equiv="refresh" content="6" />
 	</xsl:if>
         <title><xsl:if test="$CONFIGMODE='control'">AFEB Test Stand Configuration of <xsl:value-of select="c:configuration/@dateTime"/></xsl:if><xsl:if test="$CONFIGMODE='display'">AFEB Test Stand Results of <xsl:value-of select="a:results/@systemPath"/></xsl:if></title>
 	<link rel="stylesheet" type="text/css" href="{@htmlDir}teststand.css"/>
