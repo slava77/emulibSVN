@@ -2,7 +2,7 @@
 <c:calibrations xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration">
 
   <c:adaptors>
-    <c:adaptor type="10AD16A" id="1" pulseDivisionFactor="6.31" injectionCapacitance="1.6">
+    <c:adaptor type="10AD16A" id="2" pulseDivisionFactor="6.31" injectionCapacitance="1.6">
 	<c:socket number= "1" coefficient="1.0"/>
 	<c:socket number= "2" coefficient="1.0"/>
 	<c:socket number= "3" coefficient="1.0"/>
