@@ -190,7 +190,7 @@ valarray<double> AFEB::teststand::AnalyzedDevice::getGains() const {
 valarray<double> AFEB::teststand::AnalyzedDevice::getOffsets() const {
   valarray<double> v( channels_.size() );
   size_t n = 0;
-  for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ) v[n++] = c->offset_;
+  for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ) v[n++] = - c->offset_; // Comply with odd convention on sign of offset.
   return v;
 }
 
@@ -213,6 +213,7 @@ TH1D AFEB::teststand::AnalyzedDevice::histogramContents( const TH1D* h ) const {
 
 string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string& analyzedResultsDir, TPDF& pdf ){
   stringstream ss;
+  pdf.NewPage();
   // Loop over measurements:
   for ( vector<Measurement*>::const_iterator m = measurements_.begin(); m != measurements_.end(); ++m ){
     // Pick the ones involving this device:
@@ -626,7 +627,7 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
   size_t iChannel = 0;
   for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ){
     ss << "  <ad:channel number=\""       << noshowpos << noshowpoint << setw(2) << iChannel++
-       <<            "\" offset=\""       << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->offset_
+       <<            "\" offset=\""       << showpos << showpoint << setw(8) << setprecision(4) << fixed << - c->offset_ // Comply with odd convention on sign of offset.
        <<            "\" gain=\""         << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->gain_
        <<            "\" C_int=\""        << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->internalCapacitance_
        <<            "\" averageNoise=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->noise_
@@ -639,7 +640,7 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
   ss << "  " << statisticsToXML( "C_int",  getInternalCapacitances() ) << endl;
   
   ss << "  <ad:averageSetThreshold value=\"" 
-     << utils::statistics( getOffsets() )["mean"] + utils::statistics( getGains() )["mean"] * 20
+     << -1. * utils::statistics( getOffsets() )["mean"] + utils::statistics( getGains() )["mean"] * 20 // Comply with odd convention on sign of offset.
      <<                        "\" atCharge=\"20\"/>" << endl;
 
   ss << "  <ad:maxMeasuredThreshold value=\"" << getMaxMeasuredThreshold( 0 )
@@ -658,7 +659,6 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
   //
   // Page for offsets and gains
   //
-  //  pdf.NewPage();
   TH1D offsetVsChannel( "offsetVsChannel", "Offset vs. channel", nChannels_, 0., 0. + nChannels_ );
   offsetVsChannel.GetXaxis()->CenterLabels( kTRUE );
   offsetVsChannel.GetXaxis()->SetNdivisions( nChannels_ );
@@ -690,7 +690,7 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
   UthrFor20fCVsChannel.SetMaximum( 300. );
   // Loop over the channels
   for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
-    offsetVsChannel     .SetBinContent( iChannel+1, channels_[iChannel].offset_                       );
+    offsetVsChannel     .SetBinContent( iChannel+1, - channels_[iChannel].offset_                     ); // Comply with odd convention on sign of offset.
     gainVsChannel       .SetBinContent( iChannel+1, channels_[iChannel].gain_                         );
     CintVsChannel       .SetBinContent( iChannel+1, channels_[iChannel].internalCapacitance_          );
     QthrAt0mVVsChannel  .SetBinContent( iChannel+1, channels_[iChannel].getThresholdCharge( 0. )      );
@@ -736,7 +736,6 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
 
   canvas.cd();
   canvas.Draw();
-  //  pdf.NewPage();
   
   pdf.Close();
 

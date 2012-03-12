@@ -96,6 +96,7 @@ void AFEB::teststand::Configuration::createCrate() {
       }
     }
   }
+  cout << *crate_ << endl;
 }
 
 
