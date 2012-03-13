@@ -107,8 +107,8 @@ fitterTest:
 	$(BUILD_HOME)/AFEB/teststand/src/common/fit/StraightLine2D.cxx
 
 # To run it:
-#     LD_LIBRARY_PATH=$BUILD_HOME/AFEB/teststand/lib/$XDAQ_OS/$XDAQ_PLATFORM:$XDAQ_ROOT/lib:$ROOTSYS/lib $BUILD_HOME/AFEB/teststand/test/$XDAQ_OS/$XDAQ_PLATFORM/analyze.exe <results_directory>
-analyze:
+#     LD_LIBRARY_PATH=$BUILD_HOME/AFEB/teststand/lib/$XDAQ_OS/$XDAQ_PLATFORM:$XDAQ_ROOT/lib:$ROOTSYS/lib AFEB_ROOT=$BUILD_HOME $BUILD_HOME/AFEB/teststand/test/$XDAQ_OS/$XDAQ_PLATFORM/analyze.exe <results_directory>
+analyze: info
 	mkdir -p $(BUILD_HOME)/AFEB/teststand/test/$(XDAQ_OS)/$(XDAQ_PLATFORM)
 	g++ $(ROOTCFLAGS) $(ROOTLIBS) $(ROOTGLIBS) -I$(BUILD_HOME)/AFEB/Jorway/include -I$(BUILD_HOME)/AFEB/teststand/include -I$(XDAQ_ROOT)/include  -I$(XDAQ_ROOT)/include/$(XDAQ_OS) \
 	-L $(XDAQ_ROOT)/lib \
