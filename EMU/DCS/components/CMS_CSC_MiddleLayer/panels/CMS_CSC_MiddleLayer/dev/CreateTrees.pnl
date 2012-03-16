@@ -11,6 +11,7 @@ PANEL,-1 -1 790 610 N "_3DFace" 0
 E "#uses \"CMS_CSC_MiddleLayer/emu_hv.ctl\"
 #uses \"CMS_CSC_MiddleLayer/emu_x2p.ctl\"
 #uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_common/emu_util.ctl\"
 #uses \"CMS_CSC_common/emu_deviceInfo.ctl\"
 
 // ******************* DP ***********************************
@@ -238,22 +239,22 @@ void createHvDevices(dyn_string &ex) {
 
     // crete main device
     
-    dyn_string hvMainDevice = createDevice(HV_DP_TYPE, emuhv_getDp(chamber, \"\", ex, false), ex);
+    dyn_string hvMainDevice = emu_createDevice(HV_DP_TYPE, emuhv_getDp(chamber, \"\", ex, false), ex);
     if (emu_checkException(ex)) { return; }
     
     // create FastMon
     
-    createDevice(HV_FAST_MON_DP_TYPE, \"FastMon\", ex, hvMainDevice);
+    emu_createDevice(HV_FAST_MON_DP_TYPE, \"FastMon\", ex, hvMainDevice);
     if (emu_checkException(ex)) { return; }
     
     // create SlowMon
     
-    createDevice(HV_SLOW_MON_DP_TYPE, \"SlowMon\", ex, hvMainDevice);
+    emu_createDevice(HV_SLOW_MON_DP_TYPE, \"SlowMon\", ex, hvMainDevice);
     if (emu_checkException(ex)) { return; }
 
     // create Settings
     
-    createDevice(HV_SETTINGS_DP_TYPE, \"Settings\", ex, hvMainDevice);
+    emu_createDevice(HV_SETTINGS_DP_TYPE, \"Settings\", ex, hvMainDevice);
     if (emu_checkException(ex)) { return; }
 
   }
@@ -268,12 +269,12 @@ void createHvDevices(dyn_string &ex) {
     
     // create main device
     
-    dyn_string mainPrimaryDevice = createDevice(HV_PRIMARY_DP_TYPE, emuhv_getPrimaryDp(primary, \"\", ex, false), ex);
+    dyn_string mainPrimaryDevice = emu_createDevice(HV_PRIMARY_DP_TYPE, emuhv_getPrimaryDp(primary, \"\", ex, false), ex);
     if (emu_checkException(ex)) { return; }
     
     // create the monitor device
     
-    createDevice(HV_PRIMARY_MON_DP_TYPE, \"Mon\", ex, mainPrimaryDevice);
+    emu_createDevice(HV_PRIMARY_MON_DP_TYPE, \"Mon\", ex, mainPrimaryDevice);
     if (emu_checkException(ex)) { return; }
 
   }
@@ -298,22 +299,22 @@ void createX2PDevices(dyn_string &ex) {
 
     // crete main LV device
 
-    dyn_string mainLvDevice = createDevice(LV_DP_TYPE, emux2p_getLvDpName(chamber, ex), ex);
+    dyn_string mainLvDevice = emu_createDevice(LV_DP_TYPE, emux2p_getLvDpName(chamber, ex), ex);
     if (emu_checkException(ex)) { return; }
 
     // create LV Mon
     
-    createDevice(LV_MON_DP_TYPE, \"Mon\", ex, mainLvDevice);
+    emu_createDevice(LV_MON_DP_TYPE, \"Mon\", ex, mainLvDevice);
     if (emu_checkException(ex)) { return; }
 
     // create main Temperature device
     
-    dyn_string mainTempDevice = createDevice(TEMP_DP_TYPE, emux2p_getTempDpName(chamber, ex), ex);
+    dyn_string mainTempDevice = emu_createDevice(TEMP_DP_TYPE, emux2p_getTempDpName(chamber, ex), ex);
     if (emu_checkException(ex)) { return; }
 
     // create Temperature Mon
     
-    createDevice(TEMP_MON_DP_TYPE, \"Mon\", ex, mainTempDevice);
+    emu_createDevice(TEMP_MON_DP_TYPE, \"Mon\", ex, mainTempDevice);
     if (emu_checkException(ex)) { return; }
 
   }
@@ -325,12 +326,12 @@ void createX2PDevices(dyn_string &ex) {
     
     // create main DDU device
     
-    dyn_string mainDduDevice = createDevice(DDU_DP_TYPE, emux2p_getDduDpName(ddus[i], ex), ex);
+    dyn_string mainDduDevice = emu_createDevice(DDU_DP_TYPE, emux2p_getDduDpName(ddus[i], ex), ex);
     if (emu_checkException(ex)) { return; }
 
     // create Temperature Mon
     
-    createDevice(DDU_MON_DP_TYPE, \"Mon\", ex, mainDduDevice);
+    emu_createDevice(DDU_MON_DP_TYPE, \"Mon\", ex, mainDduDevice);
     if (emu_checkException(ex)) { return; }
     
   }
@@ -630,42 +631,6 @@ void createAllDimManagers(dyn_string &ex) {
 // *********************** General ***********************
 
 /**
-  * Creates a given device if it doesn't already exist.
-  */
-dyn_string createDevice(string type, string name, dyn_string &ex, dyn_string parentDevice = makeDynString()) {
-  dyn_string device;
-  
-  fwDevice_createObject(device, ex);
-  if (emu_checkException(ex)) { return makeDynString(); }
-
-  if (dynlen(parentDevice) == 0) {
-    fwDevice_createObject(parentDevice, ex);
-    if (emu_checkException(ex)) { return makeDynString(); }
-  }
-  
-  device[fwDevice_DP_TYPE] = type;
-  device[fwDevice_DP_NAME] = name;
-  if (!deviceExists(device, parentDevice)) {
-    fwDevice_create(device, parentDevice, ex);
-    if (emu_checkException(ex)) { return makeDynString(); }
-  }
-  
-  return device;
-}
-
-/**
-  * @return true if given device already exists in the local system.
-  */
-bool deviceExists(dyn_string device, dyn_string parent) {
-  string dp = \"\";
-  if (parent[fwDevice_DP_NAME] != \"\") {
-    dp += parent[fwDevice_DP_NAME] + fwDevice_HIERARCHY_SEPARATOR;
-  }
-  dp += device[fwDevice_DP_NAME];
-  return dpExists(dp);
-}
-
-/**
   * Creates a DIM config device.
   */
 void createDimConfigDevice(string configName, dyn_string &ex, bool clearIfExists = true) {
@@ -675,7 +640,7 @@ void createDimConfigDevice(string configName, dyn_string &ex, bool clearIfExists
   
   emu_info(\"Creating DimConfig: \" + configName);
   
-  createDevice(\"_FwDimConfig\", configName, ex);
+  emu_createDevice(\"_FwDimConfig\", configName, ex);
   if (emu_checkException(ex)) { return; }
   
   if (clearIfExists) {
