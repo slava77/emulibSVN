@@ -55,9 +55,6 @@ main()
     emu_dynAppend(devices, dpNames(\"*\", \"CscGasDistributionRack_CSC_GAS_data\"));
     emu_dynAppend(devices, dpNames(\"*\", \"CscGasDistributionChannel_CSC_GAS_data\"));
     
-    // include the plc thing as well, but better to put it inside the CSC_GAS_MONITOR
-    //emu_dynAppend(devices, dpNames(\"HvServerStatus\", \"CscCommonString\"));
-    
     emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscGas\", ex));
     if (emu_checkException(ex)) { return; }
 
@@ -68,6 +65,16 @@ main()
   }
   
   if (chkSaveCooling.state(0)) {
+    // *** Cooling ***
+    dynClear(devices);
+    emu_dynAppend(devices, dpNames(\"*\", \"CscCoolingMon\"));
+    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscCooling\", ex));
+    if (emu_checkException(ex)) { return; }
+
+    emu_dynAppend(devices, dpNames(\"DIPConfig_CMS_CSC_Cooling\", \"_FwDipConfig\"));
+
+    saveConfiguration(devices, \"Cooling\", editVersion.text, ex, chkJustPrint.state(0));
+    if (emu_checkException(ex)) { return; }
   }
   
   emu_info(\"DONE saving devices to conf DB as version \" + editVersion.text);

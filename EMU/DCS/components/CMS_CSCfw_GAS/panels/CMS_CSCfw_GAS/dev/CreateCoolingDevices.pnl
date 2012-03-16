@@ -1,0 +1,326 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 641 328 N "_3DFace" 0
+"main()
+{
+  
+  // Peripheral Crate Racks
+  dynAppend(allRacks, makeDynString(\"X1L31\", \"PCrates: VME-1/8, VME-1/9\"));
+  dynAppend(allRacks, makeDynString(\"X1L41\", \"PCrates: VME-2/4, VME-3/4\"));
+  dynAppend(allRacks, makeDynString(\"X1L51\", \"PCrates: VME-4/4\"));
+  dynAppend(allRacks, makeDynString(\"X1E31\", \"PCrates: VME-1/10, VME-1/11\"));
+  dynAppend(allRacks, makeDynString(\"X1E41\", \"PCrates: VME-2/5, VME-3/5\"));
+  dynAppend(allRacks, makeDynString(\"X1E51\", \"PCrates: VME-4/5\"));
+  dynAppend(allRacks, makeDynString(\"X1U31\", \"PCrates: VME+1/10, VME+1/11\"));
+  dynAppend(allRacks, makeDynString(\"X1U41\", \"PCrates: VME+2/5, VME+3/5\"));
+  dynAppend(allRacks, makeDynString(\"X1U51\", \"PCrates: VME+4/5\"));
+  dynAppend(allRacks, makeDynString(\"X1R31\", \"PCrates: VME+1/8, VME+1/9\"));
+  dynAppend(allRacks, makeDynString(\"X1R41\", \"PCrates: VME+2/4, VME+3/4\"));
+  dynAppend(allRacks, makeDynString(\"X1R51\", \"PCrates: VME+4/4\"));
+  dynAppend(allRacks, makeDynString(\"X3S31\", \"PCrates: VME-1/6, VME-1/7\"));
+  dynAppend(allRacks, makeDynString(\"X3S41\", \"PCrates: VME-2/3, VME-3/3\"));
+  dynAppend(allRacks, makeDynString(\"X3S51\", \"PCrates: VME-4/3\"));
+  dynAppend(allRacks, makeDynString(\"X3V31\", \"PCrates: VME-1/12, VME-1/1\"));
+  dynAppend(allRacks, makeDynString(\"X3V41\", \"PCrates: VME-2/6, VME-3/6\"));
+  dynAppend(allRacks, makeDynString(\"X3V51\", \"PCrates: VME-4/6\"));  
+  dynAppend(allRacks, makeDynString(\"X3J31\", \"PCrates: VME+1/12, VME+1/1\"));
+  dynAppend(allRacks, makeDynString(\"X3J41\", \"PCrates: VME+2/6, VME+3/6\"));
+  dynAppend(allRacks, makeDynString(\"X3J51\", \"PCrates: VME+4/6\"));
+  dynAppend(allRacks, makeDynString(\"X3A31\", \"PCrates: VME+1/6, VME+1/7\"));
+  dynAppend(allRacks, makeDynString(\"X3A41\", \"PCrates: VME+2/3, VME+3/3\"));
+  dynAppend(allRacks, makeDynString(\"X3A51\", \"PCrates: VME+4/3\"));
+  dynAppend(allRacks, makeDynString(\"X5L31\", \"PCrates: VME-1/4, VME-1/5\"));
+  dynAppend(allRacks, makeDynString(\"X5L41\", \"PCrates: VME-2/2, VME-3/2\"));
+  dynAppend(allRacks, makeDynString(\"X5L51\", \"PCrates: VME-4/2\"));
+  dynAppend(allRacks, makeDynString(\"X5E31\", \"PCrates: VME-1/2, VME-1/3\"));
+  dynAppend(allRacks, makeDynString(\"X5E41\", \"PCrates: VME-2/1, VME-3/1\"));
+  dynAppend(allRacks, makeDynString(\"X5E51\", \"PCrates: VME-4/1\"));
+  dynAppend(allRacks, makeDynString(\"X5U31\", \"PCrates: VME+1/2, VME+1/3\"));
+  dynAppend(allRacks, makeDynString(\"X5U41\", \"PCrates: VME+2/1, VME+3/1\"));
+  dynAppend(allRacks, makeDynString(\"X5U51\", \"PCrates: VME+4/1\"));
+  dynAppend(allRacks, makeDynString(\"X5R31\", \"PCrates: VME+1/4, VME+1/5\"));
+  dynAppend(allRacks, makeDynString(\"X5R41\", \"PCrates: VME+2/2, VME+3/2\"));
+  dynAppend(allRacks, makeDynString(\"X5R51\", \"PCrates: VME+4/2\"));
+  
+  // Maraton & HV Racks
+  dynAppend(allRacks, makeDynString(\"X2S33\", \"Maratons\"));
+  dynAppend(allRacks, makeDynString(\"X2S41\", \"Maratons, UF/PNPI High Voltage\"));  
+  dynAppend(allRacks, makeDynString(\"X2V31\", \"Maratons\"));
+  dynAppend(allRacks, makeDynString(\"X2V42\", \"Maratons\"));
+  dynAppend(allRacks, makeDynString(\"X2V52\", \"Maratons\"));
+  dynAppend(allRacks, makeDynString(\"X2A33\", \"Maratons\"));
+  dynAppend(allRacks, makeDynString(\"X2A41\", \"Maratons, UF/PNPI High Voltage\"));
+  dynAppend(allRacks, makeDynString(\"X2J31\", \"Maratons\"));
+  dynAppend(allRacks, makeDynString(\"X2J42\", \"Maratons\"));  
+  dynAppend(allRacks, makeDynString(\"X2J52\", \"Maratons\"));  
+  dynAppend(allRacks, makeDynString(\"X4S31\", \"Maratons\"));  
+  dynAppend(allRacks, makeDynString(\"X4S41\", \"Maratons\"));  
+  dynAppend(allRacks, makeDynString(\"X4S51\", \"Maratons\"));  
+  dynAppend(allRacks, makeDynString(\"X4V31\", \"Maratons\"));
+  dynAppend(allRacks, makeDynString(\"X4V41\", \"Maratons, UF/PNPI High Voltage\"));  
+  dynAppend(allRacks, makeDynString(\"X4A31\", \"Maratons\"));
+  dynAppend(allRacks, makeDynString(\"X4A41\", \"Maratons\"));  
+  dynAppend(allRacks, makeDynString(\"X4A51\", \"Maratons\"));
+  dynAppend(allRacks, makeDynString(\"X4J31\", \"Maratons\"));  
+  dynAppend(allRacks, makeDynString(\"X4J41\", \"Maratons, UF/PNPI High Voltage\"));
+
+  dynAppend(allRacks, makeDynString(\"X4V33\", \"UF/PNPI High Voltage\"));
+  dynAppend(allRacks, makeDynString(\"X4V51\", \"UF/PNPI High Voltage\"));
+  dynAppend(allRacks, makeDynString(\"X4J33\", \"UF/PNPI High Voltage\"));
+  dynAppend(allRacks, makeDynString(\"X4J51\", \"UF/PNPI High Voltage\"));  
+  
+  // Water cooling items
+  dynAppend(waterCoolingItems, \"AI_Flowmeter_EndCap_Cooling_YE_Minus\");
+  dynAppend(waterCoolingItems, \"AI_Flowmeter_EndCap_Cooling_YE_Plus\");
+  dynAppend(waterCoolingItems, \"AI_Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Minus_1\");
+  dynAppend(waterCoolingItems, \"AI_Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Minus_1\");
+  dynAppend(waterCoolingItems, \"AI_Flowmeter_Rack_EndCap_Cooling_Far_Side_YE_Plus_1\");
+  dynAppend(waterCoolingItems, \"AI_Flowmeter_Rack_EndCap_Cooling_Near_Side_YE_Plus_1\");
+  
+  // Define the alert limits
+  sensorPatternToAlertLimits[\"*/Temperature?.value*\"] = makeDynString(10, 32);
+  sensorPatternToAlertTexts[\"*/Temperature?.value*\"] = makeDynString(\"Rack temperature is too low\", \"\", \"Rack temperature is too high\");
+  sensorPatternToAlertClasses[\"*/Temperature?.value*\"] = makeDynString(\"_fwErrorNack_70.\", \"\", \"_fwErrorNack_70.\");
+      
+  sensorPatternToAlertLimits[\"*/TurbineCurrent?.value*\"] = makeDynString(0.5, 1.4);
+  sensorPatternToAlertTexts[\"*/TurbineCurrent?.value*\"] = makeDynString(\"Rack turbine current is too low\", \"\", \"Rack turbine current is too high\");
+  sensorPatternToAlertClasses[\"*/TurbineCurrent?.value*\"] = makeDynString(\"_fwErrorNack_70.\", \"\", \"_fwErrorNack_70.\");
+}" 0
+ E E E E 1 -1 -1 0  50 110
+""0  1
+E "const string DIP_CONFIG_DP = \"DIPConfig_CMS_CSC_Cooling\";
+const string RACK_SENSOR_DP_PREFIX = \"CscCooling/Rack/\";
+const string WATER_SENSOR_DP_PREFIX = \"CscCooling/Water/\";
+const string COOLING_MON_DP_TYPE = \"CscCoolingMon\";
+const string COOLING_DP_TYPE = \"CscCooling\";
+
+const string WATER_COOLING_DIP_ROOT = \"dip/CMSX/DSS/\";
+
+dyn_dyn_string allRacks;
+dyn_string waterCoolingItems;
+
+mapping sensorPatternToAlertLimits;
+mapping sensorPatternToAlertTexts;
+mapping sensorPatternToAlertClasses;
+
+void setRackSensorAlerts(dyn_string dpes, dyn_string &ex) {
+  for (int i=1; i <= dynlen(dpes); i++) {
+    for (int j=1; j <= mappinglen(sensorPatternToAlertLimits); j++) {
+      string pattern = mappingGetKey(sensorPatternToAlertLimits, j);
+      if (patternMatch(pattern, dpes[i])) {
+        fwAlertConfig_createAnalog(dpes[i], sensorPatternToAlertTexts[pattern],
+                                   sensorPatternToAlertLimits[pattern],
+                                   sensorPatternToAlertClasses[pattern],
+                                   \"\", makeDynString(), \"\", ex);
+        if (emu_checkException(ex)) { return; }
+        fwAlertConfig_activate(dpes[i], ex);
+        if (emu_checkException(ex)) { return; }
+      }
+    }
+  }
+}
+
+void setWaterSensorAlert(string dpe, dyn_string &ex) {
+  dyn_float limits = makeDynString(200, 100000);
+  dyn_string texts = makeDynString(\"Water cooling pressure too low\", \"\", \"Water cooling pressure too high\");
+  dyn_string classes = makeDynString(\"_fwErrorNack_70.\", \"\", \"_fwErrorNack_70.\");
+  
+  if (strpos(dpe, \"Rack\") >= 0) {
+    limits[1] = 20;
+  }
+  
+  fwAlertConfig_createAnalog(dpe, texts, limits, classes, \"\", makeDynString(), \"\", ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activate(dpe, ex);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+13 0
+"PUSH_BUTTON1"
+""
+1 50 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  48 108 582 162
+
+T 
+1
+LANG:1 39 Create All Devices (discover using DIP)
+"main()
+{
+  dyn_string ex;
+  
+  if (!dpExists(DIP_CONFIG_DP)) {
+    dpCreate(DIP_CONFIG_DP, \"_FwDipConfig\");
+  }
+  
+  for (int i=1; i <= dynlen(allRacks); i++) {
+    string rack = allRacks[i][1];
+    string description = allRacks[i][2];
+    string area = substr(rack, 0, 2);
+    
+    emu_info(\"Creating \" + rack + \"...\");
+
+    // query DIP and find out the available sensors for this rack, create them and subscribe
+    
+    string dipItem = \"dip/CMS/RACK/\" + area + \"/\" + rack + \"/Sensors\";
+    
+    dyn_string childName;
+    dyn_int childType;
+    dyn_string fieldName;
+    dyn_int fieldType;
+    dyn_string exceptionInfo;
+    
+    int ret = fwDIP_DipQuery(DIP_CONFIG_DP, dipItem, childName, childType, fieldName, fieldType, ex);
+    if (emu_checkException(ex)) { return; }
+    
+    dyn_string sensorDpes, sensorNames;
+    for (int j=1; j <= dynlen(fieldName); j++) {
+      string sensorName = fieldName[j];
+      
+      emu_info(\"    creating sensor \" + sensorName);
+      string sensorDp = RACK_SENSOR_DP_PREFIX + rack + \"/\" + sensorName;
+      dpCreate(sensorDp, COOLING_MON_DP_TYPE);
+      dynAppend(sensorDpes, sensorDp + \".value\");
+      dynAppend(sensorNames, sensorName);
+    }
+    
+    fwDIP_subscribeStructure(dipItem, sensorDpes, sensorNames, DIP_CONFIG_DP, ex, true);
+    if (emu_checkException(ex)) { return; }
+
+    setRackSensorAlerts(sensorDpes, ex);
+    if (emu_checkException(ex)) { return; }
+    
+    // create the cooling device for this rack
+    
+    dyn_string dev = emu_createDevice(COOLING_DP_TYPE, COOLING_DP_TYPE + \"/\" + rack, ex);
+    if (emu_checkException(ex)) { return; }
+    
+    // set the summary alert
+    emuAlert_createSummary(dev[fwDevice_DP_NAME] + \".\",
+                           makeDynString(\"\", \"CSC Rack Cooling Alert\"),
+                           sensorDpes,
+                           \"\", makeDynString(), \"\", ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  
+  // Create water cooling sensors
+  
+  emu_info(\"Creating water cooling sensors\");
+  dyn_string sensorDpes;
+  for (int i=1; i <= dynlen(waterCoolingItems); i++) {
+    emu_info(\"    creating \" + waterCoolingItems[i]);
+    string sensorDp = WATER_SENSOR_DP_PREFIX + waterCoolingItems[i];
+    dpCreate(sensorDp, COOLING_MON_DP_TYPE);
+    dynAppend(sensorDpes, sensorDp + \".value\");
+    
+    fwDIP_subscribe(sensorDp + \".value\", DIP_CONFIG_DP, WATER_COOLING_DIP_ROOT + waterCoolingItems[i],
+                    \"__DIP_DEFAULT__\", ex, true);
+    if (emu_checkException(ex)) { return; }
+    setWaterSensorAlert(sensorDp + \".value\", ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
+  // Create water cooling device
+
+  dyn_string dev = emu_createDevice(COOLING_DP_TYPE, COOLING_DP_TYPE + \"/WaterCooling\", ex);
+  if (emu_checkException(ex)) { return; }
+    
+  // set the summary alert
+  emuAlert_createSummary(dev[fwDevice_DP_NAME] + \".\",
+                         makeDynString(\"\", \"CSC Water Cooling Alert\"),
+                         sensorDpes,
+                         \"\", makeDynString(), \"\", ex);
+  if (emu_checkException(ex)) { return; }
+
+  // Activate summary alerts
+  emu_info(\"Activating summary alerts...\");
+  emuAlert_activateDeactivateSummaryAlertsForType(true, COOLING_DP_TYPE, ex);
+  if (emu_checkException(ex)) { return; }
+
+  emu_info(\"DONE!\");
+}
+
+" 0
+ E E E
+13 1
+"PUSH_BUTTON2"
+""
+1 10 300 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  8 298 632 322
+
+T 
+1
+LANG:1 38 Delete all cooling devices and sensors
+"main()
+{
+  deleteAll(\"*\", \"CscCooling\");
+  deleteAll(\"*\", \"CscCoolingMon\");
+  
+  emu_info(\"Done deleting\");
+}
+
+void deleteAll(string pattern, string dpType) {
+  dyn_string dps = dpNames(pattern, dpType);
+  for (int i=1; i <= dynlen(dps); i++) {
+    dpDelete(dps[i]);
+  }
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

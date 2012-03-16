@@ -3,6 +3,7 @@
 #uses "fwInstallationUtils.ctl"
 
 const string EMU_FSM_TYPE_TOP = "EMUGrouping";
+const string EMU_FSM_TYPE_GROUP = "EMUGrouping";
 const string EMU_FSM_DOMAIN_TOP = "CMS_CSC";
 const string EMU_FSM_DOMAIN_INFRA = "CMS_CSC_INFRA";
 
@@ -10,8 +11,7 @@ const string FSM_GAS_NODE_NAME = "CSC Gas";
 const string FSM_GAS_DP = "CscGas/CSC_GAS_MONITOR";
 const string FSM_GAS_DPT = "CscGasSystem_CSC_GAS";
 const string FSM_COOLING_NODE = "CSC_COOLING";
-const string FSM_COOLING_DP = "CscCooling/CSC_COOLING_MONITOR";
-const string FSM_COOLING_DPT = "CscCooling_CSC_COOLING";
+const string FSM_COOLING_DPT = "CscCooling";
 
 const string COMPONENT_NAME = "CMS_CSCfw_GAS";
 
@@ -28,6 +28,8 @@ main() {
 
   emu_info(COMPONENT_NAME + " PostInstall: Creating FSM...");
   emugas_createFsm(ex);
+  if (emu_checkException(ex)) { emu_info(COMPONENT_NAME + " PostInstall: aborted"); return; }
+  emucool_createFsm(ex);
   if (emu_checkException(ex)) { emu_info(COMPONENT_NAME + " PostInstall: aborted"); return; }
   emu_info(COMPONENT_NAME + " PostInstall: Finished creating FSM");
   
@@ -57,4 +59,32 @@ void emugas_createFsm(dyn_string &ex) {
   //finish   
   fwFsmTree_generateAll();
   fwFsmTree_refreshTree();
+}
+
+void emucool_createFsm(dyn_string &ex) {
+
+  dyn_string devices = dpNames("*", "CscCooling");
+  
+  // logical nodes  
+  emuFsm_createFsmNode("FSM", EMU_FSM_DOMAIN_TOP, EMU_FSM_TYPE_TOP, 1);  
+  emuFsm_createFsmNode(EMU_FSM_DOMAIN_TOP, EMU_FSM_DOMAIN_INFRA, EMU_FSM_TYPE_TOP, 1);
+  emuFsm_createFsmNode(EMU_FSM_DOMAIN_INFRA, FSM_COOLING_NODE, EMU_FSM_TYPE_GROUP, 0);
+  
+  // device nodes  
+  for (int i=1; i <= dynlen(devices); i++) {
+    string parent = FSM_COOLING_NODE;
+    string label = "CSC Water Cooling";
+    
+    if (strpos(devices[i], "WaterCooling") < 0) { // it's rack cooling
+      dyn_string split = strsplit(dpSubStr(devices[i], DPSUB_DP), "/");
+      label = split[2];
+      string area = substr(split[2], 0, 2);
+      emuFsm_createFsmNode(FSM_COOLING_NODE, area, EMU_FSM_TYPE_GROUP, 0);
+      parent = area;
+    }
+    
+    emuFsm_createFsmNode(parent, devices[i], FSM_COOLING_DPT, false);
+    if (emu_checkException(ex)) { return; }  
+    fwFsmTree_setNodeLabel(devices[i], label);
+  }
 }

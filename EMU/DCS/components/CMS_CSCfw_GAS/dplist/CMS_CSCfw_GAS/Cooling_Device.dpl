@@ -1,0 +1,109 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+CscCoolingInfo	_FwDeviceDefinition	655923
+CscCooling	FwNode	655925
+fwOT_CscCooling	_FwFsmObjectType	655926
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+CscCoolingInfo.type	_FwDeviceDefinition	"CSC Cooling"	0x101	16.03.2012 12:13:56.811
+CscCoolingInfo.dpType	_FwDeviceDefinition	"CscCooling"	0x101	16.03.2012 12:13:56.811
+CscCoolingInfo.version	_FwDeviceDefinition	""	0x101	16.03.2012 12:13:56.811
+CscCoolingInfo.properties.names	_FwDeviceDefinition	".disabled_channels", ".fsm_state"	0x101	16.03.2012 12:13:56.778
+CscCoolingInfo.properties.dpes	_FwDeviceDefinition	".disabled_channels", ".fsm_state"	0x101	16.03.2012 12:13:56.779
+CscCoolingInfo.properties.description	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.780
+CscCoolingInfo.configuration.address.canHave	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.783
+CscCoolingInfo.configuration.address.general.defaultType	_FwDeviceDefinition	"NO HARDWARE CONNECTION"	0x101	16.03.2012 12:13:56.811
+CscCoolingInfo.configuration.address.OPC.items	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.783
+CscCoolingInfo.configuration.address.OPC.groups	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.784
+CscCoolingInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x101	16.03.2012 12:13:56.813
+CscCoolingInfo.configuration.address.OPC.general.serverName	_FwDeviceDefinition	""	0x101	16.03.2012 12:13:56.813
+CscCoolingInfo.configuration.address.OPC.general.driverNumber	_FwDeviceDefinition	0	0x101	16.03.2012 12:13:56.813
+CscCoolingInfo.configuration.address.OPC.general.groupIn	_FwDeviceDefinition	""	0x101	16.03.2012 12:13:56.813
+CscCoolingInfo.configuration.address.OPC.general.groupOut	_FwDeviceDefinition	""	0x101	16.03.2012 12:13:56.813
+CscCoolingInfo.configuration.address.DIM.items	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.786
+CscCoolingInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x101	16.03.2012 12:13:56.813
+CscCoolingInfo.configuration.address.DIM.general.driverNumber	_FwDeviceDefinition	0	0x101	16.03.2012 12:13:56.813
+CscCoolingInfo.configuration.address.DIM.general.timeInterval	_FwDeviceDefinition	0	0x101	16.03.2012 12:13:56.814
+CscCoolingInfo.configuration.address.DIM.general.timeStamp	_FwDeviceDefinition	0	0x101	16.03.2012 12:13:56.814
+CscCoolingInfo.configuration.dpFunction.canHave	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.787
+CscCoolingInfo.configuration.dpFunction.function	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.788
+CscCoolingInfo.configuration.dpFunction.params	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.788
+CscCoolingInfo.configuration.alert.canHave	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.789
+CscCoolingInfo.configuration.alert.defaultClasses	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.790
+CscCoolingInfo.configuration.alert.defaultTexts	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.791
+CscCoolingInfo.configuration.archive.canHave	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.792
+CscCoolingInfo.configuration.archive.defaultClass	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.793
+CscCoolingInfo.configuration.archive.smoothType	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.793
+CscCoolingInfo.configuration.archive.smoothProcedure	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.794
+CscCoolingInfo.configuration.archive.deadband	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.795
+CscCoolingInfo.configuration.archive.timeInterval	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.796
+CscCoolingInfo.configuration.smoothing.canHave	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.796
+CscCoolingInfo.configuration.smoothing.smoothProcedure	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.797
+CscCoolingInfo.configuration.smoothing.deadband	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.798
+CscCoolingInfo.configuration.smoothing.timeInterval	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.798
+CscCoolingInfo.configuration.pvRange.canHave	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.799
+CscCoolingInfo.configuration.pvRange.minValue	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.800
+CscCoolingInfo.configuration.pvRange.maxValue	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.801
+CscCoolingInfo.configuration.pvRange.negateRange	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.801
+CscCoolingInfo.configuration.pvRange.ignoreOutside	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.802
+CscCoolingInfo.configuration.pvRange.inclusiveMin	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.803
+CscCoolingInfo.configuration.pvRange.inclusiveMax	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.803
+CscCoolingInfo.configuration.format.canHave	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.804
+CscCoolingInfo.configuration.format.format	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.805
+CscCoolingInfo.configuration.unit.canHave	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.806
+CscCoolingInfo.configuration.unit.unit	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.806
+CscCoolingInfo.panels.navigator.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	16.03.2012 12:13:56.812
+CscCoolingInfo.panels.navigator.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	16.03.2012 12:13:56.812
+CscCoolingInfo.panels.editor.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage", "fwDevice/fwDeviceExpertConfiguration"	0x101	16.03.2012 12:13:56.812
+CscCoolingInfo.panels.editor.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x101	16.03.2012 12:13:56.812
+CscCoolingInfo.panels.editor.expert	_FwDeviceDefinition	"fwDevice/fwDeviceConfigurationExpert"	0x101	16.03.2012 12:13:56.812
+CscCoolingInfo.properties.defaultValues	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.781
+CscCoolingInfo.configuration.address.OPC.direction	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.785
+CscCoolingInfo.configuration.address.DIM.direction	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.786
+CscCoolingInfo.general.childrenDPTypes	_FwDeviceDefinition		0x101	16.03.2012 12:13:56.811
+CscCoolingInfo.general.nameRoot	_FwDeviceDefinition	""	0x101	16.03.2012 12:13:56.811
+CscCoolingInfo.general.nameDigits	_FwDeviceDefinition	0	0x101	16.03.2012 12:13:56.812
+CscCoolingInfo.configuration.conversion.canHave	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.807
+CscCoolingInfo.configuration.conversion.type	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.808
+CscCoolingInfo.general.startingNumber	_FwDeviceDefinition	0	0x101	16.03.2012 12:13:56.812
+CscCoolingInfo.panels.editor.hardwareAdd	_FwDeviceDefinition		0x101	16.03.2012 12:13:56.812
+CscCoolingInfo.panels.editor.hardwareRemove	_FwDeviceDefinition		0x101	16.03.2012 12:13:56.812
+CscCoolingInfo.configuration.canHaveDefaults	_FwDeviceDefinition	0	0x101	16.03.2012 12:13:56.811
+CscCoolingInfo.properties.types	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.782
+CscCoolingInfo.configuration.alert.defaultLimits	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.791
+CscCoolingInfo.configuration.conversion.conversionType	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.808
+CscCoolingInfo.configuration.conversion.order	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.809
+CscCoolingInfo.configuration.conversion.arguments	_FwDeviceDefinition	0, 0	0x101	16.03.2012 12:13:56.810
+CscCoolingInfo.properties.userData	_FwDeviceDefinition	"EMPTY", "EMPTY"	0x101	16.03.2012 12:13:56.781
+CscCooling.type	FwNode	"VENDOR"	0x101	16.03.2012 12:13:55.648
+CscCooling.dpTypes	FwNode	"CscCooling"	0x101	16.03.2012 12:13:55.648
+CscCooling.navigatorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	16.03.2012 12:13:55.648
+CscCooling.editorPanels	FwNode	"fwDevice/fwDeviceManage"	0x101	16.03.2012 12:13:55.648
+fwOT_CscCooling.panel	_FwFsmObjectType	"CscCooling.pnl"	0x101	16.03.2012 12:15:22.253
+fwOT_CscCooling.components	_FwFsmObjectType	"string fsm_state
+", "", "CscCooling_initialize(string domain, string device)
+{
+}
+", "CscCooling_valueChanged( string domain, string device,
+      string fsm_state, string &fwState )
+{
+	if (fsm_state == \"ON\")
+	{
+		fwState = \"ON\";
+	}
+	else if (fsm_state == \"OFF\")
+	{
+		fwState = \"OFF\";
+	}
+	else 
+	{
+		fwState = \"ERROR\";
+	}
+}
+
+", ""	0x101	16.03.2012 12:40:29.969
+fwOT_CscCooling.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	16.03.2012 12:40:29.966
+fwOT_CscCooling.actions	_FwFsmObjectType		0x101	16.03.2012 12:40:29.966

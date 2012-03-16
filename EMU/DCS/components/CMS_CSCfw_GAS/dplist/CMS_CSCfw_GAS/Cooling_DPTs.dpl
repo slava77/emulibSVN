@@ -1,0 +1,9 @@
+# ascii dump of database
+
+# DpType
+TypeName
+CscCooling.CscCooling	1#1
+	fsm_state	25#6
+	disabled_channels	29#8
+CscCoolingMon.CscCoolingMon	1#2
+	value	22#3
