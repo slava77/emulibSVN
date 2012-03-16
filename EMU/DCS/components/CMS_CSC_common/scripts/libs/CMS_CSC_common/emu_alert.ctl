@@ -72,23 +72,25 @@ void emuAlert_updateAlertClass(string dpe, string dpType = "") {
   dpGet(dpe + ":_alert_hdl.._type", type);
   if (type == DPCONFIG_SUM_ALERT) {
     dyn_string alertTexts = emuAlert_getTexts(dpType);
-    if (dynlen(alertTexts) < 2) {
-      emu_error("Alert texts (at least 2) must be provided for alert class descriptor");
-      return;
-    }
-    bool isActive;
-    dpGet(dpe + ":_alert_hdl.._active", isActive);
-    if (isActive) {
-      dyn_string ex;
-      fwAlertConfig_deactivate(dpe, ex);
-      if (emu_checkException(ex)) { return; }
-    }
-    dpSet(dpe + ":_alert_hdl.._text0", alertTexts[1]);
-    dpSet(dpe + ":_alert_hdl.._text1", alertTexts[2]);
-    if (isActive) {
-      dyn_string ex;
-      fwAlertConfig_activate(dpe, ex);
-      if (emu_checkException(ex)) { return; }
+//     if (dynlen(alertTexts) < 2) {
+//       emu_error("Alert texts (at least 2) must be provided for alert class descriptor");
+//       return;
+//     }
+    if (dynlen(alertTexts) >= 2) {
+      bool isActive;
+      dpGet(dpe + ":_alert_hdl.._active", isActive);
+      if (isActive) {
+        dyn_string ex;
+        fwAlertConfig_deactivate(dpe, ex);
+        if (emu_checkException(ex)) { return; }
+      }
+      dpSet(dpe + ":_alert_hdl.._text0", alertTexts[1]);
+      dpSet(dpe + ":_alert_hdl.._text1", alertTexts[2]);
+      if (isActive) {
+        dyn_string ex;
+        fwAlertConfig_activate(dpe, ex);
+        if (emu_checkException(ex)) { return; }
+      }
     }
   } else {
     emu_debug("Setting alert texts is only supported for summary alerts - skipping texts setting for " + dpe);

@@ -74,3 +74,45 @@ string emu_getSystemName(string dp) {
   strreplace(sysName, ":", "");
   return sysName;
 }
+
+/**
+  * Creates a given device if it doesn't already exist.
+  * @param type device type
+  * @param name device name
+  * @param parentDevice parent device object, format as required by JCOP fwDevice (see fwDevice_createObject)
+  * @return device object that was created
+  */
+dyn_string emu_createDevice(string type, string name, dyn_string &ex, dyn_string parentDevice = makeDynString()) {
+  dyn_string device;
+  
+  fwDevice_createObject(device, ex);
+  if (emu_checkException(ex)) { return makeDynString(); }
+
+  if (dynlen(parentDevice) == 0) {
+    fwDevice_createObject(parentDevice, ex);
+    if (emu_checkException(ex)) { return makeDynString(); }
+  }
+  
+  device[fwDevice_DP_TYPE] = type;
+  device[fwDevice_DP_NAME] = name;
+  if (!emu_deviceExists(device, parentDevice)) {
+    fwDevice_create(device, parentDevice, ex);
+    if (emu_checkException(ex)) { return makeDynString(); }
+  }
+  
+  return device;
+}
+
+/**
+  * @param device device object, format as required by JCOP fwDevice (see fwDevice_createObject)
+  * @param parent parent device object, format as required by JCOP fwDevice (see fwDevice_createObject)
+  * @return true if given device already exists in the local system.
+  */
+bool emu_deviceExists(dyn_string device, dyn_string parent) {
+  string dp = "";
+  if (parent[fwDevice_DP_NAME] != "") {
+    dp += parent[fwDevice_DP_NAME] + fwDevice_HIERARCHY_SEPARATOR;
+  }
+  dp += device[fwDevice_DP_NAME];
+  return dpExists(dp);
+}
