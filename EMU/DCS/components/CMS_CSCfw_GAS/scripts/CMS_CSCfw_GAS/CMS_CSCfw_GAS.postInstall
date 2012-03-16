@@ -32,6 +32,10 @@ main() {
   emucool_createFsm(ex);
   if (emu_checkException(ex)) { emu_info(COMPONENT_NAME + " PostInstall: aborted"); return; }
   emu_info(COMPONENT_NAME + " PostInstall: Finished creating FSM");
+  emu_info(COMPONENT_NAME + " PostInstall: Regenerating FSM...");
+  fwFsmTree_generateAll();
+  fwFsmTree_refreshTree();  
+  emu_info(COMPONENT_NAME + " PostInstall: Finished regenerating FSM");
   
   emu_info(COMPONENT_NAME + " PostInstall: Creating managers from the installation DB");
   fwInstallationUtils_appendManagers(COMPONENT_NAME, ex);
@@ -55,10 +59,6 @@ void emugas_createFsm(dyn_string &ex) {
   emuFsm_createFsmNode(EMU_FSM_DOMAIN_INFRA, FSM_GAS_DP, FSM_GAS_DPT, false);
   if (emu_checkException(ex)) { return; }  
   fwFsmTree_setNodeLabel(FSM_GAS_DP, FSM_GAS_NODE_NAME);
-  
-  //finish   
-  fwFsmTree_generateAll();
-  fwFsmTree_refreshTree();
 }
 
 void emucool_createFsm(dyn_string &ex) {
