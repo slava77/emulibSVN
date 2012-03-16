@@ -98,8 +98,8 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                   "DDU:error",
                                   "AtlasPSU_Branch:on",
                                   "AtlasPSU_Branch:error",
-//                                  "Cooling:on",
-//                                  "Cooling:error",                         
+                                  "Cooling:on",
+                                  "Cooling:error",                         
                                   "Gas:on",
                                   "Gas:error")))) {
     return "OFF";
@@ -117,7 +117,7 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnCrate:error",
                                  "DDU:error",
                                  "AtlasPSU_Branch:error",
-//                                 "Cooling:error",
+                                 "Cooling:error",
                                  "Gas:error"))) {
     return "ERROR";
     
@@ -134,7 +134,7 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnCrate:on",
                                  "DDU:on",
                                  "AtlasPSU_Branch:on",
-//                                 "Cooling:on",
+                                 "Cooling:on",
                                  "Gas:on"))) {
     return "ON";
 
@@ -153,7 +153,7 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnCrate:on",
                                  "DDU:on",
                                  "AtlasPSU_Branch:on",
-//                                 "Cooling:on",
+                                 "Cooling:on",
                                  "Gas:on"))){
     return "OUTER_ON";
 
@@ -170,7 +170,7 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                  "MrtnCrate:on",
                                  "DDU:on",
                                  "AtlasPSU_Branch:on",
-//                                 "Cooling:on",
+                                 "Cooling:on",
                                  "Gas:on")) &&
              emumaj_allOFF(majStates, true,
                    makeDynString("HV_OUTER:on",
@@ -204,7 +204,7 @@ string majorityUser_nodeTranslation(string node) {
       (type == "CscHvPrimary") ||
       (type == "FwCaenChannel") ||
       (type == "CscGasSystem_CSC_GAS") ||
-      (type == "CscCooling_CSC_COOLING")) {
+      (type == "CscCooling")) {
     return treeCache_getFsmInternalDp(node);
   } else {
     return treeCache_getFsmDevDp(node);

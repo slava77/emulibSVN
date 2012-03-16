@@ -318,10 +318,10 @@ void emumaj_createMajorityConfiguration(string majorityTopNode) {
   configureDDU(majorityTopNode);
   DebugTN("Creating Atlas PSU branch majority");
   configureAtlasPSU(majorityTopNode);
-  DebugTN("Creating GAS majority (top device only)");
+  DebugTN("Creating GAS majority");
   configureGas(majorityTopNode);
-//  DebugTN("Creating COOLING majority (top device only)");
-//  configureCooling(majorityTopNode);
+  DebugTN("Creating COOLING majority");
+  configureCooling(majorityTopNode);
 
   DebugTN("Creating general majority parameters");
   
@@ -696,7 +696,7 @@ void configureGas(string topNode) {
 void configureCooling(string topNode) {
   //GAS - top (global) device only
   majority_addDevice("Cooling", // this defines the internal name of the device for the majority
-  "CscCooling_CSC_COOLING", // this is the corresponding Device Unit Type
+  "CscCooling", // this is the corresponding Device Unit Type
   makeDynString(".fsm.currentState"), // define the datapoint elements you need to connect
   makeDynString("on", "error"), // these are the basic device states for this device
   1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
