@@ -8,14 +8,11 @@ CscConf_alertClassDescriptors.CscConf_alertClassDescriptors	1#1
 
 # Datapoint/DpId
 DpName	TypeName	ID
-CscAlertClass_fwCooling_CSC_COOLING_d	CscConf_alertClassDescriptors	530965
 CscAlertClass_fwLvCr_CSC_TEMP	CscConf_alertClassDescriptors	530967
-CscAlertClass_fwWnrCr_CSC_LV_d	CscConf_alertClassDescriptors	530968
 CscAlertClass_FwElmbPSUBranch	CscConf_alertClassDescriptors	530971
 CscAlertClass_FwWienerMarathon	CscConf_alertClassDescriptors	530972
 CscAlertClass_fwCrb_CSC_LV	CscConf_alertClassDescriptors	530973
 CscAlertClass_FwCaenCrateSY1527	CscConf_alertClassDescriptors	530975
-CscAlertClass_fwCooling_CSC_TURBINES_summary	CscConf_alertClassDescriptors	534484
 CscAlertClass_FwCaenChannel	CscConf_alertClassDescriptors	544924
 CscAlertClass_FwCaenChannel_dot_actual_dot_Trip	CscConf_alertClassDescriptors	544928
 CscAlertClass_FwCaenChannel_dot_actual_dot_OvC	CscConf_alertClassDescriptors	544929
@@ -24,15 +21,12 @@ CscAlertClass_CscHvChamber	CscConf_alertClassDescriptors	640348
 CscAlertClass_CscHvPrimary	CscConf_alertClassDescriptors	640349
 CscAlertClass_CscLvChamber	CscConf_alertClassDescriptors	640350
 CscAlertClass_CscTempChamber	CscConf_alertClassDescriptors	640351
+CscAlertClass_CscCooling	CscConf_alertClassDescriptors	650498
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
-CscAlertClass_fwCooling_CSC_COOLING_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.060
-CscAlertClass_fwCooling_CSC_COOLING_d.alertTexts	CscConf_alertClassDescriptors	"CSC Cooling OK", "CSC Cooling ERROR"	0x101	07.10.2010 14:32:24.061
 CscAlertClass_fwLvCr_CSC_TEMP.class	CscConf_alertClassDescriptors	_fwErrorNack_61.	0x101	07.10.2010 14:32:24.062
 CscAlertClass_fwLvCr_CSC_TEMP.alertTexts	CscConf_alertClassDescriptors	"PCrate Temperature OK", "PCrate Temperature Alert"	0x101	07.10.2010 14:32:24.063
-CscAlertClass_fwWnrCr_CSC_LV_d.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.064
-CscAlertClass_fwWnrCr_CSC_LV_d.alertTexts	CscConf_alertClassDescriptors	"LV for HV PSU OK", "LV for HV PSU ERROR"	0x101	07.10.2010 14:32:24.064
 CscAlertClass_FwElmbPSUBranch.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	07.10.2010 14:32:24.068
 CscAlertClass_FwElmbPSUBranch.alertTexts	CscConf_alertClassDescriptors	"ELMB Power Supply OK", "ELMB Power Supply ERROR"	0x101	07.10.2010 14:32:24.069
 CscAlertClass_FwWienerMarathon.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.070
@@ -41,8 +35,6 @@ CscAlertClass_fwCrb_CSC_LV.class	CscConf_alertClassDescriptors	_fwErrorAck_70.	0
 CscAlertClass_fwCrb_CSC_LV.alertTexts	CscConf_alertClassDescriptors	"PCrate OK", "PCrate ERROR"	0x101	07.10.2010 14:32:24.072
 CscAlertClass_FwCaenCrateSY1527.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	07.10.2010 14:32:24.073
 CscAlertClass_FwCaenCrateSY1527.alertTexts	CscConf_alertClassDescriptors	"ME1/1 HV OK", "ME1/1 HV ERROR"	0x101	07.10.2010 14:32:24.074
-CscAlertClass_fwCooling_CSC_TURBINES_summary.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.074
-CscAlertClass_fwCooling_CSC_TURBINES_summary.alertTexts	CscConf_alertClassDescriptors	"CSC Rack Turbine OK", "CSC Rack Turbine ALERT"	0x101	07.10.2010 14:32:24.075
 CscAlertClass_FwCaenChannel.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	07.10.2010 14:33:30.660
 CscAlertClass_FwCaenChannel.alertTexts	CscConf_alertClassDescriptors	"ME1/1 HV OK", "ME1/1 HV ERROR"	0x101	07.10.2010 14:34:13.704
 CscAlertClass_FwCaenChannel_dot_actual_dot_Trip.class	CscConf_alertClassDescriptors	_fwErrorNack_61.	0x101	14.10.2010 16:32:52.493
@@ -58,3 +50,4 @@ CscAlertClass_CscLvChamber.class	CscConf_alertClassDescriptors	_fwWarningNack_41
 CscAlertClass_CscLvChamber.alertTexts	CscConf_alertClassDescriptors	"On-Chamber el. LV OK", "On-Chamber el. LV ERROR"	0x101	20.02.2012 13:43:11.460
 CscAlertClass_CscTempChamber.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	20.02.2012 13:44:09.976
 CscAlertClass_CscTempChamber.alertTexts	CscConf_alertClassDescriptors	"Temperature OK", "Temperature Alert"	0x101	20.02.2012 13:44:19.525
+CscAlertClass_CscCooling.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	16.03.2012 10:33:19.562
