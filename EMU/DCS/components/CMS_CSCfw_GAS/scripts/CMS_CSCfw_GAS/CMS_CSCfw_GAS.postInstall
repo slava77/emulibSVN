@@ -43,7 +43,7 @@ main() {
   emu_info(COMPONENT_NAME + " PostInstall: Finished creating managers from the installation DB");
   
   emu_info(COMPONENT_NAME + " PostInstall: Configuring alert classes");
-//  emuAlert_updateAllAlertClassesForType("CscHvChamber");
+  emuAlert_updateAllAlertClassesForType("CscCooling");
   emu_info(COMPONENT_NAME + " PostInstall: Finished configuring alert classes");
   
   emu_info(COMPONENT_NAME + " PostInstall: DONE");
