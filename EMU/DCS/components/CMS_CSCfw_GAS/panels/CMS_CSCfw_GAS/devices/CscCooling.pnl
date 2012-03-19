@@ -1,10 +1,22 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 400 400 N "_3DFace" 0
-E E E E E 1 -1 -1 0  -1 -1
+PANEL,-1 -1 400 400 N "_3DFace" 1
+"$1"
+"main()
+{
+  dp = $1;
+  dyn_string split = strsplit(dp, \"/\");
+  if (dynlen(split) > 1) {
+    name = split[2];
+  }
+  lblTitle.text = name;
+}" 0
+ E E E E 1 -1 -1 0  60 30
 ""0  1
-E E 2
+E "string dp;
+string name;" 0
+ 2
 "CBRef" "1"
 "EClose" E
 ""
@@ -12,6 +24,58 @@ DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
+2 0
+"lblTitle"
+""
+1 150 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 150 10 222 49
+0 2 2 "0s" 0 0 0 192 0 0  150 10 1
+1
+LANG:1 31 Sans Serif,24,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 Title
+25 1
+"tableSensors"
+""
+1 40 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+1 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  38 68 362 262
+EE 1 0 1 2 0 "sensor" 6 1 0 "s" 1
+LANG:1 6 Sensor
+E
+1
+LANG:1 0 
+
+230 "value" 6 1 0 "s" 1
+LANG:1 5 Value
+E
+1
+LANG:1 0 
+
+80 
+16 16 10 10
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
 0
 LAYER, 1 
 1

@@ -64,6 +64,14 @@ void emugas_createFsm(dyn_string &ex) {
 
 void emucool_createFsm(dyn_string &ex) {
 
+  // cleanup
+  if (fwFsmTree_isNode(FSM_COOLING_NODE)) {
+    emu_info("Deleting " + FSM_COOLING_NODE);
+    fwFsmTree_removeNode(EMU_FSM_DOMAIN_INFRA, FSM_COOLING_NODE);
+  }
+  emuFsm_deleteFwTreeNodes(makeDynString("fwTN_CMS_COOLING", "CscCooling"));
+  
+  
   dyn_string devices = dpNames("*", "CscCooling");
   
   // logical nodes  
