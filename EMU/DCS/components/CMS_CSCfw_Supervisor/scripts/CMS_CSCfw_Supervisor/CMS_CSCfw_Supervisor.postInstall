@@ -27,13 +27,24 @@ main() {
   if (fwFsmTree_isNode(EMU_FSM_DOMAIN_PLUS)) {
     emu_info("Deleting " + EMU_FSM_DOMAIN_PLUS);
     fwFsmTree_removeNode("FSM", EMU_FSM_DOMAIN_PLUS);
-    emuFsm_deleteFwTreeNodes(makeDynString("fwTN_CMS_CSC_PLUS", "fwTN_CSC_HV_PLUS"));
   }
   if (fwFsmTree_isNode(EMU_FSM_DOMAIN_MINUS)) {
     emu_info("Deleting " + EMU_FSM_DOMAIN_MINUS);
     fwFsmTree_removeNode("FSM", EMU_FSM_DOMAIN_MINUS);
-    emuFsm_deleteFwTreeNodes(makeDynString("fwTN_CMS_CSC_MINUS", "fwTN_CSC_HV_MINUS"));
   }
+  if (fwFsmTree_isNode(EMU_FSM_DOMAIN_INFRA)) {
+    emu_info("Deleting " + EMU_FSM_DOMAIN_INFRA);
+    fwFsmTree_removeNode("FSM", EMU_FSM_DOMAIN_INFRA);
+  }
+  emuFsm_deleteFwTreeNodes(makeDynString("fwTN_CMS_CSC",
+                                         "fwTN_CMS_CSC_PLUS",
+                                         "fwTN_CSC_HV_PLUS",
+                                         "fwTN_CMS_CSC_MINUS",
+                                         "fwTN_CSC_HV_MINUS",
+                                         "fwTN_CMS_CSC_INFRA",
+                                         "fwTN_CSC_COOLING",
+                                         "CscCooling"));
+
   dyn_string ctrlUnits = dpNames("*", "_FwCtrlUnit");
   for (int i=1; i <= dynlen(ctrlUnits); i++) {
     dpDelete(ctrlUnits[i]);
