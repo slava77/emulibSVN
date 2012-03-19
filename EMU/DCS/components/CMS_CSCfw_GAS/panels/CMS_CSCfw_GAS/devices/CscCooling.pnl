@@ -1,21 +1,82 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 400 400 N "_3DFace" 1
-"$1"
+PANEL,-1 -1 620 471 N "_3DFace" 1
+"$2"
 "main()
 {
-  dp = $1;
-  dyn_string split = strsplit(dp, \"/\");
+  mainDp = $2;
+  dyn_string split = strsplit(mainDp, \"/\");
   if (dynlen(split) > 1) {
     name = split[2];
   }
   lblTitle.text = name;
+  
+  dyn_string ex;
+  dyn_mixed sumAlert;
+
+  int type, threshold;
+  dyn_string texts, panelParams;
+  string class, panel, help;
+  bool isActive;
+  
+  
+  fwAlertConfig_objectGet(mainDp + \".\", sumAlert, ex);
+  fwAlertConfig_objectExtractSummary(sumAlert, type, texts, sensorDps, threshold, class, panel, panelParams, help, isActive, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  for (int i=1; i <= dynlen(sensorDps); i++) {
+    string dp = sensorDps[i];
+    dyn_string split = strsplit(dpSubStr(dp, DPSUB_DP), \"/\");
+    string name = split[dynlen(split)];
+    
+    tableSensors.appendLine(\"sensor\", name);
+    dpConnect(\"sensorValueChangedCB\", true, dp);
+    if (dpExists(dp + \":_alert_hdl.._act_state\")) {
+      dpConnect(\"sensorAlertStateChangedCB\", true, dp + \":_alert_hdl.._act_state\", dp + \":_alert_hdl.._active\");
+    }
+  }
 }" 0
  E E E E 1 -1 -1 0  60 30
 ""0  1
-E "string dp;
-string name;" 0
+E "string mainDp;
+dyn_string sensorDps;
+string name;
+
+string selectedSensor;
+bool isSelectedAlertActive;
+
+void sensorValueChangedCB(string dp, float value) {
+  int idx = dynContains(sensorDps, dpSubStr(dp, DPSUB_SYS_DP_EL));
+  
+  string strValue;
+  sprintf(strValue, \"%.2f\", value);
+  tableSensors.cellValueRC(idx - 1, \"value\", strValue);
+}
+
+void sensorAlertStateChangedCB(dyn_string dps, dyn_mixed values) {
+  string dp = dpSubStr(dps[1], DPSUB_SYS_DP_EL);
+  int alertState = values[1];
+  bool isActive = values[2];
+  
+  int idx = dynContains(sensorDps, dp);
+  string color = \"White\";
+  
+  emu_info(\"alert state \" + dp + \": \" + alertState + \", isActive? \" + isActive);
+  
+  if (isActive) {
+    if (alertState) {
+      color = \"FwStateAttention3\";
+    } else {
+      color = \"FwStateOKPhysics\";
+    }
+  } else {
+    color = \"FwEquipmentDisabled\";
+  }
+  
+  tableSensors.cellBackColRC(idx - 1, \"sensor\", color);
+  tableSensors.cellBackColRC(idx - 1, \"value\", color);
+}" 0
  2
 "CBRef" "1"
 "EClose" E
@@ -27,7 +88,7 @@ LANG:1 0
 2 0
 "lblTitle"
 ""
-1 150 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 90 40 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 0 0 0 0 0 0
 E E E
@@ -37,8 +98,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 150 10 222 49
-0 2 2 "0s" 0 0 0 192 0 0  150 10 1
+E E 0 1 1 2 1 E U  0 E 90 40 162 79
+0 2 2 "0s" 0 0 0 192 0 0  90 40 1
 1
 LANG:1 31 Sans Serif,24,-1,5,50,0,0,0,0,0
 0 1
@@ -46,7 +107,7 @@ LANG:1 5 Title
 25 1
 "tableSensors"
 ""
-1 40 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 90 90 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 1 0 0 0 0 0
 E E E
@@ -57,8 +118,48 @@ LANG:1 0
 0
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
-0  38 68 362 262
-EE 1 0 1 2 0 "sensor" 6 1 0 "s" 1
+0  88 88 412 362
+"main()
+{
+  this.tableMode = TABLE_SELECT_LINE;
+  this.selectByClick = TABLE_SELECT_LINE;
+}" 0
+"main(int row, string column, string value)
+{
+  dyn_int selectedLines = tableSensors.getSelectedLines();
+  
+  if (dynlen(selectedLines) > 0) {
+    dyn_mixed alert;
+    int type;
+    bool isActive;
+    dyn_string ex;
+
+    int idx = selectedLines[1];
+    selectedSensor = sensorDps[idx + 1];
+
+    fwAlertConfig_objectGet(selectedSensor, alert, ex);
+    if (emu_checkException(ex)) { return; }
+    
+    if (fwAlertConfig_objectConfigExists(alert, type, ex)) {
+      
+      fwAlertConfig_objectExtractType(alert, type, isSelectedAlertActive, ex);
+      if (emu_checkException(ex)) { return; }
+
+      if (isSelectedAlertActive) {
+        btnMask.text = \"Mask Selected\";
+      } else {
+        btnMask.text = \"Unmask Selected\";
+      }
+      btnMask.enabled = true;
+      
+    } else {
+      btnMask.enabled = false;
+    }
+  } else {
+    btnMask.enabled = false;
+  }
+}" 0
+ 1 0 1 2 0 "sensor" 6 1 0 "s" 1
 LANG:1 6 Sensor
 E
 1
@@ -76,6 +177,38 @@ LANG:1 0
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 0 1 1 1 7
 1 0
+13 2
+"btnMask"
+""
+1 259.9999999999999 380 E E E 0 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  258 378 412 402
+
+T 
+1
+LANG:1 13 Mask Selected
+"main()
+{
+  dyn_string ex;
+  
+  if (isSelectedAlertActive) {
+    fwAlertConfig_deactivate(selectedSensor, ex);
+    if (emu_checkException(ex)) { return; }
+  } else {
+    fwAlertConfig_activate(selectedSensor, ex);
+    if (emu_checkException(ex)) { return; }
+  }
+}" 0
+ E E E
 0
 LAYER, 1 
 1
