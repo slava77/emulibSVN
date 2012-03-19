@@ -1,4 +1,5 @@
 #uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_alert.ctl"
 #uses "CMS_CSC_common/emu_fsm.ctl"
 #uses "fwInstallationUtils.ctl"
 
