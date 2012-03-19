@@ -1150,7 +1150,7 @@ E E 0 1 1 2 1 E 1 0 1 -339 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -5012.902179711197 -1190 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -5225.911981678065 -1210 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1169,7 +1169,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.50597906288015 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.49570537632421 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1556,8 +1556,8 @@ LANG:1 15 Release Control
   emu_info(\"Releasing control.\");
   releaseControl = true;
   fwCU_releaseTree(\"CMS_CSC\");
-  fwCU_releaseTree(\"CMS_CSC_PLUS\");
-  fwCU_releaseTree(\"CMS_CSC_MINUS\");
+  fwCU_excludeTree(\"CMS_CSC_PLUS\", \"\");
+  fwCU_excludeTree(\"CMS_CSC_MINUS\", \"\");
 }" 0
  E E E
 13 48
