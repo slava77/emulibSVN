@@ -199,7 +199,7 @@ string majorityUser_nodeTranslation(string node) {
   if ((type == "fwCrb_CSC_LV") || 
       (type == "FwWienerMarathonChannel") || 
       (type == "FwWienerMarathon") || 
-      (type == "FwElmbPSUBranch") ||
+      (type == "fwBranch_CSC_LV") ||
       (type == "CscFedDdu") ||
       (type == "CscHvPrimary") ||
       (type == "FwCaenChannel") ||

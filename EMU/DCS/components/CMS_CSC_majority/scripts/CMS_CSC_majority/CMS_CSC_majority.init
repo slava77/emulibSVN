@@ -630,7 +630,7 @@ void configureDDU(string topNode) {
 void configureAtlasPSU(string topNode) {
   // Atlas PSU branch
   majority_addDevice("AtlasPSU_Branch", // this defines the internal name of the device for the majority
-  "FwElmbPSUBranch", // this is the corresponding Device Unit Type
+  "fwBranch_CSC_LV", // this is the corresponding Device Unit Type
   makeDynString(".fsm.currentState"), // define the datapoint elements you need to connect
   makeDynString("on", "error"), // these are the basic device states for this device
   1 // this is the weight for this device (default = 1). Your state counts must be between 0 and the weight. This is useful for device units that group many channels
