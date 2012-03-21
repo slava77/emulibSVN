@@ -269,6 +269,7 @@ dyn_int emumaj_onOffStandbyErrorFsmStateCounts(dyn_anytype values, int &weight, 
   } else if (state == "STANDBY") {
     standby = 1;
   } else if (state == "OFF") {
+  } else if (state == "RAMPING") {
   } else if ((state == "ERROR") || (state == "DEAD")) {
     error = 1;
   } else {
