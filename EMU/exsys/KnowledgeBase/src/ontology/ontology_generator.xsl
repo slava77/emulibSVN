@@ -753,7 +753,7 @@
 
 	<xsl:for-each select="hvMasterChannel">
 	  <!-- HV Master Channel -->
-	  <xsl:variable name="MASTER_CHANNEL"><xsl:value-of select="$PADDED_MASTER"/>Channel<xsl:value-of select="@channelNumber"/></xsl:variable>
+	  <xsl:variable name="MASTER_CHANNEL"><xsl:value-of select="$PADDED_MASTER"/>Channel<xsl:value-of select="@channelName"/></xsl:variable>
 	  <Declaration><Individual URI="&csc;{$MASTER_CHANNEL}"/></Declaration>
 	  <ClassAssertion><Class URI="&csc;HVMasterChannel"/><Individual URI="&csc;{$MASTER_CHANNEL}"/></ClassAssertion>
 	  <ObjectPropertyAssertion>
