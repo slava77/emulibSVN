@@ -8,32 +8,36 @@ E "#uses \"CtrlXml\"
 
 dyn_mapping treeData;
 
-mapping getPrimaryData(mapping masterDeviceParams, dyn_string &ex) {
+mapping getPrimaryData(mapping chamberDeviceParams, dyn_string &ex) {
   emu_info(\"getting primary data\");
   
-  string masterDp = masterDeviceParams[\"dcsId\"];
   mapping primaryDeviceParams;
-  string masterId;
-  dyn_string dpNamesRet = dpNames(\"*:\" + masterDp, \"HV_1_d\");
-  if (dynlen(dpNamesRet) == 0) {
-    emu_info(\"ERROR: master DP couldn't be found: \" + masterDp, ex);
-    primaryDeviceParams[\"ERROR\"] = \"Master doesn't exist\";
-    return primaryDeviceParams;
+
+  int hostId;
+  if (chamberDeviceParams[\"side\"] == \"P\") {
+    hostId = 600;
+  } else {
+    hostId = 500;
   }
-  masterDp = dpNamesRet[1];
-  dpGet(masterDp + \".data.module_ID\", masterId);
-  if (masterId != masterDeviceParams[\"id\"]) {
-    emu_addError(\"FATAL: master ID from chamber doesn't match master ID from master DP!\" +
-                 \" Master ID from chamber: \" + masterDeviceParams[\"id\"] + 
-                 \", from DP: \" + masterId +
-                 \". Master deviceParams: \" + masterDeviceParams, ex);
-    return;
+  primaryDeviceParams[\"hostId\"] = hostId;
+  primaryDeviceParams[\"port\"] = 1;  
+  primaryDeviceParams[\"address\"] = chamberDeviceParams[\"station\"];
+  
+  // BUT... actually primaries 2 and 3 service half of ME2 and ME3 each..
+  if ((chamberDeviceParams[\"station\"] == 2) || (chamberDeviceParams[\"station\"] == 3)) {
+    if (((chamberDeviceParams[\"ring\"] == 2) && (chamberDeviceParams[\"chamberNumber\"] >= 15) && (chamberDeviceParams[\"chamberNumber\"] <= 32)) ||
+        ((chamberDeviceParams[\"ring\"] == 1) && (chamberDeviceParams[\"chamberNumber\"] >= 8) && (chamberDeviceParams[\"chamberNumber\"] <= 16))) {
+      primaryDeviceParams[\"address\"] = 3;
+    } else {
+      primaryDeviceParams[\"address\"] = 2;
+    }
   }
   
-  dpGet(masterDp + \".data.master_hostid\", primaryDeviceParams[\"hostId\"]);
-  dpGet(masterDp + \".data.master_hvcard\", primaryDeviceParams[\"port\"]);
-  dpGet(masterDp + \".data.master_busaddr\", primaryDeviceParams[\"address\"]);
-  
+  primaryDeviceParams[\"dcsId\"] = \"CscHighVoltage/Primary_\" + 
+                                 primaryDeviceParams[\"hostId\"] + \"_\" +
+                                 primaryDeviceParams[\"port\"] + \"_\" +
+                                 primaryDeviceParams[\"address\"] + \"/Mon\";
+
   return primaryDeviceParams;
 }
 
@@ -41,105 +45,76 @@ mapping getMasterData(mapping chamberDeviceParams, dyn_string &ex) {
   emu_info(\"getting master data for chamber: \" + chamberDeviceParams);
   
   mapping masterDeviceParams;
-  string masterIdDp = emuui_getDpName(\"HV_moduleToMasterId\", chamberDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  string masterHostIdDp = emuui_getDpName(\"HV_moduleToMasterHostId\", chamberDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  string masterHvCardDp = emuui_getDpName(\"HV_moduleToMasterHvCard\", chamberDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  string masterBusAddressDp = emuui_getDpName(\"HV_moduleToMasterBusAddress\", chamberDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  string masterChannelDp = emuui_getDpName(\"HV_moduleToMasterChannel\", chamberDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
   
+  string masterIdDp = emuui_getDpName(\"HV_masterId\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string masterDp = emuui_getDpName(\"HV_masterStatus\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+
   string masterId;
-  dpGet(masterIdDp, masterId,
-        masterHostIdDp, masterDeviceParams[\"hostId\"],
-        masterHvCardDp, masterDeviceParams[\"slot\"],
-        masterBusAddressDp, masterDeviceParams[\"address\"],
-        masterChannelDp, masterDeviceParams[\"channelNumber\"]);
+  dpGet(masterIdDp, masterId);
     
   masterDeviceParams[\"id\"] = masterId;
-  string masterDp = \"master\" + masterDeviceParams[\"hostId\"] + \"_\" + 
-                               masterDeviceParams[\"slot\"] + \"_\" + 
-                               masterDeviceParams[\"address\"];
   masterDeviceParams[\"dcsId\"] = masterDp;
+  
   return masterDeviceParams;
+}
+
+mapping getMasterChannelData(mapping chamberDeviceParams, dyn_string &ex) {
+  emu_info(\"getting master data for chamber: \" + chamberDeviceParams);
+  
+  mapping masterChannelDeviceParams;
+  
+  string masterIdDp = emuui_getDpName(\"HV_masterId\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string masterChannelDp = emuui_getDpName(\"HV_masterChannelStatus\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  string moduleIdDp = emuui_getDpName(\"HV_moduleId\", chamberDeviceParams, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  string masterId, moduleId;
+  dpGet(masterIdDp, masterId,
+        moduleIdDp, moduleId);
+    
+  masterChannelDeviceParams[\"channelName\"] = \"ToDistribution\" + moduleId;
+  masterChannelDeviceParams[\"id\"] = masterId + \"_\" + masterChannelDeviceParams[\"channelName\"];
+  masterChannelDeviceParams[\"dcsId\"] = masterChannelDp;
+  
+  return masterChannelDeviceParams;
 }
 
 mapping getModuleData(mapping chamberDeviceParams, dyn_string &ex) {
   emu_info(\"getting module data for chamber: \" + chamberDeviceParams);
-  string hvCoordDp = emuui_getDpName(\"HV_coord\", chamberDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  string coordsCombined;
-  dpGet(hvCoordDp, coordsCombined);
-  dyn_string coords = strsplit(coordsCombined, \";\");
-  if (dynlen(coords) == 0) {
-    emu_addError(\"Could not get HV module coordinates. This is a sign that one of DCS computers is unreachable (perhaps OFF).\", ex);
-    return;
-  } else if (dynlen(coords) < 4) {
-    emu_addError(\"HV module coordinates are incomplete. DP = \" + hvCoordDp + \". Returned coordinates = \" + coordsCombined, ex);
-    return;
-  }
+
   mapping moduleDeviceParams;
-  moduleDeviceParams[\"host\"] = coords[1];
-  moduleDeviceParams[\"slot\"] = coords[2];
-  moduleDeviceParams[\"address\"] = coords[3];
-  int part = coords[4];
   
-  string moduleTypeDp = emuui_getDpName(\"HV_moduleType\", chamberDeviceParams, ex);
+  string moduleIdDp = emuui_getDpName(\"HV_moduleId\", chamberDeviceParams, ex);
   if (emu_checkException(ex)) { return; }
-  dpGet(moduleTypeDp, moduleDeviceParams[\"type\"]);
-  int numChannels;
-  string moduleNumChannelsDp = emuui_getDpName(\"HV_numChannels\", chamberDeviceParams, ex);
-  if (emu_checkException(ex)) { return; }
-  dpGet(moduleNumChannelsDp, numChannels);
-  string moduleDp = dpSubStr(moduleTypeDp, DPSUB_SYS_DP);
-  moduleDeviceParams[\"dcsId\"] = dpSubStr(moduleDp, DPSUB_DP);
-  dpGet(moduleDp + \".data.host_bus\", moduleDeviceParams[\"bus\"]);
+  string numChansDp = dpSubStr(moduleIdDp, DPSUB_SYS_DP) + \".num_chans\";
+
   string moduleId;
-  dpGet(moduleDp + \".data.module_ID\", moduleId);
+  dpGet(moduleIdDp, moduleId);
+  int numChans;
+  dpGet(numChansDp, numChans);
+  
   moduleDeviceParams[\"id\"] = moduleId;
-  
-  if ((part == 0) && (numChannels != 30)) {
-    emu_addError(\"FATAL found part = 0 but number of channels != 30. \" + moduleDp, ex);
-    return;
-  }
-  switch (part) {
-    case 0:
-      moduleDeviceParams[\"channelsStart\"] = 1;
-      moduleDeviceParams[\"channelsEnd\"] = 30;
-      break;
-    case 1:
-      moduleDeviceParams[\"channelsStart\"] = 1;
-      moduleDeviceParams[\"channelsEnd\"] = 18;
-      break;
-    case 2:
-      moduleDeviceParams[\"channelsStart\"] = 19;
-      moduleDeviceParams[\"channelsEnd\"] = 36;
-      break;
-  }
-  
+  moduleDeviceParams[\"dcsId\"] = chamberDeviceParams[\"dcsId\"];
+  moduleDeviceParams[\"channelsStart\"] = 1;
+  moduleDeviceParams[\"channelsEnd\"] = numChans;
+
   return moduleDeviceParams;
 }
 
-dyn_mapping getAllChambers() {
+dyn_mapping getAllChambers(dyn_string &ex) {
   emu_info(\"getting all chambers\");
-  dyn_string chamberDps = dpNames(\"*:*\", \"HV_1\");
+  dyn_string chamberDps = dpNames(\"*:*\", \"CscHvChamber\");
   emu_info(dynlen(chamberDps) + \" chambers found\");
   dyn_mapping chambersDeviceParams;
   
   for (int i=1; i <= dynlen(chamberDps); i++) {
-    string dp = dpSubStr(chamberDps[i], DPSUB_DP);    
-    strreplace(dp, \"HighVoltage/CSC_ME_\", \"\");
-    dyn_string dpParts = strsplit(dp, \"_\");
-    mapping deviceParams;
-    deviceParams[\"side\"] = dpParts[1][0];
-    deviceParams[\"station\"] = dpParts[1][1];
-    deviceParams[\"ring\"] = dpParts[1][2];
-    strreplace(dpParts[2], \"C\", \"\");
-    deviceParams[\"chamberNumber\"] = dpParts[2];
-    
+    mapping deviceParams = emu_fsmNodeToDeviceParams(chamberDps[i], ex);
+    if (emu_checkException(ex)) { return; }
+    deviceParams[\"dcsId\"] = chamberDps[i];
     dynAppend(chambersDeviceParams, deviceParams);
   }
   
@@ -217,12 +192,12 @@ LANG:1 11 Get Mapping
   mapping masters;
   mapping masterChannels;
   mapping modules;
-  mapping moduleChannesl;
   mapping hvSegments;
   mapping chambers;
   
   dyn_string ex;
-  dyn_mapping allChambers = getAllChambers();
+  dyn_mapping allChambers = getAllChambers(ex);
+  if (emu_checkException(ex)) { return; }
   table.deleteAllLines();
   for (int i=1; i <= dynlen(allChambers); i++) {
     mapping chamber = allChambers[i];
@@ -230,33 +205,26 @@ LANG:1 11 Get Mapping
     if (emu_checkException(ex)) { return; }
     mapping master = getMasterData(chamber, ex);
     if (emu_checkException(ex)) { return; }
-    mapping primary = getPrimaryData(master, ex);
+    mapping masterChannel = getMasterChannelData(chamber, ex);
+    if (emu_checkException(ex)) { return; }
+    mapping primary = getPrimaryData(chamber, ex);
     if (emu_checkException(ex)) { return; }
     table.appendLine(\"chamber\", chamber, \"module\", module, 
                      \"master\", master, \"primary\", primary);
     
     // put in the structure for xml
     // primary
-    if (!mappingHasKey(primary, \"address\")) {
-      primary[\"hostId\"] = \"unknown\";
-      primary[\"port\"] = \"unknown\";
-      primary[\"address\"] = \"unknown\";
-    }
-    
     primary[\"type\"] = \"hvPrimary\";
     string primaryId = primary[\"hostId\"] + \"_\" + 
                        primary[\"address\"] + \"_\" +
                        primary[\"port\"];
     primary[\"id\"] = primaryId;
-    primary[\"dcsId\"] = \"HV_PR_primary\" + primaryId;
     if (!mappingHasKey(primaries, primaryId)) {
       primaries[primaryId] = primary;
       primaries[primaryId][\"children\"] = makeDynString(); // masters
     }
     // master
     master[\"type\"] = \"hvMaster\";
-    int masterChannelNum = master[\"channelNumber\"];
-    mappingRemove(master, \"channelNumber\");    
     if (!mappingHasKey(masters, master[\"id\"])) {
       masters[master[\"id\"]] = master;
       masters[master[\"id\"]][\"children\"] = makeDynString(); // master channels
@@ -266,11 +234,7 @@ LANG:1 11 Get Mapping
     }
     
     // master channel
-    mapping masterChannel;
     masterChannel[\"type\"] = \"hvMasterChannel\";
-    masterChannel[\"id\"] = master[\"id\"] + \"/\" + masterChannelNum;
-    masterChannel[\"channelNumber\"] = masterChannelNum;
-    masterChannel[\"dcsId\"] = master[\"dcsId\"] + \".data.v\" + (masterChannelNum + 1);
     if (!mappingHasKey(masterChannels, masterChannel[\"id\"])) {
       masterChannels[masterChannel[\"id\"]] = masterChannel;
       masterChannels[masterChannel[\"id\"]][\"children\"] = makeDynString(); // modules
@@ -320,7 +284,11 @@ LANG:1 11 Get Mapping
       string segmentId = chamberId + \"/hvSeg\" + segNumStr;
       hvSegment[\"moduleChannel\"] = channel;
       hvSegment[\"isInChamber\"] = chamberId;
-      hvSegment[\"dcsId\"] = moduleDp + \".data.v\" + channel;
+      string dcsId = moduleDp + \"/FastMon.channels.ch\" + channel;
+      if (strpos(moduleDp, \"FastMon\") >= 0) {
+        dcsId = moduleDp + \".channels.ch\" + channel;
+      }
+      hvSegment[\"dcsId\"] = dcsId;
       hvSegments[segmentId] = hvSegment;
       dynAppend(modules[module[\"id\"]][\"children\"], segmentId);
     }
@@ -418,7 +386,9 @@ T
 LANG:1 12 Write to XML
 "main()
 {
+  emu_info(\"Writing to XML...\");
   writeXml();
+  emu_info(\"DONE!\");
 }" 0
  E E E
 0
