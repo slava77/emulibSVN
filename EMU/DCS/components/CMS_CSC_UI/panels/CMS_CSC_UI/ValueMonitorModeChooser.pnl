@@ -24,11 +24,11 @@ void initConstants() {
   valueMonitorModes[5][1] = \"DPs_Max\";
   valueMonitorModes[5][2] = \"HV_iMon_2uA\";
   
-  valueMonitorModes[5][1] = \"DPs_Max\";
-  valueMonitorModes[5][2] = \"HV_iMon_5uA\";
+  valueMonitorModes[6][1] = \"DPs_Max\";
+  valueMonitorModes[6][2] = \"HV_iMon_5uA\";
   
-  valueMonitorModes[5][1] = \"DPs_Max\";
-  valueMonitorModes[5][2] = \"HV_iMon_10uA\";
+  valueMonitorModes[7][1] = \"DPs_Max\";
+  valueMonitorModes[7][2] = \"HV_iMon_10uA\";
   
 }" 0
  E E E E 1 -1 -1 0  0 0
