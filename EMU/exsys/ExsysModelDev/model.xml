@@ -178,7 +178,29 @@
             delimiter="/" keepformat="true" delimitertype="row" autocommit="true" onerror="abort" classpathref="dev-classpath">
             <transaction src="${sqlbase}/cdw_ontology_post_import.sql"/>
         </sql>
+        
+        <!-- Execute the database update stage 3 SQL - this one adds some indexes and constraints to ontology related tables -->
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="continue" classpathref="dev-classpath">
+            <transaction src="${sqlbase}/cdw_updatedb_stage03.sql"/>
+        </sql>
+        
+    </target>
 
+    
+    
+    
+    
+    
+    
+    <target name="999-oba" depends="db-properties">
+
+        <!-- Execute the database update stage 3 SQL - this one adds some indexes and constraints to ontology related tables -->
+        <sql driver="${hibernate.connection.driver_class}" url="${hibernate.connection.url}" userid="${hibernate.connection.username}" password="${hibernate.connection.password}"
+            delimiter="/" keepformat="true" delimitertype="row" onerror="continue" classpathref="dev-classpath">
+            <transaction src="${sqlbase}/cdw_updatedb_stage03.sql"/>
+        </sql>
+        
     </target>
 
     <target name="generate-fact-schema">

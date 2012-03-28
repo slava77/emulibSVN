@@ -52,8 +52,8 @@ begin
               where (CCL_NAME) not in
                 (select CCL_NAME from CDW_COMPONENT_CLASSES)) loop
 
-    insert into CDW_COMPONENT_CLASSES (CCL_ID, CCL_NAME, CCL_DESCR) values (r.CCL_ID, r.CCL_NAME, 'Removed from current update!');
-    insert into CDW_COMPONENT_CLASSES$IDS (CCL_ID_NEW, CCL_NAME, CCL_ID_FIN) values (r.CCL_ID, r.CCL_NAME, r.CCL_ID);
+    insert into CDW_COMPONENT_CLASSES (CCL_ID, CCL_NAME, CCL_DESCR) values (r.CCL_ID * -1, r.CCL_NAME, 'Removed from current update!');
+    insert into CDW_COMPONENT_CLASSES$IDS (CCL_ID_NEW, CCL_NAME, CCL_ID_FIN) values (r.CCL_ID * -1, r.CCL_NAME, r.CCL_ID);
 
   end loop;
 
@@ -102,6 +102,110 @@ set
     c.CCL_ID = (select ci.CCL_ID_FIN
                 from CDW_COMPONENT_CLASSES$IDS ci
                 where ci.CCL_ID_NEW = c.CCL_ID)
+/
+
+------------------------------------------------------------------------------------
+--
+-- Handling Component Link Classes
+--
+------------------------------------------------------------------------------------
+
+-- Creating and populating new lcl table backup
+create table
+  CDW_COMPONENT_LINK_CLASSES$IDS
+as
+  select
+    LCL_ID as LCL_ID_NEW,
+    LCL_NAME,
+    LCL_ID as LCL_ID_FIN
+  from
+    CDW_COMPONENT_LINK_CLASSES
+/
+
+-- Add index
+CREATE UNIQUE INDEX CDW_LCL_IDS_IDX ON CDW_COMPONENT_LINK_CLASSES$IDS (LCL_ID_NEW, LCL_ID_FIN)
+/
+
+-- Add index
+CREATE UNIQUE INDEX CDW_LCL_IDS_NAME_IDX ON CDW_COMPONENT_LINK_CLASSES$IDS (LCL_NAME)
+/
+
+-- Set all identifiers to NULL
+update CDW_COMPONENT_LINK_CLASSES$IDS set LCL_ID_FIN = null
+/
+
+-- Update identifiers to previous id's (where it is possible)
+update
+  CDW_COMPONENT_LINK_CLASSES$IDS lci
+set
+  lci.LCL_ID_FIN = (
+    select
+      lco.LCL_ID
+    from
+      CDW_COMPONENT_LINK_CLASSES$OLD lco
+    where
+      lci.LCL_NAME = lco.LCL_NAME
+  )
+/
+
+declare
+  l_lcl_id number := 0;
+begin
+
+  -- Insert all link classes that where removed from current ontology
+  for r in (select LCL_ID, LCL_NAME from CDW_COMPONENT_LINK_CLASSES$OLD
+              where (LCL_NAME) not in
+                (select LCL_NAME from CDW_COMPONENT_LINK_CLASSES)) loop
+
+    insert into CDW_COMPONENT_LINK_CLASSES (LCL_ID, LCL_NAME, LCL_DESCR, LCL_TRANSITIVE) values (r.LCL_ID * -1, r.LCL_NAME, 'Removed from current update!', 0);
+    insert into CDW_COMPONENT_LINK_CLASSES$IDS (LCL_ID_NEW, LCL_NAME, LCL_ID_FIN) values (r.LCL_ID * -1, r.LCL_NAME, r.LCL_ID);
+
+  end loop;
+
+  -- Get next id
+  select nvl(max(LCL_ID_FIN), 0) + 1 into l_lcl_id from CDW_COMPONENT_LINK_CLASSES$IDS where LCL_ID_FIN is not null;
+
+  -- Update newly created link classes with appropriate unique id's
+  for r in (select LCL_NAME from CDW_COMPONENT_LINK_CLASSES$IDS where LCL_ID_FIN is null) loop
+    update CDW_COMPONENT_LINK_CLASSES$IDS set LCL_ID_FIN = l_lcl_id where LCL_NAME = r.LCL_NAME;
+    l_lcl_id := l_lcl_id + 1;
+  end loop;
+
+end;
+/
+
+-- Updating component class foreign keys
+
+update
+    RE_REL_CMP_FINDER_LINK_CLASSES finder
+set
+    finder.RECFL_COMPONENT_LINK_CLASS_ID = (select lci.LCL_ID_FIN
+                            from CDW_COMPONENT_LINK_CLASSES$IDS lci
+                            where lci.LCL_ID_NEW = finder.RECFL_COMPONENT_LINK_CLASS_ID)
+/
+
+update
+    CDW_COMPONENT_LINK_CLASSES lc
+set
+    lc.LCL_INVERSE_LCL_ID = (select lci.LCL_ID_FIN
+                            from CDW_COMPONENT_LINK_CLASSES$IDS lci
+                            where lci.LCL_ID_NEW = lc.LCL_INVERSE_LCL_ID)
+/
+
+update
+    CDW_COMPONENT_LINK_CLASSES lc
+set
+    lc.LCL_PARENT_LCL_ID = (select lci.LCL_ID_FIN
+                            from CDW_COMPONENT_LINK_CLASSES$IDS lci
+                            where lci.LCL_ID_NEW = lc.LCL_PARENT_LCL_ID)
+/
+
+update
+    CDW_COMPONENT_LINK_CLASSES lc
+set
+    lc.LCL_ID = (select lci.LCL_ID_FIN
+                 from CDW_COMPONENT_LINK_CLASSES$IDS lci
+                 where lci.LCL_ID_NEW = lc.LCL_ID)
 /
 
 ------------------------------------------------------------------------------------
@@ -164,8 +268,8 @@ begin
       insert into CDW_COMPONENT_CLASSES (CCL_ID, CCL_NAME, CCL_DESCR) values (l_ccl_id, 'REMOVED', 'Automatically added while importing ontology');
     end if;
 
-    insert into CDW_COMPONENTS (CMP_ID, CMP_NAME, CMP_CCL_ID) values (r.CMP_ID, r.CMP_NAME, l_ccl_id);
-    insert into CDW_COMPONENTS$IDS (CMP_ID_NEW, CMP_NAME, CMP_ID_FIN) values (r.CMP_ID, r.CMP_NAME, r.CMP_ID);
+    insert into CDW_COMPONENTS (CMP_ID, CMP_NAME, CMP_CCL_ID) values (r.CMP_ID *  -1, r.CMP_NAME, l_ccl_id);
+    insert into CDW_COMPONENTS$IDS (CMP_ID_NEW, CMP_NAME, CMP_ID_FIN) values (r.CMP_ID * -1, r.CMP_NAME, r.CMP_ID);
 
   end loop;
 

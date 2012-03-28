@@ -34,6 +34,18 @@ begin
         null;
     end;
 
+    begin
+        execute immediate 'drop table CDW_COMPONENT_LINK_CLASSES$OLD';
+    exception when others then
+        null;
+    end;
+
+    begin
+        execute immediate 'drop table CDW_COMPONENT_LINK_CLASSES$IDS';
+    exception when others then
+        null;
+    end;
+
 end;
 /
 
@@ -56,11 +68,23 @@ as
     CDW_COMPONENT_CLASSES
 /
 
+create table
+  CDW_COMPONENT_LINK_CLASSES$OLD
+as
+  select
+    *
+  from
+    CDW_COMPONENT_LINK_CLASSES
+/
+
 -- Add index
 CREATE UNIQUE INDEX CDW_COMPONENT_OLD_IDX ON CDW_COMPONENTS$OLD (CMP_NAME)
 /
 
 CREATE UNIQUE INDEX CDW_COMPONENT_CLASS_OLD_IDX ON CDW_COMPONENT_CLASSES$OLD (CCL_NAME)
+/
+
+CREATE UNIQUE INDEX CDW_CMP_LINK_CLASS_OLD_IDX ON CDW_COMPONENT_LINK_CLASSES$OLD (LCL_NAME)
 /
 
 delete from CDW_COMPONENT_CLASS_PARENTS
