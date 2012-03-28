@@ -55,7 +55,7 @@ mapping getMasterData(mapping chamberDeviceParams, dyn_string &ex) {
   dpGet(masterIdDp, masterId);
     
   masterDeviceParams[\"id\"] = masterId;
-  masterDeviceParams[\"dcsId\"] = masterDp;
+  masterDeviceParams[\"dcsId\"] = dpSubStr(masterDp, DPSUB_DP_EL);
   
   return masterDeviceParams;
 }
@@ -76,9 +76,9 @@ mapping getMasterChannelData(mapping chamberDeviceParams, dyn_string &ex) {
   dpGet(masterIdDp, masterId,
         moduleIdDp, moduleId);
     
-  masterChannelDeviceParams[\"channelName\"] = \"ToDistribution\" + moduleId;
+  masterChannelDeviceParams[\"channelName\"] = \"ToDistrib\" + moduleId;
   masterChannelDeviceParams[\"id\"] = masterId + \"_\" + masterChannelDeviceParams[\"channelName\"];
-  masterChannelDeviceParams[\"dcsId\"] = masterChannelDp;
+  masterChannelDeviceParams[\"dcsId\"] = dpSubStr(masterChannelDp, DPSUB_DP_EL);
   
   return masterChannelDeviceParams;
 }
@@ -98,7 +98,7 @@ mapping getModuleData(mapping chamberDeviceParams, dyn_string &ex) {
   dpGet(numChansDp, numChans);
   
   moduleDeviceParams[\"id\"] = moduleId;
-  moduleDeviceParams[\"dcsId\"] = chamberDeviceParams[\"dcsId\"];
+  moduleDeviceParams[\"dcsId\"] = dpSubStr(chamberDeviceParams[\"dcsId\"], DPSUB_DP);
   moduleDeviceParams[\"channelsStart\"] = 1;
   moduleDeviceParams[\"channelsEnd\"] = numChans;
 
