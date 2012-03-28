@@ -60,6 +60,7 @@ public const int EMUHV_COMMAND_SET_VSET      = 7;  // Set output voltage
 public const int EMUHV_COMMAND_RESET_TRIP    = 37; // Reset trip state
 public const int EMUHV_COMMAND_SET_MOD_STATE = 30; // Set module state
 public const int EMUHV_COMMAND_SET_STATE     = 8;  // Set state
+public const int EMUHV_COMMAND_SET_OV_LIMIT  = 59; // Set overvoltage limit
 
 public const int EMUHV_VOLTAGE_NOMINAL = 3600;
 public const int EMUHV_VOLTAGE_STANDBY = 3000;
@@ -208,7 +209,8 @@ public void emuhv_sendCommand(mapping deviceParams, int command, dyn_string &exc
       (command != EMUHV_COMMAND_SET_VSET) && 
       (command != EMUHV_COMMAND_RESET_TRIP) &&
       (command != EMUHV_COMMAND_SET_MOD_STATE) &&
-      (command != EMUHV_COMMAND_SET_STATE)) {
+      (command != EMUHV_COMMAND_SET_STATE) &&
+      (command != EMUHV_COMMAND_SET_OV_LIMIT)) {
     
     emu_addError("Unsupported command: " + command, exceptionInfo);
     return;
@@ -223,7 +225,8 @@ public void emuhv_sendCommand(mapping deviceParams, int command, dyn_string &exc
           (command == EMUHV_COMMAND_SET_IMAX_RAMP) ||
           (command == EMUHV_COMMAND_SET_VSET) ||
           (command == EMUHV_COMMAND_SET_MOD_STATE) ||
-          (command == EMUHV_COMMAND_SET_STATE))
+          (command == EMUHV_COMMAND_SET_STATE) ||
+          (command == EMUHV_COMMAND_SET_OV_LIMIT))
      ) {
     
     emu_addError("Unsupported command: No value supplied for command " + command, exceptionInfo);
