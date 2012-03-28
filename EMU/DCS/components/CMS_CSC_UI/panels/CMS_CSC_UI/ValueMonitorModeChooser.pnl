@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 12 Mode changer
-PANEL,-1 -1 257 160 N "_3DFace" 0
+PANEL,-1 -1 257 200 N "_3DFace" 0
 "main()
 {
   initConstants();
@@ -22,7 +22,14 @@ void initConstants() {
   valueMonitorModes[4][2] = \"HV_vMon\";
 
   valueMonitorModes[5][1] = \"DPs_Max\";
-  valueMonitorModes[5][2] = \"HV_iMon\";
+  valueMonitorModes[5][2] = \"HV_iMon_2uA\";
+  
+  valueMonitorModes[5][1] = \"DPs_Max\";
+  valueMonitorModes[5][2] = \"HV_iMon_5uA\";
+  
+  valueMonitorModes[5][1] = \"DPs_Max\";
+  valueMonitorModes[5][2] = \"HV_iMon_10uA\";
+  
 }" 0
  E E E E 1 -1 -1 0  0 0
 ""0  1
@@ -50,8 +57,8 @@ LANG:1 0
 0
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
-0  18 18 242 146
-5
+0  18 18 242 182
+7
 T 
 1
 LANG:1 15 Max Temperature
@@ -90,7 +97,25 @@ E E
 0 0 0 0 0
 T 
 1
-LANG:1 19 Max HV Current (uA)
+LANG:1 26 Max HV Current (up to 2uA)
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 26 Max HV Current (up to 5uA)
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 27 Max HV Current (up to 10uA)
 
 0 
 1
@@ -131,7 +156,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E 1.5 0 0.89171974522293 -1415 -768.471337579618 0 E 950 873 1111 1031
+E E 0 0 1 0 1 E 1.5 0 1.146496815286624 -1415 -990.891719745223 0 E 950 873 1111 1031
 1
 LANG:1 25 Arial,8,-1,5,50,0,0,0,0,0
 0 1
