@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 12 Mode changer
-PANEL,-1 -1 257 200 N "_3DFace" 0
+PANEL,-1 -1 259 200 N "_3DFace" 0
 "main()
 {
   initConstants();
