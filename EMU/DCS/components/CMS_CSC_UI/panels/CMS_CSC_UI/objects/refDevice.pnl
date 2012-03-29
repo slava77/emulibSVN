@@ -216,7 +216,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
   if (($deviceType == \"chamber\") && me11 && (
                                               (mode == \"high_voltage\") ||
                                               (mode == \"HV_vMon\") ||
-                                              (mode == \"HV_iMon\"))) {
+                                              (strpos(mode, \"HV_iMon\") >= 0))) {
     mode = \"me11_\" + mode;
     deviceParams = emuui_getME11HVChannelsDeviceParams(deviceParams, ex);
     if (emu_checkException(ex)) { return; }
@@ -488,8 +488,8 @@ void updateME11hvFSMModeBitsCB(string dp, bit32 modeBits) {
 
 /** This function is used in in DP mode when connection is made to a DP of float or integer types. */
 void updateDPStateCB(string dp, float value) {
-  if (currentConnectionMode == \"chamber_HV_iMon\") {
-    value /= 11.0; // convert units to micro amps for HV current
+  if (strpos(currentConnectionMode, \"chamber_HV_iMon\") >= 0) {
+    value /= 1000; // convert units from nano Amps to micro amps for HV current
   }
       
   dyn_string ex;
@@ -522,7 +522,7 @@ void updateStringDPStateCB(string dp, string value) {
 
 /** Call-back function to update the state of multiple DPs connection computing the value by taking an average. */
 void updateDPsAverageStateCB(string firstDp, float firstValue) {
-  bool isImon = (currentConnectionMode == \"chamber_HV_iMon\");
+  bool isImon = (strpos(currentConnectionMode, \"chamber_HV_iMon\") > 0);
 
   dyn_float values;
   for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
@@ -555,7 +555,7 @@ void updateDPsAverageStateCB(string firstDp, float firstValue) {
 
 /** Call-back function to update the state of multiple DPs connection computing the value by taking the maximum. */
 void updateDPsMaxStateCB(string firstDp, float firstValue) {
-  bool isImon = (currentConnectionMode == \"chamber_HV_iMon\");
+  bool isImon = (strpos(currentConnectionMode, \"chamber_HV_iMon\") > 0);
   
   dyn_float values;
   for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
