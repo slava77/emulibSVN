@@ -67,7 +67,7 @@ void go(dyn_string dps, time startTime, time endTime, float minCurrent, float ma
     float selectionMinCurrent = maxINT();
     float selectionMaxCurrent = minINT();
     for (int j=1; j <= dynlen(values); j++) {
-      float current = values[j] / 11;
+      float current = values[j] / 1000;
       if ((current >= minCurrent) && (current <= maxCurrent)) {
         if (!selected) {
           selected = true;
@@ -187,7 +187,7 @@ void showPlot(string dpe, string channelName, time startTime = 0, time endTime =
     dpSet(\"trendPlot.timeRange\", duration);
   
   
-    ChildPanelOnCentral(\"fwTrending/fwTrendingPlot.pnl\", \"HV Current NOTE: you have to divide the value by 11 to get uA\", 
+    ChildPanelOnCentral(\"fwTrending/fwTrendingPlot.pnl\", \"HV Current (nA)\", 
                       makeDynString(\"$PlotName:trendPlot\", 
                                     \"$templateParameters:dp1=\" + dpe + \",dp2=,dp3=,dp4,dp5,dp6,dp7,dp8,plotName=HV Current\"));
   }  
@@ -232,8 +232,8 @@ E E E
 LANG:1 0 
 
 2
-"firstDayOfWeek" "enum 1"
 "horizontalHeaderFormat" "enum 0"
+"firstDayOfWeek" "enum 1"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  10 80 210 230
@@ -334,8 +334,8 @@ E E E
 LANG:1 0 
 
 2
-"horizontalHeaderFormat" "enum 0"
 "firstDayOfWeek" "enum 1"
+"horizontalHeaderFormat" "enum 0"
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  10 310 210 460
