@@ -27,6 +27,7 @@ import jsf.bean.gui.log.SimpleLogger;
 public abstract class JsfBeanBase implements Serializable {
 
     private static final Logger logger = SimpleLogger.getLogger(JsfBeanBase.class);
+    private static final int YEAR_SECONDS = 356 * 24 * 60 * 60;
 
     public JsfBeanBase() {
     }
@@ -129,14 +130,32 @@ public abstract class JsfBeanBase implements Serializable {
         refreshView();
     }
 
-    @Transient
+    /**
+     * Set cookie for 1 year
+     * @param name cookie name
+     * @param value cookie value
+     */
+    public static void setCookie(String name, String value) {
+        setCookie(name, value, YEAR_SECONDS);
+    }
+    
+    /**
+     * Set cookie
+     * @param name cookie name
+     * @param value cookie value
+     * @param age cookie age in seconds
+     */
     public static void setCookie(String name, String value, int age) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(age);
         getResponse().addCookie(cookie);
     }
 
-    @Transient
+    /**
+     * Get cookie value
+     * @param name cookie name
+     * @return value or null if not found
+     */
     public static String getCookie(String name) {
         Cookie cookie[] = getRequest().getCookies();
         if (cookie != null && cookie.length > 0) {

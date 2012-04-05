@@ -83,7 +83,7 @@ public class BeanTablePropertiesManager {
 
         // Saving filename in cookie
         if (!global) {
-            JsfBeanBase.setCookie(cookieName, filename, 356 * 24 * 60 * 60);
+            JsfBeanBase.setCookie(cookieName, filename);
         }
 
     }
