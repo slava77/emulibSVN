@@ -267,14 +267,11 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
 	// LeCroy3377::BlockRd sets LeCroy3377::TimeCh, which can be accessed by LeCroy3377::TimeChRd(),
 	//                     and LeCroy3377::Channel, which can be accessed by LeCroy3377::ChannelRd()
 	if ( !tdc->BlockRd( iShort ) ) break;
-	// if ( tdc->TimeChRd() >= tdcTimeMin_ && 
-	//      tdc->TimeChRd() <= tdcTimeMax_    ){
 	int tdcSocket = tdc->ChannelRd() / nDeviceChannels + 1;
 	Results* results = findResults( tdcSocket );
 	if ( results ) results->add( tdc->ChannelRd() % nDeviceChannels, amplitude, tdc->TimeChRd() );
 	// Check whether we've been instructed to abort in the meantime:
 	if ( ! isToKeepRunning_ ) return false;
-	// }
       } // for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort )
 
     } // for ( int iPulse = 0; iPulse < nPulses_; ++iPulse )
@@ -293,6 +290,137 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
 
   return true;
 }
+
+// bool AFEB::teststand::Measurement::countVsDAQ(){
+
+//   time_t timeOfLastUpdate = 0;
+
+//   // All tested devices in one measurement are read out by the same TDC. Take the first device to get its.
+//   int nDeviceChannels = results_.begin()->first->getNChannels();
+//   Crate* crate = results_.begin()->first->getCrate();
+//   LeCroy3377*       tdc = static_cast<LeCroy3377*>( crate->getModule( results_.begin()->first->getTDCSlot() ) );
+//   // All tested devices's signals in one measurement are fed through the same signal converter module. Take the first device to get its.
+//   LE32* signalConverter = static_cast<LE32*>( crate->getModule( results_.begin()->first->getSignalConverterSlot() ) );
+//   // Use either the specified pulse generator for common injection (through external capacitor), 
+//   // or the corresponding signal converter module to inject individually (through external or internal capacitor). 
+//   LE32*  pulseGenerator = NULL;
+//   if      ( injectionCapacitor_ == external ) pulseGenerator = static_cast<LE32*>( crate->getModule( results_.begin()->first->getPulseGeneratorSlot() ) );
+//   else if ( injectionCapacitor_ == internal ) pulseGenerator = signalConverter;
+//   CrateController* controller = crate->getCrateController();
+
+//   vector<int> tdcTimes( nDeviceChannels * results_.size() );
+//   for ( vector<int>::iterator t = tdcTimes.begin(); t != tdcTimes.end(); ++t ) *t = 0;
+
+//   controller->initialize();
+
+//   // TODO: remove debug
+//   // cout << "***AFEB::teststand::Measurement::countVsDAQ***" << endl << *crate << endl;  
+//   // while ( true ){
+//   //   controller->read( CAMAC::A0, CAMAC::F1, CAMAC::N7 );
+//   // }
+//   //
+
+//   // Zero CAMAC:
+//   //controller->z(); // TODO: needed? Takes very long, see why.
+
+//   // BEGIN test pulses
+//   // pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitudeMax_ );
+//   // pulseGenerator->enablePulses(  (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ) );
+//   // pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitudeMax_ );
+//   // cout << "Wrote amplitude " << amplitudeMax_ 
+//   //      << " to channels " <<  (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 )
+//   //      << endl;
+//   // for( int i=0; i<100000; i++ ){
+//   //   if ( i%1000 == 0 ) std::cout << "pulse " << std::dec << i << std::endl;
+//   //   pulseGenerator->exec();
+//   // }
+//   // END test pulses
+
+//   // Set up TDC:
+//   // Mode1 = M1    : Common Start , Single Word
+//   // Shift = 0     : 0.5 ns resolution
+//   // Hit   = 2     : max 2 hits per channel allowed
+//   // Edge  = 0     : only leading edge recorded
+//   // Mpi   = 0     : no Measure Pause Interval
+//   // TimeOut = 550 : time out at 550 ns (in multiples of 50ns, should be slightly longer than the enforced time out delay)
+//   // TimeEnf = 511 : time out enforced at 511 ns (10-bit data for single word, leading edge only --> max 1024 * 0.5 ns = 512 ns)
+//   tdc->Set( LeCroy3377::M1, 0, 2, 0, 0, 550, 511 ); // ( Mode, Shift, Hit, Edge, Mpi, TimeOut, TimeEnf )
+
+//   // Set up threshold-setting module:
+//   signalConverter->writeThreshold( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), thresholdValue_ );
+//   signalConverter->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), 0 );
+//   signalConverter->enablePulses( LE32::NoCh );
+
+//   // Set pulse generator
+//   pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitudeMin_ );
+
+//   // Gradually crank up the pulse height:
+//   for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ ){
+
+//     pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitude );
+//     pulseGenerator->enablePulses  ( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ) );
+//     pulseGenerator->exec();
+//     tdc->Clear();
+//     tdc->EnableAcq();
+
+//     // Send pulses
+//     for ( int iPulse = 0; iPulse < nPulses_; ++iPulse ){
+
+//       for ( vector<int>::iterator t = tdcTimes.begin(); t != tdcTimes.end(); ++t ) *t = 0;
+
+//       tdc->Clear();
+//       pulseGenerator->exec();
+      
+//       tdc->HeadRdBlock(); // This does the actual hardware readout.
+
+//       // Check whether we've been instructed to abort in the meantime:
+//       if ( ! isToKeepRunning_ ) return false;
+
+//       // Read out TDC channels
+//       for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort ){
+// 	// LeCroy3377::BlockRd sets LeCroy3377::TimeCh, which can be accessed by LeCroy3377::TimeChRd(),
+// 	//                     and LeCroy3377::Channel, which can be accessed by LeCroy3377::ChannelRd()
+// 	tdc->BlockRd( iShort );
+// 	cout << amplitude << "\t" << iPulse << "\t" << iShort << "\t" << tdc->ChannelRd() << "\t" << tdc->TimeChRd();
+// 	// Consider nonzero times only:
+// 	if ( 0 <= tdc->ChannelRd() && tdc->ChannelRd() < tdcTimes.size() && tdc->TimeChRd() > 0 ){
+// 	  if ( tdcTimes[tdc->ChannelRd()] == 0 ) tdcTimes[tdc->ChannelRd()] = tdc->TimeChRd();
+// 	  else { cout << endl; break; }
+// 	  // // Take the new value if it's the first one or if it's smaller than the one we already have:
+// 	  // if ( tdcTimes[tdc->ChannelRd()] == 0 || tdcTimes[tdc->ChannelRd()] > tdc->TimeChRd() ) {
+// 	  //   tdcTimes[tdc->ChannelRd()] = tdc->TimeChRd();
+// 	  //   cout << " *";
+// 	  // }
+// 	}
+// 	cout << endl;
+//       } // for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort )
+      
+//       for ( vector<int>::size_type iChannel = 0; iChannel < tdcTimes.size(); ++iChannel ){
+// 	if ( tdcTimes[iChannel] > 0 ){
+// 	  Results* results = findResults( iChannel / nDeviceChannels + 1 ); // The argument is the TDC socket number (1 or 2)
+// 	  if ( results ) results->add( iChannel % nDeviceChannels, amplitude, tdcTimes[iChannel] );
+// 	}
+//       }	
+      
+//       // Check whether we've been instructed to abort in the meantime:
+//       if ( ! isToKeepRunning_ ) return false;
+
+//     } // for ( int iPulse = 0; iPulse < nPulses_; ++iPulse )
+
+//     // Update stored results for the first and last amplitude or if they were updated too ling ago
+//     time_t now;
+//     time( &now );
+//     if ( now - timeOfLastUpdate > 10 || amplitude == amplitudeMin_ || amplitude == amplitudeMax_ ){
+//       timeOfLastUpdate = now;
+//       for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
+// 	r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
+//       }
+//     }
+
+//   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
+
+//   return true;
+// }
 
 
 bool AFEB::teststand::Measurement::dummyResultGenerator(){
