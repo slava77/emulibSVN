@@ -1,4 +1,4 @@
-#uses "CMS_CSCfw_HV_CC/emu_hvCommon.ctl"
+#uses "CMS_CSC_MiddleLayer/emu_hv.ctl"
 
 /**@file
 
