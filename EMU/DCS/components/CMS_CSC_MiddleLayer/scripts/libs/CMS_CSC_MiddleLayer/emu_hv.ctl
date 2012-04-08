@@ -174,6 +174,23 @@ public dyn_string emuhv_getAllChannelDps(mapping deviceParams, string dpPostfix,
 }
 
 /**
+  * Given an HV channel DP, this function returns device params of the corresponding channel.
+  */
+public mapping emuhv_getHvChannelDevice(string hvChannelDp, dyn_string &exceptionInfo) {
+  mapping deviceParams = emu_fsmNodeToDeviceParams(hvChannelDp, exceptionInfo);
+  if (emu_checkException(exceptionInfo)) { return; }
+  dyn_string dpSplit = strsplit(dpSubStr(hvChannelDp, DPSUB_DP_EL), ".");
+  if ((dynlen(dpSplit) < 3) || (dpSplit[2] != "channels") || (substr(dpSplit[3], 0, 2) != "ch")) {
+    emu_addError("emuhv_getHvChannelDevice: invalid HV channel DP: " + hvChannelDp, exceptionInfo);
+    return;
+  }
+  strreplace(dpSplit[3], "ch", "");
+  deviceParams["channelNumber"] = (int) dpSplit[3];
+  
+  return deviceParams;
+}
+
+/**
   * @return devive params of all channels of a given chamber.
   * @param deviceParams device parameters describing a chamber (must include "side", "station", "ring" and "chamberNumber" params)
   */
