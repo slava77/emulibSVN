@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 400 518 N "_3DFace" 0
+PANEL,-1 -1 403 678 N "_3DFace" 0
 E E E E E 1 -1 -1 0  30 30
 ""0  1
 E "#uses \"CMS_CSC_ExSys_Interface/exsysInterface.ctl\"
@@ -226,6 +226,105 @@ LANG:1 25 Start sending alert facts
   dyn_string ex;
   exsys_startAlertFactDelivery(ex);
   if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+30 8
+"FRAME1"
+""
+1 20 512 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+8 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E U  0 E 20 512 381 661
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 13 trip recovery
+13 9
+"PUSH_BUTTON8"
+""
+1 40 550 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  38 548 182 592
+
+T 
+1
+LANG:1 8 Force ON
+"const string EXSYS_COMMAND_DP = \"cms_csc_dcs_09:ExSys_command.value\";
+
+main()
+{
+  dpSetWait(EXSYS_COMMAND_DP, \"hvChannelForceOn|CscHighVoltage/CSC_ME_P21_C13/FastMon.channels.ch12\");
+  dpSetWait(EXSYS_COMMAND_DP, \"\");
+}" 0
+ E E E
+13 10
+"PUSH_BUTTON9"
+""
+1 220 550 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  218 548 362 592
+
+T 
+1
+LANG:1 8 Lower HV
+"const string EXSYS_COMMAND_DP = \"cms_csc_dcs_09:ExSys_command.value\";
+
+main()
+{
+  dpSetWait(EXSYS_COMMAND_DP, \"hvChannelVset|CscHighVoltage/CSC_ME_P21_C13/FastMon.channels.ch12|3500\");
+  dpSetWait(EXSYS_COMMAND_DP, \"\");
+}" 0
+ E E E
+13 11
+"PUSH_BUTTON10"
+""
+1 130 600 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  128 598 272 642
+
+T 
+1
+LANG:1 7 Disable
+"const string EXSYS_COMMAND_DP = \"cms_csc_dcs_09:ExSys_command.value\";
+
+main()
+{
+  dpSetWait(EXSYS_COMMAND_DP, \"hvChannelDisable|CscHighVoltage/CSC_ME_P21_C13/FastMon.channels.ch12\");
+  dpSetWait(EXSYS_COMMAND_DP, \"\");
 }" 0
  E E E
 0
