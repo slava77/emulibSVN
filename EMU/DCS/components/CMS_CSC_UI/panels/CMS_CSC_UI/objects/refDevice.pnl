@@ -556,7 +556,6 @@ void updateDPsAverageStateCB(string firstDp, float firstValue) {
 /** Call-back function to update the state of multiple DPs connection computing the value by taking the maximum. */
 void updateDPsMaxStateCB(string firstDp, float firstValue) {
   bool isImon = (strpos(currentConnectionMode, \"chamber_HV_iMon\") >= 0);
-  emu_info(\"va mano conn mode: \" + currentConnectionMode + \", isImon? \" + isImon);
   
   dyn_float values;
   for (int i=1; i <= dynlen(currentConnectionMultiple); i++) {
