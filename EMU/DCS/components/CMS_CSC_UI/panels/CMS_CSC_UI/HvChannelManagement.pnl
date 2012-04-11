@@ -97,6 +97,9 @@ void refreshLoweredChannels() {
   dyn_int nominalVsetValues = emu_dpGetMany(nominalVsetDps);
   for (int i=1; i <= dynlen(nominalVsetDps); i++) {
     if (nominalVsetValues[i] < 3600) { // this channel has a lowered nominal voltage setting
+      if (nominalVsetValues[i] == 0) {
+        continue;
+      }
       mapping channel = emuhv_getHvChannelDevice(nominalVsetDps[i], ex);
       emu_checkException(ex);
       if (dynContains(disabledChannelsList, channel)) {
