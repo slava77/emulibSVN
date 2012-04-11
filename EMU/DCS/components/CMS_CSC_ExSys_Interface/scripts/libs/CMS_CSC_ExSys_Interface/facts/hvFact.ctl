@@ -129,7 +129,11 @@ public void exsys_sendMe11ChannelVsetFact(string onChVsetDp, int voltage) {
   time t = getCurrentTime();
   dyn_string paramNames = makeDynString("voltageSetting");
   dyn_anytype paramValues = makeDynAnytype(voltage);
-  exsys_sendFact("DcsHVOnVoltageFact", t, onChVsetDp, true, EXSYS_FACT_SEVERITY_WARN,
+  string severity = EXSYS_FACT_SEVERITY_INFO;
+  if (voltage < 2900) {
+    severity = EXSYS_FACT_SEVERITY_WARN;
+  }
+  exsys_sendFact("DcsHVOnVoltageFact", t, onChVsetDp, true, severity,
                  "HV channel VSet fact", paramNames, paramValues, ex);
   emu_checkException(ex);
 }
@@ -142,7 +146,11 @@ public void exsys_sendMe11ChannelDisabledFact(string channelDp, bool isDisabled)
   time t = getCurrentTime();
   dyn_string paramNames = makeDynString("isDisabled");
   dyn_anytype paramValues = makeDynAnytype(isDisabled);
-  exsys_sendFact("DcsDisableEnableFact", t, channelDp, true, EXSYS_FACT_SEVERITY_WARN,
+  string severity = EXSYS_FACT_SEVERITY_INFO;
+  if (isDisabled) {
+    severity = EXSYS_FACT_SEVERITY_WARN;
+  }
+  exsys_sendFact("DcsDisableEnableFact", t, channelDp, true, severity,
                  "HV channel disabled/enabled fact", paramNames, paramValues, ex);
   emu_checkException(ex);
 }
