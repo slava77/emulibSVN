@@ -6,6 +6,8 @@ This package contains general purpose utility functions.
 @date   March 2009
 */
 
+#uses "majority_treeCache/treeCache.ctl" //used in emu_dpGetMany(..)
+
 const int emu_ERROR_REPORT_DELAY = 300; //ms
 
 const int emu_DEBUG_GENERAL = 1;
@@ -644,4 +646,20 @@ bool _emu_isInCache(string dpe) {
   dpe = dpSubStr(dpe, DPSUB_SYS_DP_EL_CONF_DET_ATT);
   strreplace(dpe, ":_online.._value", "");
   return mappingHasKey(g_emu_dpCache, dpe);
+}
+
+/**
+  * Efficiently do many dpGets (different systems allowed).
+  */
+dyn_anytype emu_dpGetMany(dyn_string dps) {
+  dyn_anytype ret;
+  if (isFunctionDefined("_treeCache_dpGetAll")) {
+    _treeCache_dpGetAll(dps, ret);
+  } else {
+    for (int i=1; i <= dynlen(dps); i++) {
+      dpGet(dps[i], ret[i]);
+    }
+  }
+  
+  return ret;
 }
