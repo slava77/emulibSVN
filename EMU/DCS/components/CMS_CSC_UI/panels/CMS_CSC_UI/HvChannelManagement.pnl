@@ -31,7 +31,7 @@ PANEL,-1 -1 517 874 N "_3DFace" 0
 /** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
 void initAcConstants() {
   controlButtons = makeDynString();
-  expertControlButtons = makeDynString();//\"btnUnmaskAndChangeVset\", \"btnMask\", \"btnChangeVset\", \"spinUnmaskVoltage\", \"spinChangeVoltage\", \"btnChangeChamberVset\");
+  expertControlButtons = makeDynString(\"btnUnmaskAndChangeVset\", \"btnMask\", \"btnChangeVset\", \"spinUnmaskVoltage\", \"spinChangeVoltage\", \"btnChangeChamberVset\");
 }
 " 0
  E E E E 1 -1 -1 0  140 50
