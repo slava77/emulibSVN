@@ -17,43 +17,46 @@ HV Fact handling
 public void exsys_startHvFactDelivery(dyn_string &ex) {
   emu_info("starting HV facts delivery service...");
   
-  dyn_string disabledChannelsDps = dpNames("*:HighVoltage/CSC_ME_*_HV.off_channels", "HV_1");
-  dyn_string channelVsetDps = dpNames("*:HighVoltage/CSC_ME_*_HV.on_ch_vsets", "HV_1");
-  dyn_string me11ChannelVsetDps = dpNames("*:CAEN/HVME11*/board*/channel*.userDefined", "FwCaenChannel");
+  dyn_string channelDisabledDps = dpNames("*:CscHighVoltage/CSC_ME_*/Settings.channels.ch*.disabled", "CscHvChamberSettings");
+  dyn_string channelOnVsetDps = dpNames("*:CscHighVoltage/CSC_ME_*/Settings.channels.ch*.on_vset", "CscHvChamberSettings");
+  dyn_string me11ChannelOnVsetDps = dpNames("*:CAEN/HVME11*/board*/channel*.userDefined", "FwCaenChannel");
+  
+  dyn_bool channelDisabledValues = emu_dpGetMany(channelDisabledDps);
+  dyn_int channelOnVsetValues = emu_dpGetMany(channelOnVsetDps);
   
   // send out initial values
   emu_info("sending out initial HV facts...");
-  for (int i=1; i <= dynlen(disabledChannelsDps); i++) {
-    exsys_sendDisabledChannelsFacts(disabledChannelsDps[i]);
+  for (int i=1; i <= dynlen(channelDisabledDps); i++) {
+    exsys_sendDisabledChannelsFacts(channelDisabledDps[i], channelDisabledValues[i]);
   }
-  for (int i=1; i <= dynlen(channelVsetDps); i++) {
-    exsys_sendChannelVsetFacts(channelVsetDps[i]);
+  for (int i=1; i <= dynlen(channelOnVsetDps); i++) {
+    exsys_sendChannelVsetFacts(channelOnVsetDps[i], channelOnVsetValues[i]);
   }
-  for (int i=1; i <= dynlen(me11ChannelVsetDps); i++) {
+  for (int i=1; i <= dynlen(me11ChannelOnVsetDps); i++) {
     string voltageStr;
-    dpGet(me11ChannelVsetDps[i], voltageStr);
+    dpGet(me11ChannelOnVsetDps[i], voltageStr);
     int voltage = voltageStr;
-    exsys_sendMe11ChannelVsetFact(me11ChannelVsetDps[i], voltage);
+    exsys_sendMe11ChannelVsetFact(me11ChannelOnVsetDps[i], voltage);
   }
-  for (int i=1; i <= dynlen(me11ChannelVsetDps); i++) {
-    string channelDp = dpSubStr(me11ChannelVsetDps[i], DPSUB_DP);
+  for (int i=1; i <= dynlen(me11ChannelOnVsetDps); i++) {
+    string channelDp = dpSubStr(me11ChannelOnVsetDps[i], DPSUB_DP);
     int enabled;
     fwUi_getEnabled("CSC_ME_11_HV", channelDp, enabled);
-    exsys_updateMe11HVChannelEnabledCB(dpSubStr(me11ChannelVsetDps[i], DPSUB_SYS_DP), enabled);
+    exsys_updateMe11HVChannelEnabledCB(dpSubStr(me11ChannelOnVsetDps[i], DPSUB_SYS_DP), enabled);
   }
   
   // connect
-  for (int i=1; i <= dynlen(disabledChannelsDps); i++) {
-    dpConnect("exsys_updateDisabledChannelsCB", false, disabledChannelsDps[i]);
+  for (int i=1; i <= dynlen(channelDisabledDps); i++) {
+    dpConnect("exsys_updateDisabledChannelsCB", false, channelDisabledDps[i]);
   }
-  for (int i=1; i <= dynlen(channelVsetDps); i++) {
-    dpConnect("exsys_updateHVChannelVsetsCB", false, channelVsetDps[i]);
+  for (int i=1; i <= dynlen(channelOnVsetDps); i++) {
+    dpConnect("exsys_updateHVChannelVsetsCB", false, channelOnVsetDps[i]);
   }
-  for (int i=1; i <= dynlen(me11ChannelVsetDps); i++) {
-    dpConnect("exsys_updateMe11HVChannelVsetCB", false, me11ChannelVsetDps[i]);
+  for (int i=1; i <= dynlen(me11ChannelOnVsetDps); i++) {
+    dpConnect("exsys_updateMe11HVChannelVsetCB", false, me11ChannelOnVsetDps[i]);
   }
-  for (int i=1; i <= dynlen(me11ChannelVsetDps); i++) {
-    string channelDp = dpSubStr(me11ChannelVsetDps[i], DPSUB_DP);
+  for (int i=1; i <= dynlen(me11ChannelOnVsetDps); i++) {
+    string channelDp = dpSubStr(me11ChannelOnVsetDps[i], DPSUB_DP);
     if (fwFsm_isDU("CSC_ME_11_HV", channelDp)) {  // make sure the node exists (we do have spare channels which are not in FSM!!!)
       fwUi_connectEnabled("exsys_updateMe11HVChannelEnabledCB", "CSC_ME_11_HV", channelDp);
     }
@@ -62,12 +65,12 @@ public void exsys_startHvFactDelivery(dyn_string &ex) {
   emu_info("HV facts delivery service started up successfully!");
 }
 
-public void exsys_updateDisabledChannelsCB(string dp, dyn_string value) {
-  exsys_sendDisabledChannelsFacts(dp);
+public void exsys_updateDisabledChannelsCB(string dp, bool isDisabled) {
+  exsys_sendDisabledChannelsFacts(dp, isDisabled);
 }
 
-public void exsys_updateHVChannelVsetsCB(string dp, dyn_string value) {
-  exsys_sendChannelVsetFacts(dp);
+public void exsys_updateHVChannelVsetsCB(string dp, int voltage) {
+  exsys_sendChannelVsetFacts(dp, voltage);
 }
 
 public void exsys_updateMe11HVChannelVsetCB(string dp, string value) {
@@ -82,53 +85,43 @@ public void exsys_updateMe11HVChannelEnabledCB(string dp, int enabled) {
   exsys_sendMe11ChannelDisabledFact(channelDp, isDisabled);
 }
 
-/** Given a HighVoltage/CSC_ME_*_HV.off_channels DP, this function sends out facts about all disabled and
-  * not disabled channels on the chamber that this DP belongs to.
+/**
+  * Given a CscHvChamberSettings.channels.ch*.disabled DPE and it's value, this function sends out facts about 
+  * that channel being disabled or not.
   */
-public void exsys_sendDisabledChannelsFacts(string offChannelsDp) {
-  dyn_int offChannels;
-  dpGet(offChannelsDp, offChannels);
-  
+public void exsys_sendDisabledChannelsFacts(string dpe, bool isDisabled) {
   dyn_string ex;
-  mapping chamber = emu_fsmNodeToDeviceParams(offChannelsDp, ex);
-  if (emu_checkException(ex)) { return; }
-  
-  dyn_string channelDps;
-  int channelOffset;
-  emuui_chamberGetHvChannelDps(chamber, channelDps, channelOffset, ex);
-
-  time t = getCurrentTime();  
-  for (int i=1; i <= dynlen(channelDps); i++) {
-    bool isDisabled = dynContains(offChannels, i + channelOffset);
-    dyn_string paramNames = makeDynString("isDisabled");
-    dyn_anytype paramValues = makeDynAnytype(isDisabled);
-    exsys_sendFact("DcsDisableEnableFact", t, channelDps[i], true, EXSYS_FACT_SEVERITY_WARN,
-                   "HV channel disabled/enabled fact", paramNames, paramValues, ex);
-    emu_checkException(ex);
+  time t = getCurrentTime();
+  strreplace(dpe, "/Settings", "/FastMon"); // expert system only knows about fast mon DPs
+  strreplace(dpe, ".disabled", ""); // leave only the channel part, no DPE (it doesn't exist in fastMon)
+  dyn_string paramNames = makeDynString("isDisabled");
+  dyn_anytype paramValues = makeDynAnytype(isDisabled);
+  string severity = EXSYS_FACT_SEVERITY_INFO;
+  if (isDisabled) {
+    severity = EXSYS_FACT_SEVERITY_WARN;
   }
+  exsys_sendFact("DcsDisableEnableFact", t, dpe, true, severity,
+                 "HV channel disabled/enabled fact", paramNames, paramValues, ex);
+  emu_checkException(ex);
 }
 
-/** Given a HighVoltage/CSC_ME_*_HV.ch_on_vsets DP, this function sends out facts about all individual channel Vsets */
-public void exsys_sendChannelVsetFacts(string onChVsetsDp) {
-  dyn_int onChVsets;
-  dpGet(onChVsetsDp, onChVsets);
-  
+/**
+  * Given a CscHvChamberSettings.channels.ch*.on_vset DPE and it's value, this function sends out facts about nominal voltage of that channel.
+  */
+public void exsys_sendChannelVsetFacts(string onChVsetDpe, int voltage) {
   dyn_string ex;
-  mapping chamber = emu_fsmNodeToDeviceParams(onChVsetsDp, ex);
-  if (emu_checkException(ex)) { return; }
-  
-  dyn_string channelDps;
-  int channelOffset;
-  emuui_chamberGetHvChannelDps(chamber, channelDps, channelOffset, ex);
-
   time t = getCurrentTime();
-  for (int i=1; i <= dynlen(channelDps); i++) {
-    dyn_string paramNames = makeDynString("voltageSetting");
-    dyn_anytype paramValues = makeDynAnytype(onChVsets[i]);
-    exsys_sendFact("DcsHVOnVoltageFact", t, channelDps[i], true, EXSYS_FACT_SEVERITY_WARN,
-                   "HV channel VSet fact", paramNames, paramValues, ex);
-    emu_checkException(ex);
+  strreplace(onChVsetDpe, "/Settings", "/FastMon"); // expert system only knows about fast mon DPs
+  strreplace(onChVsetDpe, ".on_vset", ""); // leave only the channel part, no DPE (it doesn't exist in fastMon)
+  dyn_string paramNames = makeDynString("voltageSetting");
+  dyn_anytype paramValues = makeDynAnytype(voltage);
+  string severity = EXSYS_FACT_SEVERITY_INFO;
+  if (voltage < 3600) {
+    severity = EXSYS_FACT_SEVERITY_WARN;
   }
+  exsys_sendFact("DcsHVOnVoltageFact", t, onChVsetDpe, true, severity,
+                 "HV channel VSet fact", paramNames, paramValues, ex);
+  emu_checkException(ex);
 }
 
 public void exsys_sendMe11ChannelVsetFact(string onChVsetDp, int voltage) {

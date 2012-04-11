@@ -6,6 +6,8 @@ Contains some utility functions
 @date   October 2010
 */
 
+#uses "CMS_CSC_common/emu_common.ctl"
+
 /**
   * Does a mass dpGet on all dps + dpes pairs.
   * @return values of dpGet for all dps + all dpes.
@@ -17,7 +19,6 @@ dyn_anytype exsys_massDpeGet(dyn_string dps, dyn_string dpes) {
       dynAppend(fullDpes, dps[i] + dpes[j]);
     }
   }
-  dyn_anytype values;
-  _treeCache_dpGetAll(fullDpes, values);
+  dyn_anytype values = emu_dpGetMany(fullDpes);
   return values;
 }
