@@ -753,6 +753,7 @@ void emuLvCRB_powerOnCRB(string sCRB)
     time dt = endT - startT;
     emuLvCRB_showDebug(bDebug,"Switch on took " + minute(dt) +":"+ second(dt) +"."+ milliSecond(dt));
     //-----end of Power on-----------------------------
+    dpSetWait("LV_START_UP_CHAMBER.",sCRB+" is finished");    
 }
 
 void emuLvCRB_powerOffCRB(string sCRB)
