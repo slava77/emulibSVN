@@ -689,7 +689,7 @@ void emuLvCRB_powerOnCRB(string sCRB)
   if (bBufferEmpty == true){
       delay(5); //set delay for first CRB to 5s
   }    
-//  mudcsCrb_stop_slow_control(sCRB); //for x2p
+  mudcsCrb_stop_slow_control(sCRB); //for x2p
   dpGet(sCRB+".switch_list",dsSwitchList);
   dpGet(sCRB+".off_channels",diOffChannels);
   string sElmb=substr(dsSwitchList[1],0,strpos(dsSwitchList[1],"/DO/"));
