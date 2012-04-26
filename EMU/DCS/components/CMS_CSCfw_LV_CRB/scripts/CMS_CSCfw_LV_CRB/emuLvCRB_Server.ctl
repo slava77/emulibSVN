@@ -137,7 +137,11 @@ void mudcsCrb_threadWatchForTimeouts()
        DebugTN("watch for time out...");
        iCountTimeOut = 0;
      }  
-   
+//------------------ for x2p ---------------------------------------------------------------------
+     if(automatic_stop_pcrate_slow_control)  
+      {
+        mudcsCrb_resume_slow_control();
+      }     
 //------------------ check opc and elmb node status ----------------------------------------------  
      dpGet("_OPCCANopen.ServerState",ServerState);
      general_count++;
@@ -685,7 +689,7 @@ void emuLvCRB_powerOnCRB(string sCRB)
   if (bBufferEmpty == true){
       delay(5); //set delay for first CRB to 5s
   }    
-  mudcsCrb_stop_slow_control(sCRB); //for x2p
+//  mudcsCrb_stop_slow_control(sCRB); //for x2p
   dpGet(sCRB+".switch_list",dsSwitchList);
   dpGet(sCRB+".off_channels",diOffChannels);
   string sElmb=substr(dsSwitchList[1],0,strpos(dsSwitchList[1],"/DO/"));
@@ -749,7 +753,6 @@ void emuLvCRB_powerOnCRB(string sCRB)
     time dt = endT - startT;
     emuLvCRB_showDebug(bDebug,"Switch on took " + minute(dt) +":"+ second(dt) +"."+ milliSecond(dt));
     //-----end of Power on-----------------------------
-    dpSetWait("LV_START_UP_CHAMBER.",sCRB+" is finished"); 
 }
 
 void emuLvCRB_powerOffCRB(string sCRB)
