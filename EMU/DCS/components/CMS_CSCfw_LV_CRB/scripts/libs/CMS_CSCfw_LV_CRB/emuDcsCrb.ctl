@@ -446,11 +446,6 @@ void update_confirmation(string dpName, string value)
             if(coord_int<=30)plus_len++;
             else minus_len++;
           }
-          if ((coord_int_receive <=30 && side == "P" && plus_len==0 && last_command !="STOP_SLOW_CONTROL") ||
-              (coord_int_receive > 30 && side == "M" && minus_len==0 && last_command !="STOP_SLOW_CONTROL"))
-          {
-            mudcsCrb_sendToX2P(side, "RESUME_SLOW_CONTROL");
-          }
           dpSetWait(mudcsLvAddSystem("PREPARE_POWER_UP_BUFFER."),CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER);   
         }
      }
@@ -535,13 +530,6 @@ void mudcsCrb_stop_slow_control(string fsm)
      dynAppend(CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER,coord_int);
      dynUnique(CSC_fwCAN1_g_PREPARE_POWER_UP_BUFFER);      
    } 
-  else
-   {    
-     emuLvCRB_showDebug(bDebug,"debug_stop_slow_control "+fsm);
-     emuLvCRB_showDebug(bDebug,"debug_stop_slow_control "+CSC_fwCAN1_g_PLUS_SYSTEM_NAME);
-     string stop_value;
-     mudcsCrb_sendToX2P(side, "STOP_SLOW_CONTROL_LV");
-   }
 }
 //===========================================
 string mudcsCrb_getVmeById(string id)
@@ -662,29 +650,6 @@ void mudcsCrb_resume_slow_control()
            }
          }//if
        } // for  
-    }
-  else
-    {     
-      current_time=getCurrentTime();    
-      for(i=1;i<=2;i++)
-       {
-         if (i==1) {
-           remote_system=CSC_fwCAN1_g_MINUS_SYSTEM_NAME;
-           side = "M";
-         } else if (i==2) {
-           remote_system=CSC_fwCAN1_g_PLUS_SYSTEM_NAME;
-           side = "P";
-         }
-         stop_value = mudcsCrb_getLastX2PCommand(side);
-         dpGet(remote_system+":CscDimCommand/X2P_" + side + ".command:_online.._stime",stop_value_time);
-         if(stop_value == "STOP_SLOW_CONTROL_LV")
-          {
-            if((current_time-stop_value_time) > 3)
-             {
-               mudcsCrb_sendToX2P(side, "RESUME_SLOW_CONTROL");
-             }
-          }//if
-       } // for        
     }
 }
 //================== switch .status to .command --X.Yang ======================

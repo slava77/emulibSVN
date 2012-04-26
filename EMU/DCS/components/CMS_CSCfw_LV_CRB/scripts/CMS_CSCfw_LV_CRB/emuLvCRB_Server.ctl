@@ -137,11 +137,7 @@ void mudcsCrb_threadWatchForTimeouts()
        DebugTN("watch for time out...");
        iCountTimeOut = 0;
      }  
-//------------------ for x2p ---------------------------------------------------------------------
-     if(automatic_stop_pcrate_slow_control)  
-      {
-        mudcsCrb_resume_slow_control();
-      }      
+   
 //------------------ check opc and elmb node status ----------------------------------------------  
      dpGet("_OPCCANopen.ServerState",ServerState);
      general_count++;
@@ -753,7 +749,6 @@ void emuLvCRB_powerOnCRB(string sCRB)
     time dt = endT - startT;
     emuLvCRB_showDebug(bDebug,"Switch on took " + minute(dt) +":"+ second(dt) +"."+ milliSecond(dt));
     //-----end of Power on-----------------------------
-    dpSetWait("LV_START_UP_CHAMBER.",sCRB+" is finished"); 
 }
 void emuLvCRB_powerOffCRB(string sCRB)
 {
