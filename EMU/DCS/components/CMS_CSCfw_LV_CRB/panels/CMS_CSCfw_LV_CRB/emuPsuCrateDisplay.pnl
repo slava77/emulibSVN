@@ -1,0 +1,538 @@
+V 11
+1
+LANG:1 18 emuPsuCrateDisplay
+PANEL,-1 -1 380 209 N "_3DFace" 0
+"main()
+{  
+    emuLvCRB_initalizeParam();  
+    string sSystemName = gSystemNameCRB;
+    dyn_string dsDpNameBranches = dpNames(gSystemNameCRB+\"EPSU/Crate00/Branch*\",\"FwElmbPSUBranch\");
+    //DebugTN(dsDpNameBranches);
+    for(int i=1;i<=dynlen(dsDpNameBranches);i++)
+    {
+       string sPower,sCanv,sAdv;
+       dpGet(dsDpNameBranches[i]+\".power\", sPower);
+       dpGet(dsDpNameBranches[i]+\".CAN.volts\", sCanv);
+       dpGet(dsDpNameBranches[i]+\".AD.volts\", sAdv);
+       dpConnect(\"checkPsuBranchStatus\",sSystemName+sPower+\".value\",
+                                        sSystemName+sCanv,
+                                        sSystemName+sAdv);
+    }
+    
+}
+
+void checkPsuBranchStatus(string sDpName1,bool bValue,string sDpName2,float fValue2,string sDpName3, float fValue3)
+{ 
+   // DebugTN(sDpName1,sDpName2,sDpName3);
+    //get name of power shapes from sDpName1
+    dyn_string ds1 = strsplit(sDpName1,\":\");
+    dyn_string ds1_1=strsplit(ds1[2],\"/\");
+    dyn_string ds1_1_1 = strsplit(ds1_1[5],\".\");
+    string sPower = ds1_1_1[1];
+    //DebugTN(sPower);
+    
+    //get name of CANV shapes from sDpName2
+    dyn_string ds2 = strsplit(sDpName2,\":\");
+    dyn_string ds2_1=strsplit(ds2[2],\"/\");
+    dyn_string ds2_1_1 = strsplit(ds2_1[5],\".\");
+    string sCanv = ds2_1_1[1];
+    //DebugTN(sCanv);
+    
+    //get name of ADV shapes from sDpName3
+    dyn_string ds3 = strsplit(sDpName3,\":\");
+    dyn_string ds3_1=strsplit(ds3[2],\"/\");
+    dyn_string ds3_1_1 = strsplit(ds3_1[5],\".\");
+    string sAdv = ds3_1_1[1];
+    //DebugTN(sAdv);
+    
+    if(bValue)
+     {
+        setValue(sPower,\"text\",\"Power On\",
+                        \"foreCol\",\"green\");
+     }
+    else
+     {
+        setValue(sPower,\"text\",\"Power OFF\",
+                        \"foreCol\",\"blue\");
+     } 
+    if(fValue2>10)
+     {
+        setValue(sCanv,\"backCol\",\"green\");
+     }
+    else
+     {
+        setValue(sCanv,\"backCol\",\"blue\");
+     }  
+    if(fValue3>10)
+     {
+        setValue(sAdv,\"backCol\",\"green\");
+     }
+    else
+     {
+        setValue(sAdv,\"backCol\",\"blue\");
+     }     
+}  
+" 0
+ E E E E 1 0 0 0  0 0
+""0  1
+E "#uses \"CMS_CSCfw_LV_CRB/emuLvCRB.ctl\"
+string sDpName;
+int i;" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+NC
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 6 Layer1
+7 2
+"CANV_0"
+""
+1 150 110 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+2 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -76 -20 1 E 150 110 10 10
+7 3
+"ADV_0"
+""
+1 150 110 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+3 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -78 20 1 E 150 110 10 10
+14 4
+"do_C_0"
+""
+1 19.99999999999999 160 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+4 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+0
+1
+LANG:1 35 MS Shell Dlg 2,10,-1,5,75,0,0,0,0,0
+0  18 158 92 180
+3 "0s" 0 0 0 1 0 -1  E E E
+30 5
+"Branch00"
+""
+1 60 13 E E E 1 E 1 E N "Blau" E N {0,0,0} E E
+ E E
+5 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.5294117647058824 0 0.6072874493927125 -21.76470588235294 42.10526315789474 0 E 60 13 231 261
+1
+LANG:1 35 MS Shell Dlg 2,10,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 8 Branch00
+2 6
+"PRIMITIVE_TEXT2"
+""
+1 -190 -83.2700657269576 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1.111111111111111 -68 -61.44444444444446 0 E 100 130 121 144
+0 2 2 "0s" 0 0 0 192 0 0  100 130 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 CAN
+2 7
+"PRIMITIVE_TEXT3"
+""
+1 -182 460.637239547235 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1.111111111111111 -68 -19.22222222222223 0 E 100 130 114 144
+0 2 2 "0s" 0 0 0 192 0 0  100 130 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 2 AD
+2 8
+"PRIMITIVE_TEXT4"
+""
+1 -498.1374091826824 35.53801080458608 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+8 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 2.116279069767442 0 1.777777777777778 -302.093023255814 -15.55555555555556 0 E 190 20 272 34
+0 2 2 "0s" 0 0 0 192 0 0  190 20 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 15 ATLAS PSU Crate
+7 11
+"CANV_1"
+""
+1 150 110 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 14.00000000000002 -20 1 E 150 110 10 10
+7 12
+"ADV_1"
+""
+1 150 110 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+12 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 12.00000000000002 20 1 E 150 110 10 10
+14 13
+"do_C_1"
+""
+1 110 160 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+13 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+0
+1
+LANG:1 35 MS Shell Dlg 2,10,-1,5,75,0,0,0,0,0
+0  108 158 182 180
+3 "0s" 0 0 0 1 0 -1  E E E
+30 14
+"Branch01"
+""
+1 60 13 E E E 1 E 1 E N "Blau" E N {0,0,0} E E
+ E E
+14 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.5294117647058824 0 0.6072874493927125 68.23529411764707 42.10526315789474 0 E 60 13 231 261
+1
+LANG:1 35 MS Shell Dlg 2,10,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 8 Branch01
+2 15
+"PRIMITIVE_TEXT6"
+""
+1 380 -83.2700657269576 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1.111111111111111 22.00000000000002 -61.44444444444446 0 E 100 130 121 144
+0 2 2 "0s" 0 0 0 192 0 0  100 130 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 CAN
+2 16
+"PRIMITIVE_TEXT7"
+""
+1 388 460.637239547235 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+16 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1.111111111111111 22.00000000000002 -19.22222222222223 0 E 100 130 114 144
+0 2 2 "0s" 0 0 0 192 0 0  100 130 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 2 AD
+7 18
+"CANV_2"
+""
+1 150 110 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 104 -20 1 E 150 110 10 10
+7 19
+"ADV_2"
+""
+1 150 110 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 102 20 1 E 150 110 10 10
+14 20
+"do_C_2"
+""
+1 200 160 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+20 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+0
+1
+LANG:1 35 MS Shell Dlg 2,10,-1,5,75,0,0,0,0,0
+0  198 158 272 180
+3 "0s" 0 0 0 1 0 -1  E E E
+30 21
+"Branch02"
+""
+1 60 13 E E E 1 E 1 E N "Blau" E N {0,0,0} E E
+ E E
+21 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.5294117647058824 0 0.6072874493927125 158.2352941176471 42.10526315789474 0 E 60 13 231 261
+1
+LANG:1 35 MS Shell Dlg 2,10,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 8 Branch02
+2 22
+"PRIMITIVE_TEXT9"
+""
+1 950 -83.2700657269576 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1.111111111111111 112 -61.44444444444446 0 E 100 130 121 144
+0 2 2 "0s" 0 0 0 192 0 0  100 130 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 CAN
+2 23
+"PRIMITIVE_TEXT10"
+""
+1 958 460.637239547235 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1.111111111111111 112 -19.22222222222223 0 E 100 130 114 144
+0 2 2 "0s" 0 0 0 192 0 0  100 130 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 2 AD
+7 25
+"CANV_3"
+""
+1 150 110 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 193.9999999999999 -20 1 E 150 110 10 10
+7 26
+"ADV_3"
+""
+1 150 110 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 191.9999999999999 20 1 E 150 110 10 10
+14 27
+"do_C_3"
+""
+1 289.9999999999999 160 E E E 1 E 1 E N "_WindowText" E N "_3DFace" E E
+ E E
+27 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+0
+1
+LANG:1 35 MS Shell Dlg 2,10,-1,5,75,0,0,0,0,0
+0  288 158 362 180
+3 "0s" 0 0 0 1 0 -1  E E E
+30 28
+"Branch03"
+""
+1 60 13 E E E 1 E 1 E N "Blau" E N {0,0,0} E E
+ E E
+28 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 0.5294117647058824 0 0.6072874493927125 248.2352941176471 42.10526315789474 0 E 60 13 231 261
+1
+LANG:1 35 MS Shell Dlg 2,10,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 8 Branch03
+2 29
+"PRIMITIVE_TEXT12"
+""
+1 1520 -83.2700657269576 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1.111111111111111 201.9999999999999 -61.44444444444446 0 E 100 130 121 144
+0 2 2 "0s" 0 0 0 192 0 0  100 130 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 CAN
+2 30
+"PRIMITIVE_TEXT13"
+""
+1 1528 460.637239547235 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1.111111111111111 201.9999999999999 -19.22222222222223 0 E 100 130 114 144
+0 2 2 "0s" 0 0 0 192 0 0  100 130 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 2 AD
+0
+LAYER, 1 
+1
+LANG:1 6 Layer2
+0
+LAYER, 2 
+1
+LANG:1 6 Layer3
+0
+LAYER, 3 
+1
+LANG:1 6 Layer4
+0
+LAYER, 4 
+1
+LANG:1 6 Layer5
+0
+LAYER, 5 
+1
+LANG:1 6 Layer6
+0
+LAYER, 6 
+1
+LANG:1 6 Layer7
+0
+LAYER, 7 
+1
+LANG:1 6 Layer8
+0
+0
