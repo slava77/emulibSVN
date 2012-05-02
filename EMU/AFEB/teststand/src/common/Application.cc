@@ -576,6 +576,7 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
 	values["/c:configuration[1]/@dateTime"] = AFEB::teststand::utils::getDateTime();
 	// cout << v << endl;
 	configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( configurationXML_, values );
+	configurationXML_ = regularizeInput( configurationXML_ );
 	// cout << "configurationXML" << endl << configurationXML_ << endl << flush;
 	AFEB::teststand::utils::execShellCommand( string( "mkdir -p " ) + configurationDir_.toString() );
 	string expandedConfigDir = AFEB::teststand::utils::performExpansions( configurationDir_.toString() );
@@ -610,6 +611,7 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
 	  map<string,string> values = AFEB::teststand::utils::selectFromQueryString( fev, "^/" );
 	  // cout << v << endl;
 	  configurationXML_ = AFEB::teststand::utils::setSelectedNodesValues( configurationXML_, values );
+	  configurationXML_ = regularizeInput( configurationXML_ );
 	  // cout << "configurationXML" << endl << configurationXML_ << endl << flush;
 	  fireEvent( "Configure" );
 	}
@@ -699,6 +701,46 @@ string AFEB::teststand::Application::setProcessingInstruction( const string XML,
     XCEPT_RAISE( xcept::Exception, ess.str() );
   }catch(...){
     stringstream ess; ess << "Failed to set processing instruction: unexpected exception.";
+    XCEPT_RAISE( xcept::Exception, ess.str() );
+  }
+
+  return target.str();
+}
+
+string AFEB::teststand::Application::regularizeInput( const string XML )
+  throw( xcept::Exception ){
+  stringstream target;
+  try{
+    if ( XML.size() == 0 ){
+      XCEPT_RAISE( xcept::Exception, "XML document is empty." );
+    }
+    // Load input regularizing XSLT if it hasn't yet been loaded.
+    if ( inputRegularizer_.size() == 0 ){
+      string xsltName;
+      if ( getenv(HTML_ROOT_.toString().c_str()) != NULL ){
+	xsltName = string( getenv( HTML_ROOT_.toString().c_str() ) ) + "/AFEB/teststand/xml/inputRegularizer.xsl";
+	try{
+	  inputRegularizer_ = AFEB::teststand::utils::readFile( xsltName );
+	}
+	catch( xcept::Exception& e ){
+	  LOG4CPLUS_ERROR( logger_, "Failed to load " << xsltName<< xcept::stdformat_exception_history(e) );
+	  XCEPT_RETHROW( xcept::Exception, "Failed to load " + xsltName, e );
+	}
+      }
+    }
+    stringstream stylesheet( inputRegularizer_ );
+    stringstream source; source << XML;
+    //cout << "BEFORE" << endl << "Source:" << endl << source.str() << endl << "Stylesheet:" << endl << stylesheet.str() << endl;
+    AFEB::teststand::utils::transformStreams( source, stylesheet, target );
+    //cout << "AFTER" << endl << "Source:" << endl << source.str() << endl << "Stylesheet:" << endl << stylesheet.str() << endl;
+  }catch( xcept::Exception& e ){
+    stringstream ess; ess << "Failed to regularize input values.";
+    XCEPT_RETHROW( xcept::Exception, ess.str(), e );
+  }catch( std::exception& e ){
+    stringstream ess; ess << "Failed to regularize input values: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ess.str() );
+  }catch(...){
+    stringstream ess; ess << "Failed to regularize input values: unexpected exception.";
     XCEPT_RAISE( xcept::Exception, ess.str() );
   }
 

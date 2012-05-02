@@ -136,6 +136,9 @@ private:
   string setProcessingInstruction( const string XML, const string xslURI )
     throw( xcept::Exception );
 
+  string regularizeInput( const string XML )
+    throw( xcept::Exception );
+
   bool measurementInWorkLoop(toolbox::task::WorkLoop *wl);
   bool calibrationInWorkLoop(toolbox::task::WorkLoop *wl);
 
@@ -145,6 +148,7 @@ private:
   static const string workLoopName_; ///< the name of the work loop
   static const string workLoopType_; ///< the type of the work loop
   string processingInstructionSetter_; ///< XSLT to set the processing instruction for XML
+  string inputRegularizer_; ///< XSLT to regularize the input values in the configuration XML
   string configurationXML_; ///< XML of the configuration
   toolbox::fsm::FiniteStateMachine fsm_; ///< finite state machine
   Mode_t mode_;			///< Whether to measure or calibrate.
