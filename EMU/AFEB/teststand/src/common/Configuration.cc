@@ -125,8 +125,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
   }
 
   // Loop over the devices to be tested:
-  vector< pair<string,string> >::const_iterator t;
-  for ( t = testedDevices.begin(); t != testedDevices.end(); ++t ){
+  for ( vector< pair<string,string> >::const_iterator t = testedDevices.begin(); t != testedDevices.end(); ++t ){
     // Create this device
     stringstream xpath;
     xpath << "/c:configuration/c:inputs/c:testedDevice[@socket='" << t->second << "']/@*";
@@ -185,7 +184,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
 	
       } // if ( measurementEnabledFlags.at( i ).second == "yes" )
     } // for ( size_t i = 0; i < measurementEnabledFlags.size(); ++i )
-  } // for ( t = testedDevices.begin(); t != testedDevices.end(); ++t )
+  } // for ( vector< pair<string,string> >::const_iterator t = testedDevices.begin(); t != testedDevices.end(); ++t )
 }
 
 void AFEB::teststand::Configuration::createCalibration(){
