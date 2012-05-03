@@ -106,25 +106,25 @@
   </c:inputs>
 
   <c:measurements>
-    <c:condition name="Threshold scan" type="count_vs_dac" enabled="yes">
+    <c:condition name="Threshold scan with external C" type="count_vs_dac" enabled="yes">
       <c:PulseGenerator amplitudeMin="20" amplitudeMax="80" amplitudeStep="2" nPulses="400" capacitor="external"/>
       <c:SignalConverter thresholdValue="46"/>
-      <c:TDC timeMin="0" timeMax="120"/>
+      <c:TDC timeMin="10" timeMax="300"/>
     </c:condition>
-    <c:condition name="Threshold scan" type="count_vs_dac" enabled="yes">
+    <c:condition name="Threshold scan with external C" type="count_vs_dac" enabled="yes">
       <c:PulseGenerator amplitudeMin="60" amplitudeMax="130" amplitudeStep="2" nPulses="400" capacitor="external"/>
       <c:SignalConverter thresholdValue="92"/>
-      <c:TDC timeMin="0" timeMax="120"/>
+      <c:TDC timeMin="10" timeMax="300"/>
     </c:condition>
-    <c:condition name="Threshold scan" type="count_vs_dac" enabled="yes">
+    <c:condition name="Threshold scan with internal C" type="count_vs_dac" enabled="yes">
       <c:PulseGenerator amplitudeMin="20" amplitudeMax="90" amplitudeStep="2" nPulses="400" capacitor="internal"/>
       <c:SignalConverter thresholdValue="46"/>
-      <c:TDC timeMin="0" timeMax="120"/>
+      <c:TDC timeMin="10" timeMax="300"/>
     </c:condition>
     <c:condition name="Time response vs. pulse height" type="time_vs_dac" enabled="yes">
       <c:PulseGenerator amplitudeMin="0" amplitudeMax="1000" amplitudeStep="20" nPulses="400" capacitor="external"/>
       <c:SignalConverter thresholdValue="46"/>
-      <c:TDC timeMin="0" timeMax="120"/>
+      <c:TDC timeMin="50" timeMax="150"/>
     </c:condition>
   </c:measurements>
 
