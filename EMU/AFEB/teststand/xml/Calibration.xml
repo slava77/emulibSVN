@@ -3,24 +3,24 @@
 
   <c:adaptors>
     <c:adaptor type="10AD16A" id="2" pulseDivisionFactor="6.31" injectionCapacitance="1.6">
-	<c:socket number= "1" coefficient="1.0"/>
-	<c:socket number= "2" coefficient="1.0"/>
-	<c:socket number= "3" coefficient="1.0"/>
-	<c:socket number= "4" coefficient="1.0"/>
-	<c:socket number= "5" coefficient="1.0"/>
-	<c:socket number= "6" coefficient="1.0"/>
-	<c:socket number= "7" coefficient="1.0"/>
-	<c:socket number= "8" coefficient="1.0"/>
-	<c:socket number= "9" coefficient="1.0"/>
-	<c:socket number="10" coefficient="1.0"/>
+	<c:socket number= "1" coefficient="1.004"/>
+	<c:socket number= "2" coefficient="0.993"/>
+	<c:socket number= "3" coefficient="0.999"/>
+	<c:socket number= "4" coefficient="0.976"/>
+	<c:socket number= "5" coefficient="0.948"/>
+	<c:socket number= "6" coefficient="0.957"/>
+	<c:socket number= "7" coefficient="0.982"/>
+	<c:socket number= "8" coefficient="1.003"/>
+	<c:socket number= "9" coefficient="1.012"/>
+	<c:socket number="10" coefficient="1.002"/>
     </c:adaptor>
     <c:adaptor type="2AD16A" id="1" pulseDivisionFactor="4.93" injectionCapacitance="1.6">
-        <!-- pulse devider is external, not built in the adapter -->
+        <!-- pulse devider is external, not built in this adapter -->
 	<c:socket number= "1" coefficient="1.0"/>
 	<c:socket number= "2" coefficient="1.0"/>
     </c:adaptor>
     <c:adaptor type="2AD16A" id="1.1" pulseDivisionFactor="4.93" injectionCapacitance="1.6">
-        <!-- pulse devider is external, not built in the adapter -->
+        <!-- pulse devider is external, not built in this adapter -->
 	<c:socket number= "1" coefficient="1.0"/>
 	<c:socket number= "2" coefficient="1.0"/>
     </c:adaptor>
