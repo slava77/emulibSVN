@@ -679,7 +679,7 @@ void AFEB::teststand::Results::save( const string directory ){
   f.cd();
 
   bsem_.take();
-  times_->Write();
+  // times_->Write(); // Do not save ROOT tree with all TDC hits.
   pulses_->Write();
   threshold_->Write();
   chi2ndf_->Write();
