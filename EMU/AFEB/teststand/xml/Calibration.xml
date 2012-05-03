@@ -14,7 +14,13 @@
 	<c:socket number= "9" coefficient="1.0"/>
 	<c:socket number="10" coefficient="1.0"/>
     </c:adaptor>
-    <c:adaptor type="2AD16A" id="1" pulseDivisionFactor="1.0" injectionCapacitance="1.0">
+    <c:adaptor type="2AD16A" id="1" pulseDivisionFactor="4.93" injectionCapacitance="1.6">
+        <!-- pulse devider is external, not built in the adapter -->
+	<c:socket number= "1" coefficient="1.0"/>
+	<c:socket number= "2" coefficient="1.0"/>
+    </c:adaptor>
+    <c:adaptor type="2AD16A" id="1.1" pulseDivisionFactor="4.93" injectionCapacitance="1.6">
+        <!-- pulse devider is external, not built in the adapter -->
 	<c:socket number= "1" coefficient="1.0"/>
 	<c:socket number= "2" coefficient="1.0"/>
     </c:adaptor>
