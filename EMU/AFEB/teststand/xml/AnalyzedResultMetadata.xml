@@ -34,7 +34,7 @@
     <meta:attr name="offset" units="mV" description="Offset, i.e., the intercept of the straight line fitted to the setThresholdVoltage( measuredThresoldCharge ) function."/>
     <meta:attr name="gain" units="mV/fC" description="Gain, i.e., the slope of the straight line fitted to the setThresholdVoltage( measuredThresoldCharge ) function."/>
     <meta:attr name="C_int" units="pf" description="Internal capacitance."/>
-    <meta:attr name="averageNoise" units="ns" description="Average over the external capacitor threshold scan measurements of the noise."/>
+    <meta:attr name="averageNoise" units="fC" description="Average over the external capacitor threshold scan measurements of the noise."/>
   </meta:tag>
   <meta:tag name="ad:mean">
     <meta:attr name="max" units="ns" description="Maximum over the channels of the mean times."/>
