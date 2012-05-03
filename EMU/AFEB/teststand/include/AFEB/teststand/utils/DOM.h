@@ -36,6 +36,9 @@ namespace AFEB { namespace teststand { namespace utils {
       string getSelectedNode( const string& XML, const string xpath )
 	throw( xcept::Exception );
 
+      string removeSelectedNode( const string& XML, const string xpath )
+	throw( xcept::Exception );
+
       XALAN_USING_XALAN(XalanNode)
       string getNodeValue( const XalanNode* const node );
 
