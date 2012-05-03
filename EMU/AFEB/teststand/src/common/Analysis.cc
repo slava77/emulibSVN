@@ -81,8 +81,8 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& calibXML, 
     xpath.str("");
     xpath << "/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType << "']/@injectionCapacitance";
     string capacitance = utils::getSelectedNodeValue( calibXML, xpath.str() );
-    cout << xpath.str() << endl;
-    cout << capacitance << endl;
+    // cout << xpath.str() << endl;
+    // cout << capacitance << endl;
     if ( capacitance.size() == 0 ){
       stringstream ss; ss << "Failed to find the injection capacitance for adaptor " << adaptorId << " of type " << adaptorType;
       XCEPT_RAISE( xcept::Exception, ss.str() );
@@ -104,11 +104,13 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& calibXML, 
     xpath << "/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType 
 	  << "']/c:socket[@number='" << ad->getAdaptorSocket() << "']/@coefficient";
     string coefficient = utils::getSelectedNodeValue( calibXML, xpath.str() );
+    // cout << xpath.str() << endl;
+    // cout << coefficient << endl;
     if ( coefficient.size() == 0 ){
       stringstream ss; ss << "Failed to find the threshold correction coefficient for socket " << ad->getAdaptorSocket() << " of adaptor " << adaptorId << " of type " << adaptorType;
       XCEPT_RAISE( xcept::Exception, ss.str() );
     }
-    ad->setCorrectionCoefficient( utils::stringTo<int>( coefficient ) );
+    ad->setCorrectionCoefficient( utils::stringTo<double>( coefficient ) );
   }
 
   cout << "Analyzed devices" << endl << analyzedDevices_ << endl;
