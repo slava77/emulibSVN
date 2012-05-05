@@ -10,7 +10,10 @@
   <xsl:template match="a:application">
     <table class="layout">
       <tr>
-	<td><span class="{@state}"><xsl:value-of select="@state"/></span></td>
+	<td>
+	  <span class="{@state}"><xsl:value-of select="@state"/></span>
+	  <xsl:if test="@state='Failed'"><br/><br/><input type="submit" name="fsm" value="Reset" class="submit" title="Reset application."/></xsl:if>
+	</td>
 	<td><xsl:copy-of select="a:message"/></td>
 	<td><xsl:value-of select="@dateTime"/></td>
       </tr>

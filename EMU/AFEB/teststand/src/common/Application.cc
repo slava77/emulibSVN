@@ -66,6 +66,8 @@ void AFEB::teststand::Application::createFSM(){
     fsm_.addStateTransition('C', 'F', "Fail",      this, &AFEB::teststand::Application::failAction);
     fsm_.addStateTransition('E', 'F', "Fail",      this, &AFEB::teststand::Application::failAction);
 
+    fsm_.addStateTransition('F', 'H', "Reset",     this, &AFEB::teststand::Application::resetAction);
+
     fsm_.setStateName('F', "Failed");
 
     fsm_.setInitialState( 'H' );
@@ -261,6 +263,14 @@ void AFEB::teststand::Application::failAction(toolbox::Event::Reference event)
       ss <<  "Caught an unknown exception while moving to Failed state.";
       LOG4CPLUS_FATAL(logger_, ss.str() );
     }
+}
+
+void AFEB::teststand::Application::resetAction( toolbox::Event::Reference event ){
+  // To be only used to get out of 'Failed' state.
+  delete configuration_;
+  configuration_ = NULL;
+  mode_ = AFEB::teststand::Application::measurement;
+  fsm_.reset();
 }
 
 void AFEB::teststand::Application::moveToFailedState( xcept::Exception exception ){
@@ -650,7 +660,13 @@ void AFEB::teststand::Application::controlWebPage(xgi::Input *in, xgi::Output *o
 	}
 
       }
+      else if ( action["fsm"].compare( "Reset" ) == 0 ){
 
+	if ( fsm_.getCurrentState() == 'F' ){
+	  fireEvent( "Reset" );
+	}
+
+      }
     }
 
   } catch ( xcept::Exception& e ){

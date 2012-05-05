@@ -81,6 +81,7 @@ private:
   void stopAction(toolbox::Event::Reference e);
   void noAction(toolbox::Event::Reference e);
   void failAction(toolbox::Event::Reference e);
+  void resetAction(toolbox::Event::Reference e);
 
   void moveToFailedState( xcept::Exception exception );
 
