@@ -19,7 +19,9 @@ using namespace AFEB::teststand;
 
 AFEB::teststand::Configuration::Configuration( const string XML, const string resultDir ) : 
   xml_( XML ),
-  resultDir_( resultDir )
+  resultDir_( resultDir ),
+  crate_( NULL ),
+  calibration_( NULL )
 {
   createMeasurements();
   for ( vector<Measurement*>::iterator  i = measurements_.begin() ; i != measurements_.end() ; ++i ) cout << **i;

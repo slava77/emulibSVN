@@ -27,7 +27,10 @@ AFEB::teststand::Application::Application(xdaq::ApplicationStub *s)
   xdaq::WebApplication(s),
   logger_(Logger::getInstance(generateLoggerName())),
   bsem_( toolbox::BSem::EMPTY ), // locked
-  mode_( AFEB::teststand::Application::measurement )
+  mode_( AFEB::teststand::Application::measurement ),
+  configuration_( NULL ),
+  measurementSignature_( NULL ),
+  calibrationSignature_( NULL )
 {
   createFSM();
   bindWebInterface();
@@ -100,7 +103,7 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
     configuration_ = new Configuration( configurationXML_, rawResultSystemDir_ );
     LOG4CPLUS_DEBUG( logger_, "Crate:" << endl << *configuration_->getCrate() );
   } catch ( xcept::Exception &e ){
-    XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Configuration failed. ", e );
+    XCEPT_RETHROW( toolbox::fsm::exception::Exception, "Failed to create new configuration. ", e );
   }
 
   // Remove leftover work loop, if any...
@@ -126,7 +129,7 @@ void AFEB::teststand::Application::configureAction(toolbox::Event::Reference e){
   } catch( xcept::Exception &e ){
     stringstream ss;
     ss << "Failed recreate " << workLoopType_ << " work loop " << workLoopName_;
-    XCEPT_RETHROW( xcept::Exception, ss.str(), e );
+    XCEPT_RETHROW( toolbox::fsm::exception::Exception, ss.str(), e );
   }
 
   // Schedule measurement or calibration to be executed in a separate thread
@@ -348,7 +351,7 @@ string AFEB::teststand::Application::createXMLWebPageSkeleton(){
   }
   ss << "    </a:configuration>" << endl;
   // Calibration
-  if ( mode_ == AFEB::teststand::Application::calibration && configuration_->getCalibration() != NULL ){
+  if ( mode_ == AFEB::teststand::Application::calibration && configuration_ != NULL && configuration_->getCalibration() != NULL ){
     ss << "    <a:calibration thresholdLevel=\"" << configuration_->getCalibration()->getThresholdLevel()
        <<                 "\" pulseAmplitude=\"" << configuration_->getCalibration()->getPulseAmplitude()
        <<                 "\"/>" << endl;
