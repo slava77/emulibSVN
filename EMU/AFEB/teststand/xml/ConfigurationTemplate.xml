@@ -92,7 +92,7 @@
     <c:module slot="25" name="Jorway73A"  id=""       type="CrateController"/>
   </c:crate>
 
-  <c:inputs adaptorType="10AD16A" adaptorId="1">
+  <c:inputs adaptorType="10AD16A" adaptorId="2">
     <c:testedDevice socket="1"  id="" tdcSlot="6"   tdcSocket="1" signalConverterSlot="8"  signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
     <c:testedDevice socket="2"  id="" tdcSlot="6"   tdcSocket="2" signalConverterSlot="8"  signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
     <c:testedDevice socket="3"  id="" tdcSlot="9"   tdcSocket="1" signalConverterSlot="11" signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
