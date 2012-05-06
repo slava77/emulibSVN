@@ -35,6 +35,8 @@ namespace AFEB { namespace teststand {
       map<string,double> getNoiseStats();
       map<string,double> getChi2NDFStats();
       map<string,double> getTimeStats();
+      map<string,double> getSlewStats();
+      map<string,double> getTimeSpanStats();
       static string getFileName( const int measurementIndex, const string& measurementTypeString, const string& deviceId );
     private:
       toolbox::BSem bsem_;
@@ -48,9 +50,13 @@ namespace AFEB { namespace teststand {
       TH1D *noise_; ///< measured noise( channel ) 1D histogram
       TH1D *efficiency_; ///< measured efficiency( channel ) 1D histogram
       TH1D *chi2ndf_; ///< threshold S-curve fit's chi^2/ndf( channel ) 1D histogram
-      TH1D *timeOnPlateau_;  ///< mean +- RMS of the measured times on the efficiency plateau for evaluation of stability
-      vector<TH1D*> sCurve_; ///< measured efficiency( amplitude ) 1D histogram
-      vector<TProfile*> timeVsAmplitude_;  ///< measured time( amplitude ) 1D histogram
+      TH1D *timeMeanOnPlateau_;  ///< mean of the measured times on the efficiency plateau vs. channel
+      TH1D *timeRMSOnPlateau_;  ///< RMS of the measured times on the efficiency plateau vs. channel
+      TH1D *slewingOnPlateau_;  ///< slewing times (max difference between mean times) on the efficiency plateau vs. channel
+      vector<TH1D*> sCurve_; ///< a measured efficiency( amplitude ) 1D histogram for each channel
+      vector<TProfile*> timeVsAmplitudeProfile_;  ///< a measured time( amplitude ) 1D profile histogram for each channel
+      vector<TH1D*> timeVsAmplitude_;  ///< a measured time( amplitude ) 1D histogram for each channel
+      vector<double> timeSpans_; ///< max difference between any two channels' mean time for each amplitude on the efficiency plateau
       TLegend *legend_; ///< legend for S curves
       int channel_;		///< To access an entry in the times_ tree.
       int amplitude_;		///< To access an entry in the times_ tree.
@@ -59,7 +65,7 @@ namespace AFEB { namespace teststand {
       void estimateFitParameters( TH1D& hist, const double from, const double to, double& mean, double& sigma, double& height );
       double mean( const TH1D& hist, const double from, const double to );
       double rms( const TH1D& hist, const double from, const double to );
-      void timesOnEfficiencyPlateau( vector<double>& plateauStarts );
+      void timesOnEfficiencyPlateau( valarray<double>& plateauStarts );
       map<string,double> getStats( const TH1D* hist );
     };
   }}

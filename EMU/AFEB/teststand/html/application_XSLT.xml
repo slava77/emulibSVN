@@ -171,6 +171,9 @@
 	    <xsl:when test="@name='chi2ndf'">
 	      <th rowspan="2">&#x03c7;&#xb2;/ndf</th>
 	    </xsl:when>
+	    <xsl:when test="@name='RMS of times on plateau [TDC]'">
+	      <th rowspan="2"><xsl:value-of select="@name"/></th>
+	    </xsl:when>
 	    <xsl:otherwise>
 	      <th colspan="2"><xsl:value-of select="@name"/></th>
 	    </xsl:otherwise>
@@ -180,10 +183,9 @@
       <tr>
 	<xsl:for-each select="a:parameter">
 	  <xsl:choose>
-	    <xsl:when test="@name='time on plateau [TDC]'">
-	      <th>mean</th><th>rms</th>
-	    </xsl:when>
 	    <xsl:when test="@name='chi2ndf'">
+	    </xsl:when>
+	    <xsl:when test="@name='RMS of times on plateau [TDC]'">
 	    </xsl:when>
 	    <xsl:otherwise>
 	      <th>value</th><th>error</th>
@@ -199,7 +201,7 @@
 	<xsl:for-each select="a:parameter">
 	  <!-- <td style="width: 25x;"><xsl:value-of select="@value"/> &#177; <xsl:value-of select="@error"/></td> -->
 	  <td><xsl:value-of select="@value"/></td>
-	  <xsl:if test="@name!='chi2ndf'">
+	  <xsl:if test="@name!='chi2ndf' and @name!='RMS of times on plateau [TDC]'">
 	    <td><xsl:value-of select="@error"/></td>
 	  </xsl:if>
 	</xsl:for-each>
@@ -208,7 +210,7 @@
 
   <xsl:template match="a:statistics">
     <table>
-      <tr><th colspan="{count(a:statistics/a:parameter[position=1]/@*)}">Uniformity</th></tr>
+      <tr><th colspan="{count(a:statistics/a:parameter[position=1]/@*)}">Uniformity of channels</th></tr>
       <xsl:apply-templates mode="header" select="a:parameter[position()=1]"/>
       <xsl:apply-templates mode="data" select="a:parameter"/>
     </table>

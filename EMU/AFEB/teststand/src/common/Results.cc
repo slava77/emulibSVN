@@ -1,6 +1,7 @@
 #include "AFEB/teststand/Results.h"
 #include "AFEB/teststand/utils/String.h"
 #include "AFEB/teststand/utils/System.h"
+#include "AFEB/teststand/utils/STL.h"
 #include "TF1.h"
 #include "TMath.h"
 #include "TStyle.h"
@@ -145,27 +146,55 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   chi2ndf_->GetXaxis()->CenterLabels( kTRUE );
   chi2ndf_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
-  // measured mean+-rms( channel ) 1D histogram
+  // measured time mean( channel ) 1D histogram
   name.str("");
-  name << "timesOnPlateau__" << fileName_;
+  name << "timeMeanOnPlateau__" << fileName_;
   title.str("");
-  title << "mean and rms of measured times on efficiency plateau for " << testedDevice_->getType()
+  title << "mean of measured times on efficiency plateau for " << testedDevice_->getType()
 	<< " of id "  << testedDevice_->getId();
-  timeOnPlateau_ = new TH1D( name.str().c_str(),
-			  title.str().c_str(),
-			  testedDevice_->getNChannels(),
-			  0.,
-			  0. + testedDevice_->getNChannels() );
-  timeOnPlateau_->SetXTitle( "channel" );
-  timeOnPlateau_->SetYTitle( "mean +- RMS of times on plateau" );
-  // timeOnPlateau_->SetStats( kFALSE );
-  // timeOnPlateau_->SetMarkerStyle( kFullDotLarge );
-  // timeOnPlateau_->SetMarkerColor( kBlue );
-  // timeOnPlateau_->SetLineColor( kBlue );
-  // timeOnPlateau_->SetMinimum(  0.0000008 );
-  // timeOnPlateau_->SetMaximum(  1.0 );
-  // timeOnPlateau_->GetXaxis()->CenterLabels( kTRUE );
-  // timeOnPlateau_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
+  timeMeanOnPlateau_ = new TH1D( name.str().c_str(),
+				 title.str().c_str(),
+				 testedDevice_->getNChannels(),
+				 0.,
+				 0. + testedDevice_->getNChannels() );
+  timeMeanOnPlateau_->SetXTitle( "channel" );
+  timeMeanOnPlateau_->SetYTitle( "mean of times on plateau [TDC]" );
+  // timeMeanOnPlateau_->SetStats( kFALSE );
+  // timeMeanOnPlateau_->SetMarkerStyle( kFullDotLarge );
+  // timeMeanOnPlateau_->SetMarkerColor( kBlue );
+  // timeMeanOnPlateau_->SetLineColor( kBlue );
+  // timeMeanOnPlateau_->SetMinimum(  0.0000008 );
+  // timeMeanOnPlateau_->SetMaximum(  1.0 );
+  // timeMeanOnPlateau_->GetXaxis()->CenterLabels( kTRUE );
+  // timeMeanOnPlateau_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
+
+  // measured time rms( channel ) 1D histogram
+  name.str("");
+  name << "timeRMSOnPlateau__" << fileName_;
+  title.str("");
+  title << "rms of measured times on efficiency plateau for " << testedDevice_->getType()
+	<< " of id "  << testedDevice_->getId();
+  timeRMSOnPlateau_ = new TH1D( name.str().c_str(),
+				title.str().c_str(),
+				testedDevice_->getNChannels(),
+				0.,
+				0. + testedDevice_->getNChannels() );
+  timeRMSOnPlateau_->SetXTitle( "channel" );
+  timeRMSOnPlateau_->SetYTitle( "RMS of times on plateau [TDC]" );
+
+  // slewing time( channel ) 1D histogram
+  name.str("");
+  name << "slewingOnPlateau__" << fileName_;
+  title.str("");
+  title << "rms of measured times on efficiency plateau for " << testedDevice_->getType()
+	<< " of id "  << testedDevice_->getId();
+  slewingOnPlateau_ = new TH1D( name.str().c_str(),
+				title.str().c_str(),
+				testedDevice_->getNChannels(),
+				0.,
+				0. + testedDevice_->getNChannels() );
+  slewingOnPlateau_->SetXTitle( "channel" );
+  slewingOnPlateau_->SetYTitle( "slewing times on plateau [TDC]" );
 
   // time vs amplitude profile histogram for each channel, and
   // measured efficiency( amplitude ) for each channel
@@ -202,7 +231,25 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
     t->SetStats( kFALSE );
     if ( iChannel / nStyles < nColors ) t->SetLineColor( color[ iChannel/nStyles ] );
     t->SetLineStyle( style[ iChannel%nStyles ] );
-    timeVsAmplitude_.push_back( t );
+    timeVsAmplitudeProfile_.push_back( t );
+
+    // time vs amplitude histogram
+    name.str("");
+    name << "timeVsAmplH__" << fileName_ << "__ch_" << iChannel;
+    title.str("");
+    title << "Times in channel " << iChannel << " of " << testedDevice_->getType()
+	  << " of id "  << testedDevice_->getId();
+    TH1D *th = new TH1D( name.str().c_str(), 
+			 title.str().c_str(),
+			 nAmp,
+			 measurement_->getAmplitudeMin() -          0.5   * measurement_->getAmplitudeStep(),
+			 measurement_->getAmplitudeMin() + ( nAmp - 0.5 ) * measurement_->getAmplitudeStep() );
+    th->SetXTitle( "amplitude [DAC units]" );
+    th->SetYTitle( "time [TDC units]" );
+    th->SetStats( kFALSE );
+    if ( iChannel / nStyles < nColors ) th->SetLineColor( color[ iChannel/nStyles ] );
+    th->SetLineStyle( style[ iChannel%nStyles ] );
+    timeVsAmplitude_.push_back( th );
 
     // measured efficiency( amplitude ) graph
     name.str("");
@@ -249,10 +296,13 @@ AFEB::teststand::Results::~Results(){
   delete noise_;
   delete efficiency_;
   delete chi2ndf_;
-  delete timeOnPlateau_;
+  delete timeMeanOnPlateau_;
+  delete timeRMSOnPlateau_;
+  delete slewingOnPlateau_;
   delete legend_;
-  for ( vector<TProfile*>::iterator t=timeVsAmplitude_.begin(); t!=timeVsAmplitude_.end(); ++t ) delete *t;
-  for ( vector<TH1D*    >::iterator s=         sCurve_.begin(); s!=         sCurve_.end(); ++s ) delete *s;
+  for ( vector<TProfile*>::iterator t=timeVsAmplitudeProfile_.begin(); t!=timeVsAmplitudeProfile_.end(); ++t ) delete *t;
+  for ( vector<TH1D*    >::iterator t=       timeVsAmplitude_.begin(); t!=       timeVsAmplitude_.end(); ++t ) delete *t;
+  for ( vector<TH1D*    >::iterator s=                sCurve_.begin(); s!=                sCurve_.end(); ++s ) delete *s;
 }
 
 void AFEB::teststand::Results::add( const int channel, int const amplitude, const int time ){
@@ -264,7 +314,7 @@ void AFEB::teststand::Results::add( const int channel, int const amplitude, cons
   if ( measurement_->getTDCTimeMin() <= time_ && time_ <= measurement_->getTDCTimeMax() ){ 
     pulses_->Fill( channel, amplitude );
     sCurve_.at( channel )->Fill( amplitude );
-    timeVsAmplitude_.at( channel )->Fill( amplitude, time );
+    timeVsAmplitudeProfile_.at( channel )->Fill( amplitude, time );
   }
   bsem_.give();
 }
@@ -379,7 +429,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
   if ( To != From ) nCDF.SetRange( From, To ); // fit only in the range measured so far
 
   // The array of amplitudes at which the efficiency plateau starts in each channel
-  vector<double> plateauStarts;
+  valarray<double> plateauStarts;
   plateauStarts.resize( testedDevice_->getNChannels(), 0. );
 
   // Loop over channels and fit results
@@ -465,13 +515,18 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 
   bsem_.take();
   if ( isFinal_ ){
-    timesOnEfficiencyPlateau( plateauStarts ); // This fills timeOnPlateau_.
+    timesOnEfficiencyPlateau( plateauStarts ); // This fills timeMeanOnPlateau_, timeRMSOnPlateau_, etc.
   }
   bsem_.give();
 
 }
 
-void AFEB::teststand::Results::timesOnEfficiencyPlateau( vector<double>& plateauStarts ){
+void AFEB::teststand::Results::timesOnEfficiencyPlateau( valarray<double>& plateauStarts ){
+
+  //
+  // All times over the efficiency plateau lumped together
+  //
+
   // An array of auxiliary histograms just to do the statistics for us:
   vector<TH1D*> timesOfChannel;
   for ( int iChannel=0; iChannel<testedDevice_->getNChannels(); ++iChannel ){
@@ -484,15 +539,55 @@ void AFEB::teststand::Results::timesOnEfficiencyPlateau( vector<double>& plateau
   // Loop over all entries and collect the times on the efficiency plateau of that channel:
   for( Long64_t i=0; i<times_->GetEntries(); ++i ){
     times_->GetEntry( i );
-    if ( amplitude_ > plateauStarts.at( channel_ ) ) timesOfChannel.at( channel_ )->Fill( time_ );
+    if ( amplitude_ > plateauStarts[channel_] ) timesOfChannel.at( channel_ )->Fill( time_ );
   }
-  // Get the statistics of every channel into the timeOnPlateau_ histogram:
+  // Get the statistics of every channel into the timeMeanOnPlateau_ and timeRMSOnPlateau_ histograms:
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
-    timeOnPlateau_->SetBinContent( iChannel + 1, timesOfChannel.at( iChannel )->GetMean() );
-    timeOnPlateau_->SetBinError  ( iChannel + 1, timesOfChannel.at( iChannel )->GetRMS () );    
+    double N = timesOfChannel.at( iChannel )->GetEntries();
+    timeMeanOnPlateau_->SetBinContent( iChannel + 1, timesOfChannel.at( iChannel )->GetMean() );
+    timeMeanOnPlateau_->SetBinError  ( iChannel + 1, timesOfChannel.at( iChannel )->GetRMS() / ( N > 0 ? TMath::Sqrt( N ) : 1. ) );
+    timeRMSOnPlateau_->SetBinContent( iChannel + 1, timesOfChannel.at( iChannel )->GetRMS() );
+    timeRMSOnPlateau_->SetBinError  ( iChannel + 1, 0. );
   }
   // Delete the auxiliary histograms:
   for ( vector<TH1D*>::iterator h = timesOfChannel.begin(); h != timesOfChannel.end(); ++h ) delete *h;
+
+
+  //
+  // Mean times (times averaged over pulses for each amplitude and each channel)
+  //
+
+  for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+    // Profile hist needs projecting:
+    timeVsAmplitude_.at( iChannel ) = timeVsAmplitudeProfile_.at( iChannel )->ProjectionX( "t" );
+  }
+
+  // Span of mean times, i.e., the max difference between any two channels' mean time vs amplitude on the efficiency plateau
+  double commonPlateauStart = plateauStarts.max(); // Start comparisons from the highest threshold of any channel
+  timeSpans_.clear();
+  for ( int iAmpl=1; iAmpl<=timeVsAmplitude_.at( 0 )->GetNbinsX(); ++iAmpl ){ // All histograms of timeVsAmplitude_ have the same number of entries; take the first one.
+    if ( timeVsAmplitude_.at( 0 )->GetBinCenter( iAmpl ) > commonPlateauStart ){
+      valarray<double> meanTimes( testedDevice_->getNChannels() );
+      for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+	meanTimes[iChannel] = timeVsAmplitude_.at( iChannel )->GetBinContent( iAmpl );
+      }
+      timeSpans_.push_back( meanTimes.max() - meanTimes.min() );
+    }
+  }
+
+  // Slewing time (max difference between mean times on the efficiency plateau) for each channel
+  for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+    vector<double> meanTimes;
+    for ( int iAmpl=1; iAmpl<=timeVsAmplitude_.at( iChannel )->GetNbinsX(); ++iAmpl ){
+      if ( timeVsAmplitude_.at( iChannel )->GetBinCenter( iAmpl ) > plateauStarts[iChannel] ){
+	meanTimes.push_back( timeVsAmplitude_.at( iChannel )->GetBinContent( iAmpl ) );
+      }
+    }
+    map<string,double> stats = utils::statistics( utils::valarrayFromVector<double>( meanTimes ) );
+    slewingOnPlateau_->SetBinContent( iChannel + 1, stats["max"] - stats["min"] );
+    slewingOnPlateau_->SetBinError  ( iChannel + 1, 0. );
+  }
+
 }
 
 void AFEB::teststand::Results::createFigure( const string directory, const double fitRangeStart, const double fitRangeEnd ){
@@ -598,13 +693,13 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetRightMargin( 0.10 );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
     // Profile hist needs projecting:
-    TH1D *tp = timeVsAmplitude_.at( iChannel )->ProjectionX( "t", "" );
+    TH1D *tp = timeVsAmplitudeProfile_.at( iChannel )->ProjectionX( "t", "" );
     // Create a copy so that we can delete the original projection, just to avoid any possible interference:
     TH1D t( *tp );
     // Delete original projection:
     delete tp;
-    t.SetLineStyle( timeVsAmplitude_.at( iChannel )->GetLineStyle() ); // Keep line style...
-    t.SetLineColor( timeVsAmplitude_.at( iChannel )->GetLineColor() ); // ...and color
+    t.SetLineStyle( timeVsAmplitudeProfile_.at( iChannel )->GetLineStyle() ); // Keep line style...
+    t.SetLineColor( timeVsAmplitudeProfile_.at( iChannel )->GetLineColor() ); // ...and color
     t.SetTitle( (string( "Mean time vs. amplitude for device " ) + testedDevice_->getId()).c_str() );
     t.SetTitleOffset( 1.5, "Y" );
     t.SetStats( kFALSE );
@@ -685,8 +780,8 @@ void AFEB::teststand::Results::save( const string directory ){
   chi2ndf_->Write();
   noise_->Write();
   efficiency_->Write();
-  timeOnPlateau_->Write();
-  for ( vector<TProfile*>::iterator t=timeVsAmplitude_.begin(); t!=timeVsAmplitude_.end(); ++t ) (*t)->Write();
+  timeMeanOnPlateau_->Write();
+  for ( vector<TProfile*>::iterator t=timeVsAmplitudeProfile_.begin(); t!=timeVsAmplitudeProfile_.end(); ++t ) (*t)->Write();
   for ( vector<TH1D*>::iterator s=sCurve_.begin(); s!=sCurve_.end(); ++s ) (*s)->Write();
   bsem_.give();
 
@@ -711,16 +806,20 @@ void AFEB::teststand::Results::saveInOldFormat( const string directory ){
 
 map<string,pair<double,double> > AFEB::teststand::Results::getParameters( const int channel ) const {
   map<string,pair<double,double> > values;
-  values["threshold [DAC]"      ] = make_pair<double,double>( threshold_    ->GetBinContent( channel+1 ),
-							      threshold_    ->GetBinError  ( channel+1 ) );
-  values["noise [DAC]"          ] = make_pair<double,double>( noise_        ->GetBinContent( channel+1 ),
-							      noise_        ->GetBinError  ( channel+1 ) );
-  // values["efficiency"           ] = make_pair<double,double>( efficiency_   ->GetBinContent( channel+1 ),
-  // 							      efficiency_   ->GetBinError  ( channel+1 ) ); // If we fit the efficiency.
-  values["chi2ndf"              ] = make_pair<double,double>( chi2ndf_      ->GetBinContent( channel+1 ), 
-							      0.                                         );
-  values["time on plateau [TDC]"] = make_pair<double,double>( timeOnPlateau_->GetBinContent( channel+1 ), 
-							      timeOnPlateau_->GetBinError  ( channel+1 ) );
+  if ( measurement_->getType() == Measurement::count_vs_dac ){
+    values["threshold [DAC]"      ] = make_pair<double,double>( threshold_    ->GetBinContent( channel+1 ),
+								threshold_    ->GetBinError  ( channel+1 ) );
+    values["noise [DAC]"          ] = make_pair<double,double>( noise_        ->GetBinContent( channel+1 ),
+								noise_        ->GetBinError  ( channel+1 ) );
+    values["chi2ndf"              ] = make_pair<double,double>( chi2ndf_      ->GetBinContent( channel+1 ), 
+								0.                                         );
+  }
+  else if ( measurement_->getType() == Measurement::time_vs_dac ){
+    values["mean time on plateau [TDC]"   ] = make_pair<double,double>( timeMeanOnPlateau_->GetBinContent( channel+1 ), 
+									timeMeanOnPlateau_->GetBinError  ( channel+1 ) );
+    values["RMS of times on plateau [TDC]"] = make_pair<double,double>( timeRMSOnPlateau_->GetBinContent( channel+1 ), 
+									timeRMSOnPlateau_->GetBinError  ( channel+1 ) );
+  }
   return values;
 }
 
@@ -751,7 +850,15 @@ map<string,double> AFEB::teststand::Results::getChi2NDFStats(){
 }
 
 map<string,double> AFEB::teststand::Results::getTimeStats(){
-  return getStats( timeOnPlateau_ );
+  return getStats( timeMeanOnPlateau_ );
+}
+
+map<string,double> AFEB::teststand::Results::getSlewStats(){
+  return getStats( slewingOnPlateau_ );
+}
+
+map<string,double> AFEB::teststand::Results::getTimeSpanStats(){
+  return utils::statistics( utils::valarrayFromVector<double>( timeSpans_ ) );
 }
 
 // static function
