@@ -831,8 +831,8 @@ map<string,double> AFEB::teststand::Results::getStats( const TH1D* hist ){
   stats["rms" ] = rms ( *hist, hist->GetXaxis()->GetXmin(), hist->GetXaxis()->GetXmax() );
   stats["min" ] = hist->GetBinContent( hist->GetMinimumBin() );
   stats["max" ] = hist->GetBinContent( hist->GetMaximumBin() );
-  stats["max_residual"] = max( hist->GetBinContent( hist->GetMaximumBin() ) - m, 
-			       m - hist->GetBinContent( hist->GetMinimumBin() ) );
+  stats["maxAbsResid"] = max( hist->GetBinContent( hist->GetMaximumBin() ) - m, 
+			      m - hist->GetBinContent( hist->GetMinimumBin() ) );
   bsem_.give();
   return stats;
 }
