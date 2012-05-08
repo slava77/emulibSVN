@@ -13,7 +13,7 @@ using namespace AFEB::teststand;
 ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedChannel& d ){
   os << " gain="     << showpos << d.gain_                 << " +- " << noshowpos << d.gainError_
      << "   offset=" << showpos << d.offset_               << " +- " << noshowpos << d.offsetError_
-     << "   noise="  << showpos << d.noise_                << " +- " << noshowpos << d.noiseError_
+     // << "   noise="  << showpos << d.noise_                << " +- " << noshowpos << d.noiseError_
      << "   C_int="  << showpos << d.internalCapacitance_  << " +- " << noshowpos << d.internalCapacitanceError_;
   return os;
 }
@@ -55,9 +55,9 @@ void AFEB::teststand::AnalyzedChannel::calculateGain(){
   // cout << "Var" << endl << Var << endl;
   // cout << *this << endl;
 
-  // Calculate the average of the noise measurements, too:
-  noise_      = noiseAverager_.getFittedParameter( 0 );
-  noiseError_ = TMath::Sqrt( noiseAverager_.getFittedParametersCovariance()( 0, 0 ) );
+  // // Calculate the average of the noise measurements, too:
+  // noise_      = noiseAverager_.getFittedParameter( 0 );
+  // noiseError_ = TMath::Sqrt( noiseAverager_.getFittedParametersCovariance()( 0, 0 ) );
 }
 
 void AFEB::teststand::AnalyzedChannel::calculateInternalCapacitance( const pair<double,double> V_setThreshold,

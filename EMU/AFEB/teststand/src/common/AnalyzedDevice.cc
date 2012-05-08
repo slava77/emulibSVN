@@ -173,13 +173,6 @@ void AFEB::teststand::AnalyzedDevice::calculateInternalCapacitances(){
   } // for ( vector<Measurement*>::const_iterator m = measurements.begin(); m != measurements.end(); ++m )
 }
 
-valarray<double> AFEB::teststand::AnalyzedDevice::getNoises() const {
-  valarray<double> v( channels_.size() );
-  size_t n = 0;
-  for ( vector<AnalyzedChannel>::const_iterator c = channels_.begin(); c != channels_.end(); ++c ) v[n++] = c->noise_;
-  return v;
-}
-
 valarray<double> AFEB::teststand::AnalyzedDevice::getGains() const {
   valarray<double> v( channels_.size() );
   size_t n = 0;
@@ -226,7 +219,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
        <<                  "\" capacitor=\""            << (*m)->getInjectionCapacitorString()
        <<                  "\" nPulses=\""              << (*m)->getNPulses()
        <<                  "\" setThreshold=\""         << (*m)->getSetThreshold()
-       <<                  "\" setThresholdVoltage=\""  << thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first
+       <<                  "\" setThresholdVoltage=\""  << showpoint << setprecision(4) << fixed << thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first
        <<   "\">" << endl;
 
     // Open the root file of this measurement's results...
@@ -274,6 +267,10 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
       TCanvas canvas("canvas","canvas",1000,1400);
       canvas.Divide( 1, 4 );
       Legend legend;
+      // Valarrays for calculating the statistics
+      valarray<double> threshold( nChannels_ );
+      valarray<double> noise    ( nChannels_ );
+      valarray<double> chi2ndf  ( nChannels_ );
       // Loop over the channels
       for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
 	ss << "    <ad:channel number=\""    << noshowpos << setw(2) << iChannel
@@ -284,6 +281,9 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	   <<              "\" chi2ndf=\""
 	   <<                                chi2ndfVsChannel  ->GetBinContent( iChannel+1 )
 	   <<     "\"/>" << endl;
+	threshold[ iChannel ] = thresholdVsChannel->GetBinContent( iChannel+1 );
+	noise    [ iChannel ] = noiseVsChannel    ->GetBinContent( iChannel+1 );
+	chi2ndf  [ iChannel ] = chi2ndfVsChannel  ->GetBinContent( iChannel+1 );
 
 	canvas.cd( 1 );
 	TH1D *efficiencyHistogram;
@@ -304,6 +304,21 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	legend.AddEntry( efficiencyHistogram,  utils::stringFrom<int>( iChannel ).c_str(), "l" ); // Use efficiencyHistogram as effVsCharge will be already out of scope when legend is drawn.
 	effVsCharge.DrawCopy( (iChannel==0?"l":"lsame") );
       } // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
+
+      // Channels' statistics to XML
+      map<string,double> stat = utils::statistics( threshold );
+      ss << "    <ad:threshold ";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ) ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(4) << s->second << "\"";
+      ss << "/>" << endl;
+      stat = utils::statistics( noise );
+      ss << "    <ad:noise ";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ) ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(4) << s->second << "\"";
+      ss << "/>" << endl;
+      stat = utils::statistics( chi2ndf );
+      ss << "    <ad:chi2ndf ";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ) ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(4) << s->second << "\"";
+      ss << "/>" << endl;
+
 
       canvas.cd( 1 );
       legend.Draw();
@@ -556,8 +571,8 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
       // Now write the values to XML;
       //
       for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
-	ss << "    <ad:times nominalInputCharge=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << nominalInputCharges_[iCharge]
-	   <<            "\" realInputCharge=\""    << showpos << showpoint << setw(8) << setprecision(4) << fixed << realCharges[iCharge]
+	ss << "    <ad:times nominalInputCharge=\"" << showpos << showpoint << setprecision(4) << fixed << nominalInputCharges_[iCharge]
+	   <<            "\" realInputCharge=\""    << showpos << showpoint << setprecision(4) << fixed << realCharges[iCharge]
 	   <<    "\">" << endl;
 	for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
 	  ss << "      <ad:channel number=\""  << noshowpos << setw(2) << iChannel
@@ -570,8 +585,8 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	ss << "    </ad:times>" << endl;
       } //
 
-      ss << "    <ad:slew fromInputCharge=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << inputChargeRangeStart
-	 <<           "\" toInputCharge=\""   << showpos << showpoint << setw(8) << setprecision(4) << fixed << inputChargeRangeEnd
+      ss << "    <ad:slew fromInputCharge=\"" << showpos << showpoint << setprecision(4) << fixed << inputChargeRangeStart
+	 <<           "\" toInputCharge=\""   << showpos << showpoint << setprecision(4) << fixed << inputChargeRangeEnd
 	 <<    "\">" << endl;
       for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
 	ss << "      <ad:channel number=\""       << noshowpos << setw(2) << iChannel
@@ -600,7 +615,7 @@ string AFEB::teststand::AnalyzedDevice::statisticsToXML( const string& name, con
   map<string,double> stats = utils::statistics( values );
   ss << "<ad:" << name ;
   for ( map<string,double>::const_iterator s=stats.begin(); s!=stats.end(); ++s ){
-    ss << " " << s->first << "=\"" << showpos << showpoint << setprecision(4) << setw(8) << fixed << s->second << "\"";
+    ss << " " << s->first << "=\"" << showpos << showpoint << setprecision(4) << fixed << s->second << "\"";
   }
   ss <<   "/>";
   return ss.str();
@@ -640,9 +655,9 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
      << "  <ad:adaptor id=\""                    << adaptorId_
      <<            "\" type=\""                  << adaptorType_
      <<            "\" socket=\""                << socket_
-     <<            "\" correctionCoefficient=\"" << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << correctionCoefficient_
-     <<            "\" injectionCapacitance=\""  << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << injectionCapacitance_
-     <<            "\" pulseDivisionFactor=\""   << noshowpos << showpoint << setprecision(4) << setw(8) << fixed << pulseDivisionFactor_
+     <<            "\" correctionCoefficient=\"" << noshowpos << showpoint << setprecision(4) << fixed << correctionCoefficient_
+     <<            "\" injectionCapacitance=\""  << noshowpos << showpoint << setprecision(4) << fixed << injectionCapacitance_
+     <<            "\" pulseDivisionFactor=\""   << noshowpos << showpoint << setprecision(4) << fixed << pulseDivisionFactor_
      <<   "\"/>" << endl;
 
   ss << measurementsToXMLAndPlots( analyzedResultsDir, pdf );
@@ -653,11 +668,9 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
        <<            "\" offset=\""       << showpos << showpoint << setw(8) << setprecision(4) << fixed << - c->offset_ // Comply with odd convention on sign of offset.
        <<            "\" gain=\""         << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->gain_
        <<            "\" C_int=\""        << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->internalCapacitance_
-       <<            "\" averageNoise=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed << c->noise_
        <<   "\"/>" << endl;
   }
   
-  ss << "  " << statisticsToXML( "noise",  getNoises()               ) << endl;
   ss << "  " << statisticsToXML( "gain ",  getGains()                ) << endl;
   ss << "  " << statisticsToXML( "offset", getOffsets()              ) << endl;
   ss << "  " << statisticsToXML( "C_int",  getInternalCapacitances() ) << endl;

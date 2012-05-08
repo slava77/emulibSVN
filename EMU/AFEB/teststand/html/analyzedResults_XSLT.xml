@@ -50,29 +50,23 @@
 	    <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:channel[1]/@offset"/></xsl:attribute>offset [<xsl:apply-templates mode="units" select="ad:channel[1]/@offset"/>]</th>
 	    <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:channel[1]/@gain"/></xsl:attribute>gain [<xsl:apply-templates mode="units" select="ad:channel[1]/@gain"/>]</th>
 	    <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:channel[1]/@C_int"/></xsl:attribute>C<span style="vertical-align:sub;">internal</span> [<xsl:apply-templates mode="units" select="ad:channel[1]/@C_int"/>]</th>
-	    <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="ad:channel[1]/@averageNoise"/></xsl:attribute>average noise [<xsl:apply-templates mode="units" select="ad:channel[1]/@averageNoise"/>]</th>
 	  </tr>
 	  <xsl:apply-templates select="ad:channel"/>
 	</table>
 
 	<table class="device">
-	  <tr><th></th><xsl:apply-templates mode="th" select="ad:noise"/></tr>
-	  <tr><th>noise</th><xsl:apply-templates mode="td" select="ad:noise"/></tr>
-	</table>
-
-	<table class="device">
 	  <tr><th></th><xsl:apply-templates mode="th" select="ad:gain"/></tr>
-	  <tr><th>gain</th><xsl:apply-templates mode="td" select="ad:gain"/></tr>
+	  <tr><th>gain [<xsl:apply-templates mode="units" select="ad:gain/@max"/>]</th><xsl:apply-templates mode="td" select="ad:gain"/></tr>
 	</table>
 
 	<table class="device">
 	  <tr><th></th><xsl:apply-templates mode="th" select="ad:offset"/></tr>
-	  <tr><th>offset</th><xsl:apply-templates mode="td" select="ad:offset"/></tr>
+	  <tr><th>offset [<xsl:apply-templates mode="units" select="ad:offset/@max"/>]</th><xsl:apply-templates mode="td" select="ad:offset"/></tr>
 	</table>
 
 	<table class="device">
 	  <tr><th></th><xsl:apply-templates mode="th" select="ad:C_int"/></tr>
-	  <tr><th>C<span style="vertical-align:sub;">internal</span></th><xsl:apply-templates mode="td" select="ad:C_int"/></tr>
+	  <tr><th>C<span style="vertical-align:sub;">internal</span> [<xsl:apply-templates mode="units" select="ad:C_int/@max"/>]</th><xsl:apply-templates mode="td" select="ad:C_int"/></tr>
 	</table>
 
 	<table class="device">
@@ -159,6 +153,18 @@
 	      </tr>
 	      <xsl:apply-templates select="ad:channel"/>
 	    </table>
+	    <table class="statistics">
+	      <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:threshold"/></tr>
+	      <tr><th>threshold [<xsl:apply-templates mode="units" select="ad:threshold/@max"/>]</th><xsl:apply-templates mode="td" select="ad:threshold"/></tr>
+	    </table>
+	    <table class="statistics">
+	      <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:noise"/></tr>
+	      <tr><th>noise [<xsl:apply-templates mode="units" select="ad:noise/@max"/>]</th><xsl:apply-templates mode="td" select="ad:noise"/></tr>
+	    </table>
+	    <table class="statistics">
+	      <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:chi2ndf"/></tr>
+	      <tr><th>&#x03c7;&#xb2;/ndf</th><xsl:apply-templates mode="td" select="ad:chi2ndf"/></tr>
+	    </table>
 	  </xsl:if>
 	  <xsl:if test="@type='time_vs_dac'">
 	    <xsl:apply-templates/>
@@ -182,11 +188,11 @@
     </table>   
     <table class="statistics">
       <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:mean"/></tr>
-      <tr><th>mean times</th><xsl:apply-templates mode="td" select="ad:mean"/></tr>
+      <tr><th>mean times [<xsl:apply-templates mode="units" select="ad:mean/@max"/>]</th><xsl:apply-templates mode="td" select="ad:mean"/></tr>
     </table>
     <table class="statistics">
       <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:rms"/></tr>
-      <tr><th>rms of times</th><xsl:apply-templates mode="td" select="ad:rms"/></tr>
+      <tr><th>rms of times [<xsl:apply-templates mode="units" select="ad:rms/@max"/>]</th><xsl:apply-templates mode="td" select="ad:rms"/></tr>
     </table>
   </xsl:template>
 
@@ -204,11 +210,11 @@
     </table>   
     <table class="statistics">
       <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:spanOfMeans"/></tr>
-      <tr><th>span of means</th><xsl:apply-templates mode="td" select="ad:spanOfMeans"/></tr>
+      <tr><th>span of means [<xsl:apply-templates mode="units" select="ad:spanOfMeans/@max"/>]</th><xsl:apply-templates mode="td" select="ad:spanOfMeans"/></tr>
     </table>
     <table class="statistics">
       <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:spanOfRMSs"/></tr>
-      <tr><th>span of RMSs</th><xsl:apply-templates mode="td" select="ad:spanOfRMSs"/></tr>
+      <tr><th>span of RMSs [<xsl:apply-templates mode="units" select="ad:spanOfRMSs/@max"/>]</th><xsl:apply-templates mode="td" select="ad:spanOfRMSs"/></tr>
     </table>
   </xsl:template>
 
@@ -243,11 +249,10 @@
       <td><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@offset"/></xsl:attribute><xsl:value-of select="@offset"/></td>
       <td><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@gain"/></xsl:attribute><xsl:value-of select="@gain"/></td>
       <td><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@C_int"/></xsl:attribute><xsl:value-of select="@C_int"/></td>
-      <td><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@averageNoise"/></xsl:attribute><xsl:value-of select="@averageNoise"/></td>
     </tr>
   </xsl:template>
 
-  <xsl:template mode="th" match="ad:mean | ad:rms | ad:spanOfMeans | ad:spanOfRMSs | ad:noise | ad:gain | ad:offset | ad:C_int">
+  <xsl:template mode="th" match="ad:threshold | ad:noise | ad:chi2ndf | ad:mean | ad:rms | ad:spanOfMeans | ad:spanOfRMSs | ad:gain | ad:offset | ad:C_int">
     <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@min"/></xsl:attribute>minimum</th>
     <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@mean"/></xsl:attribute>mean</th>
     <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@max"/></xsl:attribute>maximum</th>
@@ -255,7 +260,7 @@
     <th><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@maxAbsResid"/></xsl:attribute>max |residual|</th>
   </xsl:template>
 
-  <xsl:template mode="td" match="ad:mean | ad:rms | ad:spanOfMeans | ad:spanOfRMSs | ad:noise | ad:gain | ad:offset | ad:C_int">
+  <xsl:template mode="td" match="ad:threshold | ad:noise | ad:chi2ndf | ad:mean | ad:rms | ad:spanOfMeans | ad:spanOfRMSs | ad:gain | ad:offset | ad:C_int">
     <td><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@min"/></xsl:attribute><xsl:value-of select="@min"/></td>
     <td><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@mean"/></xsl:attribute><xsl:value-of select="@mean"/></td>
     <td><xsl:attribute name="title"><xsl:apply-templates mode="description" select="@max"/></xsl:attribute><xsl:value-of select="@max"/></td>

@@ -27,8 +27,8 @@ namespace AFEB { namespace teststand {
       double getSetThresholdVoltage( const double thresholdCharge ) const { return offset_ + gain_ * thresholdCharge; }
 
     private:
-      double noise_;		///< noise [fC], i.e., the width of the efficiency S-curve
-      double noiseError_;	///< error on noise [fC]
+      // double noise_;		///< noise [fC], i.e., the width of the efficiency S-curve
+      // double noiseError_;	///< error on noise [fC]
       double gain_;		///< gain [mV/fC], i.e., the slope of the line fitted to V_setThreshold( Q_measuredThreshold )
       double gainError_;	///< error on gain [mV/fC]
       double offset_;		///< offset [mV], i.e., the intercept of the line fitted to V_setThreshold( Q_measuredThreshold ))

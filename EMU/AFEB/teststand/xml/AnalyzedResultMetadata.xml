@@ -34,7 +34,27 @@
     <meta:attr name="offset" units="mV" description="Offset, i.e., the intercept of the straight line fitted to the setThresholdVoltage( measuredThresoldCharge ) function."/>
     <meta:attr name="gain" units="mV/fC" description="Gain, i.e., the slope of the straight line fitted to the setThresholdVoltage( measuredThresoldCharge ) function."/>
     <meta:attr name="C_int" units="pf" description="Internal capacitance."/>
-    <meta:attr name="averageNoise" units="fC" description="Average over the external capacitor threshold scan measurements of the noise."/>
+  </meta:tag>
+  <meta:tag name="ad:threshold">
+    <meta:attr name="max" units="fC" description="Maximum over the channels of the thresholds."/>
+    <meta:attr name="min" units="fC" description="Minimum over the channels of the thresholds."/>
+    <meta:attr name="mean" units="fC" description="Average over the channels of the thresholds."/>
+    <meta:attr name="rms" units="fC" description="RMS over the channels of the thresholds."/>
+    <meta:attr name="maxAbsResid" units="fC" description="Maximum absolute residual over the channels of the thresholds."/>
+  </meta:tag>
+  <meta:tag name="ad:noise">
+    <meta:attr name="max" units="fC" description="Maximum over the channels of the noise values."/>
+    <meta:attr name="min" units="fC" description="Minimum over the channels of the noise values."/>
+    <meta:attr name="mean" units="fC" description="Average over the channels of the noise values."/>
+    <meta:attr name="rms" units="fC" description="RMS over the channels of the noise values."/>
+    <meta:attr name="maxAbsResid" units="fC" description="Maximum absolute residual over the channels of the noise values."/>
+  </meta:tag>
+  <meta:tag name="ad:chi2ndf">
+    <meta:attr name="max" description="Maximum over the channels of the &#x03c7;&#xb2;/ndf values.."/>
+    <meta:attr name="min" description="Minimum over the channels of the &#x03c7;&#xb2;/ndf values.."/>
+    <meta:attr name="mean" description="Average over the channels of the &#x03c7;&#xb2;/ndf values.."/>
+    <meta:attr name="rms" description="RMS over the channels of the &#x03c7;&#xb2;/ndf values.."/>
+    <meta:attr name="maxAbsResid" description="Maximum absolute residual over the channels of the &#x03c7;&#xb2;/ndf values.."/>
   </meta:tag>
   <meta:tag name="ad:mean">
     <meta:attr name="max" units="ns" description="Maximum over the channels of the mean times."/>
@@ -71,13 +91,6 @@
     <meta:attr name="mean" units="ns" description="Average over the channels of the maximum differences of RMSs of times."/>
     <meta:attr name="rms" units="ns" description="RMS over the channels of the maximum differences of RMSs of times."/>
     <meta:attr name="maxAbsResid" units="ns" description="Maximum absolute residual over the channels of the maximum differences of RMSs of times."/>
-  </meta:tag>
-  <meta:tag name="ad:noise">
-    <meta:attr name="max" units="fC" description="Maximum over the channels of the measured noise values."/>
-    <meta:attr name="min" units="fC" description="Minimum over the channels of the measured noise values."/>
-    <meta:attr name="mean" units="fC" description="Average over the channels of the measured noise values."/>
-    <meta:attr name="rms" units="fC" description="RMS over the channels of the measured noise values."/>
-    <meta:attr name="maxAbsResid" units="fC" description="Maximum absolute residual over the channels of the measured noise values."/>
   </meta:tag>
   <meta:tag name="ad:gain">
     <meta:attr name="max" units="mV/fC" description="Maximum over the channels of the measured gain values."/>
