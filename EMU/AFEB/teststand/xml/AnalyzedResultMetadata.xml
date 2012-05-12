@@ -50,11 +50,11 @@
     <meta:attr name="maxAbsResid" units="fC" description="Maximum absolute residual over the channels of the noise values."/>
   </meta:tag>
   <meta:tag name="ad:chi2ndf">
-    <meta:attr name="max" description="Maximum over the channels of the &#x03c7;&#xb2;/ndf values.."/>
-    <meta:attr name="min" description="Minimum over the channels of the &#x03c7;&#xb2;/ndf values.."/>
-    <meta:attr name="mean" description="Average over the channels of the &#x03c7;&#xb2;/ndf values.."/>
-    <meta:attr name="rms" description="RMS over the channels of the &#x03c7;&#xb2;/ndf values.."/>
-    <meta:attr name="maxAbsResid" description="Maximum absolute residual over the channels of the &#x03c7;&#xb2;/ndf values.."/>
+    <meta:attr name="max" description="Maximum over the channels of the &#x03c7;&#xb2;/ndf values."/>
+    <meta:attr name="min" description="Minimum over the channels of the &#x03c7;&#xb2;/ndf values."/>
+    <meta:attr name="mean" description="Average over the channels of the &#x03c7;&#xb2;/ndf values."/>
+    <meta:attr name="rms" description="RMS over the channels of the &#x03c7;&#xb2;/ndf values."/>
+    <meta:attr name="maxAbsResid" description="Maximum absolute residual over the channels of the &#x03c7;&#xb2;/ndf values."/>
   </meta:tag>
   <meta:tag name="ad:mean">
     <meta:attr name="max" units="ns" description="Maximum over the channels of the mean times."/>
