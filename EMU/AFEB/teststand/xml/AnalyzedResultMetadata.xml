@@ -79,11 +79,11 @@
     <meta:attr name="toInputCharge" units="fC" description="The end of the input charge range over which the time resolution and slew are calculated."/>
   </meta:tag>
   <meta:tag name="ad:spanOfMeans">
-    <meta:attr name="max" units="ns" description="Maximum over the channels of the maximum differences of mean times."/>
-    <meta:attr name="min" units="ns" description="Minimum over the channels of the maximum differences of mean times."/>
-    <meta:attr name="mean" units="ns" description="Average over the channels of the maximum differences of mean times."/>
-    <meta:attr name="rms" units="ns" description="RMS over the channels of the maximum differences of mean times."/>
-    <meta:attr name="maxAbsResid" units="ns" description="Maximum absolute residual over the channels of the maximum differences of mean times."/>
+    <meta:attr name="max" units="ns" description="Maximum over the channels of the slewing time (maximum differences of mean times)."/>
+    <meta:attr name="min" units="ns" description="Minimum over the channels of the slewing time (maximum differences of mean times)."/>
+    <meta:attr name="mean" units="ns" description="Average over the channels of the slewing time (maximum differences of mean times)."/>
+    <meta:attr name="rms" units="ns" description="RMS over the channels of the slewing time (maximum differences of mean times)."/>
+    <meta:attr name="maxAbsResid" units="ns" description="Maximum absolute residual over the channels of the slewing time (maximum differences of mean times)."/>
   </meta:tag>
   <meta:tag name="ad:spanOfRMSs">
     <meta:attr name="max" units="ns" description="Maximum over the channels of the maximum differences of RMSs of times."/>
