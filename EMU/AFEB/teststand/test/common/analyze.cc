@@ -14,6 +14,7 @@ int main( int argc, char** argv ){
       cout << i << "  " << argv[i] << endl;
       AFEB::teststand::Analysis a( AFEB_ROOT, argv[i] );
       a.saveResults();
+      a.applySelection();
     }
   }
 

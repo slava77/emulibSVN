@@ -5,6 +5,7 @@
 #include "AFEB/teststand/AnalyzedChannel.h"
 #include "AFEB/teststand/DAC.h"
 #include "AFEB/teststand/Measurement.h"
+#include "AFEB/teststand/Cut.h"
 
 #include "TPDF.h"
 
@@ -71,9 +72,12 @@ namespace AFEB { namespace teststand {
       /// @return Charge [fC] value and error
       ///
       pair<double,double> chargeFromVoltage( const pair<double,double> voltage, Measurement::Capacitor_t capacitorType ) const ;
+
       void calculateGains               ();
       void calculateInternalCapacitances();
       void saveResults                  ( const string& afebRootDir, const string& analyzedResultsDir );
+      bool passesSelectionCuts          ( const string& analyzedResultsDir, const vector<Cut>& cuts );
+      
 
     private:
       string                     rawResultsDir_;

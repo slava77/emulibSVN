@@ -3,6 +3,7 @@
 #include "AFEB/teststand/utils/String.h"
 #include "AFEB/teststand/utils/IO.h"
 #include "AFEB/teststand/utils/System.h"
+#include "AFEB/teststand/utils/DOM.h"
 #include "xcept/Exception.h"
 
 #include "TMath.h"
@@ -782,4 +783,17 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
 
   utils::writeFile( analyzedResultsDir + "/" + id_ + ".xml", ss.str() );
 
+}
+
+bool AFEB::teststand::AnalyzedDevice::passesSelectionCuts( const string& analyzedResultsDir, const vector<Cut>& cuts ){
+  bool passes = true;
+  string analyzedResultsXML( utils::readFile( analyzedResultsDir + "/" + id_ + ".xml" ) );
+  for ( vector<Cut>::const_iterator c=cuts.begin(); c!=cuts.end(); ++c ){
+    double value = utils::stringTo<double>( utils::getSelectedNodeValue( analyzedResultsXML, c->getXpath() ) );
+    if ( ! c->accepts( value ) ){
+      cout << *c << " failed. Value=" << value << endl;
+      passes = false;
+    }
+  }
+  return passes;
 }

@@ -224,7 +224,61 @@ void AFEB::teststand::Analysis::saveResults( const string& destinationDir ){
   stringstream command;
   command << "cp " << afebRootDir_ << "/AFEB/teststand/html/analyzedResults_XSLT.xml " << destinationDir;
   AFEB::teststand::utils::execShellCommand( command.str() );
+  // Copy selection cuts' file to it
+  command.str( "" );
+  command << "cp " << afebRootDir_ << "/AFEB/teststand/xml/SelectionCuts.xml " << destinationDir;
+  AFEB::teststand::utils::execShellCommand( command.str() );
+  // Save each device's results
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
     d->saveResults( afebRootDir_, destinationDir );
   }
+}
+
+void AFEB::teststand::Analysis::applySelection(){
+  applySelection( analyzedResultsDir_ );
+}
+
+void AFEB::teststand::Analysis::applySelection( const string& analyzedResultsDirectory ){
+  // Load selection cuts from file
+  vector<Cut> cuts = loadSelectionCuts( analyzedResultsDirectory );
+  // cout << cuts << endl;
+  // Write XSLT for marking the selections in the results file.
+  utils::writeFile( analyzedResultsDirectory + "/selectionCuts_XSLT.xml", createSelectionCutsXSLT( cuts ) );
+  // Apply cuts to each device's results
+  for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
+    d->passesSelectionCuts( analyzedResultsDirectory, cuts );
+  }
+}
+
+vector<Cut> AFEB::teststand::Analysis::loadSelectionCuts( const string& dir ) const {
+  vector<Cut> cuts;
+  string cutsXML( utils::readFile( dir + "/SelectionCuts.xml" ) );
+  vector< pair<string,string> > cutIds = utils::getSelectedNodesValues( cutsXML, "/s:selection/s:analyzedData/s:cut/@id" );
+  // cout << "cut ids: " << cutIds << endl;
+  for ( vector< pair<string,string> >::const_iterator ci=cutIds.begin(); ci!=cutIds.end(); ++ci ){
+    cuts.push_back( utils::getSelectedNodesValues( cutsXML, string( "/s:selection/s:analyzedData/s:cut[@id='" ) + ci->second + "']/@*" ) );
+  }
+  return cuts;
+}
+
+string AFEB::teststand::Analysis::createSelectionCutsXSLT( const vector<Cut>& cuts ) const {
+  stringstream ss;
+
+  ss << "<?xml version=\"1.0\"?>" << endl;
+  ss << "<xsl:transform xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:ad=\"http://cms.cern.ch/emu/afeb/teststand/analyzeddevice\" xmlns:s=\"http://cms.cern.ch/emu/afeb/teststand/selection\" version=\"1.0\">" << endl;;
+  for ( vector<Cut>::const_iterator c=cuts.begin(); c!=cuts.end(); ++c ){
+    ss << "  <!-- cut" << c->getId() << " -->" << endl;
+    ss << "  <xsl:template match=\"" << c->getXpath() << "\" mode=\"selection\">" << endl;
+    ss << "    <xsl:param name=\"CUTID\" select=\"" << c->getId() << "\"/>" << endl;
+    ss << "    <xsl:param name=\"VALUE\" select=\"translate(.,'+','')\"/>" << endl;
+    ss << "    <xsl:param name=\"HIGH\" select=\"number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)\"/>" << endl;
+    ss << "    <xsl:param name=\"LOW\" select=\"number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)\"/>" << endl;
+    ss << "    <xsl:param name=\"RESULT\"><xsl:choose><xsl:when test=\"$HIGH > $VALUE and $VALUE > $LOW\">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>" << endl;
+    ss << "    <xsl:attribute name=\"title\"><xsl:apply-templates mode=\"descriptionText\" select=\".\"/> It <xsl:value-of select=\"$RESULT\"/> selection cut #<xsl:value-of select=\"$CUTID\"/>. Acceptable range: ( <xsl:value-of select=\"$LOW\"/> , <xsl:value-of select=\"$HIGH\"/> )</xsl:attribute>" << endl;
+    ss << "    <xsl:attribute name=\"class\"><xsl:value-of select=\"$RESULT\"/></xsl:attribute>" << endl;
+    ss << "  </xsl:template>" << endl;
+  }
+  ss << "</xsl:transform>";
+  
+  return ss.str();
 }

@@ -42,6 +42,7 @@ Sources = \
 	Analysis.cc \
 	DAC.cc \
 	Legend.cc \
+	Cut.cc \
 	version.cc \
 	utils/DOM.cc \
 	utils/Cgi.cc \
