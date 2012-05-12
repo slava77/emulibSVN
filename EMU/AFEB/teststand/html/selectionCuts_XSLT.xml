@@ -1,0 +1,356 @@
+<?xml version="1.0"?>
+
+<xsl:transform 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:ad="http://cms.cern.ch/emu/afeb/teststand/analyzeddevice"
+    xmlns:meta="http://cms.cern.ch/emu/afeb/teststand/metadata"
+    xmlns:s="http://cms.cern.ch/emu/afeb/teststand/selection"
+    version="1.0">
+
+  <!-- cut 1 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:threshold/@mean" mode="selection">
+    <xsl:param name="CUTID" select="1"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 2 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:threshold/@maxAbsResid" mode="selection">
+    <xsl:param name="CUTID" select="2"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 3 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@mean" mode="selection">
+    <xsl:param name="CUTID" select="3"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 4 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@max" mode="selection">
+    <xsl:param name="CUTID" select="4"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 5 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:chi2ndf/@mean" mode="selection">
+    <xsl:param name="CUTID" select="5"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 6 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:chi2ndf/@max" mode="selection">
+    <xsl:param name="CUTID" select="6"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 7 -->
+  <xsl:template match="/ad:device/ad:gain/@mean" mode="selection">
+    <xsl:param name="CUTID" select="7"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 8 -->
+  <xsl:template match="/ad:device/ad:gain/@maxAbsResid" mode="selection">
+    <xsl:param name="CUTID" select="8"/>
+    <xsl:param name="VALUE" select="number(.)"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 9 -->
+  <xsl:template match="/ad:device/ad:offset/@mean" mode="selection">
+    <xsl:param name="CUTID" select="9"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 10 -->
+  <xsl:template match="/ad:device/ad:offset/@maxAbsResid" mode="selection">
+    <xsl:param name="CUTID" select="10"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+
+  <!-- cut 11 -->
+  <xsl:template match="/ad:device/ad:maxMeasuredThreshold[number(translate(@atSetThreshold,'+',''))=0]/@value" mode="selection">
+    <xsl:param name="CUTID" select="11"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 12 -->
+  <xsl:template match="/ad:device/ad:averageSetThreshold[number(translate(@atCharge,'+',''))=20]/@value" mode="selection">
+    <xsl:param name="CUTID" select="12"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 13 -->
+  <xsl:template match="/ad:device/ad:C_int/@mean" mode="selection">
+    <xsl:param name="CUTID" select="13"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 14 -->
+  <xsl:template match="/ad:device/ad:C_int/@maxAbsResid" mode="selection">
+    <xsl:param name="CUTID" select="14"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 15 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:threshold/@mean" mode="selection">
+    <xsl:param name="CUTID" select="15"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 16 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:threshold/@maxAbsResid" mode="selection">
+    <xsl:param name="CUTID" select="16"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 17 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@mean" mode="selection">
+    <xsl:param name="CUTID" select="17"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 18 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@max" mode="selection">
+    <xsl:param name="CUTID" select="18"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 19 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:chi2ndf/@mean" mode="selection">
+    <xsl:param name="CUTID" select="19"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 20 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:chi2ndf/@max" mode="selection">
+    <xsl:param name="CUTID" select="20"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+
+
+  <!-- cut 24 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=50]/ad:rms/@mean" mode="selection">
+    <xsl:param name="CUTID" select="24"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 25 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=50]/ad:rms/@max" mode="selection">
+    <xsl:param name="CUTID" select="25"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 26 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:rms/@mean" mode="selection">
+    <xsl:param name="CUTID" select="26"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 27 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:rms/@max" mode="selection">
+    <xsl:param name="CUTID" select="27"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 28 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=150]/ad:rms/@mean" mode="selection">
+    <xsl:param name="CUTID" select="28"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 29 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=150]/ad:rms/@max" mode="selection">
+    <xsl:param name="CUTID" select="29"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+
+
+  <!-- cut 30 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=50]/ad:mean/@mean" mode="selection">
+    <xsl:param name="CUTID" select="30"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 31 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=50]/ad:mean/@maxAbsResid" mode="selection">
+    <xsl:param name="CUTID" select="31"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 32 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:mean/@mean" mode="selection">
+    <xsl:param name="CUTID" select="32"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 33 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:mean/@maxAbsResid" mode="selection">
+    <xsl:param name="CUTID" select="33"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 34 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=150]/ad:mean/@mean" mode="selection">
+    <xsl:param name="CUTID" select="34"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 35 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=150]/ad:mean/@maxAbsResid" mode="selection">
+    <xsl:param name="CUTID" select="35"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 36 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:slew/ad:spanOfMeans/@mean" mode="selection">
+    <xsl:param name="CUTID" select="36"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+  <!-- cut 37 -->
+  <xsl:template match="/ad:device/ad:measurement[@type='time_vs_dac']/ad:slew/ad:spanOfMeans/@max" mode="selection">
+    <xsl:param name="CUTID" select="37"/>
+    <xsl:param name="VALUE" select="translate(.,'+','')"/>
+    <xsl:param name="HIGH" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)"/>
+    <xsl:param name="LOW" select="number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)"/>
+    <xsl:param name="RESULT"><xsl:choose><xsl:when test="$HIGH > $VALUE and $VALUE > $LOW">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>
+    <xsl:attribute name="title"><xsl:apply-templates mode="descriptionText" select="."/> It <xsl:value-of select="$RESULT"/> selection cut #<xsl:value-of select="$CUTID"/>. Acceptable range: ( <xsl:value-of select="$LOW"/> , <xsl:value-of select="$HIGH"/> )</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="$RESULT"/></xsl:attribute>
+  </xsl:template>
+
+</xsl:transform>

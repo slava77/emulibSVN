@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:selection xmlns:s="http://cms.cern.ch/emu/afeb/teststand/selection" date="2011-05-08">
+  <s:rawData>
+    <s:cut id="" low="" high="" description=""/>
+  </s:rawData>
+  <s:analyzedData>
+    <s:cut id=" 1" low="  15.0  " high=" 40.0 " description="Aver. Qthr (Uset=150mV, Cinj=1.6pF)"               xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:threshold/@mean"/>
+    <s:cut id=" 2" low="   0.2  " high="  5.0 " description="Max. Abs. Qthr residual (Uset=150mV, Cinj=1.6pF)"  xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:threshold/@maxAbsResid"/>
+    <s:cut id=" 3" low="   1.0  " high="  1.70" description="Aver. Noise (Uset=150mV, Cinj=1.6pF)"              xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@mean"/>
+    <s:cut id=" 4" low="   1.0  " high="  1.80" description="Max. Noise (Uset=150mV, Cinj=1.6pF)"               xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@max"/>
+    <s:cut id=" 5" low="   0.2  " high="  2.0 " description="Aver. Chi2 (Uset=150mV, Cinj=1.6pF)"               xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:chi2ndf/@mean"/>
+    <s:cut id=" 6" low="   0.2  " high=" 10.0 " description="Max. Chi2 (Uset=150mV, Cinj=1.6pF)"                xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:chi2ndf/@max"/>
+    <s:cut id=" 7" low="   5.5  " high="  8.0 " description="Aver. Gain"                                        xpath="/ad:device/ad:gain/@mean"/>
+    <s:cut id=" 8" low="   0.02 " high="  0.5 " description="Max. Abs. Gain Residual"                           xpath="/ad:device/ad:gain/@maxAbsResid" mode="selection"/>
+    <s:cut id=" 9" low=" -50.0  " high="105.0 " description="Aver. Offset"                                      xpath="/ad:device/ad:offset/@mean"/>
+    <s:cut id="10" low="   2.0  " high=" 25.0 " description="Max. Abs. Offset Residual"                         xpath="/ad:device/ad:offset/@maxAbsResid"/>
+    <s:cut id="11" low="-100.0  " high=" 17.5 " description="Max. Qthr at Uset=0mV"                             xpath="/ad:device/ad:maxMeasuredThreshold[number(translate(@atSetThreshold,'+',''))=0]/@value"/>
+    <s:cut id="12" low="  35.0  " high="180.0 " description="Uset for Qthr=20fC"                                xpath="/ad:device/ad:averageSetThreshold[number(translate(@atCharge,'+',''))=20]/@value"/>
+    <s:cut id="13" low="   0.185" high="  0.3 " description="Aver. Cint"                                        xpath="/ad:device/ad:C_int/@mean"/>
+    <s:cut id="14" low="   0.002" high="  0.05" description="Max. Abs. Cint Residual"                           xpath="/ad:device/ad:C_int/@maxAbsResid" mode="selection"/>
+    <s:cut id="15" low="  15.0  " high=" 45.0 " description="Aver. Qthr (Uset=150mV, Cint=0.25pF)"              xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:threshold/@mean"/> 
+    <s:cut id="16" low="   0.2  " high="  5.0 " description="Max. abs. Qthr residual (Uset=150mV, Cint=0.25pF)" xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:threshold/@maxAbsResid"/>
+    <s:cut id="17" low="   1.0  " high="  1.84" description="Aver. Noise (Uset=150mV, Cint=0.25pF.)"            xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@mean"/>
+    <s:cut id="18" low="   1.0  " high="  2.13" description="Max. Noise (Uset=150mV, Cint=0.25pF)"              xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@max"/>
+    <s:cut id="19" low="   0.2  " high="  2.0 " description="Aver. Chi2 (Uset=150mV, Cint=0.25pF)"              xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:chi2ndf/@mean"/>
+    <s:cut id="20" low="   0.2  " high=" 10.0 " description="Max Chi2 (Uset=150mV, Cint=0.25pF)"                xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:chi2ndf/@max"/>
+    <s:cut id="21" low="  -1.0  " high="  1.0 " description="Num. of dead channels (Uset=150mV, Cinj=1.6pF)"    xpath=""/>
+    <s:cut id="22" low="  -1.0  " high="  1.0 " description="Num. of dead channels (Uset=300mV, Cinj=1.6pF)"    xpath=""/>
+    <s:cut id="23" low="  -1.0  " high="  1.0 " description="Num. of dead channels (Uset=150mV, Cint=0.25pF)"   xpath=""/>
+    <s:cut id="24" low="   0.8  " high="  1.5 " description="Aver. time resolution at Qin=50fC"                 xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=50]/ad:rms/@mean"/>
+    <s:cut id="25" low="   0.8  " high="  2.0 " description="Max. time resolution at Qin=50fC"                  xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=50]/ad:rms/@max"/>
+    <s:cut id="26" low="   0.4  " high="  0.8 " description="Aver. time resolution at Qin=100fC"                xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:rms/@mean"/>
+    <s:cut id="27" low="   0.5  " high="  1.0 " description="Max. time resolution at Qin=100fC"                 xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:rms/@max"/>
+    <s:cut id="28" low="   0.3  " high="  0.7 " description="Aver. time resolution at Qin=150fC"                xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=150]/ad:rms/@mean"/>
+    <s:cut id="29" low="   0.4  " high="  1.0 " description="Max. time resolution at Qin=150fC"                 xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=150]/ad:rms/@max"/>
+    <s:cut id="30" low="  62.0  " high=" 75.0 " description="Aver. prop. time  at Qin=50fC"                     xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=50]/ad:mean/@mean"/>
+    <s:cut id="31" low="   0.1  " high="  2.5 " description="Max. abs. residual prop. time, Qin=50fC"           xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=50]/ad:mean/@maxAbsResid"/>
+    <s:cut id="32" low="  62.0  " high=" 75.0 " description="Aver. prop. time  at Qin=100fC"                    xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:mean/@mean"/>
+    <s:cut id="33" low="   0.1  " high="  2.5 " description="Max. abs. residual prop. time, Qin=100fC"          xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:mean/@maxAbsResid"/>
+    <s:cut id="34" low="  62.0  " high=" 75.0 " description="Aver. prop. time  at Qin=150fC"                    xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=150]/ad:mean/@mean"/>
+    <s:cut id="35" low="   0.1  " high="  2.5 " description="Max. abs. residual prop. time, Qin=150fC"          xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=150]/ad:mean/@maxAbsResid"/>
+    <s:cut id="36" low="   1.5  " high="  3.5 " description="Aver. slewing time"                                xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:slew/ad:spanOfMeans/@mean"/>
+    <s:cut id="37" low="   2.0  " high="  4.5 " description="Max. slewing time"                                 xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:slew/ad:spanOfMeans/@max"/>
+  </s:analyzedData>
+</s:selection>
