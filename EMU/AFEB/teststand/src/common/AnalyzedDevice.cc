@@ -631,12 +631,6 @@ double AFEB::teststand::AnalyzedDevice::getMaxMeasuredThreshold( const double se
 
 void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, const string& analyzedResultsDir ){
 
-  // Create directory for analyzed results
-  utils::execShellCommand( string( "mkdir -p " ) + analyzedResultsDir );
-  // Copy style file to it
-  stringstream command;
-  command << "cp " << afebRootDir << "/AFEB/teststand/html/analyzedResults_XSLT.xml " << analyzedResultsDir;
-  AFEB::teststand::utils::execShellCommand( command.str() );
   
   TPDF pdf( ( analyzedResultsDir+"/"+id_+".pdf" ).c_str() );
 

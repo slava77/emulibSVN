@@ -214,12 +214,16 @@ void AFEB::teststand::Analysis::calculateInternalCapacitance(){
 
 
 void AFEB::teststand::Analysis::saveResults(){
-  for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
-    d->saveResults( afebRootDir_, analyzedResultsDir_ );
-  }
+  saveResults( analyzedResultsDir_ );
 }
 
 void AFEB::teststand::Analysis::saveResults( const string& destinationDir ){
+  // Create directory for analyzed results
+  utils::execShellCommand( string( "mkdir -p " ) + destinationDir );
+  // Copy style file to it
+  stringstream command;
+  command << "cp " << afebRootDir_ << "/AFEB/teststand/html/analyzedResults_XSLT.xml " << destinationDir;
+  AFEB::teststand::utils::execShellCommand( command.str() );
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
     d->saveResults( afebRootDir_, destinationDir );
   }
