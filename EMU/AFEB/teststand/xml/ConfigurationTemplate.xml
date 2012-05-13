@@ -60,6 +60,18 @@
       <meta:attr name="timeMin" units="TDC" description="The minimum TDC time recorded in TDC units. TDC resolution is 0.5 ns, thus the maximum allowed value of 1023 (10-bit data words) corresponds to 511 ns."/>
       <meta:attr name="timeMax" units="TDC" description="The maximum TDC time recorded in TDC units. TDC resolution is 0.5 ns, thus the maximum allowed value of 1023 (10-bit data words) corresponds to 511 ns."/>
     </meta:tag>
+    <meta:tag name="c:thresholdAbsResid" description="The maximum absolute residual (deviation from the average over the channels) of the measured threshold in DAC units.">
+      <meta:atrr name="high" description="The upper limit for the maximum absolute residual (deviation from the average over the channels) of the measured threshold in DAC units."/>
+    </meta:tag>
+    <meta:tag name="c:noise" description="The maximum measured noise in DAC units.">
+      <meta:atrr name="high" description="The upper limit for the maximum measured noise in DAC units."/>
+    </meta:tag>
+    <meta:tag name="c:meanTimeSpan" description="The maximum span of channels' mean times in TDC units.">
+      <meta:atrr name="high" description="The upper limit for the maximum span of channels' mean times in TDC units."/>
+    </meta:tag>
+    <meta:tag name="c:slewingTime" description="The maximum slewing time in TDC units.">
+      <meta:atrr name="high" description="The upper limit for the maximum slewing time in TDC units."/>
+    </meta:tag>
   </meta:data>
 
   <c:testedDevice type="AD16" nChannels="16" nominalInternalCapacitance="0.25"/>
@@ -127,5 +139,12 @@
       <c:TDC timeMin="50" timeMax="150"/>
     </c:condition>
   </c:measurements>
+
+  <c:selection>
+    <c:thresholdAbsResid high="6.0"/>
+    <c:noise             high="4.0"/>
+    <c:meanTimeSpan      high="12.0"/>
+    <c:slewingTime       high="8.0"/>
+  </c:selection>
 
 </c:configuration>
