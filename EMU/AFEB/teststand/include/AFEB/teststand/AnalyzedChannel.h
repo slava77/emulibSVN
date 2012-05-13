@@ -20,6 +20,7 @@ namespace AFEB { namespace teststand {
     public:
       friend class AnalyzedDevice;
       friend ostream& operator<<( ostream& os, const AnalyzedChannel& d );
+      AnalyzedChannel();
       void calculateGain();
       void calculateInternalCapacitance( const pair<double,double> V_setThreshold,
 					 const pair<double,double> V_measuredThreshold );

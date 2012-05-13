@@ -18,6 +18,15 @@ ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedChannel& d ){
   return os;
 }
 
+AFEB::teststand::AnalyzedChannel::AnalyzedChannel() :
+  gain_                    ( 0. ),
+  gainError_               ( 0. ),
+  offset_                  ( 0. ),
+  offsetError_             ( 0. ),
+  internalCapacitance_     ( 0. ),
+  internalCapacitanceError_( 0. ){
+}
+
 void AFEB::teststand::AnalyzedChannel::calculateGain(){
 
   // Remember, instead of
