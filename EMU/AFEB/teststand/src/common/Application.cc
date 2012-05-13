@@ -200,7 +200,9 @@ bool AFEB::teststand::Application::measurementInWorkLoop(toolbox::task::WorkLoop
   // Do analysis if at least four measurements have been performed (necessary but insufficient condition for the analysis):
   if ( getenv( HTML_ROOT_.toString().c_str() ) != NULL && configuration_->getMeasurements().size() >= 4 ){
     Analysis a( getenv( HTML_ROOT_.toString().c_str() ), resultSystemDir_ );
+    a.analyze();
     a.saveResults();
+    a.applySelection();
   }
   bsem_.give();
 

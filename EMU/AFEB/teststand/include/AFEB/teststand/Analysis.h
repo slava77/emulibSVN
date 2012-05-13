@@ -17,6 +17,11 @@ namespace AFEB { namespace teststand {
       Analysis( const string& AFEBRootDir, const string& resultsDir );
       ~Analysis();
 
+      ///
+      /// Perform the analysis.
+      ///
+      void analyze();
+
       /// 
       /// Save results in the standard analyzed results directory (<resultsDir>/analyzed)
       ///
@@ -40,8 +45,8 @@ namespace AFEB { namespace teststand {
       void applySelection( const string& analyzedResultsDirectory );
 
     private:
-      void collectAnalyzedDevices( const string& calibXML, const string& configXML );
-      void calibrateDACs( const string& calibXML, const string& configXML );
+      void collectAnalyzedDevices();
+      void calibrateDACs();
       void assignDACs();
       void calculateGain();
       void calculateInternalCapacitance();
@@ -51,6 +56,8 @@ namespace AFEB { namespace teststand {
       string afebRootDir_;
       string rawResultsDir_;
       string analyzedResultsDir_;
+      string calibXML_;
+      string configXML_;
       string rawResultXML_;
       Configuration *configuration_;
       vector<DAC> DACs_;

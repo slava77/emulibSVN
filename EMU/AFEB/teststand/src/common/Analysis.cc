@@ -18,26 +18,29 @@ AFEB::teststand::Analysis::Analysis( const string& AFEB_ROOT, const string& resu
   : afebRootDir_       ( AFEB_ROOT                )
   , rawResultsDir_     ( resultsDir + "/raw"      )
   , analyzedResultsDir_( resultsDir + "/analyzed" ){
-  string calibXML  = utils::readFile( rawResultsDir_ + "/Calibration.xml" );
   string resultXML = utils::readFile( rawResultsDir_ + "/results.xml" );
-  string configXML = utils::getSelectedNode( resultXML, "/root/c:configuration" );
+  calibXML_        = utils::readFile( rawResultsDir_ + "/Calibration.xml" );
+  configXML_       = utils::getSelectedNode( resultXML, "/root/c:configuration" );
   rawResultXML_    = utils::getSelectedNode( resultXML, "/root/a:results" );
 
-  configuration_ = new Configuration( configXML, "" );
+  configuration_ = new Configuration( configXML_, "" );
 
-  collectAnalyzedDevices( calibXML, configXML );
-  calibrateDACs( calibXML, configXML );
-  assignDACs();
-  calculateGain();
-  calculateInternalCapacitance();
-  cout << analyzedDevices_ << endl;
+  collectAnalyzedDevices();
 }
 
 AFEB::teststand::Analysis::~Analysis(){
   delete configuration_;
 }
 
-void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& calibXML, const string& configXML ){
+void AFEB::teststand::Analysis::analyze(){
+  calibrateDACs();
+  assignDACs();
+  calculateGain();
+  calculateInternalCapacitance();
+  cout << analyzedDevices_ << endl;
+}
+
+void AFEB::teststand::Analysis::collectAnalyzedDevices(){
 
   // Get devices from configuration's first measurement
   if ( configuration_->getMeasurements().size() == 0 ){
@@ -71,16 +74,16 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& calibXML, 
 
     // Get id and type of adaptor in use
     xpath.str("/c:configuration/c:inputs/@adaptorId");
-    string adaptorId = utils::getSelectedNodeValue( configXML, xpath.str() );
+    string adaptorId = utils::getSelectedNodeValue( configXML_, xpath.str() );
     ad->setAdaptorId( adaptorId );
     xpath.str("/c:configuration/c:inputs/@adaptorType");
-    string adaptorType = utils::getSelectedNodeValue( configXML, xpath.str() );
+    string adaptorType = utils::getSelectedNodeValue( configXML_, xpath.str() );
     ad->setAdaptorType( adaptorType );
 
     // Get the injection capacitance [pF] of this adaptor
     xpath.str("");
     xpath << "/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType << "']/@injectionCapacitance";
-    string capacitance = utils::getSelectedNodeValue( calibXML, xpath.str() );
+    string capacitance = utils::getSelectedNodeValue( calibXML_, xpath.str() );
     // cout << xpath.str() << endl;
     // cout << capacitance << endl;
     if ( capacitance.size() == 0 ){
@@ -92,7 +95,7 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& calibXML, 
     // Get the pulse division factor of this adaptor
     xpath.str("");
     xpath << "/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType << "']/@pulseDivisionFactor";
-    string factor = utils::getSelectedNodeValue( calibXML, xpath.str() );
+    string factor = utils::getSelectedNodeValue( calibXML_, xpath.str() );
     if ( capacitance.size() == 0 ){
       stringstream ss; ss << "Failed to find the pulse division factor for adaptor " << adaptorId << " of type " << adaptorType;
       XCEPT_RAISE( xcept::Exception, ss.str() );
@@ -103,7 +106,7 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& calibXML, 
     xpath.str("");
     xpath << "/c:calibrations/c:adaptors/c:adaptor[@id='" << adaptorId << "' and @type='" << adaptorType 
 	  << "']/c:socket[@number='" << ad->getAdaptorSocket() << "']/@coefficient";
-    string coefficient = utils::getSelectedNodeValue( calibXML, xpath.str() );
+    string coefficient = utils::getSelectedNodeValue( calibXML_, xpath.str() );
     // cout << xpath.str() << endl;
     // cout << coefficient << endl;
     if ( coefficient.size() == 0 ){
@@ -116,10 +119,10 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices( const string& calibXML, 
   cout << "Analyzed devices" << endl << analyzedDevices_ << endl;
 }
 
-void AFEB::teststand::Analysis::calibrateDACs( const string& calibXML, const string& configXML ){
+void AFEB::teststand::Analysis::calibrateDACs(){
   stringstream xpath;
   // Count DACs with calibration data
-  size_t nDACs = utils::getSelectedNodesValues( calibXML, "/c:calibrations/c:DACs/c:DAC" ).size();
+  size_t nDACs = utils::getSelectedNodesValues( calibXML_, "/c:calibrations/c:DACs/c:DAC" ).size();
   cout << "nDACs=" << nDACs << endl;
   for ( size_t iDAC=1; iDAC<=nDACs; ++iDAC ){
     //
@@ -127,27 +130,27 @@ void AFEB::teststand::Analysis::calibrateDACs( const string& calibXML, const str
     //
     xpath.str("");
     xpath << "/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@moduleId";
-    string moduleId = utils::getSelectedNodeValue( calibXML, xpath.str() );
+    string moduleId = utils::getSelectedNodeValue( calibXML_, xpath.str() );
     xpath.str("");
     xpath << "/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@moduleName";
-    string moduleName = utils::getSelectedNodeValue( calibXML, xpath.str() );
+    string moduleName = utils::getSelectedNodeValue( calibXML_, xpath.str() );
     xpath.str("");
     xpath << "/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@type";
-    string type = utils::getSelectedNodeValue( calibXML, xpath.str() );
+    string type = utils::getSelectedNodeValue( calibXML_, xpath.str() );
     xpath.str("");
     xpath << "/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/@channel";
-    int channel = utils::stringTo<int>( utils::getSelectedNodeValue( calibXML, xpath.str() ) );
+    int channel = utils::stringTo<int>( utils::getSelectedNodeValue( calibXML_, xpath.str() ) );
     DACs_.push_back( DAC( moduleId, moduleName, type, channel ) );
     //
     // Load calibration data
     //
     xpath.str("");
     xpath << "/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@DACUnits";
-    vector< pair<string,string> > x = utils::getSelectedNodesValues( calibXML, xpath.str() );
+    vector< pair<string,string> > x = utils::getSelectedNodesValues( calibXML_, xpath.str() );
     cout << x << endl;
     xpath.str("");
     xpath << "/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@milliVolts";
-    vector< pair<string,string> > y = utils::getSelectedNodesValues( calibXML, xpath.str() );
+    vector< pair<string,string> > y = utils::getSelectedNodesValues( calibXML_, xpath.str() );
     cout << y << endl;
     //
     // Fit calibration data
@@ -220,13 +223,18 @@ void AFEB::teststand::Analysis::saveResults(){
 void AFEB::teststand::Analysis::saveResults( const string& destinationDir ){
   // Create directory for analyzed results
   utils::execShellCommand( string( "mkdir -p " ) + destinationDir );
-  // Copy style file to it
+  // Copy analyzed results' XSLT file to it
   stringstream command;
   command << "cp " << afebRootDir_ << "/AFEB/teststand/html/analyzedResults_XSLT.xml " << destinationDir;
   AFEB::teststand::utils::execShellCommand( command.str() );
   // Copy selection cuts' file to it
   command.str( "" );
   command << "cp " << afebRootDir_ << "/AFEB/teststand/xml/SelectionCuts.xml " << destinationDir;
+  AFEB::teststand::utils::execShellCommand( command.str() );
+  // Copy selection cuts' XSLT file to it. It is dummy, but the analyzed results' XSLT includes it, so it must be there.
+  // It will be replaced with a real one if/when selections are applied.
+  command.str( "" );
+  command << "cp " << afebRootDir_ << "/AFEB/teststand/html/selectionCuts_XSLT.xml " << destinationDir;
   AFEB::teststand::utils::execShellCommand( command.str() );
   // Save each device's results
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
