@@ -170,6 +170,7 @@
 		<th><xsl:apply-templates mode="description" select="ad:channel[1]/@threshold"/>threshold [<xsl:apply-templates mode="units" select="ad:channel[1]/@threshold"/>]</th>
 		<th><xsl:apply-templates mode="description" select="ad:channel[1]/@noise"/>noise [<xsl:apply-templates mode="units" select="ad:channel[1]/@noise"/>]</th>
 		<th><xsl:apply-templates mode="description" select="ad:channel[1]/@chi2ndf"/>&#x03c7;&#xb2;/ndf</th>
+		<th><xsl:apply-templates mode="description" select="ad:channel[1]/@maxCount"/>max count</th>
 	      </tr>
 	      <xsl:apply-templates select="ad:channel"/>
 	    </table>
@@ -184,6 +185,10 @@
 	    <table class="statistics">
 	      <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:chi2ndf"/></tr>
 	      <tr><th>&#x03c7;&#xb2;/ndf</th><xsl:apply-templates mode="td" select="ad:chi2ndf"/></tr>
+	    </table>
+	    <table class="statistics">
+	      <tr><th>statistics</th><xsl:apply-templates mode="th" select="ad:channels"/></tr>
+	      <tr><th>number of channels</th><xsl:apply-templates mode="td" select="ad:channels"/></tr>
 	    </table>
 	  </xsl:if>
 	  <xsl:if test="@type='time_vs_dac'">
@@ -244,6 +249,7 @@
       <td><xsl:apply-templates mode="description" select="@threshold"/><xsl:value-of select="@threshold"/></td>
       <td><xsl:apply-templates mode="description" select="@noise"/><xsl:value-of select="@noise"/></td>
       <td><xsl:apply-templates mode="description" select="@chi2ndf"/><xsl:value-of select="@chi2ndf"/></td>
+      <td><xsl:apply-templates mode="description" select="@maxCount"/><xsl:value-of select="@maxCount"/></td>
     </tr>
   </xsl:template>
 
@@ -286,6 +292,16 @@
     <td><xsl:apply-templates mode="selection" select="@max"/><xsl:value-of select="@max"/></td>
     <td><xsl:apply-templates mode="description" select="@rms"/><xsl:value-of select="@rms"/></td>
     <td><xsl:apply-templates mode="selection" select="@maxAbsResid"/><xsl:value-of select="@maxAbsResid"/></td>
+  </xsl:template>
+
+  <xsl:template mode="th" match="ad:channels">
+    <th><xsl:apply-templates mode="description" select="@dead"/>dead</th>
+    <th><xsl:apply-templates mode="description" select="@hot"/>hot</th>
+  </xsl:template>
+
+  <xsl:template mode="td" match="ad:channels">
+    <td><xsl:apply-templates mode="selection" select="@dead"/><xsl:value-of select="@dead"/></td>
+    <td><xsl:apply-templates mode="selection" select="@hot"/><xsl:value-of select="@hot"/></td>
   </xsl:template>
 
 </xsl:transform>

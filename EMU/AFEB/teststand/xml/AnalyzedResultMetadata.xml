@@ -27,6 +27,7 @@
     <meta:attr name="threshold" units="fC" description="The measured threshold in units of fC."/>
     <meta:attr name="noise" units="fC" description="The measured noise in units of fC."/>
     <meta:attr name="chi2ndf" description="Chi square over number of degrees of freedom of the threshold curve fit."/>
+    <meta:attr name="maxCount" description="The maximum count at any input charge."/>
     <meta:attr name="mean" units="ns" description="Mean time in ns."/>
     <meta:attr name="rms" units="ns" description="Time RMS in ns."/>
     <meta:attr name="spanOfMeans" units="ns" description="The maximum over the input charge range of the difference of the mean time responses."/>
@@ -34,6 +35,10 @@
     <meta:attr name="offset" units="mV" description="Offset, i.e., the intercept of the straight line fitted to the setThresholdVoltage( measuredThresoldCharge ) function."/>
     <meta:attr name="gain" units="mV/fC" description="Gain, i.e., the slope of the straight line fitted to the setThresholdVoltage( measuredThresoldCharge ) function."/>
     <meta:attr name="C_int" units="pf" description="Internal capacitance."/>
+  </meta:tag>
+  <meta:tag name="ad:channels">
+    <meta:attr name="dead" description="The number of dead channels."/>
+    <meta:attr name="hot" description="The number of hot channels, i.e., those with more counts than input pulses."/>
   </meta:tag>
   <meta:tag name="ad:threshold">
     <meta:attr name="max" units="fC" description="Maximum over the channels of the thresholds."/>

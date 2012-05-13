@@ -24,9 +24,9 @@
     <s:cut id="18" low="   1.0  " high="  2.13" description="Max. Noise (Uset=150mV, Cint=0.25pF)"              xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@max"/>
     <s:cut id="19" low="   0.2  " high="  2.0 " description="Aver. Chi2 (Uset=150mV, Cint=0.25pF)"              xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:chi2ndf/@mean"/>
     <s:cut id="20" low="   0.2  " high=" 10.0 " description="Max Chi2 (Uset=150mV, Cint=0.25pF)"                xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:chi2ndf/@max"/>
-    <!-- <s:cut id="21" low="  -1.0  " high="  1.0 " description="Num. of dead channels (Uset=150mV, Cinj=1.6pF)"    xpath=""/> -->
-    <!-- <s:cut id="22" low="  -1.0  " high="  1.0 " description="Num. of dead channels (Uset=300mV, Cinj=1.6pF)"    xpath=""/> -->
-    <!-- <s:cut id="23" low="  -1.0  " high="  1.0 " description="Num. of dead channels (Uset=150mV, Cint=0.25pF)"   xpath=""/> -->
+    <s:cut id="21" low="  -1.0  " high="  1.0 " description="Num. of dead channels (Uset=150mV, Cinj=1.6pF)"    xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:channels/@dead"/>
+    <s:cut id="22" low="  -1.0  " high="  1.0 " description="Num. of dead channels (Uset=300mV, Cinj=1.6pF)"    xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=92]/ad:channels/@dead"/>
+    <s:cut id="23" low="  -1.0  " high="  1.0 " description="Num. of dead channels (Uset=150mV, Cint=0.25pF)"   xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:channels/@dead"/>
     <s:cut id="24" low="   0.8  " high="  1.5 " description="Aver. time resolution at Qin=50fC"                 xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=50]/ad:rms/@mean"/>
     <s:cut id="25" low="   0.8  " high="  2.0 " description="Max. time resolution at Qin=50fC"                  xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=50]/ad:rms/@max"/>
     <s:cut id="26" low="   0.4  " high="  0.8 " description="Aver. time resolution at Qin=100fC"                xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:rms/@mean"/>
@@ -41,5 +41,8 @@
     <s:cut id="35" low="   0.1  " high="  2.5 " description="Max. abs. residual prop. time, Qin=150fC"          xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=150]/ad:mean/@maxAbsResid"/>
     <s:cut id="36" low="   1.5  " high="  3.5 " description="Aver. slewing time"                                xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:slew/ad:spanOfMeans/@mean"/>
     <s:cut id="37" low="   2.0  " high="  4.5 " description="Max. slewing time"                                 xpath="/ad:device/ad:measurement[@type='time_vs_dac']/ad:slew/ad:spanOfMeans/@max"/>
+    <s:cut id="38" low="  -1.0  " high="  1.0 " description="Num. of hot channels (Uset=150mV, Cinj=1.6pF)"     xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:channels/@hot"/>
+    <s:cut id="39" low="  -1.0  " high="  1.0 " description="Num. of hot channels (Uset=300mV, Cinj=1.6pF)"     xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=92]/ad:channels/@hot"/>
+    <s:cut id="40" low="  -1.0  " high="  1.0 " description="Num. of hot channels (Uset=150mV, Cint=0.25pF)"    xpath="/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:channels/@hot"/>
   </s:analyzedData>
 </s:selection>

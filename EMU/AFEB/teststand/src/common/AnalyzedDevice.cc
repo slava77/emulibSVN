@@ -268,24 +268,15 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
       TCanvas canvas("canvas","canvas",1000,1400);
       canvas.Divide( 1, 4 );
       Legend legend;
+      int nDead = 0;
+      int nHot  = 0;
       // Valarrays for calculating the statistics
       valarray<double> threshold( nChannels_ );
       valarray<double> noise    ( nChannels_ );
       valarray<double> chi2ndf  ( nChannels_ );
       // Loop over the channels
       for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
-	ss << "    <ad:channel number=\""    << noshowpos << setw(2) << iChannel
-	   <<              "\" threshold=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
-	   <<                                thresholdVsChannel->GetBinContent( iChannel+1 )
-	   <<              "\" noise=\""
-	   <<                                noiseVsChannel    ->GetBinContent( iChannel+1 )
-	   <<              "\" chi2ndf=\""
-	   <<                                chi2ndfVsChannel  ->GetBinContent( iChannel+1 )
-	   <<     "\"/>" << endl;
-	threshold[ iChannel ] = thresholdVsChannel->GetBinContent( iChannel+1 );
-	noise    [ iChannel ] = noiseVsChannel    ->GetBinContent( iChannel+1 );
-	chi2ndf  [ iChannel ] = chi2ndfVsChannel  ->GetBinContent( iChannel+1 );
-
+	// The plot
 	canvas.cd( 1 );
 	TH1D *efficiencyHistogram;
 	histogramName = string( "effVsAmpl__" ) + fileName + "__ch_" + utils::stringFrom<int>( iChannel );
@@ -304,6 +295,24 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	effVsCharge.SetLineStyle( legend.getStyle( iChannel ) );
 	legend.AddEntry( efficiencyHistogram,  utils::stringFrom<int>( iChannel ).c_str(), "l" ); // Use efficiencyHistogram as effVsCharge will be already out of scope when legend is drawn.
 	effVsCharge.DrawCopy( (iChannel==0?"l":"lsame") );
+
+	// The XML
+	int maxCount = TMath::Nint( efficiencyHistogram->GetBinContent( efficiencyHistogram->GetMaximumBin() ) );
+	ss << "    <ad:channel number=\""    << noshowpos << setw(2) << iChannel
+	   <<              "\" threshold=\"" << showpos << showpoint << setw(8) << setprecision(4) << fixed
+	   <<                                thresholdVsChannel->GetBinContent( iChannel+1 )
+	   <<              "\" noise=\""
+	   <<                                noiseVsChannel    ->GetBinContent( iChannel+1 )
+	   <<              "\" chi2ndf=\""
+	   <<                                chi2ndfVsChannel  ->GetBinContent( iChannel+1 )
+	   <<              "\" maxCount=\""  << noshowpos << noshowpoint << setw(3)
+	   <<                                maxCount
+	   <<     "\"/>" << endl;
+	threshold[ iChannel ] = thresholdVsChannel->GetBinContent( iChannel+1 );
+	noise    [ iChannel ] = noiseVsChannel    ->GetBinContent( iChannel+1 );
+	chi2ndf  [ iChannel ] = chi2ndfVsChannel  ->GetBinContent( iChannel+1 );
+	if ( maxCount == 0 ) nDead++;
+	if ( maxCount > (*m)->getNPulses() ) nHot++;
       } // for ( int iChannel=0; iChannel<d->getNChannels(); ++iChannel )
 
       // Channels' statistics to XML
@@ -319,8 +328,9 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
       ss << "    <ad:chi2ndf ";
       for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ) ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(4) << s->second << "\"";
       ss << "/>" << endl;
+      ss << "    <ad:channels dead=\"" << nDead << "\" hot=\"" << nHot << "\"/>" << endl;
 
-
+      // Plots
       canvas.cd( 1 );
       legend.Draw();
 
@@ -410,6 +420,8 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	// Copy and transform them:
 	meanTimeVsCharge = new TH1D( *meanTDCVsDAC );
 	rmsTimeVsCharge =  new TH1D( * rmsTDCVsDAC );
+	meanTimeVsCharge->SetStats( kFALSE );
+	rmsTimeVsCharge ->SetStats( kFALSE );
 	// Transform their horizontal, pulse amplitude axis:
 	meanTimeVsCharge->GetXaxis()->Set( meanTDCVsDAC->GetXaxis()->GetNbins(),
 					  chargeFromVoltage( pulseDAC_->mV_from_DACUnit( meanTDCVsDAC->GetXaxis()->GetXmin() ).first, (*m)->getInjectionCapacitor() ),
@@ -432,7 +444,6 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	meanTimeVsCharge->SetYTitle( "mean time [ns]" );
 	meanTimeVsCharge->SetLineColor( legend.getColor( iChannel ) );
 	meanTimeVsCharge->SetLineStyle( legend.getStyle( iChannel ) );
-	gStyle->SetOptStat( 0 );
 	meanTimeVsCharge->DrawCopy( (iChannel==0?"l":"lsame") );
 	legend.AddEntry( meanTimeVsCharge, utils::stringFrom<int>( iChannel ).c_str(), "l" );
 	rmsCanvas.cd( 1 );
@@ -442,7 +453,6 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	rmsTimeVsCharge->SetYTitle( "time resolution [ns]" );
 	rmsTimeVsCharge->SetLineColor( legend.getColor( iChannel ) );
 	rmsTimeVsCharge->SetLineStyle( legend.getStyle( iChannel ) );
-	gStyle->SetOptStat( 0 );
 	rmsTimeVsCharge->DrawCopy( (iChannel==0?"l":"lsame") );
 
 	// Find the bins corresponding to the charges at which the mean and RMS of time are to be reported. 
