@@ -92,7 +92,7 @@ StaticLibrary =
 # To run it:
 #     LD_LIBRARY_PATH=$BUILD_HOME/AFEB/teststand/lib/$XDAQ_OS/$XDAQ_PLATFORM:$XDAQ_ROOT/lib:$ROOTSYS/lib $BUILD_HOME/AFEB/teststand/test/$XDAQ_OS/$XDAQ_PLATFORM/fitterTest.exe
 TestLibraries=xcept toolbox log4cplus xdata xerces-c xalan-c xdaq xalanMsg xoap xgi cgicc pthttp peer asyncresolv mimetic config logudpappender logxmlappender uuid
-TestExecutables=fitterTest.cc analyze.cc
+TestExecutables=fitterTest.cc analyze.cc select.cc
 
 
 # To build fitterTest:
