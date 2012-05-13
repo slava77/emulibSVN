@@ -124,7 +124,21 @@
 
   <xsl:template mode="application" match="a:device">
     <td>
-      <a href="{/root/a:application/@urlPath}/results#{../@index}__{../@type}__{@id}" class="{../@status}" target="_blank"><xsl:value-of select="@id"/></a>
+      <a href="{/root/a:application/@urlPath}/results#{a:file/@name}" target="_blank">
+	<!-- Indicate whether this measurement of this device passed the selection cuts -->
+	<xsl:attribute name="class">
+	  <xsl:value-of select="../@status"/>
+	  <xsl:choose>
+	    <xsl:when test="../@type='count_vs_dac'">
+	      <xsl:if test="number(a:statistics/a:parameter[@name='threshold [DAC units]']/@maxAbsResid) >= number(//c:configuration/c:selection/c:thresholdAbsResid/@high) and number(a:statistics/a:parameter[@name='noise [DAC units]']/@max) >= number(//c:configuration/c:selection/c:noise/@high)"> failed</xsl:if>
+	    </xsl:when>	    
+	    <xsl:otherwise>
+	      <xsl:if test="number(a:statistics/a:parameter[starts-with(@name,'span of channels')]/@max) >= number(//c:configuration/c:selection/c:meanTimeSpan/@high) and number(a:statistics/a:parameter[@name='slewing time on plateau [TDC units]']/@max) >= number(//c:configuration/c:selection/c:slewingTime/@high)"> failed</xsl:if>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:attribute>
+	<xsl:value-of select="@id"/>
+      </a>
     </td>
   </xsl:template>
 
@@ -270,7 +284,7 @@
   <!-- Cut on meanTimeSpan -->
   <!-- <xsl:template mode="data" match="@max[../@name='span of channels&#39; mean times [TDC units]']"> -->
   <!-- <xsl:template mode="data" match="@max[../@name='span of channels&apos; mean times [TDC units]']"> -->
-  <!-- Avoid sigle quote in name to make XSLT happy. -->
+  <!-- Avoid single quote in name to make XSLT happy. -->
   <xsl:template mode="data" match="@max[starts-with(../@name,'span of channels')]">
     <xsl:param name="RESULT">
       <xsl:choose>
