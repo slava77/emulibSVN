@@ -13,6 +13,7 @@ int main( int argc, char** argv ){
     for ( int i=1; i<argc; ++i ){
       cout << i << "  " << argv[i] << endl;
       AFEB::teststand::Analysis a( AFEB_ROOT, argv[i] );
+      a.analyze();
       a.saveResults();
       a.applySelection();
     }
