@@ -130,10 +130,10 @@
 	  <xsl:value-of select="../@status"/>
 	  <xsl:choose>
 	    <xsl:when test="../@type='count_vs_dac'">
-	      <xsl:if test="number(a:statistics/a:parameter[@name='threshold [DAC units]']/@maxAbsResid) >= number(//c:configuration/c:selection/c:thresholdAbsResid/@high) and number(a:statistics/a:parameter[@name='noise [DAC units]']/@max) >= number(//c:configuration/c:selection/c:noise/@high)"> failed</xsl:if>
+	      <xsl:if test="number(a:statistics/a:parameter[@name='threshold [DAC units]']/@maxAbsResid) >= number(//c:configuration/c:selection/c:thresholdAbsResid/@high) or number(a:statistics/a:parameter[@name='noise [DAC units]']/@max) >= number(//c:configuration/c:selection/c:noise/@high)"> failed</xsl:if>
 	    </xsl:when>	    
 	    <xsl:otherwise>
-	      <xsl:if test="number(a:statistics/a:parameter[starts-with(@name,'span of channels')]/@max) >= number(//c:configuration/c:selection/c:meanTimeSpan/@high) and number(a:statistics/a:parameter[@name='slewing time on plateau [TDC units]']/@max) >= number(//c:configuration/c:selection/c:slewingTime/@high)"> failed</xsl:if>
+	      <xsl:if test="number(a:statistics/a:parameter[starts-with(@name,'span of channels')]/@max) >= number(//c:configuration/c:selection/c:meanTimeSpan/@high) or number(a:statistics/a:parameter[@name='slewing time on plateau [TDC units]']/@max) >= number(//c:configuration/c:selection/c:slewingTime/@high)"> failed</xsl:if>
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</xsl:attribute>

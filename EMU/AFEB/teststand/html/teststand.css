@@ -17,3 +17,4 @@ td.passed { background-color: #66ff66; }
 td.failed { background-color: #ff6666; }
 a.failed { background-color: #ff8888; }
 table.title td { font-size:200%; }
+input.number { text-align:right; }

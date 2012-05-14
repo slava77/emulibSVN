@@ -60,17 +60,17 @@
       <meta:attr name="timeMin" units="TDC" description="The minimum TDC time recorded in TDC units. TDC resolution is 0.5 ns, thus the maximum allowed value of 1023 (10-bit data words) corresponds to 511 ns."/>
       <meta:attr name="timeMax" units="TDC" description="The maximum TDC time recorded in TDC units. TDC resolution is 0.5 ns, thus the maximum allowed value of 1023 (10-bit data words) corresponds to 511 ns."/>
     </meta:tag>
-    <meta:tag name="c:thresholdAbsResid" description="The maximum absolute residual (deviation from the average over the channels) of the measured threshold in DAC units.">
-      <meta:atrr name="high" description="The upper limit for the maximum absolute residual (deviation from the average over the channels) of the measured threshold in DAC units."/>
+    <meta:tag name="c:thresholdAbsResid" description="max |threshold residual|">
+      <meta:attr name="high" units="DAC" description="The upper limit to the maximum absolute residual (deviation from the average over the channels) of the measured threshold."/>
     </meta:tag>
-    <meta:tag name="c:noise" description="The maximum measured noise in DAC units.">
-      <meta:atrr name="high" description="The upper limit for the maximum measured noise in DAC units."/>
+    <meta:tag name="c:noise" description="max noise">
+      <meta:attr name="high" units="DAC" description="The upper limit to the maximum measured noise."/>
     </meta:tag>
-    <meta:tag name="c:meanTimeSpan" description="The maximum span of channels' mean times in TDC units.">
-      <meta:atrr name="high" description="The upper limit for the maximum span of channels' mean times in TDC units."/>
+    <meta:tag name="c:meanTimeSpan" description="max span of mean times">
+      <meta:attr name="high" units="TDC" description="The upper limit to the maximum span of channels' mean times."/>
     </meta:tag>
-    <meta:tag name="c:slewingTime" description="The maximum slewing time in TDC units.">
-      <meta:atrr name="high" description="The upper limit for the maximum slewing time in TDC units."/>
+    <meta:tag name="c:slewingTime" description="max slewing time">
+      <meta:attr name="high" units="TDC" description="The upper limit to the maximum slewing time."/>
     </meta:tag>
   </meta:data>
 

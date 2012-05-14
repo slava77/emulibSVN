@@ -25,7 +25,10 @@
     </p>
     <table class="layout">
       <tr>
-	<td><xsl:apply-templates select="c:measurements"/></td>
+	<td>
+	  <xsl:apply-templates select="c:measurements"/>
+	  <xsl:apply-templates select="c:selection"/>
+	</td>
 	<td>
 	  <xsl:apply-templates select="c:inputs"/>
 	  <xsl:apply-templates select="c:crate"/>
@@ -73,7 +76,7 @@
 	<xsl:if test="$VALUE=$SELVAL"><xsl:attribute name="selected">selected</xsl:attribute></xsl:if>
 	<xsl:value-of select="$VALUE"/>
       </option>
-      <xsl:message><xsl:value-of select="number($VALUE)"/>/<xsl:value-of select="number($MAXVALUE)"/> <xsl:value-of select="$DESCRIPTION"/></xsl:message>
+      <!-- <xsl:message><xsl:value-of select="number($VALUE)"/>/<xsl:value-of select="number($MAXVALUE)"/> <xsl:value-of select="$DESCRIPTION"/></xsl:message> -->
       <xsl:call-template name="loop_options">
 	<xsl:with-param name="VALUE"><xsl:value-of select="number($VALUE)+1"/></xsl:with-param>
 	<xsl:with-param name="MAXVALUE"><xsl:value-of select="number($MAXVALUE)"/></xsl:with-param>
@@ -97,7 +100,7 @@
     </xsl:for-each>
     <!-- loop over tags with a range of values specified-->
     <xsl:for-each select="//meta:data/meta:tag[@name=$TAG]/meta:attr[@name=$ATTR and @minValue and @maxValue]">
-      <xsl:message><xsl:value-of select="@minValue"/>/<xsl:value-of select="@maxValue"/> <xsl:value-of select="@description"/></xsl:message>
+      <!-- <xsl:message><xsl:value-of select="@minValue"/>/<xsl:value-of select="@maxValue"/> <xsl:value-of select="@description"/></xsl:message> -->
       <xsl:call-template name="loop_options">
 	<xsl:with-param name="VALUE"><xsl:value-of select="number(@minValue)"/></xsl:with-param>
 	<xsl:with-param name="MAXVALUE"><xsl:value-of select="number(@maxValue)"/></xsl:with-param>
@@ -118,6 +121,7 @@
   <xsl:template name="units">
     <xsl:param name="TAG"/>
     <xsl:param name="ATTR"/>
+    <xsl:message><xsl:value-of select="$TAG"/>/@<xsl:value-of select="$ATTR"/>: <xsl:value-of select="//meta:data/meta:tag[@name=$TAG]/meta:attr[@name=$ATTR]/@units"/></xsl:message>
     <xsl:value-of select="//meta:data/meta:tag[@name=$TAG]/meta:attr[@name=$ATTR]/@units"/>
   </xsl:template>
 
@@ -477,7 +481,7 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:PulseGenerator/@amplitudeMin">
-			    <input type="text" size="3">
+			    <input type="text" size="3" class="number">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
 			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
@@ -491,7 +495,7 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:PulseGenerator/@amplitudeMax">
-			    <input type="text" size="3">
+			    <input type="text" size="3" class="number">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
 			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
@@ -505,7 +509,7 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:PulseGenerator/@amplitudeStep">
-			    <input type="text" size="3">
+			    <input type="text" size="3" class="number">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
 			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
@@ -519,7 +523,7 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:PulseGenerator/@nPulses">
-			    <input type="text" size="4">
+			    <input type="text" size="4" class="number">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
 			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
@@ -544,7 +548,7 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:SignalConverter/@thresholdValue">
-			    <input type="text" size="4">
+			    <input type="text" size="4" class="number">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
 			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
@@ -569,7 +573,7 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:TDC/@timeMin">
-			    <input type="text" size="4">
+			    <input type="text" size="4" class="number">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
 			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
@@ -583,7 +587,7 @@
 			  <xsl:if test="$CONFIGMODE='control'">
 			  <!-- for-each: just to set the current node for the templates called by name: -->
 			  <xsl:for-each select="c:TDC/@timeMax">
-			    <input type="text" size="4">
+			    <input type="text" size="4" class="number">
 			      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 			      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
 			      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
@@ -606,6 +610,39 @@
 	</xsl:if>
       </xsl:for-each>
     </table>
+  </xsl:template>
+
+  <xsl:template match="c:selection">
+    <table class="selection">
+      <tr>
+	<th colspan="2">Selection cuts</th>
+      </tr>
+      <tr>
+	<th>parameter</th><th>upper limit</th>
+      </tr>
+      <xsl:apply-templates/>
+    </table>
+  </xsl:template>
+
+  <xsl:template match="c:thresholdAbsResid | c:noise | c:meanTimeSpan | c:slewingTime">
+    <xsl:param name="TAGNAME" select="name()"/>
+    <tr>
+      <th><xsl:value-of select="//meta:data/meta:tag[@name=$TAGNAME]/@description"/></th>
+      <td>
+	<xsl:if test="$CONFIGMODE='control'">
+	  <!-- for-each: just to set the current node for the templates called by name: -->
+	  <xsl:for-each select="@high">
+	    <input type="text" size="5" class="number">
+	      <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
+	      <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+	      <xsl:attribute name="title"><xsl:call-template name="title"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template></xsl:attribute>
+	    </input>
+	    <xsl:call-template name="units"><xsl:with-param name="TAG" select="name(..)"/><xsl:with-param name="ATTR" select="name()"/></xsl:call-template>
+	  </xsl:for-each>
+	</xsl:if>
+	<xsl:if test="$CONFIGMODE='display'"><xsl:value-of select="@high"/></xsl:if>	
+      </td>
+    </tr>
   </xsl:template>
 
   <xsl:template match="c:calibrations/c:adaptors">
