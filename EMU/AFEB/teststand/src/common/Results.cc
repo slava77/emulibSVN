@@ -8,6 +8,7 @@
 #include "TCanvas.h"
 #include "TLatex.h"
 #include "Math/SpecFuncMathCore.h" // for erf()
+//#include "Fit/FitResult.h"
 
 #include <sstream>
 
@@ -427,20 +428,18 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
   // Loop over channels and fit results
   for ( int iChannelBin = 1; iChannelBin <= testedDevice_->getNChannels(); ++iChannelBin ){
     p.Reset();
-    // cout << "ch = " << iChannelBin-1 << endl;
-    // cout << "counts = ( ";
 
     bsem_.take();
     for ( int iAmpBin = 1; iAmpBin <= pulses_->GetNbinsY(); ++iAmpBin ){
-      // cout << pulses_->GetBinContent( iChannelBin, iAmpBin ) << " ";
       p.SetBinContent( iAmpBin, pulses_->GetBinContent( iChannelBin, iAmpBin ) );
-      // Use binomial error
-      double P = TMath::Min( pulses_->GetBinContent( iChannelBin, iAmpBin ) / measurement_->getNPulses(), 1. );
+      // Use binomial error. 
+      // Use bin content to estimate binomial parameter P. Make sure P doesn't go above 1. even if there are double hits.
+      // This is not very good because it becomes zero farther away from the threshold, and then Minuit
+      // probably excludes it, resulting in a meaningless chi2/ndf value. UNLESS we get the correct NDF from the fit results.
+      double P = pulses_->GetBinContent( iChannelBin, iAmpBin ) / measurement_->getNPulses();
       p.SetBinError( iAmpBin, TMath::Sqrt( measurement_->getNPulses() * P * ( 1. - P ) ) );
     }
     bsem_.give();
-
-    // cout << ")" << endl;
 
     estimateFitParameters( p, From, To, mean, sigma, height );
 
@@ -479,11 +478,14 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
 	nCDF.SetParameters( mean, sigma, double( measurement_->getNPulses() ) );
 	nCDF.FixParameter( 2, double( measurement_->getNPulses() ) ); // Fix the height.
 	//p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
-	p.Fit( &nCDF, "R" ); // use function range
+	TFitResultPtr r = p.Fit( &nCDF, "RS" ); // R: use function range, S: return ptr to TFitResult
 	threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
 	noise_     ->SetBinContent( iChannelBin, nCDF.GetParameter( 1 ) );
 	efficiency_->SetBinContent( iChannelBin, nCDF.GetParameter( 2 ) / measurement_->getNPulses() );
-	chi2ndf_   ->SetBinContent( iChannelBin, nCDF.GetChisquare() / ( pulses_->GetNbinsY() - 3 ) );
+	// NDF is NOT pulses_->GetNbinsY() - 2  because Minuit excludes empty bins and probably bins with zero error, too. 
+	// Get the correct NDF from the fit results:
+	double chi2ndf = (  r->Ndf() > 0 ? nCDF.GetChisquare() / r->Ndf() : 0. );
+	chi2ndf_   ->SetBinContent( iChannelBin, chi2ndf );
 	threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
 	noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
 	// efficiency_->SetBinError( iChannelBin, nCDF.GetParError( 2 ) / measurement_->getNPulses() ); // If we fit the efficiency, too.
