@@ -250,7 +250,7 @@ void AFEB::teststand::Analysis::applySelection( const string& analyzedResultsDir
   // Load selection cuts from file
   vector<Cut> cuts = loadSelectionCuts( analyzedResultsDirectory );
   // cout << cuts << endl;
-  // Write XSLT for marking the selections in the results file.
+  // Write XSLT for marking the selections in the results file. This file will be 'include'-ed in analyzedResults_XSLT.xml .
   utils::writeFile( analyzedResultsDirectory + "/selectionCuts_XSLT.xml", createSelectionCutsXSLT( cuts ) );
   // Apply cuts to each device's results
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
@@ -261,10 +261,10 @@ void AFEB::teststand::Analysis::applySelection( const string& analyzedResultsDir
 vector<Cut> AFEB::teststand::Analysis::loadSelectionCuts( const string& dir ) const {
   vector<Cut> cuts;
   string cutsXML( utils::readFile( dir + "/SelectionCuts.xml" ) );
-  vector< pair<string,string> > cutIds = utils::getSelectedNodesValues( cutsXML, "/s:selection/s:analyzedData/s:cut/@id" );
+  vector< pair<string,string> > cutIds = utils::getSelectedNodesValues( cutsXML, "/s:selection/s:cut/@id" );
   // cout << "cut ids: " << cutIds << endl;
   for ( vector< pair<string,string> >::const_iterator ci=cutIds.begin(); ci!=cutIds.end(); ++ci ){
-    cuts.push_back( utils::getSelectedNodesValues( cutsXML, string( "/s:selection/s:analyzedData/s:cut[@id='" ) + ci->second + "']/@*" ) );
+    cuts.push_back( utils::getSelectedNodesValues( cutsXML, string( "/s:selection/s:cut[@id='" ) + ci->second + "']/@*" ) );
   }
   return cuts;
 }
@@ -279,8 +279,8 @@ string AFEB::teststand::Analysis::createSelectionCutsXSLT( const vector<Cut>& cu
     ss << "  <xsl:template match=\"" << c->getXpath() << "\" mode=\"selection\">" << endl;
     ss << "    <xsl:param name=\"CUTID\" select=\"" << c->getId() << "\"/>" << endl;
     ss << "    <xsl:param name=\"VALUE\" select=\"translate(.,'+','')\"/>" << endl;
-    ss << "    <xsl:param name=\"HIGH\" select=\"number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@high)\"/>" << endl;
-    ss << "    <xsl:param name=\"LOW\" select=\"number(document('SelectionCuts.xml')/s:selection/s:analyzedData/s:cut[number(@id)=$CUTID]/@low)\"/>" << endl;
+    ss << "    <xsl:param name=\"HIGH\" select=\"number(document('SelectionCuts.xml')/s:selection/s:cut[number(@id)=$CUTID]/@high)\"/>" << endl;
+    ss << "    <xsl:param name=\"LOW\" select=\"number(document('SelectionCuts.xml')/s:selection/s:cut[number(@id)=$CUTID]/@low)\"/>" << endl;
     ss << "    <xsl:param name=\"RESULT\"><xsl:choose><xsl:when test=\"$HIGH > $VALUE and $VALUE > $LOW\">passed</xsl:when><xsl:otherwise>failed</xsl:otherwise></xsl:choose></xsl:param>" << endl;
     ss << "    <xsl:attribute name=\"title\"><xsl:apply-templates mode=\"descriptionText\" select=\".\"/> It <xsl:value-of select=\"$RESULT\"/> selection cut #<xsl:value-of select=\"$CUTID\"/>. Acceptable range: ( <xsl:value-of select=\"$LOW\"/> , <xsl:value-of select=\"$HIGH\"/> )</xsl:attribute>" << endl;
     ss << "    <xsl:attribute name=\"class\"><xsl:value-of select=\"$RESULT\"/></xsl:attribute>" << endl;
