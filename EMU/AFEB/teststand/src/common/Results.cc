@@ -159,14 +159,6 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
 				 0. + testedDevice_->getNChannels() );
   timeMeanOnPlateau_->SetXTitle( "channel" );
   timeMeanOnPlateau_->SetYTitle( "mean of times on plateau [TDC]" );
-  // timeMeanOnPlateau_->SetStats( kFALSE );
-  // timeMeanOnPlateau_->SetMarkerStyle( kFullDotLarge );
-  // timeMeanOnPlateau_->SetMarkerColor( kBlue );
-  // timeMeanOnPlateau_->SetLineColor( kBlue );
-  // timeMeanOnPlateau_->SetMinimum(  0.0000008 );
-  // timeMeanOnPlateau_->SetMaximum(  1.0 );
-  // timeMeanOnPlateau_->GetXaxis()->CenterLabels( kTRUE );
-  // timeMeanOnPlateau_->GetXaxis()->SetNdivisions( testedDevice_->getNChannels() );
 
   // measured time rms( channel ) 1D histogram
   name.str("");
@@ -599,6 +591,9 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   TH1D threshold( *threshold_ );
   TH1D efficiency( *efficiency_ );
   TH1D noise( *noise_ );
+  TH1D timeMeanOnPlateau( *timeMeanOnPlateau_ );
+  TH1D timeRMSOnPlateau( *timeRMSOnPlateau_ );
+  TH1D slewingOnPlateau( *slewingOnPlateau_ );
   bsem_.give();
   
   gStyle->SetPalette(1,0);
@@ -616,7 +611,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   TPad *timePad = (TPad*)c.GetPad(3);
 
   //
-  // The threshold scan (efficiencies)
+  // The threshold scan (efficiencies) and time scan (resolution and slewing)
   // 
   efficiencyPad->Divide( 1, 3, 0., 0. );
 
@@ -637,22 +632,54 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   // gPad->SetBottomMargin( 0.15 );
   gPad->SetGridx();
   gPad->SetGridy();
-  threshold.SetTitle("");
-  threshold.SetYTitle("threshold:#circ, noise:#Box [DAC]");
-  threshold.SetTitleOffset( 0.5, "y" );
-  threshold.SetTitleSize( 0.08, "y" );
-  threshold.SetLabelSize( 0.08, "y" );
-  threshold.DrawCopy("p e");
-  noise.DrawCopy("same p e");
-  // cout << "Efficiency before adjustment"; efficiency.Print("all");
-  TGaxis *axis = adjustToHistogram( &threshold, &efficiency );
-  // cout << "Efficiency after adjustment "; efficiency.Print("all");
-  axis->SetTitleOffset( 0.7 );
-  axis->SetTitleSize( 0.08 );
-  axis->SetLabelSize( 0.08 );
-  axis->Draw();
-  efficiency.DrawCopy("same p e");
+  TGaxis *axis = NULL;
+  if ( measurement_->getType() == Measurement::count_vs_dac ){
+    threshold.SetTitle("");
+    threshold.SetYTitle("threshold:#circ, noise:#Box [DAC]");
+    threshold.SetTitleOffset( 0.5, "y" );
+    threshold.SetTitleSize( 0.08, "y" );
+    threshold.SetLabelSize( 0.08, "y" );
+    threshold.DrawCopy("p e");
+    noise.DrawCopy("same p e");
+    // cout << "Efficiency before adjustment"; efficiency.Print("all");
+    axis = adjustToHistogram( &threshold, &efficiency );
+    // cout << "Efficiency after adjustment "; efficiency.Print("all");
+    axis->SetTitleOffset( 0.7 );
+    axis->SetTitleSize( 0.08 );
+    axis->SetLabelSize( 0.08 );
+    axis->Draw();
+    efficiency.DrawCopy("same p e");
+  }
+  else if ( measurement_->getType() == Measurement::time_vs_dac ){
+    timeRMSOnPlateau.SetStats( kFALSE );
+    timeRMSOnPlateau.SetTitle("");
+    timeRMSOnPlateau.SetYTitle("rms:#circ, slewing:#Box [TDC]");
+    timeRMSOnPlateau.SetTitleOffset( 0.5, "y" );
+    timeRMSOnPlateau.SetTitleSize( 0.08, "y" );
+    timeRMSOnPlateau.SetLabelSize( 0.08, "y" );
+    timeRMSOnPlateau.SetMarkerStyle( kOpenCircle );
+    timeRMSOnPlateau.SetMinimum( 0.0000008 );
+    timeRMSOnPlateau.SetMaximum( 15. );
+    timeRMSOnPlateau.DrawCopy("p e");
 
+    slewingOnPlateau.SetStats( kFALSE );
+    slewingOnPlateau.SetMarkerStyle( kOpenSquare );
+    slewingOnPlateau.DrawCopy("same p e");
+
+    timeMeanOnPlateau.SetStats( kFALSE );
+    timeMeanOnPlateau.SetYTitle("mean times [TDC]");
+    timeMeanOnPlateau.SetMarkerStyle( kFullDotLarge );
+    timeMeanOnPlateau.SetMarkerColor( kBlue );
+    timeMeanOnPlateau.SetLineColor( kBlue );
+    timeMeanOnPlateau.SetMinimum( measurement_->getTDCTimeMin() );
+    timeMeanOnPlateau.SetMaximum( measurement_->getTDCTimeMax() );
+    axis = adjustToHistogram( &timeRMSOnPlateau, &timeMeanOnPlateau );
+    axis->SetTitleOffset( 0.7 );
+    axis->SetTitleSize( 0.08 );
+    axis->SetLabelSize( 0.08 );
+    axis->Draw();
+    timeMeanOnPlateau.DrawCopy("same p e");
+  }
   efficiencyPad->cd( 3 );
   gPad->SetRightMargin( 0.05 );
   gPad->SetTopMargin( 0.01 );
@@ -715,7 +742,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   legend_->Draw();
 
   c.Print( ( directory + "/" + fileName_+".png").c_str() );
-  delete axis;
+  delete axis; // Now it's safe to delete axis.
 }
 
 TGaxis* AFEB::teststand::Results::adjustToHistogram( const TH1* const h1, TH1* h2, bool isNewAxisOnRight ){
