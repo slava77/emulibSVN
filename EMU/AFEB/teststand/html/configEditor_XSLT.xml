@@ -27,10 +27,12 @@
       <tr>
 	<td>
 	  <xsl:apply-templates select="c:measurements"/>
+	  <br/><br/>
 	  <xsl:apply-templates select="c:selection"/>
 	</td>
 	<td>
 	  <xsl:apply-templates select="c:inputs"/>
+	  <br/><br/>
 	  <xsl:apply-templates select="c:crate"/>
 	</td>
       </tr>
