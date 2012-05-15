@@ -262,7 +262,7 @@
       </xsl:choose>
     </xsl:param>
     <td style="width: 25x;" class="{$RESULT}">
-      <xsl:attribute name="title"><xsl:value-of select="//meta:data/meta:tag[@name='c:thresholdAbsResid']/@description"/> It <xsl:value-of select="$RESULT"/> the selection cut.</xsl:attribute>
+      <xsl:attribute name="title"><xsl:value-of select="//meta:data/meta:tag[@name='c:thresholdAbsResid']/@description"/><xsl:text> </xsl:text><xsl:value-of select="$RESULT"/> the selection cut.</xsl:attribute>
       <xsl:value-of select="."/>
     </td>
   </xsl:template>
@@ -276,7 +276,7 @@
       </xsl:choose>
     </xsl:param>
     <td style="width: 25x;" class="{$RESULT}">
-      <xsl:attribute name="title"><xsl:value-of select="//meta:data/meta:tag[@name='c:noise']/@description"/> It <xsl:value-of select="$RESULT"/> the selection cut.</xsl:attribute>
+      <xsl:attribute name="title"><xsl:value-of select="//meta:data/meta:tag[@name='c:noise']/@description"/><xsl:text> </xsl:text><xsl:value-of select="$RESULT"/> the selection cut.</xsl:attribute>
       <xsl:value-of select="."/>
     </td>
   </xsl:template>
@@ -293,7 +293,7 @@
       </xsl:choose>
     </xsl:param>
     <td style="width: 25x;" class="{$RESULT}">
-      <xsl:attribute name="title"><xsl:value-of select="//meta:data/meta:tag[@name='c:meanTimeSpan']/@description"/> It <xsl:value-of select="$RESULT"/> the selection cut.</xsl:attribute>
+      <xsl:attribute name="title"><xsl:value-of select="//meta:data/meta:tag[@name='c:meanTimeSpan']/@description"/><xsl:text> </xsl:text><xsl:value-of select="$RESULT"/> the selection cut.</xsl:attribute>
       <xsl:value-of select="."/>
     </td>
   </xsl:template>
@@ -307,7 +307,7 @@
       </xsl:choose>
     </xsl:param>
     <td style="width: 25x;" class="{$RESULT}">
-      <xsl:attribute name="title"><xsl:value-of select="//meta:data/meta:tag[@name='c:slewingTime']/@description"/> It <xsl:value-of select="$RESULT"/> the selection cut.</xsl:attribute>
+      <xsl:attribute name="title"><xsl:value-of select="//meta:data/meta:tag[@name='c:slewingTime']/@description"/><xsl:text> </xsl:text><xsl:value-of select="$RESULT"/> the selection cut.</xsl:attribute>
       <xsl:value-of select="."/>
     </td>
   </xsl:template>
