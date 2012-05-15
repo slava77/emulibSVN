@@ -105,16 +105,16 @@
   </c:crate>
 
   <c:inputs adaptorType="10AD16A" adaptorId="2">
-    <c:testedDevice socket="1"  id="" tdcSlot="6"   tdcSocket="1" signalConverterSlot="8"  signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
-    <c:testedDevice socket="2"  id="" tdcSlot="6"   tdcSocket="2" signalConverterSlot="8"  signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
-    <c:testedDevice socket="3"  id="" tdcSlot="9"   tdcSocket="1" signalConverterSlot="11" signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
-    <c:testedDevice socket="4"  id="" tdcSlot="9"   tdcSocket="2" signalConverterSlot="11" signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
-    <c:testedDevice socket="5"  id="" tdcSlot="12"  tdcSocket="1" signalConverterSlot="14" signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
-    <c:testedDevice socket="6"  id="" tdcSlot="12"  tdcSocket="2" signalConverterSlot="14" signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
-    <c:testedDevice socket="7"  id="" tdcSlot="15"  tdcSocket="1" signalConverterSlot="17" signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
-    <c:testedDevice socket="8"  id="" tdcSlot="15"  tdcSocket="2" signalConverterSlot="17" signalConverterSocket="2" pulseGeneratorSlot="3"  pulseGeneratorSocket="1"/>
-    <c:testedDevice socket="9"  id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
-    <c:testedDevice socket="10" id=""   tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
+    <c:testedDevice socket="1"  id="465" tdcSlot="6"   tdcSocket="1" signalConverterSlot="8"  signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="2"  id="493" tdcSlot="6"   tdcSocket="2" signalConverterSlot="8"  signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="3"  id="480" tdcSlot="9"   tdcSocket="1" signalConverterSlot="11" signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="4"  id="211" tdcSlot="9"   tdcSocket="2" signalConverterSlot="11" signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="5"  id="509" tdcSlot="12"  tdcSocket="1" signalConverterSlot="14" signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="6"  id="236" tdcSlot="12"  tdcSocket="2" signalConverterSlot="14" signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="7"  id="489" tdcSlot="15"  tdcSocket="1" signalConverterSlot="17" signalConverterSocket="1" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="8"  id="622" tdcSlot="15"  tdcSocket="2" signalConverterSlot="17" signalConverterSocket="2" pulseGeneratorSlot="3" pulseGeneratorSocket="1"/>
+    <c:testedDevice socket="9"  id="" tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
+    <c:testedDevice socket="10" id="" tdcSlot=""  tdcSocket=""  signalConverterSlot=""  signalConverterSocket=""  pulseGeneratorSlot=""  pulseGeneratorSocket=""/>
   </c:inputs>
 
   <c:measurements>
@@ -136,7 +136,7 @@
     <c:condition name="Time response vs. pulse height" type="time_vs_dac" enabled="yes">
       <c:PulseGenerator amplitudeMin="0" amplitudeMax="1000" amplitudeStep="20" nPulses="400" capacitor="external"/>
       <c:SignalConverter thresholdValue="46"/>
-      <c:TDC timeMin="50" timeMax="150"/>
+      <c:TDC timeMin="80" timeMax="160"/>
     </c:condition>
   </c:measurements>
 
