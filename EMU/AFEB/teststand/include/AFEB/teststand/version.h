@@ -5,7 +5,7 @@
 
 namespace AFEBteststand {
 	const std::string package     = "AFEBteststand";
-	const std::string versions    = "02.01.00";
+	const std::string versions    = "02.02.00";
 	const std::string description = "Emu (CSC) AFEB Teststand";
 
 	const std::string summary     = "AFEB/teststand";
