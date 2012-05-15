@@ -436,7 +436,7 @@ void AFEB::teststand::Results::fit( const double from, const double to ){
       // Use bin content to estimate binomial parameter P. Make sure P doesn't go above 1. even if there are double hits.
       // This is not very good because it becomes zero farther away from the threshold, and then Minuit
       // probably excludes it, resulting in a meaningless chi2/ndf value. UNLESS we get the correct NDF from the fit results.
-      double P = pulses_->GetBinContent( iChannelBin, iAmpBin ) / measurement_->getNPulses();
+      double P = TMath::Min( 1., pulses_->GetBinContent( iChannelBin, iAmpBin ) / measurement_->getNPulses() );
       p.SetBinError( iAmpBin, TMath::Sqrt( measurement_->getNPulses() * P * ( 1. - P ) ) );
     }
     bsem_.give();
