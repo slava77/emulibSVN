@@ -656,8 +656,10 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
      <<         "\" id=\""              << id_
      <<         "\" analysisDate=\""    << utils::getDateTime()
      <<         "\" measurementDate=\"" << measurementDate_
-     << "\">" << endl
-     << "  <ad:adaptor id=\""                    << adaptorId_
+     << "\">" << endl;
+  vector<Measurement*>::const_iterator m = measurements_.begin();
+  if ( m != measurements_.end() && (*m)->isDummyData() ) ss << "  <ad:dummyData/>" << endl;
+  ss << "  <ad:adaptor id=\""                    << adaptorId_
      <<            "\" type=\""                  << adaptorType_
      <<            "\" socket=\""                << socket_
      <<            "\" correctionCoefficient=\"" << noshowpos << showpoint << setprecision(4) << fixed << correctionCoefficient_

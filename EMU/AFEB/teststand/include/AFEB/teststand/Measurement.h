@@ -56,6 +56,7 @@ namespace AFEB { namespace teststand {
       int getSetThreshold() const { return thresholdValue_; }
       int getTDCTimeMin() const { return tdcTimeMin_; }
       int getTDCTimeMax() const { return tdcTimeMax_; }
+      bool isDummyData() const { return generateDummyData_; }
       Status_t getStatus() const { return status_; }
       string getStatusString() const { return statusString_[status_]; }
       double nanosecondsFromTDCUnits( const double tdcUnits ) const { return tdcUnits * tdcResolution_; }
