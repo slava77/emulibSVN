@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<xsl:transform 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:a="http://cms.cern.ch/emu/afeb/teststand/application" 
+    xmlns:c="http://cms.cern.ch/emu/afeb/teststand/configuration" 
+    version="1.0">
+
+  <xsl:include href="application_XSLT.xml"/>
+  <xsl:include href="configEditor_XSLT.xml"/>
+
+  <xsl:output method="html" indent="yes"/>
+
+  <xsl:param name="APPMODE" select="/root/a:application/@mode"/>
+
+  <xsl:param name="CONFIGMODE">
+    <xsl:choose>
+      <xsl:when test="/root/a:application/@state='Halted'">control</xsl:when>
+      <xsl:otherwise>display</xsl:otherwise>
+    </xsl:choose>
+  </xsl:param>
+
+  <xsl:template match="/root">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+	<xsl:if test="a:application/@state='Enabled'">
+	  <meta http-equiv="refresh" content="6" />
+	</xsl:if>
+        <title><xsl:if test="$CONFIGMODE='control'">AFEB Test Stand Configuration of <xsl:value-of select="c:configuration/@dateTime"/></xsl:if><xsl:if test="$CONFIGMODE='display'">AFEB Test Stand Results of <xsl:value-of select="a:results/@systemPath"/></xsl:if></title>
+	<link rel="stylesheet" type="text/css" href="{@htmlDir}teststand.css"/>
+      </head>
+      <body>
+	<xsl:attribute name="class">
+	  <xsl:if test="//c:dummyData">dummyData</xsl:if>
+	</xsl:attribute>
+        <form action="{a:application/@urlPath}/control" method="post">
+	  <xsl:apply-templates select="a:application"/>
+	  <xsl:apply-templates mode="results" select="a:results[not(../a:application)]"/>
+	  <fieldset>
+	    <legend>Configuration</legend>
+	    <xsl:apply-templates select="c:configuration"/>
+	  </fieldset>
+	</form>
+	<hr/>
+	<p style="text-align:center;">AFEBteststand version  <xsl:value-of select="@softwareVersion"/></p>
+      </body>
+    </html>
+  </xsl:template>  
+
+
+</xsl:transform>
