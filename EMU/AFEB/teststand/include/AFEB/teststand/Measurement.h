@@ -61,6 +61,8 @@ namespace AFEB { namespace teststand {
       string getStatusString() const { return statusString_[status_]; }
       double nanosecondsFromTDCUnits( const double tdcUnits ) const { return tdcUnits * tdcResolution_; }
       bool execute();
+      void refitSCurves();
+      string resultsXML();
       void abort(){ bsem_.take(); isToKeepRunning_ = false; bsem_.give(); }
       static Type_t getType      ( const string& typeString );
       static string getTypeString( const Type_t  type       );

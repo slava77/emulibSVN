@@ -26,7 +26,8 @@ namespace AFEB { namespace teststand {
       ~Results();
       void add( const int channel, int const amplitude, const int time );
       void fit( const double from, const double to );
-      void createFigure( const string directory, const double fitRangeStart, const double fitRangeEnd );
+      void refitSCurves( const string& resultDir );
+      void updateOutput( const string directory, const double fitRangeStart, const double fitRangeEnd );
       string getFileName() const { return fileName_; }
       map<string,pair<double,double> > getParameters( const int channel ) const;
       void save( const string directory );
@@ -44,6 +45,7 @@ namespace AFEB { namespace teststand {
       const Measurement* const measurement_;
       const TestedDevice* const testedDevice_;
       string fileName_; ///< result file name without the extension
+      TFile *rootFile_;
       TTree *times_; ///< ( channel, amplitude, time ) ntuple
       TH2D *pulses_; ///< pulses( channel, amplitude)  2D histogram
       TH1D *threshold_; ///< measured threshold( channel ) 1D histogram
@@ -61,6 +63,10 @@ namespace AFEB { namespace teststand {
       int channel_;		///< To access an entry in the times_ tree.
       int amplitude_;		///< To access an entry in the times_ tree.
       int time_;		///< To access an entry in the times_ tree.
+      void bookHistograms();
+      void deleteHistograms();
+      void createFigure( const string directory, const double fitRangeStart, const double fitRangeEnd );
+      void createLegend();
       TGaxis* adjustToHistogram( const TH1* const h1, TH1* h2, bool isNewAxisOnRight=true );
       void estimateFitParameters( TH1D& hist, const double from, const double to, double& mean, double& sigma, double& height );
       double mean( const TH1D& hist, const double from, const double to );

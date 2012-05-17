@@ -2,6 +2,7 @@
 #include "AFEB/teststand/utils/String.h"
 #include "AFEB/teststand/utils/System.h"
 #include "AFEB/teststand/utils/STL.h"
+#include "AFEB/teststand/utils/IO.h"
 #include "TF1.h"
 #include "TMath.h"
 #include "TStyle.h"
@@ -19,17 +20,25 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   isFinal_( false ),
   measurement_( measurement ),
   testedDevice_( device ),
-  fileName_( getFileName( measurement_->getIndex(), measurement_->getTypeString(), testedDevice_->getId() ) )
+  fileName_( getFileName( measurement_->getIndex(), measurement_->getTypeString(), testedDevice_->getId() ) ),
+  rootFile_( NULL )
 {
+  bookHistograms();
+  bsem_.give();
+}
 
+AFEB::teststand::Results::~Results(){
+  deleteHistograms();
+}
+
+void AFEB::teststand::Results::bookHistograms(){
   // pulses( channel, amplitude)  2D histogram
   stringstream name;
   name << "pulses__" << fileName_;
   stringstream title;
-  title << measurement_->getName() 
-	<< " with " << measurement_->getNPulses()
-	<< " pulses of " << testedDevice_->getType()
-	<< " of id "  << testedDevice_->getId();
+  title << " Output pulses with "   << measurement_->getNPulses()
+	<< " pulses injected into " << testedDevice_->getType()
+	<< " of id "                << testedDevice_->getId();
   int ampSpan = 
     ( measurement_->getAmplitudeMax() - measurement_->getAmplitudeMin() ) -
     ( measurement_->getAmplitudeMax() - measurement_->getAmplitudeMin() ) %  measurement_->getAmplitudeStep();
@@ -197,11 +206,6 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   const int nColors = 4;
   const unsigned long style[nStyles] = { solid, dotted, dashed, dottedDashed };
   const unsigned long color[nColors] = { black, red, blue, green  };
-  legend_ = new TLegend( 0.90, 0.1, 0.99, 0.9 );
-  legend_->SetHeader( "channel" );
-  legend_->SetTextAlign( 22 ); // middle, middle
-  legend_->SetTextSize( 0.025 );
-  legend_->SetMargin( 0.6 ); // to make the line segment as long as 0.6 times the box width
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
 
     // time vs amplitude profile histogram
@@ -261,11 +265,9 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
     if ( iChannel / nStyles < nColors ) e->SetLineColor( color[ iChannel/nStyles ] );
     e->SetLineStyle( style[ iChannel%nStyles ] );
     sCurve_.push_back( e );
-    legend_->AddEntry( e,  utils::stringFrom<int>( iChannel ).c_str(), "l" );
-
   } // for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel )
-
-
+  
+  createLegend();
 
   // ( channel, amplitude, time ) ntuple
   name.str("");
@@ -278,11 +280,19 @@ AFEB::teststand::Results::Results( const Measurement* const measurement, const T
   times_->Branch("ch",&channel_,"ch/I");
   times_->Branch("a",&amplitude_,"a/I");
   times_->Branch("t",&time_,"t/I");
-
-  bsem_.give();
 }
 
-AFEB::teststand::Results::~Results(){
+void AFEB::teststand::Results::createLegend(){
+  legend_ = new TLegend( 0.90, 0.1, 0.99, 0.9 );
+  legend_->SetHeader( "channel" );
+  legend_->SetTextAlign( 22 ); // middle, middle
+  legend_->SetTextSize( 0.025 );
+  legend_->SetMargin( 0.6 ); // to make the line segment as long as 0.6 times the box width
+  int iChannel = 0;
+  for ( vector<TH1D*>::iterator h=sCurve_.begin(); h!=sCurve_.end(); ++h ) legend_->AddEntry( *h,  utils::stringFrom<int>( iChannel++ ).c_str(), "l" );
+}
+
+void AFEB::teststand::Results::deleteHistograms(){
   delete times_;
   delete pulses_;
   delete threshold_;
@@ -296,6 +306,12 @@ AFEB::teststand::Results::~Results(){
   for ( vector<TProfile*>::iterator t=timeVsAmplitudeProfile_.begin(); t!=timeVsAmplitudeProfile_.end(); ++t ) delete *t;
   for ( vector<TH1D*    >::iterator t=       timeVsAmplitude_.begin(); t!=       timeVsAmplitude_.end(); ++t ) delete *t;
   for ( vector<TH1D*    >::iterator s=                sCurve_.begin(); s!=                sCurve_.end(); ++s ) delete *s;
+  timeVsAmplitudeProfile_.clear();
+  timeVsAmplitude_       .clear();
+  sCurve_                .clear();
+  if ( rootFile_ ) rootFile_->Close();
+  delete rootFile_;
+  rootFile_ = NULL;
 }
 
 void AFEB::teststand::Results::add( const int channel, int const amplitude, const int time ){
@@ -584,18 +600,110 @@ void AFEB::teststand::Results::timesOnEfficiencyPlateau( valarray<double>& plate
 
 }
 
-void AFEB::teststand::Results::createFigure( const string directory, const double fitRangeStart, const double fitRangeEnd ){
-  fit( fitRangeStart, fitRangeEnd );
+void AFEB::teststand::Results::refitSCurves( const string& resultDir ){
+  // Refit old results' threshold scan efficiency curves.
 
+  // Delete histograms created at construction time. We'll load them from the result file in the specified directory instead.
+  deleteHistograms();
+
+  // Read in the histograms
+  rootFile_ = new TFile( (resultDir + "/raw/" + fileName_ +".root").c_str(), "UPDATE", "", 9 );
+  rootFile_->cd();
+  if ( rootFile_->IsZombie() ){
+    stringstream ss;
+    ss << "Failed to open ROOT file " << rootFile_->GetName();
+    XCEPT_RAISE( xcept::Exception, ss.str() );
+  }
+  cout << "Opened " << rootFile_->GetName() << endl;
+  rootFile_->GetObject( ( string( "pulses__"     ) + fileName_ ).c_str(), pulses_     );
+  rootFile_->GetObject( ( string( "efficiency__" ) + fileName_ ).c_str(), efficiency_ );
+  rootFile_->GetObject( ( string( "threshold__"  ) + fileName_ ).c_str(), threshold_  );
+  rootFile_->GetObject( ( string( "noise__"      ) + fileName_ ).c_str(), noise_      );
+  rootFile_->GetObject( ( string( "chi2ndf__"    ) + fileName_ ).c_str(), chi2ndf_    );
+  // Load count vs amplitude and time vs amplitude profile histograms for each channel, too as they'll be needed for the plots.
+  for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
+    TProfile* tvsa;
+    TH1D*     cvsa;
+    rootFile_->GetObject( ( string( "timeVsAmpl__" ) + fileName_ + "__ch_" + utils::stringFrom<int>(iChannel)).c_str(), tvsa );
+    rootFile_->GetObject( ( string( "effVsAmpl__"  ) + fileName_ + "__ch_" + utils::stringFrom<int>(iChannel)).c_str(), cvsa );
+    timeVsAmplitudeProfile_.push_back( tvsa );
+    sCurve_                .push_back( cvsa );
+  }
+  createLegend(); // Will also be needed for the plots.
+
+  // 1D slice of the 2d pulses histogram
+  double lo = pulses_->GetYaxis()->GetXmin();
+  double hi = pulses_->GetYaxis()->GetXmax();
+  TH1D p( "pulses", "pulses", pulses_->GetNbinsY(), lo, hi );
+
+  // Make sure fit range doesn't extend beyond that of the histogram.
+  // To be sure, restrict it to between the first and last bin's center.
+  double From = p.GetBinCenter( 1             );
+  double To   = p.GetBinCenter( p.GetNbinsX() );   
+
+  const char* normalCDFname = "normalCDF";
+  TF1 nCDF( normalCDFname, &normalCDF, lo, hi, 3, (const char*)NULL );
+  nCDF.SetParNames( "mean", "sigma", "height" );
+  double mean, sigma, height;
+  nCDF.SetParameters( 0.5 * ( hi + lo ),
+  		      0.1 * ( hi - lo ),
+  		      measurement_->getNPulses() );
+  nCDF.FixParameter( 2, double( measurement_->getNPulses() ) ); // Fix the height or efficiency.
+
+  if ( To != From ) nCDF.SetRange( From, To ); // fit only in the range measured so far
+
+  // Loop over channels and fit results
+  for ( int iChannelBin = 1; iChannelBin <= testedDevice_->getNChannels(); ++iChannelBin ){
+    p.Reset();
+
+    for ( int iAmpBin = 1; iAmpBin <= pulses_->GetNbinsY(); ++iAmpBin ){
+      p.SetBinContent( iAmpBin, pulses_->GetBinContent( iChannelBin, iAmpBin ) );
+      // Use binomial error. 
+      // Use bin content to estimate binomial parameter P. Make sure P doesn't go above 1. even if there are double hits.
+      // This is not very good because it becomes zero farther away from the threshold, and then Minuit
+      // probably excludes it, resulting in a meaningless chi2/ndf value. UNLESS we get the correct NDF from the fit results.
+      double P = TMath::Min( 1., pulses_->GetBinContent( iChannelBin, iAmpBin ) / measurement_->getNPulses() );
+      p.SetBinError( iAmpBin, TMath::Sqrt( measurement_->getNPulses() * P * ( 1. - P ) ) );
+    }
+
+    estimateFitParameters( p, From, To, mean, sigma, height );
+
+    nCDF.SetParameters( mean, sigma, double( measurement_->getNPulses() ) );
+    nCDF.FixParameter( 2, double( measurement_->getNPulses() ) ); // Fix the height.
+    //p.Fit( &nCDF, "QR" ); // quiet (no printing), use function range
+    TFitResultPtr r = p.Fit( &nCDF, "RS" ); // R: use function range, S: return ptr to TFitResult
+    threshold_ ->SetBinContent( iChannelBin, nCDF.GetParameter( 0 ) );
+    noise_     ->SetBinContent( iChannelBin, nCDF.GetParameter( 1 ) );
+    efficiency_->SetBinContent( iChannelBin, nCDF.GetParameter( 2 ) / measurement_->getNPulses() );
+    // NDF is NOT pulses_->GetNbinsY() - 2  because Minuit excludes empty bins and probably bins with zero error, too. 
+    // Get the correct NDF from the fit results:
+    double chi2ndf = (  r->Ndf() > 0 ? nCDF.GetChisquare() / r->Ndf() : 0. );
+    chi2ndf_   ->SetBinContent( iChannelBin, chi2ndf );
+    threshold_ ->SetBinError( iChannelBin, nCDF.GetParError( 0 ) );
+    noise_     ->SetBinError( iChannelBin, nCDF.GetParError( 1 ) );
+    efficiency_->SetBinError( iChannelBin, 0.00001 ); // For some reason the efficiency histogram refuses to be plotted scaled to the others if the error is zero...
+    // Delete effVsAmpl 1D histograms. They're redundant as the pulses 2D histogram contains the same information.
+    // Actually, they add very little to the root file size, so we may just as well keep them.
+    // rootFile_->Delete( ( string( "effVsAmpl__"    ) + fileName_ + "__ch_" + utils::stringFrom<int>(iChannelBin-1) + ";*" ).c_str() );
+  }
+  
+  // Write the new histograms to file:
+  threshold_->Write();
+  chi2ndf_->Write();
+  noise_->Write();
+  efficiency_->Write();  
+
+  // Delete old cycles from file:
+  rootFile_->Purge();
+
+  // Update the plots, too:
+  createFigure( resultDir, measurement_->getAmplitudeMin(), measurement_->getAmplitudeMax() );
+}
+
+void AFEB::teststand::Results::createFigure( const string directory, const double fitRangeStart, const double fitRangeEnd ){
   // Work on copies to keep original histograms intact:
   bsem_.take();
   TH2D pulses( *pulses_ );
-  TH1D threshold( *threshold_ );
-  TH1D efficiency( *efficiency_ );
-  TH1D noise( *noise_ );
-  TH1D timeMeanOnPlateau( *timeMeanOnPlateau_ );
-  TH1D timeRMSOnPlateau( *timeRMSOnPlateau_ );
-  TH1D slewingOnPlateau( *slewingOnPlateau_ );
   bsem_.give();
   
   gStyle->SetPalette(1,0);
@@ -636,6 +744,13 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetGridy();
   TGaxis *axis = NULL;
   if ( measurement_->getType() == Measurement::count_vs_dac ){
+    // Work on copies to keep original histograms intact:
+    bsem_.take();
+    TH1D threshold( *threshold_ );
+    TH1D efficiency( *efficiency_ );
+    TH1D noise( *noise_ );
+    bsem_.give();
+
     threshold.SetTitle("");
     threshold.SetYTitle("threshold:#circ, noise:#Box [DAC]");
     threshold.SetTitleOffset( 0.5, "y" );
@@ -653,6 +768,13 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
     efficiency.DrawCopy("same p e");
   }
   else if ( measurement_->getType() == Measurement::time_vs_dac ){
+    // Work on copies to keep original histograms intact:
+    bsem_.take();
+    TH1D timeMeanOnPlateau( *timeMeanOnPlateau_ );
+    TH1D timeRMSOnPlateau( *timeRMSOnPlateau_ );
+    TH1D slewingOnPlateau( *slewingOnPlateau_ );
+    bsem_.give();
+
     timeRMSOnPlateau.SetStats( kFALSE );
     timeRMSOnPlateau.SetTitle("");
     timeRMSOnPlateau.SetYTitle("rms:#circ, slewing:#Box [TDC]");
@@ -703,7 +825,10 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetRightMargin( 0.10 );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
     // Create a copy so as not to change the original's tile:
+    bsem_.take();
+    // cout << sCurve_ << endl;
     TH1D e( *sCurve_.at( iChannel ) );
+    bsem_.give();
     e.Scale( 1./measurement_->getNPulses() );
     e.SetTitle( (string( "Efficiency curve for device " ) + testedDevice_->getId()).c_str() );
     e.SetMinimum( 0. );
@@ -722,7 +847,9 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   gPad->SetRightMargin( 0.10 );
   for ( int iChannel = 0; iChannel < testedDevice_->getNChannels(); ++iChannel ){
     // Profile hist needs projecting:
+    bsem_.take();
     TH1D *tp = timeVsAmplitudeProfile_.at( iChannel )->ProjectionX( "t", "" );
+    bsem_.give();
     // Create a copy so that we can delete the original projection, just to avoid any possible interference:
     TH1D t( *tp );
     // Delete original projection:
@@ -743,7 +870,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   }
   legend_->Draw();
 
-  c.Print( ( directory + "/" + fileName_+".png").c_str() );
+  c.Print( ( directory + "/raw/" + fileName_+".png").c_str() );
   delete axis; // Now it's safe to delete axis.
 }
 
@@ -790,6 +917,11 @@ TGaxis* AFEB::teststand::Results::adjustToHistogram( const TH1* const h1, TH1* h
   return axis;
 }
 
+void AFEB::teststand::Results::updateOutput( const string directory, const double fitRangeStart, const double fitRangeEnd ){
+  fit( fitRangeStart, fitRangeEnd );
+  createFigure( directory, fitRangeStart, fitRangeEnd );
+}
+
 void AFEB::teststand::Results::save( const string directory ){
 
   // Indicate that everything must be calculated:
@@ -797,7 +929,8 @@ void AFEB::teststand::Results::save( const string directory ){
   isFinal_ = true;
   bsem_.give();
 
-  createFigure( directory, measurement_->getAmplitudeMin(), measurement_->getAmplitudeMax() );
+  updateOutput( directory, measurement_->getAmplitudeMin(), measurement_->getAmplitudeMax() );
+
   times_->Print();
   TFile f( (directory + "/" + fileName_ +".root").c_str(), "UPDATE", "", 9 );
   f.cd();

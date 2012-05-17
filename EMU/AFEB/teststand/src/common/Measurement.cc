@@ -7,6 +7,8 @@
 #include "xcept/Exception.h"
 #include "TRandom3.h"
 
+#include <iomanip>
+
 using namespace std;
 using namespace AFEB::teststand;
 
@@ -182,6 +184,11 @@ bool AFEB::teststand::Measurement::execute(){
   return keepRunning;
 }
 
+void AFEB::teststand::Measurement::refitSCurves(){
+  if ( type_ == count_vs_dac ) for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ) r->second->refitSCurves( resultDir_ );
+  status_ = done;
+}
+
 bool AFEB::teststand::Measurement::countVsDAQ(){
 
   time_t timeOfLastUpdate = 0;
@@ -282,7 +289,7 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
     if ( now - timeOfLastUpdate > 10 || amplitude == amplitudeMin_ || amplitude == amplitudeMax_ ){
       timeOfLastUpdate = now;
       for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
-	r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
+	r->second->updateOutput( resultDir_, amplitudeMin_, amplitude );
       }
     }
 
@@ -290,137 +297,6 @@ bool AFEB::teststand::Measurement::countVsDAQ(){
 
   return true;
 }
-
-// bool AFEB::teststand::Measurement::countVsDAQ(){
-
-//   time_t timeOfLastUpdate = 0;
-
-//   // All tested devices in one measurement are read out by the same TDC. Take the first device to get its.
-//   int nDeviceChannels = results_.begin()->first->getNChannels();
-//   Crate* crate = results_.begin()->first->getCrate();
-//   LeCroy3377*       tdc = static_cast<LeCroy3377*>( crate->getModule( results_.begin()->first->getTDCSlot() ) );
-//   // All tested devices's signals in one measurement are fed through the same signal converter module. Take the first device to get its.
-//   LE32* signalConverter = static_cast<LE32*>( crate->getModule( results_.begin()->first->getSignalConverterSlot() ) );
-//   // Use either the specified pulse generator for common injection (through external capacitor), 
-//   // or the corresponding signal converter module to inject individually (through external or internal capacitor). 
-//   LE32*  pulseGenerator = NULL;
-//   if      ( injectionCapacitor_ == external ) pulseGenerator = static_cast<LE32*>( crate->getModule( results_.begin()->first->getPulseGeneratorSlot() ) );
-//   else if ( injectionCapacitor_ == internal ) pulseGenerator = signalConverter;
-//   CrateController* controller = crate->getCrateController();
-
-//   vector<int> tdcTimes( nDeviceChannels * results_.size() );
-//   for ( vector<int>::iterator t = tdcTimes.begin(); t != tdcTimes.end(); ++t ) *t = 0;
-
-//   controller->initialize();
-
-//   // TODO: remove debug
-//   // cout << "***AFEB::teststand::Measurement::countVsDAQ***" << endl << *crate << endl;  
-//   // while ( true ){
-//   //   controller->read( CAMAC::A0, CAMAC::F1, CAMAC::N7 );
-//   // }
-//   //
-
-//   // Zero CAMAC:
-//   //controller->z(); // TODO: needed? Takes very long, see why.
-
-//   // BEGIN test pulses
-//   // pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitudeMax_ );
-//   // pulseGenerator->enablePulses(  (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ) );
-//   // pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitudeMax_ );
-//   // cout << "Wrote amplitude " << amplitudeMax_ 
-//   //      << " to channels " <<  (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 )
-//   //      << endl;
-//   // for( int i=0; i<100000; i++ ){
-//   //   if ( i%1000 == 0 ) std::cout << "pulse " << std::dec << i << std::endl;
-//   //   pulseGenerator->exec();
-//   // }
-//   // END test pulses
-
-//   // Set up TDC:
-//   // Mode1 = M1    : Common Start , Single Word
-//   // Shift = 0     : 0.5 ns resolution
-//   // Hit   = 2     : max 2 hits per channel allowed
-//   // Edge  = 0     : only leading edge recorded
-//   // Mpi   = 0     : no Measure Pause Interval
-//   // TimeOut = 550 : time out at 550 ns (in multiples of 50ns, should be slightly longer than the enforced time out delay)
-//   // TimeEnf = 511 : time out enforced at 511 ns (10-bit data for single word, leading edge only --> max 1024 * 0.5 ns = 512 ns)
-//   tdc->Set( LeCroy3377::M1, 0, 2, 0, 0, 550, 511 ); // ( Mode, Shift, Hit, Edge, Mpi, TimeOut, TimeEnf )
-
-//   // Set up threshold-setting module:
-//   signalConverter->writeThreshold( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), thresholdValue_ );
-//   signalConverter->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), 0 );
-//   signalConverter->enablePulses( LE32::NoCh );
-
-//   // Set pulse generator
-//   pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitudeMin_ );
-
-//   // Gradually crank up the pulse height:
-//   for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ ){
-
-//     pulseGenerator->writeAmplitude( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ), amplitude );
-//     pulseGenerator->enablePulses  ( (LE32::Channel_t)( LE32::Ch1 | LE32::Ch2 ) );
-//     pulseGenerator->exec();
-//     tdc->Clear();
-//     tdc->EnableAcq();
-
-//     // Send pulses
-//     for ( int iPulse = 0; iPulse < nPulses_; ++iPulse ){
-
-//       for ( vector<int>::iterator t = tdcTimes.begin(); t != tdcTimes.end(); ++t ) *t = 0;
-
-//       tdc->Clear();
-//       pulseGenerator->exec();
-      
-//       tdc->HeadRdBlock(); // This does the actual hardware readout.
-
-//       // Check whether we've been instructed to abort in the meantime:
-//       if ( ! isToKeepRunning_ ) return false;
-
-//       // Read out TDC channels
-//       for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort ){
-// 	// LeCroy3377::BlockRd sets LeCroy3377::TimeCh, which can be accessed by LeCroy3377::TimeChRd(),
-// 	//                     and LeCroy3377::Channel, which can be accessed by LeCroy3377::ChannelRd()
-// 	tdc->BlockRd( iShort );
-// 	cout << amplitude << "\t" << iPulse << "\t" << iShort << "\t" << tdc->ChannelRd() << "\t" << tdc->TimeChRd();
-// 	// Consider nonzero times only:
-// 	if ( 0 <= tdc->ChannelRd() && tdc->ChannelRd() < tdcTimes.size() && tdc->TimeChRd() > 0 ){
-// 	  if ( tdcTimes[tdc->ChannelRd()] == 0 ) tdcTimes[tdc->ChannelRd()] = tdc->TimeChRd();
-// 	  else { cout << endl; break; }
-// 	  // // Take the new value if it's the first one or if it's smaller than the one we already have:
-// 	  // if ( tdcTimes[tdc->ChannelRd()] == 0 || tdcTimes[tdc->ChannelRd()] > tdc->TimeChRd() ) {
-// 	  //   tdcTimes[tdc->ChannelRd()] = tdc->TimeChRd();
-// 	  //   cout << " *";
-// 	  // }
-// 	}
-// 	cout << endl;
-//       } // for ( int iShort = 0; iShort < LeCroy3377::nShortsData; ++iShort )
-      
-//       for ( vector<int>::size_type iChannel = 0; iChannel < tdcTimes.size(); ++iChannel ){
-// 	if ( tdcTimes[iChannel] > 0 ){
-// 	  Results* results = findResults( iChannel / nDeviceChannels + 1 ); // The argument is the TDC socket number (1 or 2)
-// 	  if ( results ) results->add( iChannel % nDeviceChannels, amplitude, tdcTimes[iChannel] );
-// 	}
-//       }	
-      
-//       // Check whether we've been instructed to abort in the meantime:
-//       if ( ! isToKeepRunning_ ) return false;
-
-//     } // for ( int iPulse = 0; iPulse < nPulses_; ++iPulse )
-
-//     // Update stored results for the first and last amplitude or if they were updated too ling ago
-//     time_t now;
-//     time( &now );
-//     if ( now - timeOfLastUpdate > 10 || amplitude == amplitudeMin_ || amplitude == amplitudeMax_ ){
-//       timeOfLastUpdate = now;
-//       for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
-// 	r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
-//       }
-//     }
-
-//   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
-
-//   return true;
-// }
 
 
 bool AFEB::teststand::Measurement::dummyResultGenerator(){
@@ -475,13 +351,91 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
     if ( now - timeOfLastUpdate > 1 || amplitude == amplitudeMin_ || amplitude == amplitudeMax_ ){
       timeOfLastUpdate = now;
       for ( map<TestedDevice*,Results*>::iterator r = results_.begin(); r != results_.end(); ++r ){
-	r->second->createFigure( resultDir_, amplitudeMin_, amplitude );
+	r->second->updateOutput( resultDir_, amplitudeMin_, amplitude );
       }
     }
 
   } // for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ )
 
   return true;
+}
+
+string AFEB::teststand::Measurement::resultsXML(){
+  stringstream ss;
+  ss << "<a:measurement index=\""  << getIndex()
+     <<             "\" type=\""   << getTypeString()
+     <<             "\" name=\""   << getName()
+     <<             "\" status=\"" << getStatusString() 
+     <<             "\">" << endl;
+  for ( map<TestedDevice*,Results*>::const_iterator r = results_.begin(); r != results_.end(); ++r ){
+    ss << "<a:device id=\"" << r->first->getId() << "\">" << endl
+       << "<a:file name=\"" << r->second->getFileName() << "\"/>" << endl;
+    // Loop over channels and get fit results
+    for ( int iChannel = 0; iChannel < r->first->getNChannels(); ++iChannel ){
+      ss << "<a:channel number=\"" <<  iChannel << "\">";
+      map<string,pair<double,double> > parameters = r->second->getParameters( iChannel );
+      for ( map<string,pair<double,double> >::const_iterator p = parameters.begin(); p != parameters.end(); ++p ){ 
+	ss << "<a:parameter name=\""  << p->first
+	   <<           "\" value=\"" <<   showpos << showpoint << setprecision(6) << p->second.first
+	   <<           "\" error=\"" << noshowpos << showpoint << setprecision(6) << p->second.second
+	   <<           "\"/>" << noshowpos << noshowpoint;
+      }
+      ss << "</a:channel>" << endl;
+    } // for ( int iChannel = 1; iChannel <= r->first->getNChannels(); ++iChannel )
+      // Add statistics to assess stability and uniformity of...
+    ss << "<a:statistics>" << endl;
+    map<string,double> stat;
+    if ( getType() == Measurement::count_vs_dac ){
+      // ...threshold,... 
+      stat = r->second->getThresholdStats();
+      ss << "<a:parameter name=\"threshold [DAC units]\"";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
+	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+      }
+      ss << "/>" << endl;
+      // ...noise,...
+      stat = r->second->getNoiseStats();
+      ss << "<a:parameter name=\"noise [DAC units]\"";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
+	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+      }
+      ss << "/>" << endl;
+      // ...chi^2/ndf,...
+      stat = r->second->getChi2NDFStats();
+      ss << "<a:parameter name=\"&#x03c7;&#xb2;/ndf\"";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
+	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+      }
+      ss << "/>" << endl;
+    } // if ( m->getType() == Measurement::count_vs_dac )
+    if ( getType() == Measurement::time_vs_dac ){
+      // ...mean times...
+      stat = r->second->getTimeStats();
+      ss << "<a:parameter name=\"mean time on plateau [TDC units]\"";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
+	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+      }
+      ss << "/>" << endl;      
+      // ...mean time spans at each amplitude...
+      stat = r->second->getTimeSpanStats();
+      ss << "<a:parameter name=\"span of channels' mean times [TDC units]\"";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
+	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+      }
+      ss << "/>" << endl;      
+      // ...and slewing times on the efficiency plateau.
+      stat = r->second->getSlewStats();
+      ss << "<a:parameter name=\"slewing time on plateau [TDC units]\"";
+      for ( map<string,double>::const_iterator s=stat.begin(); s!=stat.end(); ++s ){
+	ss << " " << s->first << "=\"" << noshowpos << showpoint << setprecision(6) << s->second << "\"";
+      }
+      ss << "/>" << endl;
+    } // if ( m->getType() == Measurement::time_vs_dac )
+    ss << "</a:statistics>" << endl;
+    ss << "</a:device>" << endl;
+  } // for ( map<TestedDevice*,Results*>::const_iterator r = results.begin(); r != results.end(); ++r )
+  ss << "</a:measurement>" << endl;
+  return ss.str();
 }
 
 // static function
