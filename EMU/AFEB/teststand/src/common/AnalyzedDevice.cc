@@ -711,8 +711,8 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
   offsetVsChannel.SetStats( kFALSE );
   offsetVsChannel.SetMarkerStyle( kOpenCircle );
   offsetVsChannel.SetMarkerColor( kBlue );
-  offsetVsChannel.SetMinimum( -20. );
-  offsetVsChannel.SetMaximum( 180. );
+  offsetVsChannel.SetMinimum( -60. );
+  offsetVsChannel.SetMaximum( 140. );
   TH1D gainVsChannel( offsetVsChannel ); // Just copy an existing x(channel) histogram instead of creating one from scratch.
   gainVsChannel.SetTitle( "Gain vs. channel" );
   gainVsChannel.SetYTitle( "gain [mV/fC]" );
@@ -726,13 +726,13 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
   TH1D QthrAt0mVVsChannel( offsetVsChannel ); // Just copy an existing x(channel) histogram instead of creating one from scratch.
   QthrAt0mVVsChannel.SetTitle( "Threshold charge at 0mV threshold voltage setting vs. channel" );
   QthrAt0mVVsChannel.SetYTitle( "Q_{threshold}(U_{set thershold}=0mV) [fC]" );
-  QthrAt0mVVsChannel.SetMinimum( -10. );
-  QthrAt0mVVsChannel.SetMaximum( 50. );
+  QthrAt0mVVsChannel.SetMinimum( -100. );
+  QthrAt0mVVsChannel.SetMaximum( 20. );
   TH1D UthrFor20fCVsChannel( offsetVsChannel ); // Just copy an existing x(channel) histogram instead of creating one from scratch.
   UthrFor20fCVsChannel.SetTitle( "Threshold voltage for 20 fC charge vs. channel" );
   UthrFor20fCVsChannel.SetYTitle( "U_{set thershold}(Q_{threshold}=20fC) [fC]" );
   UthrFor20fCVsChannel.SetMinimum( 0. );
-  UthrFor20fCVsChannel.SetMaximum( 300. );
+  UthrFor20fCVsChannel.SetMaximum( 200. );
   // Loop over the channels
   for ( int iChannel=0; iChannel<nChannels_; ++iChannel ){
     offsetVsChannel     .SetBinContent( iChannel+1, - channels_[iChannel].offset_                     ); // Comply with odd convention on sign of offset.
