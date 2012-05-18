@@ -38,6 +38,7 @@
   </meta:tag>
   <meta:tag name="ad:channels">
     <meta:attr name="dead" description="The number of dead channels."/>
+    <meta:attr name="inefficient" description="The number of inefficient (but live) channels."/>
     <meta:attr name="hot" description="The number of hot channels, i.e., those with more counts than input pulses."/>
   </meta:tag>
   <meta:tag name="ad:threshold">

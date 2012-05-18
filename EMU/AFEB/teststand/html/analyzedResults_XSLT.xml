@@ -300,11 +300,13 @@
 
   <xsl:template mode="th" match="ad:channels">
     <th><xsl:apply-templates mode="description" select="@dead"/>dead</th>
+    <th><xsl:apply-templates mode="description" select="@inefficient"/>inefficient</th>
     <th><xsl:apply-templates mode="description" select="@hot"/>hot</th>
   </xsl:template>
 
   <xsl:template mode="td" match="ad:channels">
     <td><xsl:apply-templates mode="selection" select="@dead"/><xsl:value-of select="@dead"/></td>
+    <td><xsl:apply-templates mode="selection" select="@inefficient"/><xsl:value-of select="@inefficient"/></td>
     <td><xsl:apply-templates mode="selection" select="@hot"/><xsl:value-of select="@hot"/></td>
   </xsl:template>
 
