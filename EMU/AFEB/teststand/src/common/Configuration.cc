@@ -24,7 +24,7 @@ AFEB::teststand::Configuration::Configuration( const string XML, const string re
   calibration_( NULL )
 {
   createMeasurements();
-  for ( vector<Measurement*>::iterator  i = measurements_.begin() ; i != measurements_.end() ; ++i ) cout << **i;
+  // for ( vector<Measurement*>::iterator  i = measurements_.begin() ; i != measurements_.end() ; ++i ) cout << **i;
   createCalibration();
 }
 
@@ -135,7 +135,7 @@ void AFEB::teststand::Configuration::createMeasurements() {
     TestedDevice* testedDevice = new TestedDevice( testedDeviceType, testedDeviceNChannels, testedDeviceNominalCint, crate_ );
     testedDevice->setParameters( deviceParameters );
     
-    cout << deviceParameters << endl;
+    // cout << deviceParameters << endl;
     cout << "Created device" << endl << *testedDevice << endl;
     
     // Loop over the measurements
@@ -200,7 +200,7 @@ void AFEB::teststand::Configuration::createCalibration(){
       }
     }
   }
-  cout << *calibration_;
+  // cout << *calibration_;
 }
 
 

@@ -101,6 +101,9 @@
 	  </tr>
 	</table>
 
+	<hr/>
+	<p style="text-align:center;">AFEBteststand version <xsl:value-of select="@softwareVersion"/></p>
+
       </body>
     </html>
   </xsl:template>

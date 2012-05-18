@@ -57,7 +57,7 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices(){
   }
 
   // Construct an analyzed device out of every tested device:
-  cout << "set<TestedDevice*>" << endl << allTestedDevices << endl;
+  // cout << "set<TestedDevice*>" << endl << allTestedDevices << endl;
   for ( set<TestedDevice*>::iterator tdi = allTestedDevices.begin(); tdi != allTestedDevices.end(); ++tdi ){
     analyzedDevices_.push_back( AnalyzedDevice( **tdi, rawResultsDir_, configuration_->getMeasurements() ) );
   }
@@ -116,14 +116,14 @@ void AFEB::teststand::Analysis::collectAnalyzedDevices(){
     ad->setCorrectionCoefficient( utils::stringTo<double>( coefficient ) );
   }
 
-  cout << "Analyzed devices" << endl << analyzedDevices_ << endl;
+  // cout << "Analyzed devices" << endl << analyzedDevices_ << endl;
 }
 
 void AFEB::teststand::Analysis::calibrateDACs(){
   stringstream xpath;
   // Count DACs with calibration data
   size_t nDACs = utils::getSelectedNodesValues( calibXML_, "/c:calibrations/c:DACs/c:DAC" ).size();
-  cout << "nDACs=" << nDACs << endl;
+  // cout << "nDACs=" << nDACs << endl;
   for ( size_t iDAC=1; iDAC<=nDACs; ++iDAC ){
     //
     // Create DAC objects
@@ -147,11 +147,11 @@ void AFEB::teststand::Analysis::calibrateDACs(){
     xpath.str("");
     xpath << "/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@DACUnits";
     vector< pair<string,string> > x = utils::getSelectedNodesValues( calibXML_, xpath.str() );
-    cout << x << endl;
+    // cout << x << endl;
     xpath.str("");
     xpath << "/c:calibrations/c:DACs/c:DAC[position()=" << iDAC << "]/*[name()='c:value']/@milliVolts";
     vector< pair<string,string> > y = utils::getSelectedNodesValues( calibXML_, xpath.str() );
-    cout << y << endl;
+    // cout << y << endl;
     //
     // Fit calibration data
     //
@@ -174,12 +174,10 @@ void AFEB::teststand::Analysis::calibrateDACs(){
     }
     DACs_.back().setCalibrationParameters( p1fitter.getFittedParameters(),
 					   p1fitter.getFittedParametersCovariance() );
-    cout << *DACs_.back().getCalibrationParameters() << endl;
-    cout << *DACs_.back().getCalibrationParametersCovariance() << endl;
-    // TMatrixT<double> mm(2,2); mm(0,0)=-1.; mm(0,1)=2.; mm(1,0)=3.; mm(1,1)=4.;
-    // cout << mm << endl;
+    // cout << *DACs_.back().getCalibrationParameters() << endl;
+    // cout << *DACs_.back().getCalibrationParametersCovariance() << endl;
   }
-  cout << DACs_ << endl;
+  // cout << DACs_ << endl;
 }
 
 void AFEB::teststand::Analysis::assignDACs(){
@@ -189,11 +187,11 @@ void AFEB::teststand::Analysis::assignDACs(){
     // Find the pulse generator's and the threshold generator's DACs for this device
     for ( vector<DAC>::const_iterator dac=DACs_.begin(); dac!=DACs_.end(); ++dac ){
       if ( *dac == d->getPulseDACDescriptor() ){
-	cout << "Found pulse DAC" << endl << *dac << endl;
+	// cout << "Found pulse DAC" << endl << *dac << endl;
 	d->setPulseDAC( &*dac );
       }
       else if ( *dac == d->getThresholdDACDescriptor() ){
-	cout << "Found threshold DAC" << endl << *dac << endl;
+	// cout << "Found threshold DAC" << endl << *dac << endl;
 	d->setThresholdDAC( &*dac );
       }
     }

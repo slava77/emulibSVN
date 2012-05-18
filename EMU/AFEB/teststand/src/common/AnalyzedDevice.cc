@@ -1,4 +1,5 @@
 #include "AFEB/teststand/AnalyzedDevice.h"
+#include "AFEB/teststand/version.h"
 #include "AFEB/teststand/Legend.h"
 #include "AFEB/teststand/utils/String.h"
 #include "AFEB/teststand/utils/IO.h"
@@ -27,7 +28,7 @@ ostream& AFEB::teststand::operator<<( ostream& os, const AnalyzedDevice& d ){
      << endl << "Channels:" << endl;
   int i=1;
   for ( vector<AnalyzedChannel>::const_iterator c = d.channels_.begin(); c != d.channels_.end(); ++c ){
-    cout << right << setw(10) << i++ << *c << endl;
+    os << right << setw(10) << i++ << *c << endl;
   }  
   return os;
 }
@@ -459,7 +460,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	// Do it for the first channel only; they're the same for the other channels.
 	if ( iChannel == 0 ){
 	  for ( size_t iCharge=0; iCharge<sizeof(nominalInputCharges_)/sizeof(double); ++iCharge ){
-	    cout << "iCharge " << iCharge << "    bin " << meanTimeVsCharge->FindBin( nominalInputCharges_[iCharge] ) << endl;
+	    // cout << "iCharge " << iCharge << "    bin " << meanTimeVsCharge->FindBin( nominalInputCharges_[iCharge] ) << endl;
 	    bins.push_back( meanTimeVsCharge->FindBin( nominalInputCharges_[iCharge] ) );
 	    realCharges.push_back( meanTimeVsCharge->GetBinCenter( bins.back() ) );
 	    meanTimes.push_back( valarray<double>( nChannels_ ) ); // prepare container
@@ -470,7 +471,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	  binInputChargeRangeEnd   = min( meanTimeVsCharge->GetNbinsX(), meanTimeVsCharge->FindBin( nominalInputChargeRangeEnd_   ) );
 	  inputChargeRangeStart = meanTimeVsCharge->GetBinCenter( binInputChargeRangeStart );
 	  inputChargeRangeEnd   = meanTimeVsCharge->GetBinCenter( binInputChargeRangeEnd   );
-	  cout << "binInputChargeRangeStart " << binInputChargeRangeStart << "  binInputChargeRangeEnd " << binInputChargeRangeEnd << "  inputChargeRangeStart " << inputChargeRangeStart << "  inputChargeRangeEnd " << inputChargeRangeEnd << endl;
+	  // cout << "binInputChargeRangeStart " << binInputChargeRangeStart << "  binInputChargeRangeEnd " << binInputChargeRangeEnd << "  inputChargeRangeStart " << inputChargeRangeStart << "  inputChargeRangeEnd " << inputChargeRangeEnd << endl;
 	}
 
 	// Get the mean and rms of times at the specified input charges:
@@ -656,6 +657,7 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
      <<         "\" id=\""              << id_
      <<         "\" analysisDate=\""    << utils::getDateTime()
      <<         "\" measurementDate=\"" << measurementDate_
+     <<         "\" softwareVersion=\"" <<  AFEBteststand::versions
      << "\">" << endl;
   vector<Measurement*>::const_iterator m = measurements_.begin();
   if ( m != measurements_.end() && (*m)->isDummyData() ) ss << "  <ad:dummyData/>" << endl;
@@ -697,7 +699,7 @@ void AFEB::teststand::AnalyzedDevice::saveResults( const string& afebRootDir, co
 
   ss << "</ad:device>" << endl;
 
-  cout << ss.str();
+  // cout << ss.str();
 
   //
   // Page for offsets and gains

@@ -697,7 +697,7 @@ void AFEB::teststand::Results::refitSCurves( const string& resultDir ){
   rootFile_->Purge();
 
   // Update the plots, too:
-  createFigure( resultDir, measurement_->getAmplitudeMin(), measurement_->getAmplitudeMax() );
+  createFigure( resultDir + "/raw", measurement_->getAmplitudeMin(), measurement_->getAmplitudeMax() );
 }
 
 void AFEB::teststand::Results::createFigure( const string directory, const double fitRangeStart, const double fitRangeEnd ){
@@ -870,7 +870,7 @@ void AFEB::teststand::Results::createFigure( const string directory, const doubl
   }
   legend_->Draw();
 
-  c.Print( ( directory + "/raw/" + fileName_+".png").c_str() );
+  c.Print( ( directory + "/" + fileName_+".png").c_str() );
   delete axis; // Now it's safe to delete axis.
 }
 

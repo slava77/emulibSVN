@@ -316,7 +316,7 @@ bool AFEB::teststand::Measurement::dummyResultGenerator(){
   // Gradually crank up the pulse height:
   for ( int amplitude = amplitudeMin_; amplitude <= amplitudeMax_; amplitude += amplitudeStep_ ){
 
-    cout << "amplitude=" << amplitude << endl;
+    // cout << "amplitude=" << amplitude << endl;
 
     //::usleep(10); // TODO: remove
 
