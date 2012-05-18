@@ -39,6 +39,7 @@
       <tr>
 	<td colspan="2">
 	  <xsl:if test="document('Calibration.xml')">
+	    <br/>
 	    <table class="layout">
 	      <tr><th colspan="2">Calibrations</th></tr>
 	      <tr>
