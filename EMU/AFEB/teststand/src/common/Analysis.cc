@@ -250,9 +250,9 @@ void AFEB::teststand::Analysis::applySelection( const string& analyzedResultsDir
   // cout << cuts << endl;
   // Write XSLT for marking the selections in the results file. This file will be 'include'-ed in analyzedResults_XSLT.xml .
   utils::writeFile( analyzedResultsDirectory + "/selectionCuts_XSLT.xml", createSelectionCutsXSLT( cuts ) );
-  // Apply cuts to each device's results
+  // Write plain text file with parameters for database
   for ( vector<AnalyzedDevice>::iterator d = analyzedDevices_.begin(); d != analyzedDevices_.end(); ++d ){
-    d->passesSelectionCuts( analyzedResultsDirectory, cuts );
+    d->writeParametersForDB( analyzedResultsDirectory, cuts );
   }
 }
 

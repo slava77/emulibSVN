@@ -813,3 +813,30 @@ bool AFEB::teststand::AnalyzedDevice::passesSelectionCuts( const string& analyze
   }
   return passes;
 }
+
+void AFEB::teststand::AnalyzedDevice::writeParametersForDB( const string& analyzedResultsDir, const vector<Cut>& cuts ){
+  string analyzedResultsXML( utils::readFile( analyzedResultsDir + "/" + id_ + ".xml" ) );
+
+  stringstream ss;
+  ss << "DeviceId " << id_ << endl;
+  ss << "FailedCuts";
+  for ( vector<Cut>::const_iterator c=cuts.begin(); c!=cuts.end(); ++c ){
+    double value = utils::stringTo<double>( utils::getSelectedNodeValue( analyzedResultsXML, c->getXpath() ) );
+    if ( ! c->accepts( value ) ) ss << " " << c->getId();
+  }
+  ss << endl << "Q    " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:threshold/@mean" );
+  ss << endl << "Ns   " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='external' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@mean" );
+  ss << endl << "Gn   " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:gain/@mean" );
+  ss << endl << "Offs " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:offset/@mean" );
+  ss << endl << "Qm   " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:maxMeasuredThreshold[number(translate(@atSetThreshold,'+',''))=0]/@value" );
+  ss << endl << "U20  " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:averageSetThreshold[number(translate(@atCharge,'+',''))=20]/@value" );
+  ss << endl << "Cint " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:C_int/@mean" );
+  ss << endl << "Q    " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:threshold/@mean" );
+  ss << endl << "Ns   " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:measurement[@type='count_vs_dac' and @capacitor='internal' and number(translate(@setThreshold,'+',''))=46]/ad:noise/@mean" );
+  ss << endl << "Mt   " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:mean/@mean" );
+  ss << endl << "Rt   " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:measurement[@type='time_vs_dac']/ad:times[number(translate(@nominalInputCharge,'+',''))=100]/ad:rms/@mean" );
+  ss << endl << "Slt  " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/ad:measurement[@type='time_vs_dac']/ad:slew/ad:spanOfMeans/@mean" );
+  ss << endl;
+
+  utils::writeFile( analyzedResultsDir + "/" + id_ + ".txt", ss.str() );
+}

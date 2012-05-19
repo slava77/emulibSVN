@@ -77,6 +77,7 @@ namespace AFEB { namespace teststand {
       void calculateInternalCapacitances();
       void saveResults                  ( const string& afebRootDir, const string& analyzedResultsDir );
       bool passesSelectionCuts          ( const string& analyzedResultsDir, const vector<Cut>& cuts );
+      void writeParametersForDB         ( const string& analyzedResultsDir, const vector<Cut>& cuts );
       
 
     private:
