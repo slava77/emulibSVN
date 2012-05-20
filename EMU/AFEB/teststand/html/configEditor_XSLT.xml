@@ -256,7 +256,7 @@
 	    <xsl:if test="$CONFIGMODE='control'">
 	      <!-- for-each: just to set the current node for the templates called by name: -->
 	      <xsl:for-each select="@id">
-		<input type="text" title="The unique id of this device. Leave it blank if this socket is not used." size="10">
+		<input type="text" title="The unique id of this device. Leave it blank if this socket is not used." size="10" tabindex="{../@socket}">
 		  <xsl:attribute name="name"><xsl:call-template name="attributeXPath"/></xsl:attribute>
 		  <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
 		</input>
