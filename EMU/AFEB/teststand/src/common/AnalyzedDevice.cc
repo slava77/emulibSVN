@@ -290,7 +290,14 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 							(*m)->getInjectionCapacitor() ),
 				     chargeFromVoltage( pulseDAC_->mV_from_DACUnit( efficiencyHistogram->GetXaxis()->GetXmax() ).first, 
 							(*m)->getInjectionCapacitor() ) );
-	effVsCharge.SetTitle( string( "Threshold curves at U=" + utils::stringFrom<double>( thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first ) + " mV" ).c_str() );
+	effVsCharge.SetTitle( string( "Threshold curves at U=" 
+				      + utils::stringFrom<double>( thresholdDAC_->mV_from_DACUnit( (*m)->getSetThreshold() ).first ) 
+				      + " mV with " 
+				      + utils::stringFrom<int>( (*m)->getNPulses() ) 
+				      + " pulses to " 
+				      + (*m)->getInjectionCapacitorString() 
+				      + " capacitor"
+				      ).c_str() );
 	effVsCharge.SetXTitle( string( "input charge [fC] to " + (*m)->getInjectionCapacitorString() + " capacitor" ).c_str() );
 	effVsCharge.SetYTitle( "count" );
 	effVsCharge.SetLineColor( legend.getColor( iChannel ) );
@@ -346,7 +353,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
       canvas.cd( 2 )->cd( 2 );
       gStyle->SetOptStat( 111110 );
       TH1D hc = histogramContents( thresholdVsChannel );
-      hc.SetTitle( "Threshold" );
+      hc.SetTitle( thresholdVsChannel->GetTitle() );
       hc.SetXTitle( "threshold [fC]" );
       hc.SetYTitle( "number of channels" );
       hc.DrawCopy();
@@ -359,7 +366,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
       noiseVsChannel->DrawCopy( "pe" );
       canvas.cd( 3 )->cd( 2 );
       hc = histogramContents( noiseVsChannel );
-      hc.SetTitle( "Noise" );
+      hc.SetTitle( noiseVsChannel->GetTitle() );
       hc.SetXTitle( "noise [fC]" );
       hc.SetYTitle( "number of channels" );
       hc.DrawCopy();
@@ -373,7 +380,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
       chi2ndfVsChannel->DrawCopy( "p" );
       canvas.cd( 4 )->cd( 2 );
       hc = histogramContents( chi2ndfVsChannel );
-      hc.SetTitle( "#chi^{2} / ndf" );
+      hc.SetTitle( chi2ndfVsChannel->GetTitle() );
       hc.SetXTitle( "#chi^{2} / ndf" );
       hc.SetYTitle( "number of channels" );
       hc.DrawCopy();
@@ -527,7 +534,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	meanCanvas.cd( 2+iCharge )->cd( 2 );
 	gStyle->SetOptStat( 111110 );
 	TH1D hc = histogramContents( &meanTimeVsChannel );
-	hc.SetTitle( "Mean propagation times" );
+	hc.SetTitle( ("Mean propagation times at " + utils::stringFrom<double>( nominalInputCharges_[iCharge] ) + " fC input charge").c_str() );
 	hc.SetXTitle( "mean time [ns]" );
 	hc.SetYTitle( "number of channels" );
 	gStyle->SetOptStat( 111110 );
@@ -546,7 +553,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	  meanCanvas.cd( 2+iCharge+1 )->cd( 2 );
 	  gStyle->SetOptStat( 111110 );
 	  hc = histogramContents( &slewingTimeVsChannel );
-	  hc.SetTitle( "Slewing times" );
+	  hc.SetTitle( ("Slewing times in input charge range [" +  utils::stringFrom<double>( nominalInputChargeRangeStart_ ) + "," +  utils::stringFrom<double>( nominalInputChargeRangeEnd_ ) + "] fC").c_str() );
 	  hc.SetXTitle( "slewing time [ns]" );
 	  hc.SetYTitle( "number of channels" );
 	  gStyle->SetOptStat( 111110 );
@@ -558,7 +565,7 @@ string AFEB::teststand::AnalyzedDevice::measurementsToXMLAndPlots( const string&
 	rmsCanvas.cd( 2+iCharge )->cd( 2 );
 	gStyle->SetOptStat( 111110 );
 	hc = histogramContents( &rmsTimeVsChannel );
-	hc.SetTitle( "RMS of times" );
+	hc.SetTitle( ("RMS of times at " + utils::stringFrom<double>( nominalInputCharges_[iCharge] ) + " fC input charge").c_str() );
 	hc.SetXTitle( "rms of time [ns]" );
 	hc.SetYTitle( "number of channels" );
 	gStyle->SetOptStat( 111110 );
