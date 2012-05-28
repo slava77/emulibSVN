@@ -825,6 +825,8 @@ void AFEB::teststand::AnalyzedDevice::writeParametersForDB( const string& analyz
   string analyzedResultsXML( utils::readFile( analyzedResultsDir + "/" + id_ + ".xml" ) );
 
   stringstream ss;
+  ss << "Run "      << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/@measurementDate" ) << endl;
+  ss << "Analysis " << utils::getSelectedNodeValue( analyzedResultsXML, "/ad:device/@analysisDate"    ) << endl;
   ss << "DeviceId " << id_ << endl;
   ss << "FailedCuts";
   for ( vector<Cut>::const_iterator c=cuts.begin(); c!=cuts.end(); ++c ){
