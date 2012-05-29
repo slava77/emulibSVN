@@ -30,7 +30,12 @@ int main( int argc, char** argv ){
       if ( (*m)->getType() == Measurement::count_vs_dac ){
 	(*m)->refitSCurves();
 	// Update XML with the new fit results
-	resultXML = utils::removeSelectedNode( resultXML, "//a:results/a:measurement[@index='" + utils::stringFrom<int>( (*m)->getIndex() ) + "']" );
+	resultXML = utils::removeSelectedNode( resultXML, 
+					       "//a:results/a:measurement[@index='" 
+					       + utils::stringFrom<int>( (*m)->getIndex() ) + 
+					       + "' and a:device/@id='"
+					       + (*(*m)->getTestedDevices().begin())->getId()
+					       + "']" );
 	resultXML = utils::appendToSelectedNode( resultXML, "//a:results", (*m)->resultsXML() );	
       }
     }
