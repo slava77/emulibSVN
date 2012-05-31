@@ -17,7 +17,7 @@ function dirList(){
     print "Generating $D/index.html"
     {
 	print "<html>"
-	print "<head><title>$D</title><head>"
+	print "<head><title>${D:t}</title><head>"
 	print "<body>"
 	# In directories 'raw' and 'analyzed', list links to result files.
 	if [[ ${D:t} == "raw" && -f results.xml ]]; then
