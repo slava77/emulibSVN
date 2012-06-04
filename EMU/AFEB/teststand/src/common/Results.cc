@@ -9,7 +9,7 @@
 #include "TCanvas.h"
 #include "TLatex.h"
 #include "Math/SpecFuncMathCore.h" // for erf()
-//#include "Fit/FitResult.h"
+#include "TFitResult.h"
 
 #include <sstream>
 
