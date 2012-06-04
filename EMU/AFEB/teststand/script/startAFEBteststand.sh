@@ -17,7 +17,7 @@ EOF
 done
 
 # BUILD_HOME, XDAQ_ROOT and ROOTSYS should be set. Their default values are:
-// export BUILD_HOME=${BUILD_HOME:-$PWD/${0:h}/../../..}
+# export BUILD_HOME=${BUILD_HOME:-$PWD/${0:h}/../../..}
 export BUILD_HOME=${BUILD_HOME:-$HOME/CMS}
 export XDAQ_ROOT=${XDAQ_ROOT:-$HOME/XDAQ}
 export ROOTSYS=${ROOTSYS:-$HOME/ROOT/root}
