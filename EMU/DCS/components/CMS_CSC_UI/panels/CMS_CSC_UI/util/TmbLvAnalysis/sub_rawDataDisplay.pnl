@@ -242,7 +242,7 @@ T
 LANG:1 20 Get the distribution
 "main()
 {
-  dyn_string dpes = dpNames(\"*:CscLowVoltage/CSC_ME*.\" + comboHistVariable.text, \"CscLvChamberMon\");
+  dyn_string dpes = dpNames(\"*:CscLowVoltage/CSC_ME*.tmb.\" + comboHistVariable.text, \"CscLvChamberMon\");
   emuui_showHistogramFromDpes(dpes, spinNumBins.text, \"TMB \" + comboHistVariable.text + \" Distribution\", makeDynFloat(0, maxFLOAT()));
 }
 
