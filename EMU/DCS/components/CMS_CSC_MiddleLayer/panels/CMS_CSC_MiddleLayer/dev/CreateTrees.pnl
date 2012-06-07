@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 790 610 N "_3DFace" 0
+PANEL,-1 -1 790 648 N "_3DFace" 0
 "main()
 {
   fwDevice_initialize();
@@ -1051,9 +1051,9 @@ void setPrimaryStatusAlerts(dyn_string &ex) {
   dyn_string dps = dpNames(\"*.status\", \"CscHvPrimaryMon\");
   fwAlertConfig_setMultiple(dps,
                             DPCONFIG_ALERT_NONBINARYSIGNAL,
-                            makeDynString(\"\", \"HV Primary PSU Error\"),
-                            makeDynFloat(4),
-                            makeDynString(\"\", \"_fwFatalNack\"),
+                            makeDynString(\"No communication with HV Primary PSU!\", \"\", \"HV Primary PSU Error\"),
+                            makeDynFloat(0, 4),
+                            makeDynString(\"_fwFatalNack\", \"\", \"_fwFatalNack\"),
                             makeDynString(), \"\", makeDynString(), \"\",
                             ex,
                             false, false, \".\");
@@ -1707,108 +1707,31 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 T 
 1
 LANG:1 14 Save to confDB
-"#uses \"fwConfigurationDB/fwConfigurationDB.ctl\"
-#uses \"fwConfigurationDB/fwConfigurationDB_DeviceConfiguration.ctl\"
-
-const string CONFDB_PREFIX = \"MiddleLayer/\";
+"#uses \"CMS_CSC_MiddleLayer/setup/confDb.ctl\"
 
 main()
 {
   dyn_string ex;
-  fwConfigurationDB_checkInit(ex);
-  if (emu_checkException(ex)) { return; }
+  int saveOptions = 0;
   
-  dyn_string devices;
+  if (radioSaveOption.number == 1) {
+    saveOptions = fwConfigurationDB_deviceConfig_VALUE;
+  } else if (radioSaveOption.number == 2) {
+    saveOptions = fwConfigurationDB_deviceConfig_ALERT;
+  }
   
   if (chkSaveHv.state(0)) {
-    // *** HV ***
-    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscHighVoltage\", ex));
-    if (emu_checkException(ex)) { return; }
-    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*HV*\"));
-    if (emu_checkException(ex)) { return; }
-    emu_dynAppend(devices, dpNames(\"*HV*\", \"CscDimCommand\"));
-    emu_dynAppend(devices, dpNames(\"HvServerStatus\", \"CscCommonString\"));
-  
-    saveConfiguration(devices, \"HV\", editVersion.text, ex, chkJustPrint.state(0));
-    if (emu_checkException(ex)) { return; }
-
-    // *** HV LV ***
-    dynClear(devices);
-    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"Wiener\", ex, \"*HV_LV_*\"));
-    if (emu_checkException(ex)) { return; }
-
-    saveConfiguration(devices, \"HV_LV\", editVersion.text, ex, chkJustPrint.state(0));
-    if (emu_checkException(ex)) { return; }
+    emuconfdb_saveHvDevices(editVersion.text, ex, chkJustPrint.state(0), saveOptions);
   }
   
   if (chkSaveX2P.state(0)) {
-    // *** X2P ***
-    dynClear(devices);
-    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscLowVoltage\", ex));
-    if (emu_checkException(ex)) { return; }
-    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscTemperature\", ex));
-    if (emu_checkException(ex)) { return; }
-    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*X2P_[PM]*\"));
-    if (emu_checkException(ex)) { return; }
-    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*X2P_COMMAND_[PM]*\"));
-    if (emu_checkException(ex)) { return; }
-    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*X2P_REPLY_[PM]*\"));
-    if (emu_checkException(ex)) { return; }
-    emu_dynAppend(devices, dpNames(\"*X2P*\", \"CscDimCommand\"));
-    emu_dynAppend(devices, dpNames(\"X2P_REPLY_*\", \"CscCommonString\"));
-  
-    saveConfiguration(devices, \"X2P\", editVersion.text, ex, chkJustPrint.state(0));
-    if (emu_checkException(ex)) { return; }
-  
-    // *** X2P FED ***
-    dynClear(devices);
-    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"CscFed\", ex));
-    if (emu_checkException(ex)) { return; }
-    emu_dynAppend(devices, getDevicesFromHardwareHierarchy(getSystemName() + \"DimConfig\", ex, \"*X2P_FED*\"));
-    if (emu_checkException(ex)) { return; }
-  
-    saveConfiguration(devices, \"X2P_FED\", editVersion.text, ex, chkJustPrint.state(0));
-    if (emu_checkException(ex)) { return; }
+    emuconfdb_saveHvDevices(editVersion.text, ex, chkJustPrint.state(0), saveOptions);
   }
   
   emu_info(\"DONE saving devices to conf DB as version \" + editVersion.text);
 }
 
-/**
-  * @return devices from the specified node of the hardware hierarchy (also optionally matching a given pattern)
-  */
-dyn_string getDevicesFromHardwareHierarchy(string rootNode, dyn_string &ex, string pattern = \"\") {
-  dyn_string deviceList;
-  fwConfigurationDB_getHierarchyFromPVSS(rootNode, fwDevice_HARDWARE, deviceList, ex);
-  if (emu_checkException(ex)) { return; }
-
-  dyn_string ret;
-  if (pattern != \"\") {
-    for (int i=1; i <= dynlen(deviceList); i++) {
-      string device = deviceList[i];
-      if (patternMatch(pattern, device)) {
-        dynAppend(ret, device);
-      }
-    }
-  } else {
-    ret = deviceList;
-  }
-  
-  return ret;
-}
-
-/**
-  * Saves given devices to configuration DB (if justPrint=true, it won't actually save the devices, but just print the list instead)
-  */
-void saveConfiguration(dyn_string devices, string name, string version, dyn_string &exceptionInfo, bool justPrint = FALSE) {
-  string confName = CONFDB_PREFIX + name + \"_v\" + version;
-  emu_info(\"Saving these devices to conf DB with name \" + confName);
-  emu_info(devices);
-  if (!justPrint) {
-    fwConfigurationDB_saveDeviceConfiguration(devices, confName, fwDevice_HARDWARE, exceptionInfo);
-    if (emu_checkException(exceptionInfo)) { return; }
-  }
-}" 0
+" 0
  E E E
 2 21
 "PRIMITIVE_TEXT2"
@@ -1918,7 +1841,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 0 1 0 1 E U  0 E 10 432 711 571
+E E 0 0 1 0 1 E 1 0 1.507246376811594 0 -219.1304347826087 0 E 10 432 711 571
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
@@ -1983,6 +1906,51 @@ E"main(int button, int state)
 {
   btnSaveToDb.enabled = this.state(0);
 }" 0
+19 31
+"radioSaveOption"
+""
+1 30 570 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 568 272 632
+3
+T 
+1
+LANG:1 15 Save everything
+
+1 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 16 Only save values
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+T 
+1
+LANG:1 20 Only save alert conf
+
+0 
+1
+LANG:1 0 
+E E
+0 0 0 0 0
+1
+E E
 0
 LAYER, 1 
 1

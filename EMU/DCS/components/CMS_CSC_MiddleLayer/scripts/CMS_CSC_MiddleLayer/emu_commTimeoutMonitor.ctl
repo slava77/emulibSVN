@@ -49,9 +49,9 @@ public void emu_commMonitorInit() {
   startThread("_emu_commMonitorThread", x2pTimestampDps, EMU_COMM_X2P_MONITOR_INTERVAL, EMU_COMM_X2P_TIMEOUT, true);
   
   // HV Primaries
-  dyn_string primaryDataDps = dpNames("*.status", "CscHvPrimaryMon");
+  dyn_string primaryDataDps = dpNames("*.update_value", "CscHvPrimaryMon");
   emu_info("EMU communication monitor: starting HV Primary PSU communication timeout monitoring loop.");
-  startThread("_emu_commMonitorThread", primaryDataDps, EMU_COMM_HV_PR_MONITOR_INTERVAL, EMU_COMM_HV_PR_TIMEOUT, false, true);
+  startThread("_emu_commMonitorThread", primaryDataDps, EMU_COMM_HV_PR_MONITOR_INTERVAL, EMU_COMM_HV_PR_TIMEOUT, false, true, "emu_commTimeoutDetectedForHvPrimary");
   
   emu_info("EMU communication monitor: Done initializing communication monitoring for timeouts.");  
 }
@@ -63,8 +63,10 @@ public void emu_commMonitorInit() {
   * @param timeout timeout threshold (maximum allowed "age" of a timestamp).
   * @param isX2pData (optional, default=false) if this flag is true, then data status DPE is checked and data is used only if that status says that data is ok (X2P specific).
   * @param useDpStime (optional, default=false) if this flag is true, then the DP:_online.._stime config is used to determine last update time and if this flag is false then the DP value is used to determine the time of last update
+  * @param functionToCallOnTimeout (optional, default="") if provided, this function will be called when a timeout is detected, it will be given these parameters: timestamp DP, FSM DP, last timestamp
+  * @param functionToCallOnCommBack (optional, default="") if provided, this function will be called when a communication with a device comes back from a previously detected timeout, it will be given these parameters: timestamp DP, FSM DP, last timestamp
   */
-private void _emu_commMonitorThread(dyn_string timestampDpList, int interval, int timeout, bool isX2pData = false, bool useDpStime = false) {
+private void _emu_commMonitorThread(dyn_string timestampDpList, int interval, int timeout, bool isX2pData = false, bool useDpStime = false, string functionToCallOnTimeout = "", string functionToCallOnCommBack = "") {
 
   dyn_string fsmDpList;
   // determine the FSM DPs for each of the timestamp DPs.
@@ -116,6 +118,13 @@ private void _emu_commMonitorThread(dyn_string timestampDpList, int interval, in
               dynAppend(emu_comm_timedOutDevices, fsmDp);
               listHasChanged = true;
               dpSet(fsmDp + ".fsm_state", EMUHV_FSM_STATE_NO_COMM);
+              if (functionToCallOnTimeout != "") {
+                if (isFunctionDefined(functionToCallOnTimeout)) {
+                  startThread(functionToCallOnTimeout, timestampDp, fsmDp, timestamp);
+                } else {
+                  emu_errorSingle("Function '" + functionToCallOnTimeout + "' was asked to be called on timeout of " + fsmDp + ", but the function doesn't exist.");
+                }
+              }
             }
           }
         } else {                                                       // came back from the dead :)
@@ -125,6 +134,13 @@ private void _emu_commMonitorThread(dyn_string timestampDpList, int interval, in
               dynRemove(emu_comm_timedOutDevices, index);
               listHasChanged = true;
               emu_info("EMU communication monitor: Communication is now OK with " + fsmDp);
+              if (functionToCallOnCommBack != "") {
+                if (isFunctionDefined(functionToCallOnCommBack)) {
+                  startThread(functionToCallOnCommBack, timestampDp, fsmDp, timestamp);
+                } else {
+                  emu_errorSingle("Function '" + functionToCallOnCommBack + "' was asked to be called on regaining communication with " + fsmDp + ", but the function doesn't exist.");
+                }
+              }              
             }
           }
         }
@@ -152,4 +168,12 @@ private void _emu_commMonitorThread(dyn_string timestampDpList, int interval, in
     emu_debug("EMU communication monitor: done checking timestamps, sleeping for " + interval + "s", emu_DEBUG_DETAIL);
     delay(interval);
   }
+}
+
+/**
+  * Callback function used when communication timeout is detected on an HV Primary PSU.
+  */
+private void emu_commTimeoutDetectedForHvPrimary(string timeoutDp, string fsmDp, time lastTimestamp) {
+  string statusDp = dpSubStr(timeoutDp, DPSUB_SYS_DP) + ".status";
+  dpSet(statusDp, -1);
 }
