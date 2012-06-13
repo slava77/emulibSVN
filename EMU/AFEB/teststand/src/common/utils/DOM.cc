@@ -1,3 +1,5 @@
+// $Id: DOM.cc,v 1.5 2012/06/12 21:50:01 banicz Exp $
+
 #include "AFEB/teststand/utils/DOM.h"
 #include "AFEB/teststand/utils/Xalan.h"
 #include "AFEB/teststand/utils/String.h"
@@ -31,24 +33,24 @@
 
 #include "xoap/domutils.h" // for XMLCh2String
 
-using namespace std;
 
 XERCES_CPP_NAMESPACE_USE
 
-
-string AFEB::teststand::utils::serializeDOM( DOMNode* node ){
-
-  string result;
+std::string AFEB::teststand::utils::serializeDOM( DOMNode* node )
+{
+  std::string result;
 
   XMLCh tempStr[100];
   XMLString::transcode("LS", tempStr, 99);
   DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
-  DOMWriter* theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+  DOMWriter* theSerializer = ((DOMImplementationLS*) impl)->createDOMWriter();
 
-  try {
+  try
+  {
     // optionally you can set some features on this serializer
     if (theSerializer->canSetFeature(XMLUni::fgDOMWRTDiscardDefaultContent, true))
       theSerializer->setFeature(XMLUni::fgDOMWRTDiscardDefaultContent, true);
+
     if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
       theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 
@@ -64,72 +66,82 @@ string AFEB::teststand::utils::serializeDOM( DOMNode* node ){
 
     MemBufFormatTarget *myFormTarget;
     myFormTarget = new MemBufFormatTarget();
-    
+
     //
     // do the serialization through DOMWriter::writeNode();
     //
     theSerializer->writeNode(myFormTarget, *node);
-    
-    result.append( (const char*) myFormTarget->getRawBuffer(), (string::size_type) myFormTarget->getLen() );
+
+    result.append( (const char*) myFormTarget->getRawBuffer(), (std::string::size_type) myFormTarget->getLen() );
 
     theSerializer->release();
-    
+
     //
     // Filter, formatTarget and error handler are NOT owned by the serializer.
     //
     delete myFormTarget;
-
   }
-  catch( xcept::Exception& e ){
-    XCEPT_RETHROW( xcept::Exception, "Failed to serialize DOM: ", e );
+  catch (xcept::Exception& e)
+  {
+    XCEPT_RETHROW( xcept::Exception, "Failed to serialize DOM: ", e);
   }
-  catch (const XMLException& toCatch) {
+  catch (const XMLException& toCatch)
+  {
     char* message = XMLString::transcode(toCatch.getMessage());
-    stringstream ss; ss << "Failed to serialize DOM: " << message;
+    std::stringstream ss;
+    ss << "Failed to serialize DOM: " << message;
     XMLString::release(&message);
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch (const DOMException& toCatch) {
+  catch (const DOMException& toCatch)
+  {
     char* message = XMLString::transcode(toCatch.getMessage());
-    stringstream ss; ss << "Failed to serialize DOM: " << message;
+    std::stringstream ss;
+    ss << "Failed to serialize DOM: " << message;
     XMLString::release(&message);
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( std::exception& e ){
-    stringstream ss; ss << "Failed to serialize DOM: " << e.what();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (std::exception& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to serialize DOM: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch (...) {
-    XCEPT_RAISE( xcept::Exception, "Failed to serialize DOM: Unexpected exception." );
+  catch (...)
+  {
+    XCEPT_RAISE( xcept::Exception, "Failed to serialize DOM: Unexpected exception.");
   }
 
   return result;
 }
 
 
-void AFEB::teststand::utils::setNodeValue( DOMNode* node, const string& value ){
-  if ( node == NULL ) return;
+void AFEB::teststand::utils::setNodeValue( DOMNode* node, const std::string& value )
+{
+  if (node == NULL) return;
 
-  XMLCh* newValue = XMLString::transcode( value.c_str() );
+  XMLCh* newValue = XMLString::transcode(value.c_str());
 
-  if ( node->getNodeType() ==  DOMNode::ELEMENT_NODE ){
-    node->setTextContent( newValue );
+  if (node->getNodeType() == DOMNode::ELEMENT_NODE)
+  {
+    node->setTextContent(newValue);
   }
-  else if ( node->getNodeType() ==  DOMNode::ATTRIBUTE_NODE ){
-    node->setNodeValue( newValue );
+  else if (node->getNodeType() == DOMNode::ATTRIBUTE_NODE)
+  {
+    node->setNodeValue(newValue);
   }
 
-  XMLString::release( &newValue );
+  XMLString::release(&newValue);
 }
 
-string AFEB::teststand::utils::appendToSelectedNode( const string XML, const string xPathToNode, const string xmlFragment )
-  throw( xcept::Exception ){
 
+std::string AFEB::teststand::utils::appendToSelectedNode( const std::string &XML,
+							  const std::string &xPathToNode,
+							  const std::string &xmlFragment )
+{
   // Based on the idea in http://www.opensubscriber.com/message/xalan-c-users@xml.apache.org/2655850.html
 
-  if ( xmlFragment.size() == 0 ) return XML;
-
-  string modifiedXML;
+  std::string modifiedXML;
 
   XALAN_USING_XALAN(XalanDOMString)
   XALAN_USING_XALAN(XalanDocument)
@@ -149,7 +161,8 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
   XALAN_USING_XERCES(XMLPlatformUtils)
   XALAN_USING_XALAN(XPathEvaluator)
 
-  try{
+  try
+  {
     // Namespaces won't work if these are not initialized:
     XMLPlatformUtils::Initialize();
     XPathEvaluator::initialize();
@@ -164,117 +177,131 @@ string AFEB::teststand::utils::appendToSelectedNode( const string XML, const str
     // const XalanDOMString    theFileName(XML.c_str());
     // const LocalFileInputSource      theInputSource(theFileName.c_str());
     const char* const id = "appendToSelectedNode";
-    MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
-    XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
+    MemBufInputSource theInputSource((const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id);
+    XalanDocument* xalan_document = theLiaison.parseXMLStream(theInputSource);
     // cout << "Original XML from Xalan" << endl << AFEB::teststand::utils::serialize( xalan_document ) << endl;
     XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
     
-    XalanDocumentPrefixResolver thePrefixResolver( docWrapper );
+    XalanDocumentPrefixResolver thePrefixResolver(docWrapper);
     
     XPathEvaluator theEvaluator;
     
-    XalanNode* xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
-							   xalan_document,
-							   XalanDOMString(xPathToNode.c_str()).c_str(),
-							   thePrefixResolver );
-    
-    
-    if ( xalan_node ){
-      
+    XalanNode* xalan_node = theEvaluator.selectSingleNode(theDOMSupport, xalan_document,
+                                                          XalanDOMString(xPathToNode.c_str()).c_str(),
+                                                          thePrefixResolver);
+    if (xalan_node)
+    {
       // XalanDOMString nodeName = xalan_node->getNodeName();
       // std::cout << "Found node " << nodeName << std::endl;
       
-      DOMNode* node = const_cast<DOMNode*>( docWrapper->mapNode( xalan_node ) );
-      if ( node ){
-	// cout << "---------" << endl;
-	// cout << "   node->getNodeName()  " << xoap::XMLCh2String( node->getNodeName() )  << endl;
-	// cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
-	// cout << "   node->getNodeType()  " << node->getNodeType()   << endl;
-	
-	DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
+      DOMNode* node = const_cast< DOMNode* >(docWrapper->mapNode(xalan_node) );
+      if ( node )
+      {
+        // cout << "---------" << endl;
+        // cout << "   node->getNodeName()  " << xoap::XMLCh2String( node->getNodeName() )  << endl;
+        // cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
+        // cout << "   node->getNodeType()  " << node->getNodeType()   << endl;
 
-	// This method does output UTF-8, it's just the XML declaration that will claim it's UTF-16. 
-	// The problem is that emacs is too smart, and is mislead by it. It must be forced to open it as UTF-8 by C-x C-m c utf-8 RET.
-	// Try to influence what the XML declaration will say:
+        DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
 
-	// cout << "Encoding: " << xoap::XMLCh2String( domDoc->getEncoding() ) 
-	//      << " Actual encoding: " << xoap::XMLCh2String( domDoc->getActualEncoding() ) << endl;
-	// // Set encoding explicitly to UTF-8 (otherwise it'll be UTF-16). It doesn't seem to work...
-	// XMLCh* encoding = XMLString::transcode( "UTF-8" );
-	// domDoc->setEncoding( encoding );
-	// XMLString::release( &encoding );
-	// cout << "Encoding: " << xoap::XMLCh2String( domDoc->getEncoding() ) 
-	//      << " Actual encoding: " << xoap::XMLCh2String( domDoc->getActualEncoding() ) << endl;
-	// cout << "Original XML from DOM" << endl << AFEB::teststand::utils::serializeDOM( domDoc ) << endl;
+        // This method does output UTF-8, it's just the XML declaration that will claim it's UTF-16.
+        // The problem is that emacs is too smart, and is mislead by it. It must be forced to open it as UTF-8 by C-x C-m c utf-8 RET.
+        // Try to influence what the XML declaration will say:
 
-	// Parse the XML fragment into a DOM
-	MemBufInputSource xmlFragmentMBIS( (XMLByte*)xmlFragment.c_str(), xmlFragment.size(), "appendToSelectedNodeId" );
-	XercesDOMParser parser;
-	parser.parse( xmlFragmentMBIS );
-	DOMElement *xmlFragmentDOM = parser.getDocument()->getDocumentElement();	
+        // cout << "Encoding: " << xoap::XMLCh2String( domDoc->getEncoding() )
+        //      << " Actual encoding: " << xoap::XMLCh2String( domDoc->getActualEncoding() ) << endl;
+        // // Set encoding explicitly to UTF-8 (otherwise it'll be UTF-16). It doesn't seem to work...
+        // XMLCh* encoding = XMLString::transcode( "UTF-8" );
+        // domDoc->setEncoding( encoding );
+        // XMLString::release( &encoding );
+        // cout << "Encoding: " << xoap::XMLCh2String( domDoc->getEncoding() )
+        //      << " Actual encoding: " << xoap::XMLCh2String( domDoc->getActualEncoding() ) << endl;
+        // cout << "Original XML from DOM" << endl << AFEB::teststand::utils::serializeDOM( domDoc ) << endl;
 
-	// Import and append XML fragment
- 	DOMNode *importedNode = domDoc->importNode( xmlFragmentDOM , true );
-	node->appendChild( importedNode );
+        // Parse the XML fragment into a DOM
+        MemBufInputSource xmlFragmentMBIS( (XMLByte*)xmlFragment.c_str(), xmlFragment.size(), "appendToSelectedNodeId" );
+        XercesDOMParser parser;
+        parser.parse( xmlFragmentMBIS );
+        DOMElement *xmlFragmentDOM = parser.getDocument()->getDocumentElement();
 
-	modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
-	// cout << "Modified XML from DOM" << endl << modifiedXML << endl;
-	
+        // Import and append XML fragment
+        DOMNode *importedNode = domDoc->importNode( xmlFragmentDOM , true );
+        node->appendChild( importedNode );
+
+        modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
+        // cout << "Modified XML from DOM" << endl << modifiedXML << endl;
       }
     }
 
     XPathEvaluator::terminate();
     // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
     // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
-    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // "The termination call is currently optional, to aid those dynamically loading the parser
     // to clean up before exit, or to avoid spurious reports from leak detectors."
     // XMLPlatformUtils::Terminate();
   }
-  catch( SAXParseException& e ){
-    stringstream ss; ss << "Failed to append to selected node: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (SAXParseException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to append to selected node: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XMLException& e ){
-    stringstream ss; ss << "Failed to append to selected node: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XMLException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to append to selected node: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( DOMException& e ){
-    stringstream ss; ss << "Failed to append to selected node: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (DOMException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to append to selected node: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XalanDOMException& e ){
-    stringstream ss; ss << "Failed to append to selected node: exception code " << e.getExceptionCode();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XalanDOMException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to append to selected node: exception code " << e.getExceptionCode();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XSLException& e ){
-    stringstream ss; ss << "Failed to append to selected node: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XSLException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to append to selected node: XSLException type: " << XalanDOMString(e.getType()) << ", message: " << e.getMessage();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( xcept::Exception& e ){
-    XCEPT_RETHROW( xcept::Exception, "Failed to append to selected node: ", e );
+  catch (xcept::Exception& e)
+  {
+    XCEPT_RETHROW( xcept::Exception, "Failed to append to selected node: ", e);
   }
-  catch( std::exception& e ){
-      stringstream ss; ss << "Failed to append to selected node: " << e.what();
-      XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (std::exception& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to append to selected node: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch(...){
-    XCEPT_RAISE( xcept::Exception, "Failed to append to selected node: Unknown exception." );
+  catch (...)
+  {
+    XCEPT_RAISE( xcept::Exception, "Failed to append to selected node: Unknown exception.");
   }
   
   return modifiedXML;
 }
 
-string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const string xPathToNode, const string value )
-  throw( xcept::Exception ){
 
+std::string AFEB::teststand::utils::setSelectedNodesValues( const std::string &XML,
+							    const std::string &xPathToNode,
+							    const std::string &value )
+{
   // Based on the idea in http://www.opensubscriber.com/message/xalan-c-users@xml.apache.org/2655850.html
 
-  string modifiedXML;
+  std::string modifiedXML;
 
   XALAN_USING_XALAN(XalanDOMString)
   XALAN_USING_XALAN(XalanDocument)
   XALAN_USING_XALAN(XalanDocumentPrefixResolver)
   XALAN_USING_XALAN(XalanNode)
+  XALAN_USING_XALAN(NodeRefList);
   XALAN_USING_XALAN(XercesDOMSupport)
   XALAN_USING_XALAN(XercesDOMWrapperParsedSource)
   XALAN_USING_XALAN(XercesDocumentWrapper)
@@ -289,7 +316,8 @@ string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const str
   XALAN_USING_XERCES(XMLPlatformUtils)
   XALAN_USING_XALAN(XPathEvaluator)
 
-  try{
+  try
+  {
     // Namespaces won't work if these are not initialized:
     XMLPlatformUtils::Initialize();
     XPathEvaluator::initialize();
@@ -304,96 +332,100 @@ string AFEB::teststand::utils::setSelectedNodeValue( const string XML, const str
     // const XalanDOMString    theFileName(XML.c_str());
     // const LocalFileInputSource      theInputSource(theFileName.c_str());
     const char* const id = "setSelectedNodeValue";
-    MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
-    XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
+    MemBufInputSource theInputSource((const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id);
+    XalanDocument* xalan_document = theLiaison.parseXMLStream(theInputSource);
     
     XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
     
-    XalanDocumentPrefixResolver thePrefixResolver( docWrapper );
+    XalanDocumentPrefixResolver thePrefixResolver(docWrapper);
     
     XPathEvaluator theEvaluator;
     
-    XalanNode* xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
-							   xalan_document,
-							   XalanDOMString(xPathToNode.c_str()).c_str(),
-							   thePrefixResolver );
-    
-    
-    if ( xalan_node ){
-      
-      // XalanDOMString nodeName = xalan_node->getNodeName();
-      // std::cout << "Found node " << nodeName << std::endl;
-      
-      DOMNode* node = const_cast<DOMNode*>( docWrapper->mapNode( xalan_node ) );
-      if ( node ){
-	// cout << "---------" << endl;
-	// cout << "   node->getNodeName()  " << xoap::XMLCh2String( node->getNodeName() )  << endl;
-	// cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
-	// cout << "   node->getNodeType()  " << node->getNodeType()   << endl;
-	
-	AFEB::teststand::utils::setNodeValue( node, value );
-	
-	// cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
-	
-	DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
-	modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
-	// cout << "modifiedXML" << endl << modifiedXML << endl;
-	
+    NodeRefList nodes;
+    nodes = theEvaluator.selectNodeList(nodes, theDOMSupport, xalan_document, 
+					XalanDOMString(xPathToNode.c_str()).c_str(), 
+					thePrefixResolver);
+
+    for (XalanDOMString::size_type i = 0; i < nodes.getLength(); ++i)
+    {
+      DOMNode* node = const_cast< DOMNode* >(docWrapper->mapNode( nodes.item(i) ) );
+      if ( node )
+      {
+        AFEB::teststand::utils::setNodeValue( node, value );
       }
     }
+
+    DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
+    modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
 
     XPathEvaluator::terminate();
     // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
     // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
-    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // "The termination call is currently optional, to aid those dynamically loading the parser
     // to clean up before exit, or to avoid spurious reports from leak detectors."
     // XMLPlatformUtils::Terminate();
   }
-  catch( SAXParseException& e ){
-    stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (SAXParseException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set node value: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XMLException& e ){
-    stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XMLException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set node value: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( DOMException& e ){
-    stringstream ss; ss << "Failed to set node value: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (DOMException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set node value: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XalanDOMException& e ){
-    stringstream ss; ss << "Failed to set node value: exception code " << e.getExceptionCode();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XalanDOMException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set node value: exception code " << e.getExceptionCode();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XSLException& e ){
-    stringstream ss; ss << "Failed to set node value: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XSLException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set node value: XSLException type: " << XalanDOMString(e.getType()) << ", message: " << e.getMessage();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( xcept::Exception& e ){
-    XCEPT_RETHROW( xcept::Exception, "Failed to set node value: ", e );
+  catch (xcept::Exception& e)
+  {
+    XCEPT_RETHROW( xcept::Exception, "Failed to set node value: ", e);
   }
-  catch( std::exception& e ){
-      stringstream ss; ss << "Failed to set node value: " << e.what();
-      XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (std::exception& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set node value: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch(...){
-    XCEPT_RAISE( xcept::Exception, "Failed to set node value: Unknown exception." );
+  catch (...)
+  {
+    XCEPT_RAISE( xcept::Exception, "Failed to set node value: Unknown exception.");
   }
   
   return modifiedXML;
 }
 
-string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const map<string,string>& values )
-  throw( xcept::Exception ){
 
+std::string AFEB::teststand::utils::setSelectedNodesValues(const std::string &XML,
+							   const std::map<std::string, std::string> &values)
+{
   // Based on the idea in http://www.opensubscriber.com/message/xalan-c-users@xml.apache.org/2655850.html
 
-  string modifiedXML;
+  std::string modifiedXML;
 
   XALAN_USING_XALAN(XalanDOMString)
   XALAN_USING_XALAN(XalanDocument)
   XALAN_USING_XALAN(XalanDocumentPrefixResolver)
   XALAN_USING_XALAN(XalanNode)
+  XALAN_USING_XALAN(NodeRefList);
   XALAN_USING_XALAN(XercesDOMSupport)
   XALAN_USING_XALAN(XercesDOMWrapperParsedSource)
   XALAN_USING_XALAN(XercesDocumentWrapper)
@@ -408,7 +440,8 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
   XALAN_USING_XERCES(XMLPlatformUtils)
   XALAN_USING_XALAN(XPathEvaluator)
 
-  try{
+  try
+  {
     // Namespaces won't work if these are not initialized:
     XMLPlatformUtils::Initialize();
     XPathEvaluator::initialize();
@@ -423,183 +456,198 @@ string AFEB::teststand::utils::setSelectedNodesValues( const string XML, const m
     // const XalanDOMString    theFileName(XML.c_str());
     // const LocalFileInputSource      theInputSource(theFileName.c_str());
     const char* const id = "setSelectedNodesValues";
-    MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
-    XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
+    MemBufInputSource theInputSource((const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id);
+    XalanDocument* xalan_document = theLiaison.parseXMLStream(theInputSource);
     
     XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
     
-    XalanDocumentPrefixResolver thePrefixResolver( docWrapper );
+    XalanDocumentPrefixResolver thePrefixResolver(docWrapper);
     
     XPathEvaluator theEvaluator;
-    
-    map<string,string>::const_iterator v;
-    for ( v = values.begin(); v != values.end(); ++v ){
-      XalanNode* xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
-							     xalan_document,
-							     XalanDOMString(v->first.c_str()).c_str(),
-							     thePrefixResolver );
-      
-      if ( xalan_node ){
-	
-	// XalanDOMString nodeName = xalan_node->getNodeName();
-	// std::cout << "Found node " << nodeName << std::endl;
-	
-	DOMNode* node = const_cast<DOMNode*>( docWrapper->mapNode( xalan_node ) );
-	if ( node ){
-	  // cout << "---------" << endl;
-	  // cout << "   node->getNodeName()  " << xoap::XMLCh2String( node->getNodeName() )  << endl;
-	  // cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
-	  // cout << "   node->getNodeType()  " << node->getNodeType()   << endl;
-	  
+
+    std::map< std::string, std::string >::const_iterator v;
+    for (v = values.begin(); v != values.end(); ++v)
+    {
+      NodeRefList nodes;
+      nodes = theEvaluator.selectNodeList(nodes, theDOMSupport, xalan_document, 
+					  XalanDOMString(v->first.c_str()).c_str(), 
+					  thePrefixResolver);
+
+      for (XalanDOMString::size_type i = 0; i < nodes.getLength(); ++i)
+      {
+	DOMNode* node = const_cast< DOMNode* >(docWrapper->mapNode( nodes.item(i) ) );
+	if ( node )
+	{
 	  AFEB::teststand::utils::setNodeValue( node, v->second );
-	  
-	  // cout << "   node->getNodeValue() " << xoap::XMLCh2String( node->getNodeValue() ) << endl;
 	}
       }
-
+      
     } // for ( v = values.begin(); v != values.end(); ++v )
 
-    DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
-    modifiedXML = AFEB::teststand::utils::serializeDOM( domDoc );
+    DOMDocument *domDoc = const_cast< DOMDocument* >(docWrapper->getXercesDocument() );
+    modifiedXML = AFEB::teststand::utils::serializeDOM(domDoc);
     // cout << "modifiedXML" << endl << modifiedXML << endl;
 
     XPathEvaluator::terminate();
     // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
     // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
-    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // "The termination call is currently optional, to aid those dynamically loading the parser
     // to clean up before exit, or to avoid spurious reports from leak detectors."
     // XMLPlatformUtils::Terminate();
   }
-  catch( SAXParseException& e ){
-    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (SAXParseException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set nodes' values: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XMLException& e ){
-    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XMLException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set nodes' values: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( DOMException& e ){
-    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (DOMException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set nodes' values: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XalanDOMException& e ){
-    stringstream ss; ss << "Failed to set nodes' values: exception code " << e.getExceptionCode();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XalanDOMException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set nodes' values: exception code " << e.getExceptionCode();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XSLException& e ){
-    stringstream ss; ss << "Failed to set nodes' values: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XSLException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set nodes' values: XSLException type: " << XalanDOMString(e.getType()) << ", message: " << e.getMessage();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( xcept::Exception& e ){
-    XCEPT_RETHROW( xcept::Exception, "Failed to set nodes' values: ", e );
+  catch (xcept::Exception& e)
+  {
+    XCEPT_RETHROW( xcept::Exception, "Failed to set nodes' values: ", e);
   }
-  catch( std::exception& e ){
-    stringstream ss; ss << "Failed to set nodes' values: " << e.what();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (std::exception& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to set nodes' values: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch(...){
-    XCEPT_RAISE( xcept::Exception, "Failed to set nodes' values: Unknown exception." );
+  catch (...)
+  {
+    XCEPT_RAISE( xcept::Exception, "Failed to set nodes' values: Unknown exception.");
   }
   
   return modifiedXML;
 }
 
-string AFEB::teststand::utils::getSelectedNodeValue( const string& XML, const string xpath )
-  throw( xcept::Exception ){
 
-  string value;
+std::string AFEB::teststand::utils::getSelectedNodeValue( const std::string &XML,
+                                              const std::string &xpath )
+{
+  std::string value;
 
   XALAN_USING_XALAN(XSLException);
   XALAN_USING_XALAN(XalanDOMException)
   XALAN_USING_XALAN(XalanDOMString)
 
   try
-    {
-      XALAN_USING_XERCES(XMLPlatformUtils)
-      XALAN_USING_XALAN(XPathEvaluator)
-	
+  {
+    XALAN_USING_XERCES(XMLPlatformUtils)
+    XALAN_USING_XALAN(XPathEvaluator)
 
-	XMLPlatformUtils::Initialize();
-      
-      XPathEvaluator::initialize();
+    XMLPlatformUtils::Initialize();
+    XPathEvaluator::initialize();
 
-	  XALAN_USING_XALAN(XalanDocument)
-	  XALAN_USING_XALAN(XalanDocumentPrefixResolver)
-	  XALAN_USING_XALAN(XalanNode)
-	  XALAN_USING_XALAN(XalanSourceTreeInit)
-	  XALAN_USING_XALAN(XalanSourceTreeDOMSupport)
-	  XALAN_USING_XALAN(XalanSourceTreeParserLiaison)
-	  XALAN_USING_XALAN(XObjectPtr)
+    XALAN_USING_XALAN(XalanDocument)
+    XALAN_USING_XALAN(XalanDocumentPrefixResolver)
+    XALAN_USING_XALAN(XalanNode)
+    XALAN_USING_XALAN(XalanSourceTreeInit)
+    XALAN_USING_XALAN(XalanSourceTreeDOMSupport)
+    XALAN_USING_XALAN(XalanSourceTreeParserLiaison)
+    XALAN_USING_XALAN(XObjectPtr)
 
-	  // Initialize the XalanSourceTree subsystem...
-	  XalanSourceTreeInit             theSourceTreeInit;
+    // Initialize the XalanSourceTree subsystem...
+    XalanSourceTreeInit theSourceTreeInit;
 
-	// We'll use these to parse the XML file.
-	XalanSourceTreeDOMSupport               theDOMSupport;
-	XalanSourceTreeParserLiaison    theLiaison(theDOMSupport);
+    // We'll use these to parse the XML file.
+    XalanSourceTreeDOMSupport theDOMSupport;
+    XalanSourceTreeParserLiaison theLiaison(theDOMSupport);
 
-	// Hook the two together...
-	theDOMSupport.setParserLiaison(&theLiaison);
+    // Hook the two together...
+    theDOMSupport.setParserLiaison(&theLiaison);
 
-	const char* const id = "getSelectedNodeValue";
-	MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
+    const char* const id = "getSelectedNodeValue";
+    MemBufInputSource theInputSource((const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id);
 
-	// Parse the document...
-	XalanDocument* const theDocument = theLiaison.parseXMLStream(theInputSource);
+    // Parse the document...
+    XalanDocument* const theDocument = theLiaison.parseXMLStream(theInputSource);
 
-	XalanDocumentPrefixResolver             thePrefixResolver(theDocument);
+    XalanDocumentPrefixResolver thePrefixResolver(theDocument);
 
-	XPathEvaluator  theEvaluator;
+    XPathEvaluator theEvaluator;
 
-	// OK, let's find the node...
-	XalanNode* const node = theEvaluator.selectSingleNode( theDOMSupport,
-							       theDocument,
-							       XalanDOMString( xpath.c_str() ).c_str(),
-							       thePrefixResolver );
+    // OK, let's find the node...
+    XalanNode* const node = theEvaluator.selectSingleNode(theDOMSupport, theDocument,
+                                                          XalanDOMString(xpath.c_str()).c_str(), thePrefixResolver);
+    value = AFEB::teststand::utils::getNodeValue(node);
 
-	value = AFEB::teststand::utils::getNodeValue( node );
+    XPathEvaluator::terminate();
+    // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
+    // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
+    // "The termination call is currently optional, to aid those dynamically loading the parser
+    // to clean up before exit, or to avoid spurious reports from leak detectors."
+    // XMLPlatformUtils::Terminate();
+  }
+  catch (XMLException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to get node value: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
+  }
+  catch (DOMException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to get node value: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
+  }
+  catch (XalanDOMException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to get node value: exception code " << e.getExceptionCode();
+    XCEPT_RAISE( xcept::Exception, ss.str());
+  }
+  catch (XSLException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to get node value: XSLException type: " << XalanDOMString(e.getType()) << ", message: " << e.getMessage();
+    XCEPT_RAISE( xcept::Exception, ss.str());
+  }
+  catch (xcept::Exception& e)
+  {
+    XCEPT_RETHROW( xcept::Exception, "Failed to get node value: ", e);
+  }
+  catch (std::exception& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to get node value: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str());
+  }
+  catch (...)
+  {
+    XCEPT_RAISE( xcept::Exception, "Failed to get node value: Unknown exception.");
+  }
 
-	XPathEvaluator::terminate();
-	// XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
-	// has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
-	// "The termination call is currently optional, to aid those dynamically loading the parser 
-	// to clean up before exit, or to avoid spurious reports from leak detectors."
-	// XMLPlatformUtils::Terminate();
-      }
-      catch( XMLException& e ){
-	stringstream ss; ss << "Failed to get node value: " << xoap::XMLCh2String( e.getMessage() );
-	XCEPT_RAISE( xcept::Exception, ss.str() );
-      }
-      catch( DOMException& e ){
-	stringstream ss; ss << "Failed to get node value: " << xoap::XMLCh2String( e.getMessage() );
-	XCEPT_RAISE( xcept::Exception, ss.str() );
-      }
-      catch( XalanDOMException& e ){
-	stringstream ss; ss << "Failed to get node value: exception code " << e.getExceptionCode();
-	XCEPT_RAISE( xcept::Exception, ss.str() );
-      }
-      catch( XSLException& e ){
-	stringstream ss; ss << "Failed to get node value: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
-	XCEPT_RAISE( xcept::Exception, ss.str() );
-      }
-      catch( xcept::Exception& e ){
-	XCEPT_RETHROW( xcept::Exception, "Failed to get node value: ", e );
-      }
-      catch( std::exception& e ){
-	stringstream ss; ss << "Failed to get node value: " << e.what();
-	XCEPT_RAISE( xcept::Exception, ss.str() );
-      }
-      catch(...){
-	XCEPT_RAISE( xcept::Exception, "Failed to get node value: Unknown exception." );
-      }
-  
-      return value;
-    }
+  return value;
+}
 
-vector< pair<string,string> > AFEB::teststand::utils::getSelectedNodesValues( const string& XML, const string xpath )
-  throw( xcept::Exception ){
 
-  vector< pair<string,string> > nameValuePairs;
+std::vector< std::pair<std::string, std::string> > AFEB::teststand::utils::getSelectedNodesValues( const std::string &XML,
+												   const std::string &xpath )
+{
+  std::vector< std::pair<std::string, std::string> > nameValuePairs;
 
   // XALAN_USING_XALAN(XalanNode);
   // XalanNode* theNode;
@@ -608,9 +656,11 @@ vector< pair<string,string> > AFEB::teststand::utils::getSelectedNodesValues( co
   XALAN_USING_XALAN(XalanDOMException)
   XALAN_USING_XALAN(XalanDOMString);
 
-  try{
+  try
+  {
     XALAN_USING_XERCES(XMLPlatformUtils);
     XMLPlatformUtils::Initialize();
+
     XALAN_USING_XALAN(XPathEvaluator);
     XPathEvaluator::initialize();
 
@@ -627,74 +677,83 @@ vector< pair<string,string> > AFEB::teststand::utils::getSelectedNodesValues( co
     theDOMSupport.setParserLiaison(&theLiaison);
 
     const char* const id = "getSelectedNodesValues";
-    MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
+    MemBufInputSource theInputSource((const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id);
     XALAN_USING_XALAN(XalanDocument)
-    XalanDocument* document = theLiaison.parseXMLStream( theInputSource );
+    XalanDocument* document = theLiaison.parseXMLStream(theInputSource);
 
     XALAN_USING_XALAN(XalanDocumentPrefixResolver);
-    XalanDocumentPrefixResolver  thePrefixResolver( document );
- 
-    XPathEvaluator               theEvaluator;
-   
+    XalanDocumentPrefixResolver thePrefixResolver(document);
+
+    XPathEvaluator theEvaluator;
 
     XALAN_USING_XALAN(NodeRefList);
 
-    XalanDOMString xpathXalan( xpath.c_str() );
+    XalanDOMString xpathXalan(xpath.c_str());
 
     NodeRefList nodes;
-    nodes = theEvaluator.selectNodeList( nodes,
-    					 theDOMSupport,
-    					 document,
-    					 xpathXalan.data(),
-    					 thePrefixResolver );
+    nodes = theEvaluator.selectNodeList(nodes, theDOMSupport, document, xpathXalan.data(), thePrefixResolver);
 
-    for ( XalanDOMString::size_type i=0; i<nodes.getLength(); ++i ){
-      nameValuePairs.push_back( make_pair( AFEB::teststand::utils::stringFrom( nodes.item(i)->getNodeName() ),
-					   AFEB::teststand::utils::getNodeValue( nodes.item(i) ) ) );
+    for (XalanDOMString::size_type i = 0; i < nodes.getLength(); ++i)
+    {
+      nameValuePairs.push_back(
+          std::make_pair(AFEB::teststand::utils::stringFrom(nodes.item(i)->getNodeName()),
+                         AFEB::teststand::utils::getNodeValue(nodes.item(i))));
     }
 
     XPathEvaluator::terminate();
     // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
     // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
-    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // "The termination call is currently optional, to aid those dynamically loading the parser
     // to clean up before exit, or to avoid spurious reports from leak detectors."
     // XMLPlatformUtils::Terminate();
   }
-  catch( XMLException& e ){
-    stringstream ss; ss << "Failed to get nodes' values: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XMLException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to get nodes' values: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( DOMException& e ){
-    stringstream ss; ss << "Failed to get nodes' values: " << xoap::XMLCh2String( e.getMessage() );
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (DOMException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to get nodes' values: " << xoap::XMLCh2String(e.getMessage());
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XalanDOMException& e ){
-    stringstream ss; ss << "Failed to get nodes' values: exception code " << e.getExceptionCode();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XalanDOMException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to get nodes' values: exception code " << e.getExceptionCode();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( XSLException& e ){
-    stringstream ss; ss << "Failed to get nodes' values: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (XSLException& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to get nodes' values: XSLException type: " << XalanDOMString(e.getType()) << ", message: " << e.getMessage();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch( xcept::Exception& e ){
-    XCEPT_RETHROW( xcept::Exception, "Failed to get nodes' values: ", e );
+  catch (xcept::Exception& e)
+  {
+    XCEPT_RETHROW( xcept::Exception, "Failed to get nodes' values: ", e);
   }
-  catch( std::exception& e ){
-    stringstream ss; ss << "Failed to get nodes' values: " << e.what();
-    XCEPT_RAISE( xcept::Exception, ss.str() );
+  catch (std::exception& e)
+  {
+    std::stringstream ss;
+    ss << "Failed to get nodes' values: " << e.what();
+    XCEPT_RAISE( xcept::Exception, ss.str());
   }
-  catch(...){
-    XCEPT_RAISE( xcept::Exception, "Failed to get nodes' values: Unknown exception." );
+  catch (...)
+  {
+    XCEPT_RAISE( xcept::Exception, "Failed to get nodes' values: Unknown exception.");
   }
-  
+
   return nameValuePairs;
 }
 
 
-string AFEB::teststand::utils::getSelectedNode( const string& XML, const string xpath )
-  throw( xcept::Exception ){
-
-  string nodeXML;
+std::string AFEB::teststand::utils::getSelectedNode(const std::string &XML,
+						    const std::string &xpath)
+{
+  std::string nodeXML;
 
   XALAN_USING_XALAN(XalanDOMString)
   XALAN_USING_XALAN(XalanDocument)
@@ -714,94 +773,109 @@ string AFEB::teststand::utils::getSelectedNode( const string& XML, const string 
   XALAN_USING_XERCES(XMLPlatformUtils)
   XALAN_USING_XALAN(XPathEvaluator)
 
-  try{
+  try
+  {
     // Namespaces won't work if these are not initialized:
     XMLPlatformUtils::Initialize();
     XPathEvaluator::initialize();
-    
+
     XercesDOMSupport theDOMSupport;
     XercesParserLiaison theLiaison(theDOMSupport);
     theLiaison.setDoNamespaces(true); // although it seems to be already set...
     theLiaison.setBuildWrapperNodes(true);
     theLiaison.setBuildMaps(true);
-    
+
     // Create an input source that represents a local file...
     // const XalanDOMString    theFileName(XML.c_str());
     // const LocalFileInputSource      theInputSource(theFileName.c_str());
     const char* const id = "setSelectedNodesValues";
     MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
     XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
-    
+
     XercesDocumentWrapper* docWrapper = theLiaison.mapDocumentToWrapper(xalan_document);
-    
+
     XalanDocumentPrefixResolver thePrefixResolver( docWrapper );
-    
+
     XPathEvaluator theEvaluator;
-    
+
     XalanNode* xalan_node = theEvaluator.selectSingleNode( theDOMSupport,
-							   xalan_document,
-							   XalanDOMString( xpath.c_str() ).c_str(),
-							   thePrefixResolver );
-      
-    if ( xalan_node ){
+                                                           xalan_document,
+                                                           XalanDOMString( xpath.c_str() ).c_str(),
+                                                           thePrefixResolver );
+    if ( xalan_node )
+    {
       DOMNode* node = const_cast<DOMNode*>( docWrapper->mapNode( xalan_node ) );
-      if ( node ){
-	 nodeXML = AFEB::teststand::utils::serializeDOM( node );
+      if ( node )
+      {
+         nodeXML = serializeDOM( node );
       }
     }
-    
+
     XPathEvaluator::terminate();
     // XMLPlatformUtils::Terminate() causes the program to crash unless XMLPlatformUtils::Initialize()
     // has been called more times than has XMLPlatformUtils::Terminate(). Anyway, as of Xerces-C++ 2.8.0:
-    // "The termination call is currently optional, to aid those dynamically loading the parser 
+    // "The termination call is currently optional, to aid those dynamically loading the parser
     // to clean up before exit, or to avoid spurious reports from leak detectors."
     // XMLPlatformUtils::Terminate();
   }
-  catch( SAXParseException& e ){
-    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
+  catch( SAXParseException& e )
+  {
+    std::stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch( XMLException& e ){
-    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
+  catch( XMLException& e )
+  {
+    std::stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch( DOMException& e ){
-    stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
+  catch( DOMException& e )
+  {
+    std::stringstream ss; ss << "Failed to set nodes' values: " << xoap::XMLCh2String( e.getMessage() );
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch( XalanDOMException& e ){
-    stringstream ss; ss << "Failed to set nodes' values: exception code " << e.getExceptionCode();
+  catch( XalanDOMException& e )
+  {
+    std::stringstream ss; ss << "Failed to set nodes' values: exception code " << e.getExceptionCode();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch( XSLException& e ){
-    stringstream ss; ss << "Failed to set nodes' values: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
+  catch( XSLException& e )
+  {
+    std::stringstream ss; ss << "Failed to set nodes' values: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch( xcept::Exception& e ){
+  catch( xcept::Exception& e )
+  {
     XCEPT_RETHROW( xcept::Exception, "Failed to set nodes' values: ", e );
   }
-  catch( std::exception& e ){
-    stringstream ss; ss << "Failed to set nodes' values: " << e.what();
+  catch( std::exception& e )
+  {
+    std::stringstream ss; ss << "Failed to set nodes' values: " << e.what();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch(...){
+  catch(...)
+  {
     XCEPT_RAISE( xcept::Exception, "Failed to set nodes' values: Unknown exception." );
   }
-  
+
   return nodeXML;
 }
 
 
-string AFEB::teststand::utils::getNodeValue( const XalanNode* const node ){
-  stringstream value;
+std::string AFEB::teststand::utils::getNodeValue( const XalanNode* const node )
+{
+  std::stringstream value;
   XALAN_USING_XALAN(XalanNode)
-  if ( node ){
-    if ( node->getNodeType() == XalanNode::ELEMENT_NODE && node->getFirstChild() ){
-      if ( node->getFirstChild()->getNodeType() == XalanNode::TEXT_NODE ){
-	value << node->getFirstChild()->getNodeValue();
+  if (node)
+  {
+    if (node->getNodeType() == XalanNode::ELEMENT_NODE && node->getFirstChild())
+    {
+      if (node->getFirstChild()->getNodeType() == XalanNode::TEXT_NODE)
+      {
+        value << node->getFirstChild()->getNodeValue();
       }
     }
-    else{
+    else
+    {
       value << node->getNodeValue();
     }
   }
@@ -809,10 +883,11 @@ string AFEB::teststand::utils::getNodeValue( const XalanNode* const node ){
 }
 
 
-string AFEB::teststand::utils::removeSelectedNode( const string& XML, const string xpath )
-  throw( xcept::Exception ){
+std::string AFEB::teststand::utils::removeSelectedNode( const std::string& XML, 
+							const std::string& xpath )
+{
 
-  string modifiedXML;
+  std::string modifiedXML;
 
   XALAN_USING_XALAN(XalanDOMString)
   XALAN_USING_XALAN(XalanDocument)
@@ -833,7 +908,8 @@ string AFEB::teststand::utils::removeSelectedNode( const string& XML, const stri
   XALAN_USING_XERCES(XMLPlatformUtils)
   XALAN_USING_XALAN(XPathEvaluator)
 
-  try{
+  try
+  {
     // Namespaces won't work if these are not initialized:
     XMLPlatformUtils::Initialize();
     XPathEvaluator::initialize();
@@ -847,7 +923,7 @@ string AFEB::teststand::utils::removeSelectedNode( const string& XML, const stri
     // Create an input source that represents a local file...
     // const XalanDOMString    theFileName(XML.c_str());
     // const LocalFileInputSource      theInputSource(theFileName.c_str());
-    const char* const id = "appendToSelectedNode";
+    const char* const id = "removeSelectedNode";
     MemBufInputSource theInputSource( (const XMLByte*) XML.c_str(), (unsigned int) XML.size(), id );
     XalanDocument* xalan_document = theLiaison.parseXMLStream( theInputSource );
     // cout << "Original XML from Xalan" << endl << AFEB::teststand::utils::serialize( xalan_document ) << endl;
@@ -869,7 +945,7 @@ string AFEB::teststand::utils::removeSelectedNode( const string& XML, const stri
     					 thePrefixResolver );
 
     // Convert Xalan nodes into DOM nodes
-    vector<DOMNode*> DOMNodes;
+    std::vector<DOMNode*> DOMNodes;
     for ( XalanDOMString::size_type i=0; i<nodes.getLength(); ++i ){
       DOMNode* node = const_cast<DOMNode*>( docWrapper->mapNode( nodes.item(i) ) );
       if ( node ) DOMNodes.push_back( node );
@@ -877,7 +953,7 @@ string AFEB::teststand::utils::removeSelectedNode( const string& XML, const stri
     
     // Remove DOM nodes
     DOMDocument *domDoc = const_cast<DOMDocument*>( docWrapper->getXercesDocument() );
-    for ( vector<DOMNode*>::iterator dn = DOMNodes.begin(); dn != DOMNodes.end(); ++dn ){
+    for ( std::vector<DOMNode*>::iterator dn = DOMNodes.begin(); dn != DOMNodes.end(); ++dn ){
       switch ( (*dn)->getNodeType() ){
       case DOMNode::ELEMENT_NODE:
       case DOMNode::TEXT_NODE:
@@ -900,34 +976,48 @@ string AFEB::teststand::utils::removeSelectedNode( const string& XML, const stri
     // to clean up before exit, or to avoid spurious reports from leak detectors."
     // XMLPlatformUtils::Terminate();
   }
-  catch( SAXParseException& e ){
-    stringstream ss; ss << "Failed to remove selected node: " << xoap::XMLCh2String( e.getMessage() );
+  catch( SAXParseException& e )
+  {
+    std::stringstream ss;
+    ss << "Failed to remove selected node: " << xoap::XMLCh2String( e.getMessage() );
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch( XMLException& e ){
-    stringstream ss; ss << "Failed to remove selected node: " << xoap::XMLCh2String( e.getMessage() );
+  catch( XMLException& e )
+  {
+    std::stringstream ss;
+    ss << "Failed to remove selected node: " << xoap::XMLCh2String( e.getMessage() );
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch( DOMException& e ){
-    stringstream ss; ss << "Failed to remove selected node: " << xoap::XMLCh2String( e.getMessage() );
+  catch( DOMException& e )
+  {
+    std::stringstream ss;
+    ss << "Failed to remove selected node: " << xoap::XMLCh2String( e.getMessage() );
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch( XalanDOMException& e ){
-    stringstream ss; ss << "Failed to remove selected node: exception code " << e.getExceptionCode();
+  catch( XalanDOMException& e )
+  {
+    std::stringstream ss;
+    ss << "Failed to remove selected node: exception code " << e.getExceptionCode();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch( XSLException& e ){
-    stringstream ss; ss << "Failed to remove selected node: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
+  catch( XSLException& e )
+  {
+    std::stringstream ss;
+    ss << "Failed to remove selected node: XSLException type: " << XalanDOMString( e.getType() ) << ", message: " << e.getMessage();
     XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch( xcept::Exception& e ){
+  catch( xcept::Exception& e )
+  {
     XCEPT_RETHROW( xcept::Exception, "Failed to remove selected node: ", e );
   }
-  catch( std::exception& e ){
-      stringstream ss; ss << "Failed to remove selected node: " << e.what();
+  catch( std::exception& e )
+  {
+      std::stringstream ss; 
+      ss << "Failed to remove selected node: " << e.what();
       XCEPT_RAISE( xcept::Exception, ss.str() );
   }
-  catch(...){
+  catch(...)
+  {
     XCEPT_RAISE( xcept::Exception, "Failed to remove selected node: Unknown exception." );
   }
   
