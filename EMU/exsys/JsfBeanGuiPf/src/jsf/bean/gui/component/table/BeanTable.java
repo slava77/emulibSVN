@@ -3,8 +3,6 @@ package jsf.bean.gui.component.table;
 import java.util.logging.Level;
 import jsf.bean.gui.component.table.column.BeanTableColumn;
 import jsf.bean.gui.component.table.column.BeanTableColumnFactory;
-import com.icesoft.faces.component.panelpositioned.PanelPositionedEvent;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,7 +17,6 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import jsf.bean.gui.EntityBeanBase;
-import jsf.bean.gui.JsfBeanBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnSortable;
 import jsf.bean.gui.component.table.column.BeanTableQueryColumn;
 import jsf.bean.gui.component.table.export.BeanTableExportTemplateList;
@@ -317,7 +314,7 @@ public class BeanTable extends BeanTableControls {
         for (BeanTableColumn sc: columns) {
             sc.setWidth(null);
         }
-        JsfBeanBase.addJavascript("window.location.href = window.location.href;");
+        //JsfBeanBase.addJavascript("window.location.href = window.location.href;");
     }
 
     /*********************************************
@@ -325,7 +322,7 @@ public class BeanTable extends BeanTableControls {
      * Column listeners
      *
      *********************************************/
-
+/*
     public void columnsChangeListener(PanelPositionedEvent ev) {
         List<String> cols = new ArrayList<String>();
         for (BeanTableColumn col: selectedColumns.getTarget()) {
@@ -345,7 +342,8 @@ public class BeanTable extends BeanTableControls {
         getProperties().setSorting(cols);
     }
 
-
+*/
+    
     @Override
     protected void createSerializedTableFilter() {
          try {

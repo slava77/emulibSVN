@@ -48,7 +48,7 @@ public abstract class BeanTableColumnSortable extends BeanTableColumn {
             table.getSortingColumns().getSource().remove(this);
             table.getSortingColumns().getTarget().add(this);
         }
-        table.sortingChangeListener(null);
+        //table.sortingChangeListener(null);
         table.refreshListener(ev);
     }
 

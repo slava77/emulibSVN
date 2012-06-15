@@ -102,7 +102,7 @@ public class BeanTableApi {
     public BeanTable getTable() {
         return this.manager.getTable();
     }
-
+/*
     public InputStream export(String templateId, JSONObject apiFilter) throws Exception {
         
         if (!exportResources.containsKey(templateId)) {
@@ -116,7 +116,7 @@ public class BeanTableApi {
         return exportResources.get(templateId).open();
         
     }
-    
+  */  
     public Long count(JSONObject apiFilter) throws Exception {
         
         if (apiFilter != null) {

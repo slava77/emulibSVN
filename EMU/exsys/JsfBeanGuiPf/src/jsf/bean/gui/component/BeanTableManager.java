@@ -1,6 +1,5 @@
 package jsf.bean.gui.component;
 
-import com.icesoft.faces.component.ext.RowSelectorEvent;
 import com.sun.faces.facelets.el.ContextualCompositeMethodExpression;
 import java.io.IOException;
 import java.io.Serializable;
@@ -10,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import jsf.bean.gui.ClassFinderIf;
 import jsf.bean.gui.EntityBeanBase;
 import jsf.bean.gui.component.table.BeanTable;
@@ -177,9 +177,9 @@ public abstract class BeanTableManager implements Serializable {
         }
     }
 
-    public void rowSelectionListener(RowSelectorEvent event) {
+    public void rowSelectionListener(ActionEvent event) {
 
-        if (event.isSelected()) {
+        //if (event.isSelected()) {
             Iterator<EntityBeanBase> it = this.getTable().getData().iterator();
             selectedFirst = true;
             while (it.hasNext()) {
@@ -192,9 +192,9 @@ public abstract class BeanTableManager implements Serializable {
                 selectedFirst = false;
             }
             
-        } else {
-            this.selected = null;
-        }
+        //} else {
+        //    this.selected = null;
+        //}
         
         invokeSelectedListener();
         

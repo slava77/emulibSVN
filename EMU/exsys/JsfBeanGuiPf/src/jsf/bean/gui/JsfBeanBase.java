@@ -1,6 +1,5 @@
 package jsf.bean.gui;
 
-import com.icesoft.faces.context.effects.JavascriptContext;
 import java.io.File;
 import java.io.Serializable;
 import javax.faces.FactoryFinder;
@@ -166,10 +165,6 @@ public abstract class JsfBeanBase implements Serializable {
             }
         }
         return null;
-    }
-
-    public static void addJavascript(String script) {
-        JavascriptContext.addJavascriptCall(FacesContext.getCurrentInstance(), script);
     }
 
     public static void addInfoMessage(String msg, Object... args) {
