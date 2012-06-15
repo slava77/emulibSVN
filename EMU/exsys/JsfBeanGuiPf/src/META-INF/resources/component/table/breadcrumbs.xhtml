@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <cc:interface>
+
+        <cc:attribute name="manager"
+                      shortDescription="Table manager"/>
+        <cc:attribute name="title" type="java.lang.String"
+                      shortDescription="Table title"/>
+
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGroup>
+
+            <script type="text/javascript">
+                // <![CDATA[
+                jQuery(document).ready(function () {
+                    ice.onAfterUpdate(
+                        function() {
+                            var t = jQuery('#' + '#{cc.attrs.manager.id}');
+                            jQuery('ul.xbreadcrumbs', t).xBreadcrumbs({});
+                        }
+                    );
+                });
+                // ]]>
+            </script>
+
+            <ul class="xbreadcrumbs" style="width: 100%">
+
+                <li>
+                    <h:outputText styleClass="beanTablePathTop"
+                                  rendered="#{cc.attrs.manager.top and cc.attrs.title != null}"
+                                  value="#{cc.attrs.title}"/>
+                    <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
+                                   rendered="#{!cc.attrs.manager.top and cc.attrs.title != null and cc.attrs.title != ''}"
+                                   value="#{cc.attrs.title}"
+                                   styleClass="beanTablePathTop"
+                                   title="Go to #{cc.attrs.title} table"/>
+                    <h:commandLink actionListener="#{cc.attrs.manager.topActionListener}"
+                                   rendered="#{!cc.attrs.manager.top and (cc.attrs.title == null or cc.attrs.title == '')}"
+                                   value="Top"
+                                   styleClass="beanTablePathTop"
+                                   title="Go to top table"/>
+                </li>
+
+                <ui:repeat value="#{cc.attrs.manager.tables}" var="table" varStatus="status" offset="1">
+                    <li>
+                        <h:commandLink value="#{table.title}"
+                                       title="Go to #{table.title} table"
+                                       actionListener="#{cc.attrs.manager.toTableActionListener}">
+                            <f:param name="tableIndex" value="#{status.index}" />
+                        </h:commandLink>
+
+                    </li>
+                </ui:repeat>
+
+
+                <li id="lastItem">
+                    <h:outputText value=" #{cc.attrs.manager.tablePack.title}"
+                                  rendered="#{cc.attrs.manager.tablePack.title != null}"/>
+                </li>
+
+            </ul>
+
+        </ice:panelGroup>
+
+    </cc:implementation>
+</html>

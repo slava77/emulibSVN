@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <cc:interface>
+
+        <cc:attribute name="value" default="dropDown"
+                      shortDescription="Element caption"/>
+
+        <cc:attribute name="type" default="button"
+                      shortDescription="Component type: button or link"/>
+
+        <cc:attribute name="title" default=""
+                      shortDescription="title"/>
+
+        <cc:attribute name="style" default=" "
+                      shortDescription="Button/link style"/>
+
+        <cc:attribute name="styleClass" default=" "
+                      shortDescription="Style class"/>
+
+        <cc:attribute name="popupStyleClass" default=" "
+                      shortDescription="Popup style class"/>
+
+        <cc:attribute name="popupStyle" default=" border-left: black outset 2px;  border-right: black outset 2px;  border-bottom: black outset 2px; background-color: #eeeeee"
+                      shortDescription="Popup style"/>
+
+        <cc:attribute name="disable" type="java.lang.Boolean" default="false"
+                      shortDescription="Disabled element"/>
+
+        <cc:attribute name="render" type="java.lang.Boolean" default="true"
+                      shortDescription="Render element"/>
+
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGroup style="margin: 0; padding: 0"
+                        rendered="#{cc.attrs.render}">
+
+            <ice:panelGroup rendered="#{cc.attrs.type == 'link'}">
+                <a id="#{componentSupportBean.clientId}:button"
+                   href="#"
+                   title="#{cc.attrs.title}"
+                   class="iceCmdLnk #{cc.attrs.styleClass}"
+                   style="#{cc.attrs.style}"
+                   disabled="#{cc.attrs.disable}">
+                    #{cc.attrs.value}
+                </a>
+            </ice:panelGroup>
+
+            <ice:panelGroup rendered="#{cc.attrs.type == 'button'}">
+                <button id="#{componentSupportBean.clientId}:button"
+                        title="#{cc.attrs.title}"
+                        class="iceCmdBtn #{cc.attrs.styleClass}"
+                        style="#{cc.attrs.style}">
+                    #{cc.attrs.value}
+                </button>
+            </ice:panelGroup>
+
+            <div id="#{componentSupportBean.clientId}:popup"
+                 style="display: none; #{cc.attrs.popupStyle};"
+                 class="#{cc.attrs.popupStyleClass}">
+
+                <cc:insertChildren/>
+
+                <script type="text/javascript">
+                    // <![CDATA[
+
+                    jQuery(document).ready(function () {
+                        var p = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'popup');
+                        var c = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'button');
+                        c.dropDown(p);
+                    });
+                    //]]>
+                </script>
+            </div>
+        </ice:panelGroup>
+
+    </cc:implementation>
+</html>

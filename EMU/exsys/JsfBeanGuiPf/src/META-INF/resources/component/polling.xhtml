@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <cc:interface>
+        <cc:attribute name="interval" required="true" type="java.lang.Integer" shortDescription="Interval in seconds"/>
+        <cc:attribute name="run" required="false" default="true" type="java.lang.Boolean" shortDescription="Switch to poll or stop to"/>
+        <cc:attribute name="actionListener" required="true" method-signature="void listener(javax.faces.event.ActionEvent)" shortDescription="Action listener to call"/>
+    </cc:interface>
+
+    <cc:implementation>
+
+        <ice:panelGroup visible="false"
+                        rendered="#{cc.attrs.run}">
+            <ice:commandButton id="button" actionListener="#{cc.attrs.actionListener}"/>
+            <script type="text/javascript">
+                // <![CDATA[
+
+                jQuery(document).ready( function () {
+                    var b = jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'button');
+                    b.bind('poll', function() {
+                        var b = jQuery(this);
+                        if (!b.data('first')) {
+                            b.click();
+                        } else {
+                            b.data('first', false);
+                        }
+                        if (b.data('interval') > 0) {
+                            setTimeout(
+                                function () {
+                                    jQuery(jqPrefix('#{componentSupportBean.jqPrefix}') + 'button').trigger('poll');
+                                },
+                                (b.data('interval') * 1000)
+                            );
+                        }
+                    }).data('first', true)
+                      .data('interval', #{cc.attrs.interval});
+
+                    b.trigger('poll');
+
+                });
+                // ]]>
+            </script>
+        </ice:panelGroup>
+
+    </cc:implementation>
+</html>

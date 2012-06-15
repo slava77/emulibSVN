@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <cc:interface>
+
+        <cc:attribute name="value" preferred="true"
+                      shortDescription="Tpl value"/>
+
+        <cc:attribute name="root" preferred="true"
+                      shortDescription="Root map object"/>
+
+        <cc:attribute name="test" type="java.lang.Boolean" preferred="true"
+                      shortDescription="Is it a test template?"/>
+
+        <cc:attribute name="render" type="java.lang.Boolean" default="true"
+                      shortDescription="Render component"/>
+
+        <cc:attribute name="required" type="java.lang.Boolean" default="false"
+                      shortDescription="Component value mandatory?"/>
+
+        <cc:attribute name="requiredMessage" type="java.lang.String"
+                      shortDescription="Required message"/>
+
+        <cc:attribute name="width" default="300" type="java.lang.Integer"
+                      shortDescription="Component width in pixels"/>
+
+        <cc:attribute name="height" default="100" type="java.lang.Integer"
+                      shortDescription="Component height in pixels"/>
+
+    </cc:interface>
+    <cc:implementation>
+
+        <ice:panelGroup rendered="#{cc.attrs.render}">
+
+            <table border="0" cellspacing="0" width="#{cc.attrs.width}">
+                <tr>
+                    <td nowrap="true" valign="middle">
+                        
+                        <ice:selectOneMenu title="Select data property"
+                                           styleClass="fmDataHint"
+                                           style="float: left; width: #{(cc.attrs.width - 105) / 2}px">
+                            <f:selectItems value="#{fmComponentBean.rootHelp}"/>
+                        </ice:selectOneMenu>
+
+                        <ice:commandButton value="&raquo;"
+                                           onclick="jQuery('textarea.templateStr', jQuery(this).closest('table')).replaceSelection(jQuery('select.fmDataHint', jQuery(this).closest('table')).val(), true);"
+                                           title="Add selected data property"
+                                           style="float: left; width: 15px"/>
+
+
+                        <ice:selectOneMenu title="Select operator"
+                                           styleClass="fmOperatorHint"
+                                           style="float: left; width: #{(cc.attrs.width - 105) / 2}px">
+                            <f:selectItem itemValue=" &amp;&amp; " itemLabel="and"/>
+                            <f:selectItem itemValue=" || " itemLabel="or"/>
+                            <f:selectItem itemValue=" ! " itemLabel="not"/>
+                            <f:selectItem itemValue="?default(false) " itemLabel="boolean?default"/>
+                            <f:selectItem itemValue="?ceiling " itemLabel="number?ceiling"/>
+                            <f:selectItem itemValue="?floor " itemLabel="number?floor"/>
+                            <f:selectItem itemValue="?round " itemLabel="number?round"/>
+                            <f:selectItem itemValue="?default(0) " itemLabel="number?default"/>
+                            <f:selectItem itemValue="?default(&quot;&quot;) " itemLabel="string?default"/>
+                        </ice:selectOneMenu>
+                        
+                        <ice:commandButton value="&raquo;"
+                                           onclick="jQuery('textarea.templateStr', jQuery(this).closest('table')).replaceSelection(jQuery('select.fmOperatorHint', jQuery(this).closest('table')).val(), true);"
+                                           title="Add selected operator"
+                                           style="float: left; width: 15px"/>
+
+                        <ice:commandButton value="Compile"
+                                           title="Compile entered template"
+                                           immediate="true"
+                                           actionListener="#{fmComponentBean.compileListener}"
+                                           style="float: right; width: 72px"/>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td nowrap="true">
+
+                        <ice:inputTextarea id="templateStr"
+                                           style="width: #{cc.attrs.width}px; height: #{cc.attrs.height}px"
+                                           styleClass="templateStr"
+                                           required="#{cc.attrs.required}"
+                                           requiredMessage="#{cc.attrs.requiredMessage}"
+                                           validator="#{fmComponentBean.validateTemplate}"
+                                           value="#{cc.attrs.value}"/>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 11px; text-align: right; padding: 2px">
+                        <a href="https://twiki.cern.ch/twiki/bin/view/CMS/DQMRunRegistryV3Templates" target="_blank">manual</a>
+                    </td>
+                </tr>
+            </table>
+        </ice:panelGroup>
+
+    </cc:implementation>
+</html>

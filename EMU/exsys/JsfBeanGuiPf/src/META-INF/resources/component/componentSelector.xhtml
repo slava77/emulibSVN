@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <cc:interface>
+        <cc:attribute name="selector"
+                      required="true"
+                      type="org.cern.cms.csc.exsys.gui.component.OntologyComponentSelector"
+                      shortDescription="OntologyComponentSelector object"/>
+        <cc:attribute name="size"
+                      required="false"
+                      type="java.lang.Integer"
+                      default="300"/>
+        <cc:attribute name="rendered"
+                      required="false"
+                      type="java.lang.Boolean"
+                      default="true"/>
+    </cc:interface>
+
+    <cc:implementation>
+        <ice:panelGrid columns="1" border="0" cellpadding="0" cellspacing="0" width="#{cc.attrs.size}" rendered="#{cc.attrs.rendered}">
+            <ice:selectInputText width="#{cc.attrs.size}"
+                                 rows="#{cc.attrs.selector.rows}"
+                                 value="#{cc.attrs.selector.componentName}"
+                                 valueChangeListener="#{cc.attrs.selector.componentInputValueChanged}"
+                                 listVar="cmp"
+                                 listValue="#{cc.attrs.selector.componentMatches}">
+                <ice:effect effectType="puff"/>
+                <f:facet name="selectInputText">
+                    <ice:panelGrid columns="2" columnClasses="componentMatchesName componentMatchesType">
+                        <ice:outputText value="#{cmp.name}"/>
+                        <ice:outputText value="#{cmp.type.type.value}" style="font-style: italic" />
+                    </ice:panelGrid>
+                </f:facet>
+            </ice:selectInputText>
+            <ice:panelGroup rendered="#{cc.attrs.selector.limited}">
+                <table>
+                    <tr>
+                        <td valign="top" width="10" style="font-size: 10px; font-weight: bold">Limited&nbsp;to:&nbsp;</td>
+                        <td valign="top" style="font-size: 10px">
+                            <ui:repeat value="#{cc.attrs.selector.limitTo}" var="class" varStatus="status">
+                                <h:outputText value="#{class.type.value} "/>
+                            </ui:repeat>
+                        </td>
+                    </tr>
+                </table>
+            </ice:panelGroup>
+        </ice:panelGrid>
+
+    </cc:implementation>
+</html>
