@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import javax.faces.model.SelectItem;
 import jsf.bean.gui.EntityBeanBase;
@@ -209,35 +210,41 @@ public class BeanTablePack implements Serializable {
         
         if (filter.has("filter")) {
             JSONObject filterJson = filter.getJSONObject("filter");
-            for (BeanTableColumn column : getTable().getColumns()) {
-                if (filterJson.has(column.getName())) {
-                    if (filterJson.optJSONObject(column.getName()) != null) {
-                        JSONObject columnFilterJson = filterJson.getJSONObject(column.getName());
-                        if (columnFilterJson.has("rowClass")) {
-                            if (column.isEntityType()) {
-                                if (column.isListType()) {
-                                    BeanTableColumnEntityList ce = (BeanTableColumnEntityList) column;
-                                    ce.setFilterTablePack(this.prefix);
-                                    ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
-                                } else {
-                                    BeanTableColumnEntity ce = (BeanTableColumnEntity) column;
-                                    ce.setFilterTablePack(this.prefix);
-                                    ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
-                                }
-                            }
-                        } else {
-                            BeanTableColumnEmbedded ec = (BeanTableColumnEmbedded) column;
-                            for (BeanTableColumnBase properties : ec.getProperties()) {
-                                if (columnFilterJson.has(properties.getName())) {
-                                    String filterText = columnFilterJson.getString(properties.getName());
-                                    properties.setFilter((BeanTableFilter) properties.getFilterConverter().getAsObject(null, null, filterText));
-                                }
+            Iterator<String> filterColumns = filterJson.keys();
+            while (filterColumns.hasNext()) {
+                String columnName = filterColumns.next();
+                
+                BeanTableColumn column = getTable().getColumn(columnName);
+                if (column == null) {
+                    throw new Exception(String.format("Column %s is not defined in %s table!?", columnName, getTable().getPack().getTitle()));
+                }
+                
+                JSONObject columnFilterJson = filterJson.optJSONObject(columnName);
+                if (columnFilterJson != null) {
+                    if (columnFilterJson.has("rowClass")) {
+                        if (column.isEntityType()) {
+                            if (column.isListType()) {
+                                BeanTableColumnEntityList ce = (BeanTableColumnEntityList) column;
+                                ce.setFilterTablePack(this.prefix);
+                                ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
+                            } else {
+                                BeanTableColumnEntity ce = (BeanTableColumnEntity) column;
+                                ce.setFilterTablePack(this.prefix);
+                                ce.getFilterTablePack().setSerializedFilter(columnFilterJson);
                             }
                         }
                     } else {
-                        String filterText = filterJson.getString(column.getName());
-                        column.setFilter((BeanTableFilter) column.getFilterConverter().getAsObject(null, null, filterText));
+                        BeanTableColumnEmbedded ec = (BeanTableColumnEmbedded) column;
+                        for (BeanTableColumnBase properties : ec.getProperties()) {
+                            if (columnFilterJson.has(properties.getName())) {
+                                String filterText = columnFilterJson.getString(properties.getName());
+                                properties.setFilter((BeanTableFilter) properties.getFilterConverter().getAsObject(null, null, filterText));
+                            }
+                        }
                     }
+                } else {
+                    String filterText = filterJson.getString(column.getName());
+                    column.setFilter((BeanTableFilter) column.getFilterConverter().getAsObject(null, null, filterText));
                 }
             }
         }

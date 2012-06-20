@@ -44,7 +44,7 @@ public class BeanTableProperties extends GenericProperties {
     public static final Integer DEFAULT_COL_NUMBER_MAX_FRAC_DIGITS = null;
     public static final String DEFAULT_COL_NUMBER_PATTERN = "";
     public static final String DEFAULT_COL_DATE_FORMAT = "EEE dd-MM-yy HH:mm:ss";
-    public static final String DEFAULT_COL_DATE_TIME_ZONE = "Europe/Zurich";
+    public static final String DEFAULT_COL_DATE_TIME_ZONE = "UTC";
     public static final Integer DEFAULT_LIVE_REFRESH_INTERVAL = 0;
 
     static {
