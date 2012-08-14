@@ -29,6 +29,14 @@
                  type="tns:FEDFSMFactType"
                  substitutionGroup="tns:fact"/>
 
+    <xsd:element name="DduFmmErrorFact"
+                 type="tns:DduFmmErrorFactType"
+                 substitutionGroup="tns:fact"/>
+
+    <xsd:element name="DduStuckInWarningFact"
+                 type="tns:DduStuckInWarningFactType"
+                 substitutionGroup="tns:fact"/>
+
     <xsd:complexType name="DDUFMMResetFactType">
       	<xsd:annotation>
     		<xsd:appinfo>
@@ -280,6 +288,213 @@
                                     <orm:column name="FCT_RESULT" length="10"/>
                                     <orm:enumerated>STRING</orm:enumerated>
                                 </hj:basic>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="DduFmmErrorFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="DduFmmErrorFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DDU_FMM_ERROR_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="DDU FMM ERROR Information" limitComponents="DDU"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="hardResetRequested" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_HARD_RESET_REQUESTED"/>
+                                </hj:basic>
+                                <jaxb:property name="hardResetRequested"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="resyncRequested" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_RESYNC_REQUESTED"/>
+                                </hj:basic>
+                                <jaxb:property name="resyncRequested"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="combinedStatus" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_COMBINED_STATUS" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="combinedStatus"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    
+                    <xsd:element name="combinedStatusStr" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_COMBINED_STATUS_STR" length="16"/>
+                                </hj:basic>
+                                <jaxb:property name="combinedStatusStr"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    
+                    <xsd:element name="ddufpgaDebugTrap" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_DDU_FPGA_DEBUG_TRAP" length="2048"/>
+                                </hj:basic>
+                                <jaxb:property name="ddufpgaDebugTrap"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="infpga0DebugTrap" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_IN_FPGA0_DEBUG_TRAP" length="2048"/>
+                                </hj:basic>
+                                <jaxb:property name="infpga0DebugTrap"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="infpga1DebugTrap" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_IN_FPGA1_DEBUG_TRAP" length="2048"/>
+                                </hj:basic>
+                                <jaxb:property name="infpga1DebugTrap"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="fmmErrorThreshold" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_FMM_ERROR_THRESHOLD" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="fmmErrorThreshold"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="numChambersInErrorForEndcap" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_NUM_CH_IN_ERROR_FOR_ENDCAP" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="numChambersInErrorForEndcap"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    
+                    <xsd:element name="fmmsReleased" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_FMMS_RELEASED"/>
+                                </hj:basic>
+                                <jaxb:property name="fmmsReleased"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="chambersInError" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CHAMBERS_IN_ERROR" length="150"/>
+                                </hj:basic>
+                                <jaxb:property name="chambersInError"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="fibersInError" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_FIBERS_IN_ERROR" length="45"/>
+                                </hj:basic>
+                                <jaxb:property name="fibersInError"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="DduStuckInWarningFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="DduStuckInWarningFact" />
+                <hj:entity>
+                    <orm:table name="CDW_DDU_STUCK_IN_WARNING_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="Detection of a condition when DDU is stuck in warning (we think SEU related)" limitComponents="DDU"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="hardResetRequested" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_HARD_RESET_REQUESTED"/>
+                                </hj:basic>
+                                <jaxb:property name="hardResetRequested"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="chambersInWarning" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CHAMBERS_IN_WARNING" length="1024"/>
+                                </hj:basic>
+                                <jaxb:property name="chambersInWarning"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="fibersInWarning" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_FIBERS_IN_WARNING" length="165"/>
+                                </hj:basic>
+                                <jaxb:property name="fibersInWarning"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
