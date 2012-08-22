@@ -1,11 +1,11 @@
 package jsf.bean.gui.component.table;
 
-import jsf.bean.gui.component.table.column.BeanTableColumn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import jsf.bean.gui.EntityBeanBase;
+import jsf.bean.gui.component.table.column.BeanTableColumn;
 import jsf.bean.gui.component.table.column.BeanTableColumnBase;
 import jsf.bean.gui.component.table.column.BeanTableColumnEmbedded;
 import jsf.bean.gui.component.table.column.BeanTableColumnEntity;
@@ -14,7 +14,6 @@ import jsf.bean.gui.log.Logger;
 import jsf.bean.gui.log.SimpleLogger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Order;
@@ -27,7 +26,8 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
     private static final Logger logger = SimpleLogger.getLogger(BeanTableDao.class);
     private static final Integer MAX_IN_ELEMENTS = 1000;
 
-    protected abstract Session getSession();
+    protected abstract Session getSession();    
+    protected abstract void rollbackSession(Session session);
 
     /**
      * Method is being called right before executing criteria.
@@ -35,7 +35,7 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
      * @param table Table
      * @param c Criteria to be executed
      */
-    protected void preExecute(Session session, Transaction transaction, BeanTable table, Criteria c) {
+    protected void preExecute(Session session, BeanTable table, Criteria c) {
         c.setCacheable(true);
         c.setCacheRegion(table.getRowClass().getCanonicalName());
     }
@@ -46,7 +46,7 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
      * @param table Table
      * @param c Criteria to be executed
      */
-    protected void preExecuteCount(Session session, Transaction transaction, BeanTable table, Criteria c) {
+    protected void preExecuteCount(Session session, BeanTable table, Criteria c) {
         c.setCacheable(true);
         c.setCacheRegion(table.getRowClass().getCanonicalName());
     }
@@ -97,8 +97,6 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
         List<EntityBeanBase> data = new ArrayList<EntityBeanBase>();
 
         Session session = getSession();
-        Transaction transaction = session.beginTransaction();
-
         try {
         
             List pageIds = null;
@@ -110,7 +108,7 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
                                     .setFirstResult((pageIndex - 1) * pageSize)
                                     .setMaxResults(pageSize);
                 applyOrder(c, table);
-                preExecute(session, transaction, table, c);
+                preExecute(session, table, c);
                 //Long sTime = System.nanoTime();
                 pageIds = c.list();
                 //Long eTime = System.nanoTime();
@@ -135,7 +133,7 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
 
                 applyOrder(c, table);
 
-                preExecute(session, transaction, table, c);
+                preExecute(session, table, c);
                 c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
                 //Long sTime = System.nanoTime();
                 data = c.list();
@@ -145,7 +143,7 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
             }
             
         } finally {
-            transaction.rollback();
+            rollbackSession(session);
         }
 
         return data;
@@ -160,15 +158,13 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
         
         Long count = 0L;
         Session session = getSession();
-        Transaction transaction = session.beginTransaction();
-        
         try {
             
             Criteria c = getDetachedCriteria(table)
                                 .getExecutableCriteria(session)
                                 .setProjection(Projections.rowCount());
 
-            preExecuteCount(session, transaction, table, c);
+            preExecuteCount(session, table, c);
             c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
             //Long sTime = System.nanoTime();
@@ -177,7 +173,7 @@ public abstract class BeanTableDao implements Serializable, BeanTableDaoIf {
             //System.out.println("Elapsed: " + (eTime - sTime) / 1000000 + " ms.");
             
         } finally {
-            transaction.rollback();
+            rollbackSession(session);
         }
 
         return count;
