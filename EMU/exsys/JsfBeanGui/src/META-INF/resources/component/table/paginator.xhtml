@@ -22,18 +22,21 @@
                 image="/xmlhttp/css/xp/css-images/arrow-first.gif"
                 actionListener="#{cc.attrs.manager.table.firstPageListener}"
                 disabled="#{cc.attrs.manager.table.pageIndex == 1}"
+                partialSubmit="true"
                 title="First Page" />
 
             <ice:commandButton
                 image="/xmlhttp/css/xp/css-images/arrow-fr.gif"
                 actionListener="#{cc.attrs.manager.table.fastbackwardPageListener}"
                 disabled="#{cc.attrs.manager.table.pageIndex == 1}"
+                partialSubmit="true"
                 title="Fast Backward" />
 
             <ice:commandButton
                 image="/xmlhttp/css/xp/css-images/arrow-previous.gif"
                 actionListener="#{cc.attrs.manager.table.prevPageListener}"
                 disabled="#{cc.attrs.manager.table.pageIndex == 1}"
+                partialSubmit="true"
                 title="Previous Page" />
 
             <ice:panelGroup>
@@ -50,16 +53,19 @@
             <ice:commandButton
                 image="/xmlhttp/css/xp/css-images/arrow-next.gif"
                 actionListener="#{cc.attrs.manager.table.nextPageListener}"
+                partialSubmit="true"
                 title="Next Page" />
 
             <ice:commandButton
                 image="/xmlhttp/css/xp/css-images/arrow-ff.gif"
                 actionListener="#{cc.attrs.manager.table.fastforwardPageListener}"
+                partialSubmit="true"
                 title="Fast Forward" />
 
             <ice:commandButton
                 image="/xmlhttp/css/xp/css-images/arrow-last.gif"
                 actionListener="#{cc.attrs.manager.table.lastPageListener}"
+                partialSubmit="true"
                 title="Last Page" />
 
             <ice:panelGrid columns="2" cellpadding="0" cellspacing="0">
