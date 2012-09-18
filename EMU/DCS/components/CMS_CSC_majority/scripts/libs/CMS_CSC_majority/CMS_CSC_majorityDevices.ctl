@@ -76,13 +76,16 @@ dyn_int emumaj_lvStateCounts(dyn_anytype values, int &weight, bool calcTotal, st
   // go through all the channels (except the masked ones) and check how many of them are in error
   string dataDp = node + "/Mon";
 
-  // LVDB
-  int v7AnalogAlert, v7DigitalAlert;
+  // LVDB and CCB bits alerts (CCB bits tell if the boards are configured properly or not - I know it doesn't have much to do with LV, but there's no other place for it right now)
+  int v7AnalogAlert, v7DigitalAlert, ccbBitsAlert;
   dpGet(dataDp + ".lvdb.v7Analog:_alert_hdl.._act_state", v7AnalogAlert,
-        dataDp + ".lvdb.v7Digital:_alert_hdl.._act_state", v7DigitalAlert);
-  // if LVDB voltages are bad, just mark everything bad
-  if (v7AnalogAlert > 0) { error = weight; return makeDynInt(on, error, noCommunication); }
-  if (v7DigitalAlert > 0) { error = weight; return makeDynInt(on, error, noCommunication); }
+        dataDp + ".lvdb.v7Digital:_alert_hdl.._act_state", v7DigitalAlert,
+        dataDp + ".ccb_bits:_alert_hdl.._act_state", ccbBitsAlert);
+  // if LVDB voltages are bad or any of the boards are not configured properly, just mark everything bad
+  if ((v7AnalogAlert > 0) || (v7DigitalAlert > 0) || (ccbBitsAlert > 0)) {
+    error = weight;
+    return makeDynInt(on, error, noCommunication);
+  }
   
   // check CFEB alerts
   for (int i=1; i <= 5; i++) {
