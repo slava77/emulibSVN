@@ -1318,6 +1318,10 @@ main()
   setLvdbLvAlerts(ex);
   if (emu_checkException(ex)) { return; }
   
+  emu_info(\"creating CCB bits alerts...\");
+  setCcbBitsAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
   // Temperature
   emu_info(\"creating temperature alerts...\");
   setTemperatureAlerts(ex);
@@ -1619,6 +1623,43 @@ void setFedAlerts(dyn_string &ex) {
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
+}
+
+// CCB bits
+void setCcbBitsAlerts(dyn_string &ex) {
+  dyn_string dps, texts, classes;
+  dyn_float limits;
+
+  dps = dpNames(\"*CSC_ME*.ccb_bits\", \"CscLvChamberMon\");
+  texts = makeDynString(\"\", \"FPGA not configured\");
+  limits = makeDynFloat(1);
+  classes = makeDynString(\"\", \"_fwErrorNack_70\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  
+//   texts = makeDynString(\"ALCT not configured\",
+//                         \"TMB not configured\",
+//                         \"DMB / CFEB not configured\",
+//                         \"CCB not configured\",
+//                         \"\");
+//   classes = makeDynString(\"_fwErrorNack_70\",
+//                           \"_fwErrorNack_70\",
+//                           \"_fwErrorNack_70\",
+//                           \"_fwErrorNack_70\",
+//                           \"\");
+// 
+//   fwAlertConfig_setMultiple(dps, DPCONFIG_ALERT_BINARYSIGNAL,
+//                     texts, makeDynFloat(), classes,
+//                     makeDynString(), \"\", makeDynString(), \"\",
+//                     ex,
+//                     false, false, \".\", true,
+//                     true, false,
+//                     \"1111\",
+//                     makeDynString(\"\"));
+//   if (emu_checkException(ex)) { return; }
+//   fwAlertConfig_activateMultiple(dps, ex);
+//   if (emu_checkException(ex)) { return; }
 }
 
 void setAndActivateAnalogAlerts(dyn_string dpes, dyn_string texts, dyn_string limits, dyn_string classes, 

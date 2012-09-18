@@ -46,6 +46,17 @@ public const int EMU_X2P_STATUS_BAD_DATA = 0x9D; /* EMU_X2P_STATUS_OTHER_PROBLEM
 public const int EMU_X2P_STATUS_ERROR_WITH_DATA = 0x600; /*EMU_X2P_STATUS_CHAMBER_HAS_NO_ANALOG_POWER |
                                                            EMU_X2P_STATUS_CHAMBER_HAS_NO_DIGITAL_POWER; */
 
+// ============ status bit pattern ====================================================
+// bit 0  (value   1):   ALCT not configured
+// bit 1  (value   2):   TMB not configured
+// bit 2  (value   4):   DMB / CFEB not configured (always 0 for ME1/3 chambers)
+// bit 7  (value   128): CCB not configured
+// =====================================================================================
+public const int EMU_X2P_CCB_BITS_ALCT = 0x1; // ALCT not configured
+public const int EMU_X2P_CCB_BITS_TMB  = 0x2; // TMB not configured
+public const int EMU_X2P_CCB_BITS_DMB_CFEB = 0x4; // DMB / CFEB not configured
+public const int EMU_X2P_CCB_BITS_CCB = 0x128; // CCB itself is not configured
+
 public const string EMU_X2P_COMMAND_STOP_MONITORING = "STOP_SLOW_CONTROL";
 public const string EMU_X2P_COMMAND_START_MONITORING = "RESUME_SLOW_CONTROL";
 public const string EMU_X2P_COMMAND_PREPARE_POWER_UP = "PREPARE_POWER_UP";
