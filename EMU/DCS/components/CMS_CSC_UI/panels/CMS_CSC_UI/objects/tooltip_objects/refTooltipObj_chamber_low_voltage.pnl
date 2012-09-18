@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 417 506 N "_3DFace" 1
+PANEL,-1 -1 417 574 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -31,6 +31,11 @@ PANEL,-1 -1 417 506 N "_3DFace" 1
   string dataStatusDp = emuui_getDpName(\"chamber_LV_data_status\", deviceParams, ex);
   dpConnect(\"updateDataStatusCB\", true, dataStatusDp);
 
+  // CCB bits
+  initStatusBitMap();
+  string ccbBitsDp = emuui_getDpName(\"chamber_ccb_bits\", deviceParams, ex);
+  dpConnect(\"updateCcbBitsCB\", true, ccbBitsDp);
+  
   // -------=========== CFEB ============---------
   
   //cycle through 5 CFEBs at most, get the datapoints for each board and voltage and fill the dpIndexToTableCell map
@@ -203,6 +208,11 @@ void initStatusBitMap() {
   warningNameToStatusBit[\"warnUnknownProblem\"] = EMU_X2P_STATUS_OTHER_PROBLEM;
   warningNameToStatusBit[\"warnChamberOff\"] = EMU_X2P_STATUS_OFF;
   warningNameToStatusBit[\"warnPCrateOff\"] = EMU_X2P_STATUS_CRATE_OFF;
+  
+  warningNameToCcbBit[\"warnAlctNotConfigured\"] = EMU_X2P_CCB_BITS_ALCT;
+  warningNameToCcbBit[\"warnTmbNotConfigured\"] = EMU_X2P_CCB_BITS_TMB;
+  warningNameToCcbBit[\"warnDmbNotConfigured\"] = EMU_X2P_CCB_BITS_DMB_CFEB;
+  warningNameToCcbBit[\"warnCcbNotConfigured\"] = EMU_X2P_CCB_BITS_CCB;  
 }" 0
  "main()
 {
@@ -216,6 +226,7 @@ E "#uses \"CMS_CSC_MiddleLayer/emu_x2p.ctl\"
 mapping deviceParams;
 dyn_dyn_mixed dpIndexToTableCell; // map of DP index in the array and coordinates in the Cfeb table where they should be written
 mapping warningNameToStatusBit; // map of warning label names to status bits
+mapping warningNameToCcbBit; // map of warning label names to ccb bits
 string fsmNode;
 dyn_string references;
 int posX, posY;
@@ -226,6 +237,7 @@ dyn_string cfebAlarmColorDps, alctAlarmColorDps, lvdbAlarmColorDps;
 bool noCommunication;
 
 int lastStatus = -1;
+int lastCcbBits = -1;
 
 void positionChangedCB(string dummyDpName, int dummyValue) {
   emuui_alignSmallFsmNodes(references, makeDynString(\"chamber_low_voltage_fsmRefPoint\"));
@@ -243,6 +255,31 @@ void updateDataStatusCB(string dp, int status) {
     int statusBit = warningNameToStatusBit[warningName];
     
     if (status & statusBit) { // if this status bit is set in status
+      emuui_showTooltipWarning(getShape(\"refPoint\"),
+                             getShape(warningName), 
+                             getShape(\"chamber_low_voltage_tooltipBack\"));
+    } else {
+      emuui_hideTooltipWarning(getShape(warningName), 
+                               getShape(\"chamber_low_voltage_tooltipBack\"));
+    }        
+  }
+  
+  tableAlct.backCol = \"White\";
+  tableCfeb.backCol = \"White\";
+}
+
+// Call-back function which updates the CCB bits and displays an appropriate warning in case of any error. */.
+void updateCcbBitsCB(string dp, int bits) {
+  if (bits == lastCcbBits) {
+    return;
+  }
+  lastCcbBits = bits;
+  
+  for (int i=1; i <= mappinglen(warningNameToCcbBit); i++) {
+    string warningName = mappingGetKey(warningNameToCcbBit, i);
+    int ccbBit = warningNameToCcbBit[warningName];
+    
+    if (bits & ccbBit) { // if this status bit is set in status
       emuui_showTooltipWarning(getShape(\"refPoint\"),
                              getShape(warningName), 
                              getShape(\"chamber_low_voltage_tooltipBack\"));
@@ -663,7 +700,7 @@ LANG:1 54 No Communication - check PCrate LV and Xmas monitoring
 2 14
 "warnChamberOff"
 ""
-1 10 440 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
+1 10 520 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
  E E
 24 0 0 0 0 0
 E E E
@@ -673,8 +710,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 440 370 454
-1 2 2 "0s" 0 0 0 65 0 0  10 440 1
+E E 0 1 1 2 1 E U  1 E 10 520 370 534
+1 2 2 "0s" 0 0 0 65 0 0  10 520 1
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
@@ -682,7 +719,7 @@ LANG:1 14 Chamber is OFF
 2 15
 "warnPCrateOff"
 ""
-1 10 460 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
+1 10 540 E E E 1 E 0 E N "_Window" E N "FwStateOKNotPhysics" E E
  E E
 25 0 0 0 0 0
 E E E
@@ -692,8 +729,8 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 460 370 474
-1 2 2 "0s" 0 0 0 65 0 0  10 460 1
+E E 0 1 1 2 1 E U  1 E 10 540 370 554
+1 2 2 "0s" 0 0 0 65 0 0  10 540 1
 1
 LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
 0 1
@@ -904,6 +941,82 @@ LANG:1 4 LVDB
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 0 0 0 1 7
 1 0
+2 26
+"warnAlctNotConfigured"
+""
+1 10 440 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 440 370 454
+1 2 2 "0s" 0 0 0 65 0 0  10 440 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 22 ALCT is not configured
+2 27
+"warnTmbNotConfigured"
+""
+1 10 460 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 460 370 474
+1 2 2 "0s" 0 0 0 65 0 0  10 460 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 21 TMB is not configured
+2 28
+"warnDmbNotConfigured"
+""
+1 10 480 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 480 370 494
+1 2 2 "0s" 0 0 0 65 0 0  10 480 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 29 DMB or CFEB is not configured
+2 29
+"warnCcbNotConfigured"
+""
+1 10 500 E E E 1 E 0 E N "black" E N "FwStateAttention3" E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 10 500 370 514
+1 2 2 "0s" 0 0 0 65 0 0  10 500 1
+1
+LANG:1 25 Arial,9,-1,5,75,0,0,0,0,0
+0 1
+LANG:1 21 CCB is not configured
 0
 LAYER, 1 
 1
