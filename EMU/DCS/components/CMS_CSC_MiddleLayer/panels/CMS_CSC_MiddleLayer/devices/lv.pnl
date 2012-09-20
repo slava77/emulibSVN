@@ -31,6 +31,10 @@ PANEL,-1 -1 810 506 N "_3DFace" 2
   lvDp = dpSubStr(emuui_getDpName(\"chamber_LV_disabled_channels\", deviceParams, ex), DPSUB_SYS_DP);
   if (emu_checkException(ex)) { return; }
   dpConnect(\"disabledChannelsUpdatedCB\", true, lvDp + \".disabled_channels\");
+  
+  //CCB bits
+  ccbBitsDp = emuui_getDpName(\"chamber_ccb_bits\", deviceParams, ex);
+  dpConnect(\"updateCcbBitsCB\", true, ccbBitsDp);
 }
 
 /** initialize constants required for access control - basically just fill in the arrays of control and expert control button names. */
@@ -53,6 +57,8 @@ string lvDp;
 dyn_string disabledChannels;
 dyn_string selectedChannels;
 bool isSelectedChannelEnabled;
+bool isCcbBitsEnabled = true;
+string ccbBitsDp;
 
 /** for access control - arrays of control and expert control buttons which should be under access control */
 dyn_string controlButtons;
@@ -65,6 +71,12 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
 
 void disabledChannelsUpdatedCB(string dp, dyn_string disChan) {
   disabledChannels = disChan;
+  isCcbBitsEnabled = !dynContains(disChan, ccbBitsDp);
+  if (isCcbBitsEnabled) {
+    btnEnableDisableCcbBits.text = \"Disable\";
+  } else {
+    btnEnableDisableCcbBits.text = \"Enable\";
+  }
 }
 
 void channelSelectionUpdated() {
@@ -111,7 +123,55 @@ void channelSelectionUpdated() {
     btnEnableDisable.enabled = true;
   }
   emu_debug(\"selected channels: \" + selectedChannels);
-}" 0
+}
+
+// Call-back function which updates the CCB bits and updates the GUI. */.
+void updateCcbBitsCB(string dp, int bits) {
+  //ALCT
+  if (bits & EMU_X2P_CCB_BITS_ALCT) {
+    lblCcbBitsAlct.text = \"ALCT not configured\";
+    lblCcbBitsAlct.backCol = \"FwStateAttention3\";
+  } else {
+    lblCcbBitsAlct.text = \"ALCT configured\";
+    lblCcbBitsAlct.backCol = \"FwStateOKPhysics\";
+  }
+  
+  //TMB
+  if (bits & EMU_X2P_CCB_BITS_TMB) {
+    lblCcbBitsTmb.text = \"TMB not configured\";
+    lblCcbBitsTmb.backCol = \"FwStateAttention3\";
+  } else {
+    lblCcbBitsTmb.text = \"TMB configured\";
+    lblCcbBitsTmb.backCol = \"FwStateOKPhysics\";
+  }
+  
+  //DMB & CFEBs
+  if (bits & EMU_X2P_CCB_BITS_DMB_CFEB) {
+    lblCcbBitsDmbCfeb.text = \"DMB or CFEB not configured\";
+    lblCcbBitsDmbCfeb.backCol = \"FwStateAttention3\";
+  } else {
+    lblCcbBitsDmbCfeb.text = \"DMB and CFEB configured\";
+    lblCcbBitsDmbCfeb.backCol = \"FwStateOKPhysics\";
+  }
+  
+  //CCB
+  if (bits & EMU_X2P_CCB_BITS_CCB) {
+    lblCcbBitsCcb.text = \"CCB not configured\";
+    lblCcbBitsCcb.backCol = \"FwStateAttention3\";
+  } else {
+    lblCcbBitsCcb.text = \"CCB configured\";
+    lblCcbBitsCcb.backCol = \"FwStateOKPhysics\";
+  }
+  
+  if (!isCcbBitsEnabled) {
+    lblCcbBitsAlct.backCol = \"FwEquipmentDisabled\";
+    lblCcbBitsTmb.backCol = \"FwEquipmentDisabled\";
+    lblCcbBitsDmbCfeb.backCol = \"FwEquipmentDisabled\";
+    lblCcbBitsCcb.backCol = \"FwEquipmentDisabled\";
+  }
+}
+
+" 0
  2
 "CBRef" "1"
 "EClose" "main()
@@ -297,6 +357,133 @@ E E 0 0 1 0 1 E 1 0 0.859375 0 -10.3125 0 E 410 12 641 141
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 7 Control
+30 30
+"FRAME2"
+""
+1 410 122 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+40 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1 0 1.053191489361702 0 -6.489361702127669 0 E 410 122 641 311
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 CCB bits
+2 31
+"lblCcbBitsAlct"
+""
+1 430 150 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+ E E
+41 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 430 150 620 166
+1 2 2 "0s" 0 0 0 65 0 0  430 150 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 15 ALCT configured
+2 32
+"lblCcbBitsTmb"
+""
+1 430 180 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+ E E
+42 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 430 180 620 196
+1 2 2 "0s" 0 0 0 65 0 0  430 180 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 14 TMB configured
+2 33
+"lblCcbBitsDmbCfeb"
+""
+1 430 210 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+ E E
+43 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 430 210 620 226
+1 2 2 "0s" 0 0 0 65 0 0  430 210 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 24 DMB and CFEBs configured
+2 34
+"lblCcbBitsCcb"
+""
+1 430 240 E E E 1 E 1 E N "_WindowText" E N "FwStateOKPhysics" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 430 240 620 256
+1 2 2 "0s" 0 0 0 65 0 0  430 240 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 14 CCB configured
+13 35
+"btnEnableDisableCcbBits"
+""
+1 430 270 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  428 268 622 302
+
+T 
+1
+LANG:1 7 Disable
+"main()
+{
+  dyn_string ex;
+
+  emux2p_enableDisableChannel(ccbBitsDp, !isCcbBitsEnabled, ex);
+  if (emu_checkException(ex)) { return; }
+
+  delay(0, 200); // so that disabled channels are updated first..
+  
+  int bits;
+  dpGet(ccbBitsDp, bits);
+  updateCcbBitsCB(ccbBitsDp, bits);
+}" 0
+ E E E
 0
 LAYER, 1 
 1

@@ -689,7 +689,7 @@ LANG:1 5 ID=##
 2 30
 "lblMasterInfo"
 ""
-1 6005.473403641065 11892 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 6101.349353511025 12472 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 43 0 0 0 0 0
 E E E
@@ -1222,6 +1222,67 @@ E E 0 1 1 2 1 E U  1 E 680 710 740 724
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
 0 1
 LANG:1 10 LOADING...
+2 54
+"lblForOnVset"
+""
+1 510 640 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+67 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 510 640 719 656
+0 2 2 "0s" 0 0 0 192 0 0  510 640 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 33 Selected channel nominal voltage:
+21 55
+"spinOnVset"
+""
+1 730 635 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+68 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  728 633 852 661
+0
+
+E
+E
+E
+
+N 0 4000 1 0 1 1
+13 56
+"btnChangeOnVset"
+""
+1 860 635 E E E 0 E 0 E N "_ButtonText" E N "_Button" E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  858 633 952 662
+
+T 
+1
+LANG:1 6 Change
+E E E E
 0
 LAYER, 1 
 1
