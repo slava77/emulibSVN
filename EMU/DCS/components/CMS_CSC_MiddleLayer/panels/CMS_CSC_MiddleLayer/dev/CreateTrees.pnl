@@ -1631,9 +1631,9 @@ void setCcbBitsAlerts(dyn_string &ex) {
   dyn_float limits;
 
   dps = dpNames(\"*CSC_ME*.ccb_bits\", \"CscLvChamberMon\");
-  texts = makeDynString(\"\", \"FPGA not configured\");
-  limits = makeDynFloat(1);
-  classes = makeDynString(\"\", \"_fwErrorNack_70\");
+  texts = makeDynString(\"\", \"FPGA not configured\", \"CCB not configured\");
+  limits = makeDynFloat(1, 128);
+  classes = makeDynString(\"\", \"_fwErrorNack\", \"_fwErrorNack_70\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
   

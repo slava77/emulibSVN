@@ -71,6 +71,8 @@ void accessPrivilegesChangedCB(string dummy1, string dummy2) {
 
 void disabledChannelsUpdatedCB(string dp, dyn_string disChan) {
   disabledChannels = disChan;
+  emu_info(\"disabled channels: \");
+  emu_info(disChan);
   isCcbBitsEnabled = !dynContains(disChan, ccbBitsDp);
   if (isCcbBitsEnabled) {
     btnEnableDisableCcbBits.text = \"Disable\";
