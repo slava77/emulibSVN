@@ -105,6 +105,7 @@ E "// Common libs
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X = 10;
 const int EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y = 20;
 const int EMUUI_TOP_CHAMBER_VIEW_MODE_TIMEOUT = 300;
+const string EMUUI_TOP_FSM_NODE_REF_NAME = \"ref_FSMobj_CMS_CSC\";
 
 bool exiting = false;
 bool releaseControl = false;
@@ -335,16 +336,20 @@ void updatePlusMinusNodesOperationModeCB(dyn_string dpNames, dyn_string included
   if (plusInLocal && minusInLocal) { // local control
     lblOwner.backCol = \"white\";
     lblOwner.text = \"Control Owner - Local\";
+    showTopFsmNode();
   } else if (!plusInLocal && plusIncluded && !minusInLocal && minusIncluded) { // central control
     lblOwner.backCol = \"white\";
     lblOwner.text = \"Control Owner - Central DCS\";
+    hideTopFsmNode();
   } else if (!plusIncluded && !minusIncluded) { // both excluded - nobody controls the system
     lblOwner.backCol = \"advanceAlarmCamUna\";
     lblOwner.text = \"NOBODY controls the system!\";
     showUsernames = false;
+    showTopFsmNode();
   } else if (plusIncluded && minusIncluded) { // both included - mixed control
     lblOwner.backCol = \"yellow\";
     lblOwner.text = \"Mixed Control Ownership\";
+    showTopFsmNode();
   } else {
     lblOwner.backCol = \"yellow\";
     lblOwner.text = \"Partial Control\";
@@ -352,7 +357,8 @@ void updatePlusMinusNodesOperationModeCB(dyn_string dpNames, dyn_string included
       lblOwner.text = lblOwner.text + \" - Local\";
     } else {
       lblOwner.text = lblOwner.text + \" - Central DCS\";
-    }        
+    }
+    showTopFsmNode();
   } 
   
   if (!lblOwner.visible) { lblOwner.visible = true; }
@@ -442,6 +448,21 @@ void updateTopFSMStateCB(string node, string state) {
   fwCU_getState(\"CMS_CSC_PLUS\", plusState);
   fwCU_getState(\"CMS_CSC_MINUS\", minusState);
   lblOffInterlock.visible = (((plusState == \"OFF\") || (minusState == \"OFF\")) && !hasExpertPrivilege);
+}
+
+void showTopFsmNode() {
+  if (!shapeExists(EMUUI_TOP_FSM_NODE_REF_NAME)) {
+    int posX, posY;
+    getValue(\"frameFsm\", \"position\", posX, posY);
+    posX += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_X;
+    posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
+    dyn_string references;
+    emuui_addFsmNode(\"CMS_CSC\", posX, posY, references);
+  }
+}
+
+void hideTopFsmNode() {
+  removeSymbol(myModuleName(), myPanelName(), EMUUI_TOP_FSM_NODE_REF_NAME);
 }" 0
  2
 "CBRef" "1"
@@ -646,7 +667,7 @@ LANG:1 33 MS Shell Dlg,-1,11,5,50,0,0,0,0,0
 0 1
 LANG:1 20 Communication Status
 30 6
-"FRAME1"
+"frameFsm"
 ""
 1 70 853 E E E 1 E 0 E N "_WindowText" E N {0,0,0} E E
  E E
@@ -668,7 +689,8 @@ LANG:1 0
   posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
   
   dyn_string references;
-  emuui_addFsmNode(\"CMS_CSC\", posX, posY, references);
+  showTopFsmNode();
+//  emuui_addFsmNode(\"CMS_CSC\", posX, posY, references);
   posY += 40;
 
   posX += 20;  
@@ -1150,7 +1172,7 @@ E E 0 1 1 2 1 E 1 0 1 -339 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -5225.911981678065 -1210 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -5646.242946927257 -1250 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1169,7 +1191,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.49570537632421 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.47577957594116 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
