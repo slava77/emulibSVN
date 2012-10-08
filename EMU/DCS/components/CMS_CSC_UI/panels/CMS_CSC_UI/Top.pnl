@@ -458,11 +458,13 @@ void showTopFsmNode() {
     posY += EMUUI_TOP_FRAME_INNER_PANEL_SHIFT_Y;
     dyn_string references;
     emuui_addFsmNode(\"CMS_CSC\", posX, posY, references);
+    lblCsc.visible = false;
   }
 }
 
 void hideTopFsmNode() {
   removeSymbol(myModuleName(), myPanelName(), EMUUI_TOP_FSM_NODE_REF_NAME);
+  lblCsc.visible = true;
 }" 0
  2
 "CBRef" "1"
@@ -1172,7 +1174,7 @@ E E 0 1 1 2 1 E 1 0 1 -339 -23 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png"
 2 29
 "PRIMITIVE_TEXT3"
 ""
-1 -5646.242946927257 -1250 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 -5853.597920615411 -1270 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 62 0 0 0 0 0
 E E E
@@ -1191,7 +1193,7 @@ LANG:1 21 Communication problem
 2 30
 "upsOnBatteryBack"
 ""
-1 10 48.47577957594116 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
+1 10 48.46611907693728 E E E 1 E 0 E N "_WindowText" E N "alarmGingUnq" E E
  E E
 71 0 0 0 0 0
 E E E
@@ -1941,7 +1943,26 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
 0  910 420 1140 430
 11 ProgressBar
 0
-E0
+E2 100
+"lblCsc"
+""
+1 -122 910 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+ E E
+114 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 21 910 365 944
+1 2 2 "0s" 0 0 0 65 0 0  50 910 1
+1
+LANG:1 31 Sans Serif,21,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 CSC
+0
 LAYER, 1 
 1
 LANG:1 0 
