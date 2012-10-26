@@ -5,6 +5,7 @@
 
 package org.cern.cms.csc.exsys.re.dao;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -16,8 +17,11 @@ import jsf.bean.gui.log.Logger;
 import org.cern.cms.csc.dw.dao.EntityDaoLocal;
 import org.cern.cms.csc.dw.log.ExsysLogger;
 import org.cern.cms.csc.dw.model.ontology.ComponentClass;
+import org.cern.cms.csc.dw.model.ontology.ComponentLinkClass;
+import org.cern.cms.csc.exsys.re.model.ComponentFinder;
 import org.cern.cms.csc.exsys.re.model.Conclusion;
 import org.cern.cms.csc.exsys.re.model.ConclusionType;
+import org.cern.cms.csc.exsys.re.model.RelatedComponentFinder;
 import org.cern.cms.csc.exsys.re.model.Rule;
 import org.cern.cms.csc.exsys.re.model.RuleSet;
 import org.cern.cms.csc.exsys.re.model.RuleType;
@@ -204,14 +208,31 @@ public class RuleEngineDao implements RuleEngineDaoLocal, RuleEngineDaoRemote {
             for (Rule rule: ct.getRules()) {
                 logger.info("RuleEngineDao: processing this rule: " + rule);
                 rule.setid(null);
-                rule.getComponentFinder().setid(null);
+                ComponentFinder cf = rule.getComponentFinder();
+                cf.setid(null);
 
-                // get the component class from production db
-                ComponentClass compClass = rule.getComponentFinder().getComponentClass();
+                // get the component class from remote db
+                ComponentClass compClass = cf.getComponentClass();
                 compClass = em.createQuery("select cc from org.cern.cms.csc.dw.model.ontology.ComponentClass as cc where cc.type = :type", ComponentClass.class)
                             .setParameter("type", compClass.getType())
                             .getSingleResult();
-                rule.getComponentFinder().setComponentClass(compClass);
+                cf.setComponentClass(compClass);
+                
+                // get the component link type from remote db
+                if (cf instanceof RelatedComponentFinder) {
+                    RelatedComponentFinder rcf = (RelatedComponentFinder) cf;
+                    List<ComponentLinkClass> newLinkClasses = new ArrayList<ComponentLinkClass>();
+                    for (ComponentLinkClass linkClass: rcf.getLinkClasses()) {
+                        ComponentLinkClass newLinkClass = em.createQuery("select lc from org.cern.cms.csc.dw.model.ontology.ComponentLinkClass as lc where lc.type = :type", ComponentLinkClass.class)
+                                                                .setParameter("type", linkClass.getType())
+                                                                .getSingleResult();
+                        newLinkClasses.add(newLinkClass);
+                    }
+                    rcf.setLinkClasses(newLinkClasses);
+                    cf = rcf;
+                }
+                
+                rule.setComponentFinder(cf);
             }
         }
         logger.info("RuleEngineDao: persisting this ruleset: " + ruleSet);

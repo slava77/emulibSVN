@@ -191,8 +191,8 @@ create or replace PACKAGE BODY CDW_UTILITY AS
     begin
       for r in (select table_name from USER_TAB_PARTITIONS where table_name like 'CDW_%' group by table_name) loop
         l_d := cdw_utility.max_table_partition(r.table_name);
-        if (l_d - sysdate) < 30 then
-          for i in 1..1 loop
+        if (l_d - sysdate) < 11*30 then
+          for i in 1..12 loop
             l_s := 'ALTER TABLE ' || r.table_name || ' ADD PARTITION P' || TO_CHAR(l_d, 'YYYYMM');
             l_d := ADD_MONTHS(l_d, 1);
             l_s := l_s || ' values less than (to_date(''' || TO_CHAR(l_d, 'YYYY-MM-DD') || ''', ''YYYY-MM-DD''))';

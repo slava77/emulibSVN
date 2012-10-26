@@ -39,14 +39,16 @@ public class ObjectFactory {
     private final static QName _DqmCscCfebFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DqmCscCfebFact");
     private final static QName _LocalDAQStatusFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "localDAQStatusFact");
     private final static QName _DqmCscAfebFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DqmCscAfebFact");
-    private final static QName _FactRequestCollection_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "factRequestCollection");
     private final static QName _DcsCommunicationStatusFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DcsCommunicationStatusFact");
     private final static QName _DcsPingFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DcsPingFact");
+    private final static QName _FactRequestCollection_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "factRequestCollection");
     private final static QName _SlidingTmbTriggerCounterFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "slidingTmbTriggerCounterFact");
     private final static QName _DDUFMMResetFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DDUFMMResetFact");
     private final static QName _DcsHVOnVoltageFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DcsHVOnVoltageFact");
     private final static QName _DqmDduFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DqmDduFact");
+    private final static QName _DduStuckInWarningFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DduStuckInWarningFact");
     private final static QName _DcsFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "dcsFact");
+    private final static QName _DduFmmErrorFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DduFmmErrorFact");
     private final static QName _FactCollection_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "factCollection");
     private final static QName _DcsDisableEnableFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DcsDisableEnableFact");
     private final static QName _DqmCscFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DqmCscFact");
@@ -58,6 +60,7 @@ public class ObjectFactory {
     private final static QName _CumulativeTmbTriggerCounterFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "cumulativeTmbTriggerCounterFact");
     private final static QName _ApplicationStatusFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "applicationStatusFact");
     private final static QName _FEDFSMFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "FEDFSMFact");
+    private final static QName _FedRepeatErrorFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "FedRepeatErrorFact");
     private final static QName _DqmReportFact_QNAME = new QName("http://www.cern.ch/cms/csc/dw/model", "DqmReportFact");
 
     /**
@@ -65,30 +68,6 @@ public class ObjectFactory {
      * 
      */
     public ObjectFactory() {
-    }
-
-    /**
-     * Create an instance of {@link FactRequestCollection }
-     * 
-     */
-    public FactRequestCollection createFactRequestCollection() {
-        return new FactRequestCollection();
-    }
-
-    /**
-     * Create an instance of {@link DqmCscAfebFact }
-     * 
-     */
-    public DqmCscAfebFact createDqmCscAfebFact() {
-        return new DqmCscAfebFact();
-    }
-
-    /**
-     * Create an instance of {@link LocalDAQStatusFact }
-     * 
-     */
-    public LocalDAQStatusFact createLocalDAQStatusFact() {
-        return new LocalDAQStatusFact();
     }
 
     /**
@@ -100,99 +79,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link EmuMonitorFact }
+     * Create an instance of {@link DcsCommunicationStatusFact }
      * 
      */
-    public EmuMonitorFact createEmuMonitorFact() {
-        return new EmuMonitorFact();
+    public DcsCommunicationStatusFact createDcsCommunicationStatusFact() {
+        return new DcsCommunicationStatusFact();
     }
 
     /**
-     * Create an instance of {@link FedFsmFact }
+     * Create an instance of {@link DduFmmErrorFact }
      * 
      */
-    public FedFsmFact createFedFsmFact() {
-        return new FedFsmFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsAlctLvFact }
-     * 
-     */
-    public DcsAlctLvFact createDcsAlctLvFact() {
-        return new DcsAlctLvFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmEmuFact }
-     * 
-     */
-    public DqmEmuFact createDqmEmuFact() {
-        return new DqmEmuFact();
-    }
-
-    /**
-     * Create an instance of {@link FactCollection }
-     * 
-     */
-    public FactCollection createFactCollection() {
-        return new FactCollection();
-    }
-
-    /**
-     * Create an instance of {@link DcsCfebLvFact }
-     * 
-     */
-    public DcsCfebLvFact createDcsCfebLvFact() {
-        return new DcsCfebLvFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsHVOnVoltageFact }
-     * 
-     */
-    public DcsHVOnVoltageFact createDcsHVOnVoltageFact() {
-        return new DcsHVOnVoltageFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmCscFact }
-     * 
-     */
-    public DqmCscFact createDqmCscFact() {
-        return new DqmCscFact();
-    }
-
-    /**
-     * Create an instance of {@link DduFmmResetFact }
-     * 
-     */
-    public DduFmmResetFact createDduFmmResetFact() {
-        return new DduFmmResetFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsDisableEnableFact }
-     * 
-     */
-    public DcsDisableEnableFact createDcsDisableEnableFact() {
-        return new DcsDisableEnableFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmReportFact }
-     * 
-     */
-    public DqmReportFact createDqmReportFact() {
-        return new DqmReportFact();
-    }
-
-    /**
-     * Create an instance of {@link FactRequest }
-     * 
-     */
-    public FactRequest createFactRequest() {
-        return new FactRequest();
+    public DduFmmErrorFact createDduFmmErrorFact() {
+        return new DduFmmErrorFact();
     }
 
     /**
@@ -204,67 +103,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DcsCommunicationStatusFact }
+     * Create an instance of {@link DcsDisableEnableFact }
      * 
      */
-    public DcsCommunicationStatusFact createDcsCommunicationStatusFact() {
-        return new DcsCommunicationStatusFact();
-    }
-
-    /**
-     * Create an instance of {@link DcsAlertFact }
-     * 
-     */
-    public DcsAlertFact createDcsAlertFact() {
-        return new DcsAlertFact();
-    }
-
-    /**
-     * Create an instance of {@link DduFmmIrqFact }
-     * 
-     */
-    public DduFmmIrqFact createDduFmmIrqFact() {
-        return new DduFmmIrqFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmCscHvSegmentFact }
-     * 
-     */
-    public DqmCscHvSegmentFact createDqmCscHvSegmentFact() {
-        return new DqmCscHvSegmentFact();
-    }
-
-    /**
-     * Create an instance of {@link DqmDduInputFact }
-     * 
-     */
-    public DqmDduInputFact createDqmDduInputFact() {
-        return new DqmDduInputFact();
-    }
-
-    /**
-     * Create an instance of {@link ApplicationStatusFact }
-     * 
-     */
-    public ApplicationStatusFact createApplicationStatusFact() {
-        return new ApplicationStatusFact();
-    }
-
-    /**
-     * Create an instance of {@link TmbCounterFact }
-     * 
-     */
-    public TmbCounterFact createTmbCounterFact() {
-        return new TmbCounterFact();
-    }
-
-    /**
-     * Create an instance of {@link CumulativeTmbTriggerCounterFact }
-     * 
-     */
-    public CumulativeTmbTriggerCounterFact createCumulativeTmbTriggerCounterFact() {
-        return new CumulativeTmbTriggerCounterFact();
+    public DcsDisableEnableFact createDcsDisableEnableFact() {
+        return new DcsDisableEnableFact();
     }
 
     /**
@@ -276,11 +119,195 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link FactRequest }
+     * 
+     */
+    public FactRequest createFactRequest() {
+        return new FactRequest();
+    }
+
+    /**
+     * Create an instance of {@link DcsAlertFact }
+     * 
+     */
+    public DcsAlertFact createDcsAlertFact() {
+        return new DcsAlertFact();
+    }
+
+    /**
+     * Create an instance of {@link FedFsmFact }
+     * 
+     */
+    public FedFsmFact createFedFsmFact() {
+        return new FedFsmFact();
+    }
+
+    /**
+     * Create an instance of {@link EmuMonitorFact }
+     * 
+     */
+    public EmuMonitorFact createEmuMonitorFact() {
+        return new EmuMonitorFact();
+    }
+
+    /**
+     * Create an instance of {@link FactRequestCollection }
+     * 
+     */
+    public FactRequestCollection createFactRequestCollection() {
+        return new FactRequestCollection();
+    }
+
+    /**
+     * Create an instance of {@link DcsHVOnVoltageFact }
+     * 
+     */
+    public DcsHVOnVoltageFact createDcsHVOnVoltageFact() {
+        return new DcsHVOnVoltageFact();
+    }
+
+    /**
+     * Create an instance of {@link DcsAlctLvFact }
+     * 
+     */
+    public DcsAlctLvFact createDcsAlctLvFact() {
+        return new DcsAlctLvFact();
+    }
+
+    /**
      * Create an instance of {@link SlidingTmbTriggerCounterFact }
      * 
      */
     public SlidingTmbTriggerCounterFact createSlidingTmbTriggerCounterFact() {
         return new SlidingTmbTriggerCounterFact();
+    }
+
+    /**
+     * Create an instance of {@link FactCollection }
+     * 
+     */
+    public FactCollection createFactCollection() {
+        return new FactCollection();
+    }
+
+    /**
+     * Create an instance of {@link DqmCscFact }
+     * 
+     */
+    public DqmCscFact createDqmCscFact() {
+        return new DqmCscFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmCscHvSegmentFact }
+     * 
+     */
+    public DqmCscHvSegmentFact createDqmCscHvSegmentFact() {
+        return new DqmCscHvSegmentFact();
+    }
+
+    /**
+     * Create an instance of {@link LocalDAQStatusFact }
+     * 
+     */
+    public LocalDAQStatusFact createLocalDAQStatusFact() {
+        return new LocalDAQStatusFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmCscAfebFact }
+     * 
+     */
+    public DqmCscAfebFact createDqmCscAfebFact() {
+        return new DqmCscAfebFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmDduInputFact }
+     * 
+     */
+    public DqmDduInputFact createDqmDduInputFact() {
+        return new DqmDduInputFact();
+    }
+
+    /**
+     * Create an instance of {@link TmbCounterFact }
+     * 
+     */
+    public TmbCounterFact createTmbCounterFact() {
+        return new TmbCounterFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmReportFact }
+     * 
+     */
+    public DqmReportFact createDqmReportFact() {
+        return new DqmReportFact();
+    }
+
+    /**
+     * Create an instance of {@link DduFmmIrqFact }
+     * 
+     */
+    public DduFmmIrqFact createDduFmmIrqFact() {
+        return new DduFmmIrqFact();
+    }
+
+    /**
+     * Create an instance of {@link DduStuckInWarningFact }
+     * 
+     */
+    public DduStuckInWarningFact createDduStuckInWarningFact() {
+        return new DduStuckInWarningFact();
+    }
+
+    /**
+     * Create an instance of {@link DcsCfebLvFact }
+     * 
+     */
+    public DcsCfebLvFact createDcsCfebLvFact() {
+        return new DcsCfebLvFact();
+    }
+
+    /**
+     * Create an instance of {@link FedRepeatErrorFact }
+     * 
+     */
+    public FedRepeatErrorFact createFedRepeatErrorFact() {
+        return new FedRepeatErrorFact();
+    }
+
+    /**
+     * Create an instance of {@link ApplicationStatusFact }
+     * 
+     */
+    public ApplicationStatusFact createApplicationStatusFact() {
+        return new ApplicationStatusFact();
+    }
+
+    /**
+     * Create an instance of {@link CumulativeTmbTriggerCounterFact }
+     * 
+     */
+    public CumulativeTmbTriggerCounterFact createCumulativeTmbTriggerCounterFact() {
+        return new CumulativeTmbTriggerCounterFact();
+    }
+
+    /**
+     * Create an instance of {@link DduFmmResetFact }
+     * 
+     */
+    public DduFmmResetFact createDduFmmResetFact() {
+        return new DduFmmResetFact();
+    }
+
+    /**
+     * Create an instance of {@link DqmEmuFact }
+     * 
+     */
+    public DqmEmuFact createDqmEmuFact() {
+        return new DqmEmuFact();
     }
 
     /**
@@ -365,15 +392,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link FactRequestCollection }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/dw/model", name = "factRequestCollection")
-    public JAXBElement<FactRequestCollection> createFactRequestCollection(FactRequestCollection value) {
-        return new JAXBElement<FactRequestCollection>(_FactRequestCollection_QNAME, FactRequestCollection.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link DcsCommunicationStatusFact }{@code >}}
      * 
      */
@@ -389,6 +407,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/dw/model", name = "DcsPingFact", substitutionHeadNamespace = "http://www.cern.ch/cms/csc/dw/model", substitutionHeadName = "fact")
     public JAXBElement<DcsPingFact> createDcsPingFact(DcsPingFact value) {
         return new JAXBElement<DcsPingFact>(_DcsPingFact_QNAME, DcsPingFact.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link FactRequestCollection }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/dw/model", name = "factRequestCollection")
+    public JAXBElement<FactRequestCollection> createFactRequestCollection(FactRequestCollection value) {
+        return new JAXBElement<FactRequestCollection>(_FactRequestCollection_QNAME, FactRequestCollection.class, null, value);
     }
 
     /**
@@ -428,12 +455,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link DduStuckInWarningFact }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/dw/model", name = "DduStuckInWarningFact", substitutionHeadNamespace = "http://www.cern.ch/cms/csc/dw/model", substitutionHeadName = "fact")
+    public JAXBElement<DduStuckInWarningFact> createDduStuckInWarningFact(DduStuckInWarningFact value) {
+        return new JAXBElement<DduStuckInWarningFact>(_DduStuckInWarningFact_QNAME, DduStuckInWarningFact.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link DcsFact }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/dw/model", name = "dcsFact", substitutionHeadNamespace = "http://www.cern.ch/cms/csc/dw/model", substitutionHeadName = "fact")
     public JAXBElement<DcsFact> createDcsFact(DcsFact value) {
         return new JAXBElement<DcsFact>(_DcsFact_QNAME, DcsFact.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link DduFmmErrorFact }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/dw/model", name = "DduFmmErrorFact", substitutionHeadNamespace = "http://www.cern.ch/cms/csc/dw/model", substitutionHeadName = "fact")
+    public JAXBElement<DduFmmErrorFact> createDduFmmErrorFact(DduFmmErrorFact value) {
+        return new JAXBElement<DduFmmErrorFact>(_DduFmmErrorFact_QNAME, DduFmmErrorFact.class, null, value);
     }
 
     /**
@@ -533,6 +578,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/dw/model", name = "FEDFSMFact", substitutionHeadNamespace = "http://www.cern.ch/cms/csc/dw/model", substitutionHeadName = "fact")
     public JAXBElement<FedFsmFact> createFEDFSMFact(FedFsmFact value) {
         return new JAXBElement<FedFsmFact>(_FEDFSMFact_QNAME, FedFsmFact.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link FedRepeatErrorFact }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.cern.ch/cms/csc/dw/model", name = "FedRepeatErrorFact", substitutionHeadNamespace = "http://www.cern.ch/cms/csc/dw/model", substitutionHeadName = "fact")
+    public JAXBElement<FedRepeatErrorFact> createFedRepeatErrorFact(FedRepeatErrorFact value) {
+        return new JAXBElement<FedRepeatErrorFact>(_FedRepeatErrorFact_QNAME, FedRepeatErrorFact.class, null, value);
     }
 
     /**

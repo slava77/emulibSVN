@@ -80,9 +80,12 @@ import org.w3._2001.xmlschema.Adapter1;
     ApplicationStatusFact.class,
     CumulativeTmbTriggerCounterFact.class,
     FedFsmFact.class,
+    FedRepeatErrorFact.class,
     DcsCfebLvFact.class,
     EmuMonitorFact.class,
     DcsAlctLvFact.class,
+    DduStuckInWarningFact.class,
+    DduFmmErrorFact.class,
     DqmCscFact.class,
     SlidingTmbTriggerCounterFact.class,
     DduFmmResetFact.class,
@@ -92,8 +95,8 @@ import org.w3._2001.xmlschema.Adapter1;
     DqmCscCfebFact.class,
     LocalDAQStatusFact.class,
     DqmCscAfebFact.class,
-    DcsCommunicationStatusFact.class,
     DcsPingFact.class,
+    DcsCommunicationStatusFact.class,
     DqmCscHvSegmentFact.class,
     TmbCounterFact.class,
     DqmEmuFact.class
@@ -293,7 +296,7 @@ public abstract class Fact
         CascadeType.ALL
     })
     @JoinColumn(name = "FCT_CMP_ID")
-    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "ComponentType", sharedTable = "CDW_OLAP$D_COMPS_BY_TYPE")
+    @org.cern.cms.csc.dw.model.annotation.OlapDimension(name = "Component Type", sharedTable = "CDW_OLAP$D_COMPS_BY_TYPE")
     public org.cern.cms.csc.dw.model.ontology.Component getComponent() {
         return component;
     }

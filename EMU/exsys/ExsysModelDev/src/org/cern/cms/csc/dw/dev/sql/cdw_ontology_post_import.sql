@@ -174,15 +174,7 @@ begin
 end;
 /
 
--- Updating component class foreign keys
-
-update
-    RE_REL_CMP_FINDER_LINK_CLASSES finder
-set
-    finder.RECFL_COMPONENT_LINK_CLASS_ID = (select lci.LCL_ID_FIN
-                            from CDW_COMPONENT_LINK_CLASSES$IDS lci
-                            where lci.LCL_ID_NEW = finder.RECFL_COMPONENT_LINK_CLASS_ID)
-/
+-- Updating component link class foreign keys
 
 update
     CDW_COMPONENT_LINK_CLASSES lc
@@ -256,6 +248,12 @@ declare
   l_ccl_id number := 0;
   l_cmp_id number := 0;
 begin
+
+  -- check if the 'REMOVED' class already exists and if it does - fill the l_ccl_id
+  select count(*) into l_ccl_id from CDW_COMPONENT_CLASSES where CCL_NAME = 'REMOVED';
+  if l_ccl_id > 0 then
+    select CCL_ID into l_ccl_id from CDW_COMPONENT_CLASSES where CCL_NAME = 'REMOVED';
+  end if;
 
   -- Insert all components that where removed from current ontology
   for r in (select CMP_ID, CMP_NAME from CDW_COMPONENTS$OLD

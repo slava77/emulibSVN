@@ -186,7 +186,7 @@
                     <orm:sequence-generator name="RE_CONCLUSION_ID_SEQ" sequence-name="RE_CONCLUSION_ID_SEQ"/>
                 </hj:generated-id>
                 <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                    <a:OlapDimensionSetter name="ComponentLocation" propertyName="component" sharedTable = "CDW_OLAP$D_COMPS_BY_LOCATION"/>
+                    <a:OlapDimensionSetter name="Component Location" propertyName="component" sharedTable = "CDW_OLAP$D_COMPS_BY_LOCATION"/>
                 </ann:annotate>
             </xsd:appinfo>
         </xsd:annotation>
@@ -199,7 +199,7 @@
                         </hj:many-to-one>
                         <jaxb:property name="component"/>
                         <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                            <a:OlapDimension name="ComponentType" sharedTable="CDW_OLAP$D_COMPS_BY_TYPE"/>
+                            <a:OlapDimension name="Component Type" sharedTable="CDW_OLAP$D_COMPS_BY_TYPE"/>
                         </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>
@@ -315,7 +315,7 @@
                         </hj:many-to-one>
                         <jaxb:property name="type"/>
                         <ann:annotateGet xmlns:a="org.cern.cms.csc.dw.model.annotation">
-                            <a:OlapDimension name="ConclusionType" sharedTable="CDW_OLAP$D_CONCLUSION_TYPES"/>
+                            <a:OlapDimension name="Conclusion Type" sharedTable="CDW_OLAP$D_CONCLUSION_TYPES"/>
                         </ann:annotateGet>
                     </xsd:appinfo>
                 </xsd:annotation>

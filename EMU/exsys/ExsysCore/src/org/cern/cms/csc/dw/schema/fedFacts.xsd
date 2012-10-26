@@ -37,6 +37,10 @@
                  type="tns:DduStuckInWarningFactType"
                  substitutionGroup="tns:fact"/>
 
+    <xsd:element name="FedRepeatErrorFact"
+                 type="tns:FedRepeatErrorFactType"
+                 substitutionGroup="tns:fact"/>
+
     <xsd:complexType name="DDUFMMResetFactType">
       	<xsd:annotation>
     		<xsd:appinfo>
@@ -313,24 +317,13 @@
             <xsd:extension base="tns:factType">
                 <xsd:sequence>
 
-                    <xsd:element name="hardResetRequested" type="xsd:boolean">
+                    <xsd:element name="chambersInError" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_HARD_RESET_REQUESTED"/>
+                                    <orm:column name="FCT_CHAMBERS_IN_ERROR" length="150"/>
                                 </hj:basic>
-                                <jaxb:property name="hardResetRequested"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="resyncRequested" type="xsd:boolean">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_RESYNC_REQUESTED"/>
-                                </hj:basic>
-                                <jaxb:property name="resyncRequested"/>
+                                <jaxb:property name="chambersInError"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
@@ -356,7 +349,7 @@
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
-                    
+
                     <xsd:element name="ddufpgaDebugTrap" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo>
@@ -364,6 +357,50 @@
                                     <orm:column name="FCT_DDU_FPGA_DEBUG_TRAP" length="2048"/>
                                 </hj:basic>
                                 <jaxb:property name="ddufpgaDebugTrap"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="fibersInError" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_FIBERS_IN_ERROR" length="45"/>
+                                </hj:basic>
+                                <jaxb:property name="fibersInError"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="fmmErrorThreshold" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_FMM_ERROR_THRESHOLD" precision="10" scale="0"/>
+                                </hj:basic>
+                                <jaxb:property name="fmmErrorThreshold"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="fmmsReleased" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_FMMS_RELEASED"/>
+                                </hj:basic>
+                                <jaxb:property name="fmmsReleased"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="hardResetRequested" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_HARD_RESET_REQUESTED"/>
+                                </hj:basic>
+                                <jaxb:property name="hardResetRequested"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
@@ -390,17 +427,6 @@
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="fmmErrorThreshold" type="xsd:integer">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_FMM_ERROR_THRESHOLD" precision="10" scale="0"/>
-                                </hj:basic>
-                                <jaxb:property name="fmmErrorThreshold"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
                     <xsd:element name="numChambersInErrorForEndcap" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
@@ -411,40 +437,18 @@
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
-                    
-                    <xsd:element name="fmmsReleased" type="xsd:boolean">
+
+                    <xsd:element name="resyncRequested" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_FMMS_RELEASED"/>
+                                    <orm:column name="FCT_RESYNC_REQUESTED"/>
                                 </hj:basic>
-                                <jaxb:property name="fmmsReleased"/>
+                                <jaxb:property name="resyncRequested"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
-
-                    <xsd:element name="chambersInError" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_CHAMBERS_IN_ERROR" length="150"/>
-                                </hj:basic>
-                                <jaxb:property name="chambersInError"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
-                    <xsd:element name="fibersInError" type="xsd:string">
-                        <xsd:annotation>
-                            <xsd:appinfo>
-                                <hj:basic>
-                                    <orm:column name="FCT_FIBERS_IN_ERROR" length="45"/>
-                                </hj:basic>
-                                <jaxb:property name="fibersInError"/>
-                            </xsd:appinfo>
-                        </xsd:annotation>
-                    </xsd:element>
-
+                                        
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -466,6 +470,28 @@
             <xsd:extension base="tns:factType">
                 <xsd:sequence>
 
+                    <xsd:element name="chambersInWarning" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_CHAMBERS_IN_WARNING" length="1300"/>
+                                </hj:basic>
+                                <jaxb:property name="chambersInWarning"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
+                    <xsd:element name="fibersInWarning" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <hj:basic>
+                                    <orm:column name="FCT_FIBERS_IN_WARNING" length="300"/>
+                                </hj:basic>
+                                <jaxb:property name="fibersInWarning"/>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+
                     <xsd:element name="hardResetRequested" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo>
@@ -477,28 +503,49 @@
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="chambersInWarning" type="xsd:string">
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="FedRepeatErrorFactType">
+      	<xsd:annotation>
+    		<xsd:appinfo>
+                <jaxb:class name="FedRepeatErrorFact" />
+                <hj:entity>
+                    <orm:table name="CDW_FED_REPEATED_ERROR_FACTS"/>
+                </hj:entity>
+                <ann:annotate xmlns:a="org.cern.cms.csc.dw.model.annotation">
+                    <a:FactAnn title="List of chambers that are repeatedly giving errors at the DDU (they are automatically included in the FMM ignore list by the FED software)" limitComponents="Endcap"/>
+                </ann:annotate>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="tns:factType">
+                <xsd:sequence>
+
+                    <xsd:element name="chambersInError" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_CHAMBERS_IN_WARNING" length="1024"/>
+                                    <orm:column name="FCT_CHAMBERS_IN_ERROR" length="1300"/>
                                 </hj:basic>
-                                <jaxb:property name="chambersInWarning"/>
+                                <jaxb:property name="chambersInError"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
 
-                    <xsd:element name="fibersInWarning" type="xsd:string">
+                    <xsd:element name="numChambersInError" type="xsd:integer">
                         <xsd:annotation>
                             <xsd:appinfo>
                                 <hj:basic>
-                                    <orm:column name="FCT_FIBERS_IN_WARNING" length="165"/>
+                                    <orm:column name="FCT_NUM_CHAMBERS_IN_ERROR" precision="10" scale="0"/>
                                 </hj:basic>
-                                <jaxb:property name="fibersInWarning"/>
+                                <jaxb:property name="numChambersInError"/>
                             </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
-
+                    
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>

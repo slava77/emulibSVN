@@ -48,11 +48,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ConclusionType }
+     * Create an instance of {@link ConclusionTrigger }
      * 
      */
-    public ConclusionType createConclusionType() {
-        return new ConclusionType();
+    public ConclusionTrigger createConclusionTrigger() {
+        return new ConclusionTrigger();
     }
 
     /**
@@ -64,19 +64,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Conclusion }
-     * 
-     */
-    public Conclusion createConclusion() {
-        return new Conclusion();
-    }
-
-    /**
      * Create an instance of {@link DcsCommandAction }
      * 
      */
     public DcsCommandAction createDcsCommandAction() {
         return new DcsCommandAction();
+    }
+
+    /**
+     * Create an instance of {@link ConclusionType }
+     * 
+     */
+    public ConclusionType createConclusionType() {
+        return new ConclusionType();
+    }
+
+    /**
+     * Create an instance of {@link SimpleComponentFinder }
+     * 
+     */
+    public SimpleComponentFinder createSimpleComponentFinder() {
+        return new SimpleComponentFinder();
+    }
+
+    /**
+     * Create an instance of {@link RelatedComponentFinder }
+     * 
+     */
+    public RelatedComponentFinder createRelatedComponentFinder() {
+        return new RelatedComponentFinder();
     }
 
     /**
@@ -88,11 +104,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RelatedComponentFinder }
+     * Create an instance of {@link Rule }
      * 
      */
-    public RelatedComponentFinder createRelatedComponentFinder() {
-        return new RelatedComponentFinder();
+    public Rule createRule() {
+        return new Rule();
+    }
+
+    /**
+     * Create an instance of {@link Conclusion }
+     * 
+     */
+    public Conclusion createConclusion() {
+        return new Conclusion();
     }
 
     /**
@@ -109,30 +133,6 @@ public class ObjectFactory {
      */
     public EmailAction createEmailAction() {
         return new EmailAction();
-    }
-
-    /**
-     * Create an instance of {@link SimpleComponentFinder }
-     * 
-     */
-    public SimpleComponentFinder createSimpleComponentFinder() {
-        return new SimpleComponentFinder();
-    }
-
-    /**
-     * Create an instance of {@link Rule }
-     * 
-     */
-    public Rule createRule() {
-        return new Rule();
-    }
-
-    /**
-     * Create an instance of {@link ConclusionTrigger }
-     * 
-     */
-    public ConclusionTrigger createConclusionTrigger() {
-        return new ConclusionTrigger();
     }
 
     /**

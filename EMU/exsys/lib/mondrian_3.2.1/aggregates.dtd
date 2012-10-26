@@ -6,7 +6,7 @@
 <!--
      This is the XML model for defining default aggregate table recognition
      and level/measure mapping.
-     Revision is $Id: //open/mondrian-release/3.2/src/main/mondrian/rolap/aggmatcher/DefaultRulesSchema.xml#2 $
+     Revision is $Id: //open/mondrian/src/main/mondrian/rolap/aggmatcher/DefaultRulesSchema.xml#11 $
   -->
 <!--
      The set of "named" rules for matching aggregate tables.

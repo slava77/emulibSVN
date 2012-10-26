@@ -16,6 +16,9 @@
     <class>org.cern.cms.csc.dw.model.fact.DcsHVOnVoltageFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DduFmmIrqFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DduFmmResetFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DduFmmErrorFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.DduStuckInWarningFact</class>
+    <class>org.cern.cms.csc.dw.model.fact.FedRepeatErrorFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmCscAfebFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmCscCfebFact</class>
     <class>org.cern.cms.csc.dw.model.fact.DqmCscFact</class>
@@ -69,6 +72,7 @@
   </persistence-unit>
   <persistence-unit name="CdwUtilPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <class>org.cern.cms.csc.dw.metadata.FactMd</class>
     <class>org.cern.cms.csc.dw.model.dse.DataServiceEntity</class>
     <class>org.cern.cms.csc.dw.model.dse.TmbCounterDescriptionDSE</class>
     <class>org.cern.cms.csc.dw.model.fact.ApplicationStatusFact</class>
@@ -130,12 +134,18 @@
       <property name="hibernate.cache.use_second_level_cache" value="false"/>
       <property name="hibernate.generate_statistics" value="false"/>
       <!--property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521:XE"/-->
-      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@oradev10.cern.ch:10520:D10"/>
       <!--property name="hibernate.connection.url" value="jdbc:oracle:thin:@int2r1-v.cern.ch:10121:int2r1"/-->
-      <!--property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:10520:D10"/-->
-      <!--property name="hibernate.connection.url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=10123))(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=10124))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=cmsdevr_lb.cern.ch)(FAILOVER_MODE=(TYPE=SELECT)(METHOD=BASIC)(RETRIES=180)(DELAY=5))))"/-->
-      <property name="hibernate.connection.username" value="CMS_MUON_ENDCAP_EVKA"/>
-      <property name="hibernate.connection.password" value=""/>
+
+      <!--
+      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=10121))(ENABLE=BROKEN)(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=cms_omds_tunnel.cern.ch))(FAILOVER_MODE=(TYPE=SELECT)(METHOD=BASIC)(RETRIES=200)(DELAY=15)))"/>
+      <property name="hibernate.connection.username" value="CMS_CSC_DW"/>
+      <property name="hibernate.connection.password" value="cscExSys2011dev"/>
+      -->
+      
+      <property name="hibernate.connection.url" value="jdbc:oracle:thin:@dbsrvg3305.cern.ch:10121:DEVDB11"/>
+      <property name="hibernate.connection.username" value="EVKA"/>
+      <property name="hibernate.connection.password" value="cms2012evka"/>
+      
       <property name="hibernate.hbm2ddl.auto" value="update"/>
     </properties>
   </persistence-unit>

@@ -59,9 +59,9 @@ public class OlapGenerator {
         this.docFactory = DocumentBuilderFactory.newInstance();
         this.docBuilder = this.docFactory.newDocumentBuilder();
 
-        for (FactMd fact: mm.getFactMDs()) {
-            cubes.add(new CubeDef(fact, dbSchema));
-        }
+//        for (FactMd fact: mm.getFactMDs()) {
+//            cubes.add(new CubeDef(fact, dbSchema));
+//        }
         cubes.add(new CubeDef(Conclusion.class, "Conclusion", dbSchema));
 
         Document doc = docBuilder.parse(hierarchiesXml);

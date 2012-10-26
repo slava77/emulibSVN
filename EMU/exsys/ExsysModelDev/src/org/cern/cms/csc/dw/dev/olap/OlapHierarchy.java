@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
 public class OlapHierarchy {
 
     private final String name;
+    private final String allMemberName;
     private final String tableName;
     private final String dbSchema;
     private final String sql;
@@ -34,6 +35,7 @@ public class OlapHierarchy {
 
         this.gdb = gdb;
         this.name = el.getAttribute("name");
+        this.allMemberName = el.getAttribute("allMemberName");
         this.tableName = el.getAttribute("table");
         this.dbSchema = dbSchema;
 
@@ -124,8 +126,10 @@ public class OlapHierarchy {
         el.setAttribute("type", "StandardDimension");
 
         Element hel = doc.createElement("Hierarchy");
-        hel.setAttribute("name", this.name);
         hel.setAttribute("hasAll", "true");
+        if ((allMemberName != null) && !allMemberName.isEmpty()) {
+            hel.setAttribute("allMemberName", allMemberName);
+        }
         hel.setAttribute("primaryKey", "CMP_ID");
         el.appendChild(hel);
 
