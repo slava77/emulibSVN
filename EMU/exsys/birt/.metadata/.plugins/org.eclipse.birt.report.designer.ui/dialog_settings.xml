@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="Shell {Edit Data Set - LV current}/Shell {Report Design - birt_test1/LV_current.rptdesign - Eclipse}">
+		<item value="800" key="DIALOG_WIDTH"/>
+		<item value="640" key="SASHFORM.RIGHT"/>
+		<item value="160" key="SASHFORM.LEFT"/>
+		<item value="306" key="DIALOG_Y_ORIGIN"/>
+		<item value="500" key="DIALOG_HEIGHT"/>
+		<item value="0" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Select Data Binding}/Shell {}">
+		<item value="985" key="DIALOG_WIDTH"/>
+		<item value="1088" key="DIALOG_Y_ORIGIN"/>
+		<item value="200" key="DIALOG_X_ORIGIN"/>
+		<item value="338" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Edit Data Binding}/Shell {Expression Builder (JavaScript)}/Shell {Edit Chart}/Shell {Report Design - birt_test1/report1.rptdesign - Eclipse}">
+		<item value="698" key="DIALOG_WIDTH"/>
+		<item value="95" key="DIALOG_Y_ORIGIN"/>
+		<item value="111" key="DIALOG_X_ORIGIN"/>
+		<item value="338" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Edit Text Item}/Shell {Report Design - birt_test1/LV_current.rptdesign - Eclipse}">
+		<item value="1256" key="DIALOG_WIDTH"/>
+		<item value="161" key="DIALOG_Y_ORIGIN"/>
+		<item value="527" key="DIALOG_HEIGHT"/>
+		<item value="106" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Edit Data Set - Repeated errors}/Shell {Report Design - birt_test1/report1.rptdesign - Eclipse}">
+		<item value="800" key="DIALOG_WIDTH"/>
+		<item value="160" key="SASHFORM.LEFT"/>
+		<item value="640" key="SASHFORM.RIGHT"/>
+		<item value="182" key="DIALOG_Y_ORIGIN"/>
+		<item value="334" key="DIALOG_X_ORIGIN"/>
+		<item value="500" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Data Cube Builder}/Shell {Report Design - birt_test1/reportLctRate.rptdesign - Eclipse}">
+		<item value="820" key="DIALOG_WIDTH"/>
+		<item value="164" key="SASHFORM.LEFT"/>
+		<item value="656" key="SASHFORM.RIGHT"/>
+		<item value="115" key="DIALOG_Y_ORIGIN"/>
+		<item value="324" key="DIALOG_X_ORIGIN"/>
+		<item value="600" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Edit Data Set - LCT rate for side}/Shell {Report Design - birt_test1/reportLctRatePerEndcap.rptdesign - Eclipse}">
+		<item value="800" key="DIALOG_WIDTH"/>
+		<item value="160" key="SASHFORM.LEFT"/>
+		<item value="640" key="SASHFORM.RIGHT"/>
+		<item value="182" key="DIALOG_Y_ORIGIN"/>
+		<item value="334" key="DIALOG_X_ORIGIN"/>
+		<item value="500" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Edit Data Set - Hard reset requests}/Shell {Report Design - birt_test1/report1.rptdesign - Eclipse}">
+		<item value="800" key="DIALOG_WIDTH"/>
+		<item value="160" key="SASHFORM.LEFT"/>
+		<item value="640" key="SASHFORM.RIGHT"/>
+		<item value="182" key="DIALOG_Y_ORIGIN"/>
+		<item value="334" key="DIALOG_X_ORIGIN"/>
+		<item value="500" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Data Cube Builder}/Shell {Report Design - birt_test1/report1.rptdesign - Eclipse}">
+		<item value="820" key="DIALOG_WIDTH"/>
+		<item value="164" key="SASHFORM.LEFT"/>
+		<item value="656" key="SASHFORM.RIGHT"/>
+		<item value="434" key="DIALOG_Y_ORIGIN"/>
+		<item value="0" key="DIALOG_X_ORIGIN"/>
+		<item value="600" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Edit Data Source - exsys_read}/Shell {Report Design - birt_test1/report1.rptdesign - Eclipse}">
+		<item value="800" key="DIALOG_WIDTH"/>
+		<item value="640" key="SASHFORM.RIGHT"/>
+		<item value="160" key="SASHFORM.LEFT"/>
+		<item value="181" key="DIALOG_Y_ORIGIN"/>
+		<item value="500" key="DIALOG_HEIGHT"/>
+		<item value="334" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Data Cube Builder}/Shell {Report Design - birt_test1/LV_current.rptdesign - Eclipse}">
+		<item value="820" key="DIALOG_WIDTH"/>
+		<item value="656" key="SASHFORM.RIGHT"/>
+		<item value="164" key="SASHFORM.LEFT"/>
+		<item value="294" key="DIALOG_Y_ORIGIN"/>
+		<item value="600" key="DIALOG_HEIGHT"/>
+		<item value="-67" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Edit Data Source - PVSS Conditions DB}/Shell {Report Design - birt_test1/LV_current.rptdesign - Eclipse}">
+		<item value="800" key="DIALOG_WIDTH"/>
+		<item value="160" key="SASHFORM.LEFT"/>
+		<item value="640" key="SASHFORM.RIGHT"/>
+		<item value="180" key="DIALOG_Y_ORIGIN"/>
+		<item value="334" key="DIALOG_X_ORIGIN"/>
+		<item value="500" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Edit Data Set - LCT rate for side}/Shell {Report Design - birt_test1/reportLctRate.rptdesign - Eclipse}">
+		<item value="800" key="DIALOG_WIDTH"/>
+		<item value="160" key="SASHFORM.LEFT"/>
+		<item value="640" key="SASHFORM.RIGHT"/>
+		<item value="182" key="DIALOG_Y_ORIGIN"/>
+		<item value="334" key="DIALOG_X_ORIGIN"/>
+		<item value="500" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Edit Data Source - exsys_read}/Shell {Report Design - birt_test1/reportLctRatePerEndcap.rptdesign - Eclipse}">
+		<item value="800" key="DIALOG_WIDTH"/>
+		<item value="640" key="SASHFORM.RIGHT"/>
+		<item value="160" key="SASHFORM.LEFT"/>
+		<item value="187" key="DIALOG_Y_ORIGIN"/>
+		<item value="500" key="DIALOG_HEIGHT"/>
+		<item value="-386" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="Shell {Edit Data Set - LCT rate for ring}/Shell {Report Design - birt_test1/reportLctRate.rptdesign - Eclipse}">
+		<item value="1228" key="DIALOG_WIDTH"/>
+		<item value="160" key="SASHFORM.LEFT"/>
+		<item value="640" key="SASHFORM.RIGHT"/>
+		<item value="87" key="DIALOG_Y_ORIGIN"/>
+		<item value="29" key="DIALOG_X_ORIGIN"/>
+		<item value="761" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+</section>

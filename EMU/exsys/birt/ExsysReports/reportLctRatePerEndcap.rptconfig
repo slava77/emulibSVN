@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <list-property name="configVars">
+        <structure>
+            <property name="name">__isdisplay__startTime_42_0</property>
+            <property name="value">2012-12-02 08:45:00yyyy.MM.dd HH:mm:ss</property>
+        </structure>
+        <structure>
+            <property name="name">__isdisplay__endTime_43_1</property>
+            <property name="value">2012-12-02 13:15:00yyyy.MM.dd HH:mm:ss</property>
+        </structure>
+        <structure>
+            <property name="name">__isdisplay__counter_15_2</property>
+            <property name="value">LCT</property>
+        </structure>
+        <structure>
+            <property name="name">startTime_42_3</property>
+            <property name="value">2012-12-02 08:45:00</property>
+        </structure>
+        <structure>
+            <property name="name">startTime_42_type_</property>
+            <property name="value">string</property>
+        </structure>
+        <structure>
+            <property name="name">counter_15_4</property>
+            <property name="value">30</property>
+        </structure>
+        <structure>
+            <property name="name">counter_15_type_</property>
+            <property name="value">string</property>
+        </structure>
+        <structure>
+            <property name="name">endTime_43_5</property>
+            <property name="value">2012-12-02 13:15:00</property>
+        </structure>
+        <structure>
+            <property name="name">endTime_43_type_</property>
+            <property name="value">string</property>
+        </structure>
+    </list-property>
+</report>

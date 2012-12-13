@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;birt_test1/LV_current.rptdesign&apos; to &apos;LV_current_for_ring.rptdesign&apos;" description="Rename resource &apos;LV_current.rptdesign&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="LV_current.rptdesign" name="LV_current_for_ring.rptdesign" stamp="1355333990581" updateReferences="true"/>
+</session>
