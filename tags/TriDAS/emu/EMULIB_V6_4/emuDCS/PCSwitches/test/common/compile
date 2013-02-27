@@ -1,3 +1,0 @@
-c++ -o SwitchPerlScripts SwitchPerlScripts.cpp
-c++ -o SwitchPerlClearMacs SwitchPerlClearMacs.cpp
-c++ -o SwitchPerlChangeMacs SwitchPerlChangeMacs.cpp
