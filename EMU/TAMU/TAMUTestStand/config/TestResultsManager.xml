@@ -1,0 +1,26 @@
+<TAMUTestStand>
+	<TestResultsManager>
+		<const LINE_BUFFER_LENGTH = "256"
+		       JUNK_ID = '0'
+		       DATA_ID = '1'
+		       DEFAULT_LOG_PATH = "./log"
+		       FILE_REGEX = "(.*)(CCBBackplaneTests_Board)(\\w+)(_)(\\d+)(\\.log)">
+		</const>
+		<key label="LogBegin"
+		     regEx="(TMB-CCB Backplane Tests ME\\+)(\\d*)(/)(\\d*)(/)(\\d*)( output:)"
+		     identifiers="0101010">
+		</key>
+		<key label="TestBegin"
+		     regEx="(Test with label\\s*)(\\w*)(\\s*...\\s*start)"
+		     identifiers="010">
+		</key>
+		<key label="TestResult"
+		     regEx="(Test with label\\s*)(\\w*)(\\s*status\\s*...\\s*->\\s*)(PASS|FAIL)(!*)"
+		     identifiers="0101">
+		</key>
+		<key label="CompareValues"
+		     regEx="(CompareValues:\\s*)(.*)(\\s*->\\s*)(PASS|FAIL)(!*\\s*:\\s*)(\\w*)(\\s*)(==|!=)(\\s*)(\\w*)"
+		     identifiers="0101010101">
+		</key>
+	</TestResultsManager>
+</TAMUTestStand>

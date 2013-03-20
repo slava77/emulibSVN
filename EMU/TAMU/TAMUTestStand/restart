@@ -1,0 +1,15 @@
+#!/bin/bash
+
+
+kill -9 $(ps aux | grep xdaq | grep 20012 | awk '{print $2}')
+./scripts/start_test.sh
+sleep 0.5s
+ps aux | grep xdaq | grep 20012
+
+
+
+# kill all running xdaqs
+#killall -q -s KILL  /opt/xdaq/bin/xdaq.exe
+
+# start DB config process
+#$HOME/TriDAS/emu/emuDCS/TAMUTestStand/scripts/start_test.sh
