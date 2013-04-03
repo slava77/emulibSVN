@@ -53,7 +53,7 @@
 #################################################################
 
 
-CMSSW	 = $(HOME)/CMSSW/src
+CMSSW	 = /home/cscme11/CMSSW/src
 BOOST    = /usr/include
 XDAQDIR    = $(XDAQ_DIR)
 ROOTDIR    = $(ROOTSYS)
