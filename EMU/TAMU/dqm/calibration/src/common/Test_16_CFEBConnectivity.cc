@@ -175,13 +175,14 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
         	  int adc_min = 4096;
         	  
         	  //if(icfeb == 1 && ilayer == 1) cout << "nTimeSamples: " << nTimeSamples << endl;
-        	  
+        	  //cout << endl << "layer: " << ilayer-1 << "\tstrip: " << icfeb*16 + istrip - 1 << endl;
         	  // loop for calculating min&max bins later
         	  int jmin = -1, jmax = 16;
         	  for (int j=0; j<nTimeSamples; j++)
         	  {
         		  CSCCFEBDataWord* timeSample=(cfebData->timeSlice(j))->timeSample(ilayer,istrip);
         		  
+        		  //cout << timeSample->adcCounts << " ";
         		  
         		  if(timeSample->adcCounts > adc_max)
 					  {
@@ -206,22 +207,24 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
 
         	  // loop for storing the sums and sums of squares of counts above pedestal 
               int pedestal = (cfebData->timeSlice(0))->timeSample(ilayer,istrip)->adcCounts;
+              //start at 1 instead of 0 since doing difference w.r.t bin 0
         	  for (int j=1; j<nTimeSamples; j++)
         	  {
-                  int adc_count = (cfebData->timeSlice(j))->timeSample(ilayer,istrip)->adcCounts;
-                  double count_diff = (double) adc_count - (double) pedestal;
-                  
-                  /*if(isnan(count_diff)) {
-                	  cout << "####count_diff was nan!####" << endl;
-                	  count_diff = 0.0;
-                  }*/
+                	  int adc_count = (cfebData->timeSlice(j))->timeSample(ilayer,istrip)->adcCounts;
+                	  double count_diff = (double) adc_count - (double) pedestal;
+                	  
+                	  /*if(isnan(count_diff)) {
+                		  cout << "####count_diff was nan!####" << endl;
+                		  count_diff = 0.0;
+                 	 }*/
                                     
-                  int strip_idx = icfeb*16 + istrip - 1;
-                  //cout << "count_diff" << count_diff << endl;
-                  ch_adc_sum[j].content[ilayer-1][strip_idx] += count_diff;
-                  ch_adc_sum[j].cnts[ilayer-1][strip_idx] += 1;
-                  ch_adc_sum2[j].content[ilayer-1][strip_idx] += count_diff*count_diff;
-                  ch_adc_sum2[j].cnts[ilayer-1][strip_idx] += 1;   
+                	  int strip_idx = icfeb*16 + istrip - 1;
+        	          //cout << "count_diff" << count_diff << endl;
+	                  ch_adc_sum[j].content[ilayer-1][strip_idx] += count_diff;
+                	  ch_adc_sum[j].cnts[ilayer-1][strip_idx] += 1;
+        	          ch_adc_sum2[j].content[ilayer-1][strip_idx] += count_diff*count_diff;
+	                  ch_adc_sum2[j].cnts[ilayer-1][strip_idx] += 1;   
+                  
         	  }          
           }
         }
@@ -247,6 +250,17 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
     if (tsmax[1] > 16) tsmax[1] = 15;
     printf("Timesample with ADC min is %d, with ADC max is %d\n", tsmax[0],
            tsmax[1]);
+	/*
+	cout << endl;
+	for(int k = 0; k < 16; k++) {
+		cout << max_adc_hist->GetBinContent(k) << " ";
+	}
+	cout << endl;
+	for(int l=0; l<16;l++) {
+		cout << min_adc_hist->GetBinContent(l) << " ";
+	}
+	cout << endl;
+	*/
 
 	cout << "avg max/peak time bin: " << i_max << endl;
 	cout << "avg min time bin: " << i_min << endl;
@@ -258,6 +272,15 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 
 	TimeBinsTestData& ch_adc_sum = adcSum[cscID];
 	TimeBinsTestData& ch_adc_sum2 = adcSum2[cscID];
+
+	for(int i = 0; i<TEST_DATA2D_NLAYERS; i++) {
+		for(int j = 0; j<TEST_DATA2D_NBINS; j++) {
+			sum[i][j]=0.;
+			sumsq[i][j]=0.;
+			nevents[i][j]=0.;
+		}
+	}
+
 	for (int ilayer=0; ilayer < TEST_DATA2D_NLAYERS; ++ilayer)
 	{
 		for (int istrip = 0; istrip < TEST_DATA2D_NBINS; ++istrip)
@@ -299,6 +322,7 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 					cout << "###avg was nan!####" << endl;
 					//sum[ilayer][istrip] is nan sometimes!
 					cout << "sum[ilayer][istrip]: " << sum[ilayer][istrip] << endl;
+					cout << "sumsq[ilayer][istrip]: " << sumsq[ilayer][istrip] << endl;
 					cout << "ilayer: " << ilayer << endl;
 					cout << "istrip: " << istrip << endl;
 					cout << "n: " << n << endl;

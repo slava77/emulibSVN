@@ -175,7 +175,8 @@ int main(int argc, char **argv)
 
 
   if ( (datafile.find("CFEB_SCAPed") != std::string::npos) ||
-        (datafile.find("Test_15") != std::string::npos) )
+        (datafile.find("Test_15") != std::string::npos) ||
+	(datafile.find("test15") != std::string::npos) )
   {
     LOG4CPLUS_INFO(logger, "Detected data for Test CFEB02: Pedestals and Noise");
     test_analyzer = new Test_CFEB02(datafile);
@@ -197,9 +198,10 @@ int main(int argc, char **argv)
     xmlTestCfg = "file://" + cfgDir +"/emuTest_CFEB04.xml";
   }
   else if ( (datafile.find("Test_16") != std::string::npos) ||
-            (datafile.find("test16") != std::string::npos) )
+            (datafile.find("test16") != std::string::npos) ||
+	    (datafile.find("Test16") != std::string::npos) )
   {
-      LOG4CPLUS_INFO(logger, "iDetected data for Test 16: CFEB Connectivit");
+      LOG4CPLUS_INFO(logger, "Detected data for Test 16: CFEB Connectivity");
       test_analyzer = new Test_16_CFEBConnectivity(datafile);
       xmlTestCfg = "file://" + cfgDir + "/emuTest_16_CFEBConnectivity.xml";
   }

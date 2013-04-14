@@ -3,17 +3,17 @@
         <TestResult>
 		<Test>16_CFEBConnectivity</Test>
                 <Type>strips_cnv</Type>
-		<Title>pedestal</Title>
+		<Title>ADC Difference</Title>
                 <Prefix>CSC</Prefix>
                 <Name>R01</Name>
                 <XMin>0</XMin>
-                <XMax>80</XMax>
-                <XBins>80</XBins>
+                <XMax>112</XMax>
+                <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
                 <YMin>0</YMin>
                 <YMax>15</YMax>
-                <YBins>15</YBins>
-                <YTitle>pedestal mean</YTitle>
+                <YBins>45</YBins>
+                <YTitle>ADC Difference</YTitle>
 		<Low1Limit>0</Low1Limit>
 		<Low0Limit>1</Low0Limit>
 		<High0Limit>10</High0Limit>
