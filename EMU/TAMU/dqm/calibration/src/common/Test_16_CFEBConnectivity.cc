@@ -1,4 +1,5 @@
 #include "emu/dqm/calibration/Test_16_CFEBConnectivity.h"
+#define EVTS_PER_LAYERPAIR 1000
 
 using namespace XERCES_CPP_NAMESPACE;
 
@@ -150,11 +151,23 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
       initCSC(cscID);
       addCSCtoMap(cscID, dmbHeader->crateID(), dmbHeader->dmbID());
     }
+	
+  	
+  if(nCSCEvents[cscID] >= nExpectedEvents) {
+	
+      LOG4CPLUS_ERROR(logger, nCSCEvents[cscID] << " exceeded expected number of events (" << nExpectedEvents << ")");
+  }
+  
+  
+  int layerpair = (nCSCEvents[cscID]) / EVTS_PER_LAYERPAIR;
+  
   nCSCEvents[cscID]++;
 
 
   TimeBinsTestData& ch_adc_sum = adcSum[cscID];
   TimeBinsTestData& ch_adc_sum2 = adcSum2[cscID];
+  
+  
   
   //"PASS 0"
   if (dmbHeader->cfebAvailable())
@@ -164,25 +177,36 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
         CSCCFEBData * cfebData =  data.cfebData(icfeb);
         if (!cfebData) continue;
 
-        for (int ilayer = 1; ilayer <= NLAYERS; ilayer++)   // loop over layers in a given chamber
-        {
-          int nTimeSamples= cfebData->nTimeSamples();
+          for(int ilayer = 2*layerpair + 1; ilayer < 2*(layerpair+1) + 1; ilayer++)		  
+		  {
           
           for (int istrip = 1; istrip <= 16; istrip++)   // loop over cfeb strips
           {
-          
+			  int nTimeSamples= cfebData->nTimeSamples();
         	  int adc_max = -1;
         	  int adc_min = 4096;
         	  
-        	  //if(icfeb == 1 && ilayer == 1) cout << "nTimeSamples: " << nTimeSamples << endl;
+        	  // if(icfeb == 2 && ilayer == 3 && istrip == 10)
+			  // {
+				// cout << endl << "icfeb: " << icfeb << "ilayer: " << ilayer << "\tistrip: " << istrip << endl;
+			  // }
         	  //cout << endl << "layer: " << ilayer-1 << "\tstrip: " << icfeb*16 + istrip - 1 << endl;
         	  // loop for calculating min&max bins later
         	  int jmin = -1, jmax = 16;
+			  
+			  // if(nTimeSamples == 0) {
+				// cout << endl << "layer: " << ilayer-1 << "\tstrip: " << icfeb*16 + istrip - 1 << endl;
+			  // }
+			  
         	  for (int j=0; j<nTimeSamples; j++)
         	  {
         		  CSCCFEBDataWord* timeSample=(cfebData->timeSlice(j))->timeSample(ilayer,istrip);
-        		  
-        		  //cout << timeSample->adcCounts << " ";
+        		 
+				 // if(icfeb == 2 && ilayer == 3 && istrip == 10 && j < 7 && j > 3)
+				// {
+					
+        		  // cout << timeSample->adcCounts << " ";
+				// }
         		  
         		  if(timeSample->adcCounts > adc_max)
 					  {
@@ -225,6 +249,8 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
         	          ch_adc_sum2[j].content[ilayer-1][strip_idx] += count_diff*count_diff;
 	                  ch_adc_sum2[j].cnts[ilayer-1][strip_idx] += 1;   
                   
+				  //if(j < 8 && j > 2)
+				    //  cout<<"DBG "<<ilayer<<" "<<strip_idx<<" "<<j<<"  "<<pedestal<<" "<<adc_count<<" "<<count_diff<<" "<<ch_adc_sum[j].cnts[ilayer-1][strip_idx]<<endl;
         	  }          
           }
         }
@@ -242,8 +268,8 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
     TestData2D& r01 = cscdata["R01"];
     	
 	// hist bin starts at 1, jmin/jmax at 0.
-	int i_max = max_adc_hist->GetMaximumBin() - 1;
-	int i_min = min_adc_hist->GetMaximumBin() - 1;
+	int i_max = max_adc_hist->GetMaximumBin();
+	int i_min = min_adc_hist->GetMaximumBin();
 
 	int tsmax[2] = {i_max - 2, i_max + 2};
     if (tsmax[0] <= 0) tsmax[0] =  1;
@@ -289,8 +315,10 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 			{
 				sum[ilayer][istrip] += ch_adc_sum[i].content[ilayer][istrip];
 				sumsq[ilayer][istrip] += ch_adc_sum2[i].content[ilayer][istrip];
-				nevents[ilayer][istrip] += ch_adc_sum[i].cnts[ilayer][istrip];
+			
 			}
+			// can use index of tsmax[0] since all time bins carry same cnts
+			nevents[ilayer][istrip] += ch_adc_sum[tsmax[0]].cnts[ilayer][istrip];
 		}
 	}
 
