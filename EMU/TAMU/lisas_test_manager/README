@@ -1,0 +1,11 @@
+
+this is an SVN version.
+
+required env variables:
+export DAQHOME=$SOMEBASE/emu/fast_daq
+export STEPHOME=$SOMEBASE/$XDAQ_PLATFORM
+export DATADIR=$STEPHOME/data
+export CERNDIR=/cern/pro
+
+more stuff is needed (to be filled)
+
