@@ -50,7 +50,7 @@ static float *padc_diff, *padc_diff_err;
 static float *adc_diff[NLAYER], *adc_diff_err[NLAYER];
 
 extern test_config_struct tcs;
-extern tot_evt;
+extern int tot_evt;
 
 char test_16_file_el[]="/test_results/temp/test_16_01.results";
 char test_16_file_bad_el[]="/test_results/temp/test_16_01.bad";
