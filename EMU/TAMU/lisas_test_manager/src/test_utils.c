@@ -27,41 +27,44 @@
 #define MAX_POINTS   16
 extern char  number_of_run[80];
 
-char  testnames[30][100]=
+char  testnames[MAX_TEST_NUM][100]=
 {
-  "Broken-wire test                     ",
-  "HV Connectivity test                 ", 
-  "Gas Leak test                        ",
-  "Long-term HV test                    ",
-  "Gas gain test(radioactive source)    ",
-  "Assembly                             ",
-  "Water leak test                      ",
-  "HV-ON Current and Cabling test       ",
-  "LV test                              ",
-  "ALCT test                            ",
-  "AFEB Noise test (noise pulses)       ",
-  "AFEB Connectivity & Alive test       ",
-  "AFEB Threshold and Analog Noise test ",
-  "AFEB Time Delay verification         ",
-  "CFEB Noise test                      ",
-  "CFEB Connectivity and Alive test     ",
-  "CFEB calibration                     ", 
-  "Comparator noise tests               ",
-  "Comparator threshold tests           ",
-  "Comparator timing test               ",
-  "Left/right Comparator tests          ",
-  "Left/right Comparator Offset test    ",
-  "Neighbor Comparator test             ",
-  "Chamber gain map (with cosmics)      ",
-  "ALCT self trigger on cosmics tests   ",
-  "CLCT self-trigger on cosmics tests   ",
-  "High-statistics cosmics test         ",
-  "Performance vs HV test               ",
-  "High rate test                       "
+  "Broken-wire test                     ", //1
+  "HV Connectivity test                 ", //2 
+  "Gas Leak test                        ", //3
+  "Long-term HV test                    ", //4
+  "Gas gain test(radioactive source)    ", //5
+  "Assembly                             ", //6
+  "Water leak test                      ", //7
+  "Low Voltage test                     ", //8
+  "HV-ON current and cabling test       ", //9
+  "ALCT self-test                       ", //10
+  "AFEB Noise test                      ", //11
+  "AFEB Connectivity test               ", //12
+  "AFEB Threshold and Analog Noise test ", //13
+  "AFEB Time-delay verification         ", //14
+  "CFEB Noise test                      ", //15
+  "CFEB Connectivity test               ", //16
+  "CFEB calibration                     ", //17
+  "Comparator noise test                ", //18
+  "Comparator threshold test            ", //19
+  "Comparator timing test               ", //20
+  "Left/right Comparator Logic test     ", //21
+  "Left/right Comparator Offset test    ", //22
+  "Neighbor Comparator test             ", //23
+  "Chamber gain map                     ", //24
+  "ALCT self-trigger on cosmics test    ", //25
+  "CLCT self-trigger on cosmics test    ", //26
+  "High-statistics cosmic test          ", //27
+  "Performance vs HV test               ", //28
+  "High rate test                       ",  //29
+  "CFEB Connectivity test (CPP version) "  //30
 }
 ;
 
-
+const char* gettestname(int itest){
+  return testnames[itest-1];
+}
 
 /* Linear fit */
 
@@ -118,7 +121,7 @@ void fitit(float *x, float *y, float *yerr, int npoints, float *emm,
 int make_name(char *cscname, int cscnum, int csctype) 
   {
   static char    csc_label[NUM_CSC_TYPES][8] 
-    = {"ME1.2", "ME1.3", "ME2.1", "ME3.1", "ME234.2", "ME4.1"};
+    = {"ME1.2", "ME1.3", "ME2.1", "ME3.1", "ME234.2", "ME4.1", "ME1.1a", "ME1.1b"};
   csc_num = cscnum;
   csc_type = csctype;
 
