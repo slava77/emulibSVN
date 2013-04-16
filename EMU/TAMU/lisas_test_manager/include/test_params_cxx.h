@@ -22,3 +22,4 @@ extern int    (*test_finish)();       /* Called at the end of the test          
 extern int    num_passes;
 extern int    num_events[MAX_NUM_PASSES];
 
+extern char*  datadir_translation;
