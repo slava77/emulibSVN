@@ -56,24 +56,20 @@ DEBUG      = -ggdb -W -DDEBUG
 # Uncomment the next line when NOT debugging
 #DEBUG      = -Wall -O3
 
-#CCOPT      = $(DEBUG) -Wall -Df2cFortran  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -DCSC_DISPLAY -DLOCALDAQ
 CCOPT      = $(DEBUG) -Wall -Df2cFortran  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -DCSC_DISPLAY -DLOCALDAQ
-#F77OPT     = $(DEBUG) -Wall -ff90 -fno-second-underscore
 F77OPT     = $(DEBUG) -c -C -Wall  -fno-second-underscore
-CXXOPT     = $(DEBUG) -fno-rtti -fno-exceptions
-#ROOTCFLAG  = $(shell root-config --cflags)
-#ROOTLIB    = $(shell root-config --libs)
-#CXXOPT     += $(ROOTCFLAG)
-
+#CXXOPT     = $(DEBUG) -fno-rtti -fno-exceptions
+ROOTCFLAG  := $(shell root-config --cflags)
+ROOTLIB    := $(shell root-config --libs)
+ROOTINC    := $(shell root-config --incdir)
+CXXOPT     = $(DEBUG) -m64 -fPIC -Wall -Df2cFortran -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -DCSC_DISPLAY -DLOCALDAQ
+CXXOPT    += $(ROOTCFLAG)
 #***************************************************************************
 ## location of CERN stuff
 
 
 
-#CERNLIB    = -L/cern/pro/lib -lgraflib -lgrafX11 -lmathlib -lpacklib -lkernlib
 CERNLIB	:=$(shell /cern/pro/bin/cernlib -v pro graflib packlib grafX11 mathlib kernlib)
-#CERNLIB	=`/cern/pro/lib -v pro graflib packlib grafX11 mathlib kernlib`
-
 
 #***************************************************************************
 ## includes and linking X libraries and forms libs
@@ -81,8 +77,15 @@ XDAQ_DS    = $(XDAQ_OS)/$(XDAQ_PLATFORM)
 XINC       = -I/usr/include/X11 -I/usr/X11R6/include -I/usr/include
 #XLIB       = -lforms -L/usr/X11R6/lib -lXpm -lX11
 XLIB       = -L/usr/X11R6/lib -L/usr/lib64 -lXpm -lX11
-EXTLIB	   = -L$(XDAQ_ROOT)/lib -L$(BUILD_HOME)/emu/daq/reader/lib/$(XDAQ_DS) -L$(BUILD_HOME)/emu/dqm/common/lib/$(XDAQ_DS) -L$(BUILD_HOME)/emu/dqm/cmssw/lib/$(XDAQ_DS) -L$(CSCHOME)/TriDAS/emu/fast_daq_before_2013Apr08/csc_display/lib/ -lemudaqreader_sa  -lemudqmcommon_sa -lCSCRawToDigi -lCSCDigi  -lemuSTEPConfigRead -lxdaq -lxerces-c -lxoap -lxdata -ltoolbox -lxcept -lxgi -lcgicc -llogxmlappender -lconfig -lmimetic -lasyncresolv -llog4cplus -lpeer -llogudpappender -lappweb -luuid
-#XLIB       = -L$(LDIR) -lforms -L/usr/X11R6/lib -lXpm -lX11
+EXTLIB  = -L$(XDAQ_ROOT)/lib -L$(BUILD_HOME)/emu/daq/reader/lib/$(XDAQ_DS)
+EXTLIB += -L$(BUILD_HOME)/emu/dqm/common/lib/$(XDAQ_DS)
+EXTLIB += -L$(BUILD_HOME)/emu/dqm/cmssw/lib/$(XDAQ_DS)
+EXTLIB += -L$(CSCHOME)/TriDAS/emu/fast_daq_before_2013Apr08/csc_display/lib
+EXTLIB += -lemudaqreader_sa  -lemudqmcommon_sa -lCSCRawToDigi -lCSCDigi  -lemuSTEPConfigRead 
+#xdaq stuff (isn't there a magic command to make this list?) 
+EXTLIB += -lxdaq -lxerces-c -lxoap -lxdata -ltoolbox -lxcept -lxgi -lcgicc -llogxmlappender -lconfig -lmimetic -lasyncresolv -llog4cplus -lpeer -llogudpappender -lappweb
+EXTLIB += -luuid
+EXTLIB += $(ROOTLIB)
 
 #***************************************************************************
 ## other includes and libs
@@ -100,7 +103,7 @@ LOCINC = \
         -I$(BUILD_HOME)/emu/dqm/common/include \
 	-I$(BUILD_HOME)/emu/emuSTEP/emuSTEPConfigRead/include \
 	-I$(BUILD_HOME)/emu/daq/reader/include \
-	-I$(XDAQ_ROOT)/include \
+	-I$(XDAQ_ROOT)/include
 
 
 ifeq ($(OS),Linux)
@@ -126,6 +129,7 @@ OBJECTS      = \
 	$(ODIR)/test_14.o \
 	$(ODIR)/test_15.o \
 	$(ODIR)/test_16.o \
+	$(ODIR)/test_16cpp.o \
 	$(ODIR)/test_17.o \
 	$(ODIR)/test_18.o \
 	$(ODIR)/test_19.o \
@@ -143,6 +147,7 @@ OBJECTS      = \
 	$(ODIR)/errfun.o \
 	$(ODIR)/landau.o \
 	$(ODIR)/one_page_plot_v3.o \
+	$(ODIR)/one-page-plot.o \
 	$(ODIR)/strip_utils.o \
 	$(ODIR)/csc_geom.o \
 	$(ODIR)/test_utils_f.o \
@@ -228,6 +233,23 @@ $(ODIR)/test_16.o : $(SDIR)/test_16.c  \
           $(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event_cxx.h 
 	$(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/test_16.o \
           -c $(SDIR)/test_16.c
+
+$(ODIR)/one-page-plot.o : $(SDIR)/one-page-plot.cpp \
+          $(IDIR)/one-page-plot.h $(DAQCOMMON)/include/csc_event_cxx.h 
+	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/one-page-plot.o \
+          -c $(SDIR)/one-page-plot.cpp
+
+$(ODIR)/basic-utilities.o : $(SDIR)/basic-utilities.cpp $(IDIR)/basic-utilities.h \
+          $(IDIR)/one-page-plot.h $(DAQCOMMON)/include/csc_event_cxx.h 
+	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/basic-utilities.o \
+          -c $(SDIR)/basic-utilities.cpp
+
+$(ODIR)/test_16cpp.o : $(SDIR)/test_16cpp.cpp  \
+	$(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event_cxx.h \
+	$(IDIR)/basic-utilities.h
+	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/test_16cpp.o \
+	 -c $(SDIR)/test_16cpp.cpp
+
 
 $(ODIR)/test_17.o : $(SDIR)/test_17.c $(IDIR)/one_page_plot.h \
           $(IDIR)/test_params.h $(IDIR)/test_utils.h \
