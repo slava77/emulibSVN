@@ -1,7 +1,8 @@
 /* This is test_utils.h */
 
-#define NUM_CSC_TYPES   6
+#define NUM_CSC_TYPES   8
 #define MAXBINS       200
+#define MAX_TEST_NUM   30
 
 #include "csc_parameters.h"
 
@@ -9,55 +10,56 @@
 extern "C" {
 #endif
 
-int getint(int *n);
+  int getint(int *n);
 
-void fitit(float *x, float *y, float *yerr, int npoints, float *emm,
- float *bee, float *chisq);
-
-int make_name(char *csc_name, int csc_num, int csc_type);
-
-int one_page_plot_v3(int test_id, int plot_id, int plot_type, float *data, 
- float *error, float *limits, char *cscname, char *plot_title, 
- char *summary_title, int iflag); 
-
+  const char* gettestname(int itest);
+  void fitit(float *x, float *y, float *yerr, int npoints, float *emm,
+	     float *bee, float *chisq);
+  
+  int make_name(char *csc_name, int csc_num, int csc_type);
+  
+  int one_page_plot_v3(int test_id, int plot_id, int plot_type, float *data, 
+		       float *error, float *limits, char *cscname, char *plot_title, 
+		       char *summary_title, int iflag); 
+  
   /*
-void one_page_plot_v3_(int *test_id, float *data, float *error, int *plot_type, 
- float *limits, char *cscname, char *timestring, char *plot_title, 
- char *summary_title, char *filename, 
- char *daq_version, char *anal_version, char *user_name, char *site,
- int *iflag, int cscname_length, 
- int timestring_length, int plot_title_length, int summary_title_length, 
- int filename_length, 
- int daq_version_length,  int anal_version_length, int user_name_length, int site_length);
+    void one_page_plot_v3_(int *test_id, float *data, float *error, int *plot_type, 
+    float *limits, char *cscname, char *timestring, char *plot_title, 
+    char *summary_title, char *filename, 
+    char *daq_version, char *anal_version, char *user_name, char *site,
+    int *iflag, int cscname_length, 
+    int timestring_length, int plot_title_length, int summary_title_length, 
+    int filename_length, 
+    int daq_version_length,  int anal_version_length, int user_name_length, int site_length);
   */
-
-void one_page_plot_v3_(int *test_id, float *data, float *error, int *plot_type, 
- float *limits, char *cscname, char *timestring, char *plot_title, 
- char *summary_title, char *filename, 
- char *daq_version, char *anal_version, char *user_name, char *site, 
- char *number_of_run, char *run_date, char *testnames, 
- int *iflag, int cscname_length, 
- int timestring_length, int plot_title_length, int summary_title_length, 
- int filename_length, 
- int daq_version_length,  int anal_version_length, int user_name_length, 
- int site_length, 
- int number_of_run_length, int run_date_length, int testname_length);
-
-int calc_peds_(int mode, float mean[NLAYER][NSTRIP], float rms[NLAYER][NSTRIP]);
-int calc_peds (int mode, float *mean[NLAYER], float *rms[NLAYER], int nstrips);
-
-void dops_(float *limits,char *cscname, char *title);
-
-void fit_erf_(int *npoints, int *data, float *errors, float *par, float *chisq);
-
-void init_display_(void);
-
-void wait_for_return(void);
-
-int tm_create_header(int testnum, int reserved); // header_propagation
-
-char* get_most_recent();
-
+  
+  void one_page_plot_v3_(int *test_id, float *data, float *error, int *plot_type, 
+			 float *limits, char *cscname, char *timestring, char *plot_title, 
+			 char *summary_title, char *filename, 
+			 char *daq_version, char *anal_version, char *user_name, char *site, 
+			 char *number_of_run, char *run_date, char *testnames, 
+			 int *iflag, int cscname_length, 
+			 int timestring_length, int plot_title_length, int summary_title_length, 
+			 int filename_length, 
+			 int daq_version_length,  int anal_version_length, int user_name_length, 
+			 int site_length, 
+			 int number_of_run_length, int run_date_length, int testname_length);
+  
+  int calc_peds_(int mode, float mean[NLAYER][NSTRIP], float rms[NLAYER][NSTRIP]);
+  int calc_peds (int mode, float *mean[NLAYER], float *rms[NLAYER], int nstrips);
+  
+  void dops_(float *limits,char *cscname, char *title);
+  
+  void fit_erf_(int *npoints, int *data, float *errors, float *par, float *chisq);
+  
+  void init_display_(void);
+  
+  void wait_for_return(void);
+  
+  int tm_create_header(int testnum, int reserved); // header_propagation
+  
+  char* get_most_recent();
+  
   time_t seconds_since_1900(void);
 /* Convert time info unpacked from the event header back to seconds since 
  * Jan 1, 1900, which is called "calendar time" in Unix. The time info is 
