@@ -1,0 +1,23 @@
+#define HIST_LAYER_LOW_LIMIT0        0.0
+#define HIST_LAYER_LOW_LIMIT1        0.0
+#define HIST_LAYER_LOW_LIMIT2        0.0
+
+#define HIST_LAYER_HIGH_LIMIT0       1.2
+#define HIST_LAYER_HIGH_LIMIT1       0.3
+#define HIST_LAYER_HIGH_LIMIT2       0.3
+
+#define HIST_SUMMARY_LOW_LIMIT0     -0.05
+#define HIST_SUMMARY_LOW_LIMIT1     -0.05
+#define HIST_SUMMARY_LOW_LIMIT2     -0.05
+
+#define HIST_SUMMARY_HIGH_LIMIT0     1.05
+#define HIST_SUMMARY_HIGH_LIMIT1      .3
+#define HIST_SUMMARY_HIGH_LIMIT2      .3
+
+#define NON_EFF_LOWER_LIMIT          0.05
+#define EFF_LOWER_LIMIT              0.95
+#define EFF_UPPER_LIMIT              1.05
+#define PAIR_XTALK_LOWER_LIMIT       0.0
+#define PAIR_XTALK_UPPER_LIMIT       0.05
+#define NON_PAIR_XTALK_LOWER_LIMIT   0.0
+#define NON_PAIR_XTALK_UPPER_LIMIT   0.002

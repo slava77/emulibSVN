@@ -1,0 +1,9 @@
+#define STRIP_PLOT          1
+#define WIRE_PLOT           2
+#define HSTRIP_PLOT         3
+#define MSTRIP_PLOT         4
+#define MWIRE_PLOT          5
+#define MHSTRIP_PLOT        6
+#define GAIN_PLOT           7
+#define STRIP_PLOT_ODD      8
+#define STRIP_PLOT_EVEN     9
