@@ -33,8 +33,6 @@ Test_AFEB06::Test_AFEB06(std::string dfile): Test_Generic(dfile)
 
 void Test_AFEB06::initCSC(std::string cscID)
 {
-
-
   //= Init per CSC events counters
   nCSCEvents[cscID]=0;
 
