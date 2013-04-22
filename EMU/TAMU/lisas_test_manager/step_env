@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# source this file from fast_daq directory
+
+RCFILE=~cscme11/.zshrc
+[ -z "${ROOTSYS}" ] && `grep "export ROOTSYS=" $RCFILE` && source ${ROOTSYS}/bin/thisroot.sh
+[ -z "${XDAQ_OS}" ] && export XDAQ_OS=linux
+[ -z "${XDAQ_PLATFORM}" ] && export XDAQ_PLATFORM=x86_64_slc5
+[ -z "${XDAQ_ROOT}" ] && `grep "export XDAQ_ROOT=" $RCFILE`
+
+export TRIDASDIST=/home/cscme11/TriDAS
+export EMUDIST=$TRIDASDIST/emu
+export DAQHOME=$EMUDIST/fast_daq_before_2013Apr08
+export DATADIR=$EMUDIST/data
+export CERNDIR=/cern/pro
+export CVS_RSH=ssh
+export PATH=/usr/local/java/jdk/bin:$PATH:$EMUDIST/bin
+export JAVADIR=/usr/opt/jdk1.6.0
+export DAQSCHAR=-schar3
+
+export VME_SERVER_ADDRESS=cms-dqm01.phys.ufl.edu
+export VME_SERVER_PORT=9999
+export VME_XML_FILE=step_4110_coinc_trig.xml
+export VME_STARTUP_DELAY_SEC=2
+
+alias hd='hexdump -v -f $DAQHOME/hexformat.txt'
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$TRIDASDIST/$XDAQ_PLATFORM/lib
+#local stuff, comment out if needed
+export LISAHOME=$PWD
+export DATADIR=$LISAHOME/data
+
+
+#need this if missing
+[ ! -d "$DATADIR" ] && echo mkdir $DATADIR &&  mkdir $DATADIR
+[ ! -d "$LISAHOME/lib" ] && echo mkdir $LISAHOME/lib && mkdir $LISAHOME/lib
+MYG2C=/usr/lib64/libg2c.so.0.0.0
+[ ! -f "$LISAHOME/lib/libg2c.so" ] && echo made symlink to $MYG2C && ln -s $MYG2C $LISAHOME/lib/libg2c.so
