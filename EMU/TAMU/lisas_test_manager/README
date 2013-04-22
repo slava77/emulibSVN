@@ -1,11 +1,14 @@
 
 this is an SVN version.
 
-required env variables:
-export DAQHOME=$SOMEBASE/emu/fast_daq
-export STEPHOME=$SOMEBASE/$XDAQ_PLATFORM
-export DATADIR=$STEPHOME/data
-export CERNDIR=/cern/pro
+quick steps to build (assumes it's on emume11 and cscme11 directory is visible):
+>>
+svn co
+cd lisas_test_manager
+source step_env
+make
+<<
+The executable will be in the ./bin/lisas_test_manager
 
 more stuff is needed (to be filled)
 
