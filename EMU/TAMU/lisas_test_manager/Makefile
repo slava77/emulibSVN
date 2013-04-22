@@ -12,18 +12,43 @@ OS := $(shell uname)
 #export DAQHOME=/home/cscme42/TriDAS/emu/fast_daq
 #export CERNDIR=/usr/libexec/CERNLIB/2005
 
+$(info DAQHOME = $(DAQHOME) )
+ifndef DAQHOME 
+$(warning no DAQHOME is set setting to /home/cscme11/TriDAS/emu/fast_daq_before_2013Apr08)
+DAQHOME=/home/cscme11/TriDAS/emu/fast_daq_before_2013Apr08
+endif
+ifndef ROOTSYS
+$(error set ROOTSYS)
+endif
+ifndef XDAQ_ROOT
+$(error set XDAQ_ROOT)
+endif
+ifndef TRIDASDIST
+$(error set TRIDASDIST)
+endif
+
 ## Directory structure
-HDIR = $(DAQHOME)/lisas_test_manager
-DAQCOMMON=$(DAQHOME)/daq_common
+HDIR = $(PWD)
+#$(DAQHOME)/lisas_test_manager
+DAQCOMMON =$(DAQHOME)/daq_common
 READOUT_CONTROL=$(DAQHOME)/readout_control
 EVTANA=$(DAQHOME)/event_analysis
 
+#this may have reset the default already set
+BUILD_HOME=$(TRIDASDIST)
+# now check if subdirs exist. Want this in any case, hence don't make a rule 
+haveDIRS=$(shell test -d $(DAQCOMMON) -a -d $(READOUT_CONTROL) -a -d $(EVTANA) \
+	|| echo no ) 
+ifeq  "$(haveDIRS)" "no" 
+$(error Prerequisite dirs are missing)
+endif
+
 #$(STEPHOME)=$(HOME)
-ifndef ($(CSCHOME))
-@echo CSCHOME=/home/cscme11
+ifndef CSCHOME
+$(info setting CSCHOME=/home/cscme11)
 CSCHOME=/home/cscme11
 endif  
-BDIR = $(BUILD_HOME)/$(XDAQ_PLATFORM)/bin
+BDIR = $(HDIR)/bin
 SDIR = $(HDIR)/src
 ODIR = $(HDIR)/obj
 IDIR = $(HDIR)/include
@@ -77,15 +102,18 @@ XDAQ_DS    = $(XDAQ_OS)/$(XDAQ_PLATFORM)
 XINC       = -I/usr/include/X11 -I/usr/X11R6/include -I/usr/include
 #XLIB       = -lforms -L/usr/X11R6/lib -lXpm -lX11
 XLIB       = -L/usr/X11R6/lib -L/usr/lib64 -lXpm -lX11
-EXTLIB  = -L$(XDAQ_ROOT)/lib -L$(BUILD_HOME)/emu/daq/reader/lib/$(XDAQ_DS)
-EXTLIB += -L$(BUILD_HOME)/emu/dqm/common/lib/$(XDAQ_DS)
-EXTLIB += -L$(BUILD_HOME)/emu/dqm/cmssw/lib/$(XDAQ_DS)
-EXTLIB += -L$(CSCHOME)/TriDAS/emu/fast_daq_before_2013Apr08/csc_display/lib
-EXTLIB += -lemudaqreader_sa  -lemudqmcommon_sa -lCSCRawToDigi -lCSCDigi  -lemuSTEPConfigRead 
+EXTLIB  = -L$(XDAQ_ROOT)/lib  -L$(TRIDASDIST)/$(XDAQ_OS)/lib
+#avoid local includes for now
+#EXTLIB += -L$(BUILD_HOME)/emu/daq/reader/lib/$(XDAQ_DS)
+#EXTLIB += -L$(BUILD_HOME)/emu/dqm/common/lib/$(XDAQ_DS)
+#EXTLIB += -L$(BUILD_HOME)/emu/dqm/cmssw/lib/$(XDAQ_DS)
+#EXTLIB += -L$(DAQHOME)/csc_display/lib
+EXTLIB += -lemudaqreader_sa  -lemudqmcommon_sa -lCSCRawToDigi -lCSCDigi -lemuSTEPConfigRead 
 #xdaq stuff (isn't there a magic command to make this list?) 
 EXTLIB += -lxdaq -lxerces-c -lxoap -lxdata -ltoolbox -lxcept -lxgi -lcgicc -llogxmlappender -lconfig -lmimetic -lasyncresolv -llog4cplus -lpeer -llogudpappender -lappweb
 EXTLIB += -luuid
 EXTLIB += $(ROOTLIB)
+
 
 #***************************************************************************
 ## other includes and libs
@@ -98,12 +126,15 @@ LOCINC = \
         -I$(CERNDIR)/include/cfortran \
 	-I/usr/local/include \
 	-I$(CMSSW) \
-        -I$(BUILD_HOME)/emu/daq/reader/include \
-        -I$(BUILD_HOME)/emu/dqm/cmssw/include/emu/dqm/cmssw \
-        -I$(BUILD_HOME)/emu/dqm/common/include \
-	-I$(BUILD_HOME)/emu/emuSTEP/emuSTEPConfigRead/include \
-	-I$(BUILD_HOME)/emu/daq/reader/include \
+	-I$(TRIDASDIST)/$(XDAQ_PLATFORM)/include \
 	-I$(XDAQ_ROOT)/include
+LOCINC += -I$(TRIDASDIST)/$(XDAQ_PLATFORM)/include/emu/dqm/cmssw
+#LOCINC += -I$(BUILD_HOME)/emu/emuSTEP/emuSTEPConfigRead/include
+#exists in TRIDASDIST
+#LOCINC += -I$(BUILD_HOME)/emu/daq/reader/include 
+#LOCINC += -I$(BUILD_HOME)/emu/dqm/common/include
+#LOCINC += -I$(BUILD_HOME)/emu/daq/reader/include
+
 
 
 ifeq ($(OS),Linux)
@@ -153,8 +184,12 @@ OBJECTS      = \
 	$(ODIR)/test_utils_f.o \
 	$(ODIR)/screen.o \
 	$(ODIR)/unpack_data.o \
-	$(DAQHOME)/readout_control/obj/io_utils.o \
-	$(DAQCOMMON)/obj/daq_ipc.o $(DAQCOMMON)/lib/daq_common_offline.a
+	$(ODIR)/io_utils.o
+# now some extra nonstandard stuff 
+OBJECTS += $(DAQCOMMON)/lib/daq_common_offline.a
+# \
+#	$(DAQHOME)/readout_control/obj/io_utils.o \
+#	$(DAQCOMMON)/obj/daq_ipc.o $(DAQCOMMON)/lib/daq_common_offline.a
 
 
 #already in EXT_Library
@@ -181,9 +216,12 @@ OBJECTS      = \
 #daq_common_lib:
 #	cd  ../daq_common       ; make
 
-$(BDIR)/lisas_test_manager : $(OBJECTS)
+$(BDIR)/lisas_test_manager : $(BDIR) $(OBJECTS)
 	$(CC) $(CCOPT) $(LOCINC)  -o $(BDIR)/lisas_test_manager $(OBJECTS) \
           $(LIB) $(XLIB) $(EXTLIB) $(CERNLIB)
+
+$(BDIR) :
+	mkdir -p $(BDIR)
 
 $(ODIR)/fast_ana.o : $(SDIR)/fast_ana.cc $(IDIR)/test_functions.h \
           $(IDIR)/test_params.h $(DAQCOMMON)/include/csc_event.h \
@@ -371,10 +409,8 @@ $(ODIR)/test_utils_f.o : src/test_utils_f.f
 $(ODIR)/screen.o : $(SDIR)/screen.c
 	$(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/screen.o -c $(SDIR)/screen.c 
 
-$(DAQHOME)/readout_control/obj/io_utils.o : \
-          $(DAQHOME)/readout_control/src/io_utils.c 
-	 cd $(DAQHOME)/readout_control ; \
-         make $(DAQHOME)/readout_control/obj/io_utils.o 
+$(ODIR)/io_utils.o : $(SDIR)/io_utils.c 
+	 $(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/io_utils.o -c $(SDIR)/io_utils.c
 
 $(ODIR)/unpack_data.o : $(SDIR)/unpack_data.cc \
 					   $(DAQCOMMON)/include/csc_event.h \
@@ -395,4 +431,5 @@ clean :
 	rm -f $(BDIR)/lisas_test_manager
 	rm -f $(BDIR)/*.kumac
 
-
+check : $(DAQCOMMON)
+	$(error check failed)
