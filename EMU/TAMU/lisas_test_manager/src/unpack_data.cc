@@ -474,7 +474,7 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
 
 
         }
-      cout<<" i get to clct stuff"<<endl;
+      //      cout<<" i get to clct stuff"<<endl;
       ///** CLCT Found
       if (data.nclct())
         {
@@ -542,7 +542,7 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
 	   }
 	}else{//close check on number of clct's
     
-	cout<<"no clcts found"<<endl;
+	//	cout<<"no clcts found"<<endl;
       }
       ///** CFEBs Found
       int N_CFEBs=5, N_Samples=16, N_Layers = 6, N_Strips = 16;
@@ -558,6 +558,7 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
 
               NmbTimeSamples= (data.cfebData(nCFEB))->nTimeSamples();
               upevt_.nsca_sample = NmbTimeSamples;
+
 
               if (dmbHeader->cfebAvailable() & (0x1 << nCFEB))    /* Is this CFEB present? */
                 {
