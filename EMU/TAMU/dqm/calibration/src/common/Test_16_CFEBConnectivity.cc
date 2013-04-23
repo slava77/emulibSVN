@@ -155,7 +155,7 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
   	
   if(nCSCEvents[cscID] >= nExpectedEvents) {
 	
-      LOG4CPLUS_ERROR(logger, nCSCEvents[cscID] << " exceeded expected number of events (" << nExpectedEvents << ")");
+      LOG4CPLUS_WARN(logger, nCSCEvents[cscID] << " exceeded expected number of events (" << nExpectedEvents << ")");
   }
   
   
@@ -186,27 +186,14 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
         	  int adc_max = -1;
         	  int adc_min = 4096;
         	  
-        	  // if(icfeb == 2 && ilayer == 3 && istrip == 10)
-			  // {
-				// cout << endl << "icfeb: " << icfeb << "ilayer: " << ilayer << "\tistrip: " << istrip << endl;
-			  // }
-        	  //cout << endl << "layer: " << ilayer-1 << "\tstrip: " << icfeb*16 + istrip - 1 << endl;
         	  // loop for calculating min&max bins later
         	  int jmin = -1, jmax = 16;
 			  
-			  // if(nTimeSamples == 0) {
-				// cout << endl << "layer: " << ilayer-1 << "\tstrip: " << icfeb*16 + istrip - 1 << endl;
-			  // }
 			  
         	  for (int j=0; j<nTimeSamples; j++)
         	  {
         		  CSCCFEBDataWord* timeSample=(cfebData->timeSlice(j))->timeSample(ilayer,istrip);
         		 
-				 // if(icfeb == 2 && ilayer == 3 && istrip == 10 && j < 7 && j > 3)
-				// {
-					
-        		  // cout << timeSample->adcCounts << " ";
-				// }
         		  
         		  if(timeSample->adcCounts > adc_max)
 					  {
@@ -219,11 +206,6 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
 						  jmin = j;
 					  }
         	  }
-        	  
-        	  /*if(ilayer == 1 && istrip == 1) 
-        	  {
-        		  printf("jmin: %i, adc_min: %i, jmax: %i, adc_max: %i\n", jmin,adc_min,jmax,adc_max);
-        	  }*/
 
         	  
         	  min_adc_hist->Fill(jmin);
@@ -236,11 +218,7 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
         	  {
                 	  int adc_count = (cfebData->timeSlice(j))->timeSample(ilayer,istrip)->adcCounts;
                 	  double count_diff = (double) adc_count - (double) pedestal;
-                	  
-                	  /*if(isnan(count_diff)) {
-                		  cout << "####count_diff was nan!####" << endl;
-                		  count_diff = 0.0;
-                 	 }*/
+
                                     
                 	  int strip_idx = icfeb*16 + istrip - 1;
         	          //cout << "count_diff" << count_diff << endl;
@@ -248,9 +226,7 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
                 	  ch_adc_sum[j].cnts[ilayer-1][strip_idx] += 1;
         	          ch_adc_sum2[j].content[ilayer-1][strip_idx] += count_diff*count_diff;
 	                  ch_adc_sum2[j].cnts[ilayer-1][strip_idx] += 1;   
-                  
-				  //if(j < 8 && j > 2)
-				    //  cout<<"DBG "<<ilayer<<" "<<strip_idx<<" "<<j<<"  "<<pedestal<<" "<<adc_count<<" "<<count_diff<<" "<<ch_adc_sum[j].cnts[ilayer-1][strip_idx]<<endl;
+
         	  }          
           }
         }
@@ -276,21 +252,10 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
     if (tsmax[1] > 16) tsmax[1] = 15;
     printf("Timesample with ADC min is %d, with ADC max is %d\n", tsmax[0],
            tsmax[1]);
-	/*
-	cout << endl;
-	for(int k = 0; k < 16; k++) {
-		cout << max_adc_hist->GetBinContent(k) << " ";
-	}
-	cout << endl;
-	for(int l=0; l<16;l++) {
-		cout << min_adc_hist->GetBinContent(l) << " ";
-	}
-	cout << endl;
-	*/
+
 
 	cout << "avg max/peak time bin: " << i_max << endl;
 	cout << "avg min time bin: " << i_min << endl;
-	//printf("i_min: %d, min: %d, i_max: %d, max: %d\n", i_min,min,i_max,max);
 	
 	double sum[TEST_DATA2D_NLAYERS][TEST_DATA2D_NBINS];
 	double sumsq[TEST_DATA2D_NLAYERS][TEST_DATA2D_NBINS];
@@ -343,20 +308,7 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 			if ((n = nevents[ilayer][istrip]) > 1) 
 			{
 
-				//cout << "sum[ilayer][istrip]: " << sum[ilayer][istrip] << endl;
-				//cout << "n: " << n << endl;
 				avg = sum[ilayer][istrip] / n;
-				if(isnan(avg)) {
-					cout << "###avg was nan!####" << endl;
-					//sum[ilayer][istrip] is nan sometimes!
-					cout << "sum[ilayer][istrip]: " << sum[ilayer][istrip] << endl;
-					cout << "sumsq[ilayer][istrip]: " << sumsq[ilayer][istrip] << endl;
-					cout << "ilayer: " << ilayer << endl;
-					cout << "istrip: " << istrip << endl;
-					cout << "n: " << n << endl;
-					avg = -999.;
-				}
-				//cout << "avg:" << avg << endl;
 				sigma_sq = (n / (n - 1)) * (sumsq[ilayer][istrip] / n - avg * avg);
 				adc_diff[ilayer][istrip] = avg;
 				adc_diff_err[ilayer][istrip] = sqrt(sigma_sq / n);

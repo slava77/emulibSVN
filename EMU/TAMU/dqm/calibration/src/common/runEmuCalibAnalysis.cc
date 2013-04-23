@@ -30,6 +30,7 @@
 #include "emu/dqm/calibration/Test_CFEB03.h"
 #include "emu/dqm/calibration/Test_CFEB04.h"
 #include "emu/dqm/calibration/Test_16_CFEBConnectivity.h"
+#include "emu/dqm/calibration/Test_19_CFEBComparators.h"
 #include "emu/dqm/calibration/Test_AFEB05.h"
 #include "emu/dqm/calibration/Test_AFEB06.h"
 #include "emu/dqm/calibration/Test_AFEB07.h"
@@ -97,7 +98,11 @@ int main(int argc, char **argv)
   std::string datafile = "";
   std::string histofile = "dqm_results.root";
   std::string SQLiteDB = cfgDir+"/csc_map.db";
+  
   std::string cscAFEBCalibFolder = cfgDir+"/afeb_thresholds/";
+  
+  //for test 19 (Test_19_CFEBComparators.cc)
+  //std::string cscCFEBCalibFolder = cfgDir+"/cfeb_thresholds/";
 
   std::string plotsdir = "images";  // Output images path
   std::string imgFormat = "png";  // Output image format
@@ -199,11 +204,19 @@ int main(int argc, char **argv)
   }
   else if ( (datafile.find("Test_16") != std::string::npos) ||
             (datafile.find("test16") != std::string::npos) ||
-	    (datafile.find("Test16") != std::string::npos) )
+			(datafile.find("Test16") != std::string::npos) )
   {
       LOG4CPLUS_INFO(logger, "Detected data for Test 16: CFEB Connectivity");
       test_analyzer = new Test_16_CFEBConnectivity(datafile);
       xmlTestCfg = "file://" + cfgDir + "/emuTest_16_CFEBConnectivity.xml";
+  }
+  else if ( (datafile.find("Test_19") != std::string::npos) ||
+            (datafile.find("test19") != std::string::npos) ||
+			(datafile.find("Test19") != std::string::npos) )
+  {
+      LOG4CPLUS_INFO(logger, "Detected data for Test 19: CFEB Comparator Thresholds and Noise");
+      test_analyzer = new Test_19_CFEBComparators(datafile);
+      xmlTestCfg = "file://" + cfgDir + "/emuTest_19_CFEBComparators.xml";
   }
   else if ( (datafile.find("ALCT_Connectivity") != std::string::npos) ||
         (datafile.find("Test_12") != std::string::npos) )
