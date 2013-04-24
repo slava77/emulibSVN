@@ -62,7 +62,8 @@ endif
 
 IncludeDirs = $(XdaqIncludeDirs)
 ifeq ("$(USELOCALBUILD)", "yes")
-#put the central install includes first
+#put the central install includes first (start from local, then look in central)
+IncludeDirs += $(BUILD_HOME)/$(XDAQ_PLATFORM)/include
 IncludeDirs += $(INST_BUILD_HOME)/$(XDAQ_PLATFORM)/include
 endif
 IncludeDirs += 	$(INST_BUILD_HOME)/emu/dqm/cmssw/include/emu/dqm/cmssw \
