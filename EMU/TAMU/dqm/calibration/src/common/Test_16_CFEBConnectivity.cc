@@ -58,8 +58,25 @@ void Test_16_CFEBConnectivity::initCSC(std::string cscID)
 
   TestData cscdata;
   TestData2D cfebdata;
-  cfebdata.Nbins = getNumStrips(cscID);
+  
   cfebdata.Nlayers = NLAYERS;
+  
+  if(isME11(cscID)) //isME11 in emu::dqm::utils
+  {
+	cfebdata.Nbins = 64; //me11a
+	cscdata["R01"] = cfebdata; //me11a
+	
+	cfebdata.Nbins = 48; //me11a
+	cscdata["R02"] = cfebdata; //me11b
+  
+  } else {
+	cfebdata.Nbins = getNumStrips(cscID);
+	cscdata["R01"] = cfebdata;
+  }
+  
+  cfebdata.Nbins = getNumStrips(cscID);
+  
+  
   memset(cfebdata.content, 0, sizeof (cfebdata.content));
   memset(cfebdata.cnts, 0, sizeof (cfebdata.cnts));
   
@@ -78,7 +95,6 @@ void Test_16_CFEBConnectivity::initCSC(std::string cscID)
 
 
   
-  cscdata["R01"] = cfebdata;
 
 
   tdata[cscID] = cscdata;
@@ -242,6 +258,7 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 	TestData& cscdata = tdata[cscID];
 	
     TestData2D& r01 = cscdata["R01"];
+    TestData2D& r02 = cscdata["R02"];//if(isME11(cscID)) 
     	
 	// hist bin starts at 1, jmin/jmax at 0.
 	int i_max = max_adc_hist->GetMaximumBin();
@@ -302,8 +319,14 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 	{
 		for (istrip = 0; istrip < nstrips; istrip++)
 		{
-
-			r01.cnts[ilayer][istrip]++;
+			if(istrip < 64)
+			{
+				r01.cnts[ilayer][istrip]++;
+			}
+			else
+			{
+				r02.cnts[ilayer][istrip-64]++;
+			}
 			
 			if ((n = nevents[ilayer][istrip]) > 1) 
 			{
@@ -312,19 +335,43 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 				sigma_sq = (n / (n - 1)) * (sumsq[ilayer][istrip] / n - avg * avg);
 				adc_diff[ilayer][istrip] = avg;
 				adc_diff_err[ilayer][istrip] = sqrt(sigma_sq / n);
-				r01.content[ilayer][istrip] = avg;
+				if(istrip < 64)
+				{
+					r01.content[ilayer][istrip] = avg;
+				}
+				else
+				{
+					 r02.content[ilayer][istrip-64] = avg;
+				}
+				
 			}
 			else if (n == 1)
 			{
 				adc_diff[ilayer][istrip]  = sum[ilayer][istrip];
 				adc_diff_err[ilayer][istrip] = 10.;
-				r01.content[ilayer][istrip] = sum[ilayer][istrip];
+				
+				if(istrip < 64)
+				{
+					r01.content[ilayer][istrip] = sum[ilayer][istrip];
+				}
+				else
+				{
+					r02.content[ilayer][istrip-64] = sum[ilayer][istrip];
+				}
 			}
 			else
 			{
 				adc_diff[ilayer][istrip] = -999.;
 				adc_diff_err[ilayer][istrip] = 0.;
-				r01.content[ilayer][istrip] = -999.;
+				
+				if(istrip < 64)
+				{
+					r01.content[ilayer][istrip] = -999.;
+				}
+				else
+				{
+					r02.content[ilayer][istrip-64] = -999.;
+				}
 			}
 		}
 	}
