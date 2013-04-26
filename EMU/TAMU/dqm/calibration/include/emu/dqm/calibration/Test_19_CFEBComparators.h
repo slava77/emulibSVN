@@ -16,7 +16,7 @@
 #include <TProfile.h>
 #include <TFile.h>
 
-#define NMAXSCANC             10 //root of problem, limits curr_pass at 5, causing segfault since not allocated to array
+#define NMAXSCANC             47 //root of problem, limits curr_pass at 5, causing segfault since not allocated to array
 #define NMAXTHRESHC          40 
 #define NMAXBUCKETC          31
 #define NCFEB_CHIP            6
@@ -55,7 +55,10 @@ typedef struct ThresholdScanDataC
 
 typedef std::map<std::string, ThresholdScanDataC> cscThresholdScanDataC;
 
-///////move into test generic? -- it already has this for AFEBs
+///////Move into test generic? -- it already has this for AFEBs
+///////Do CFEBs have calibration parameters like AFEBs?
+
+/*
 typedef struct CFEBCalibParams
 {
 
@@ -65,7 +68,7 @@ typedef struct CFEBCalibParams
   double gains[NCFEB];
 } CFEBCalibParams;
 
-typedef std::map<std::string, CFEBCalibParams> cscCFEBCalibParams;
+typedef std::map<std::string, CFEBCalibParams> cscCFEBCalibParams;*/
 /////////////
 
 
@@ -105,7 +108,7 @@ protected:
   std::map<int, std::map<std::string, test_step> > htree;
   bool fSwitch;
   cscThresholdScanDataC tscan_data;
-  cscCFEBCalibParams cfeb_cal_params;
+  //cscCFEBCalibParams cfeb_cal_params;
   
   
 private:
