@@ -183,10 +183,14 @@
 * Check that there are at least two layers in the fit
         nlayers = 0
         do ilayer = 1, 6
-          if (ilayer.ne.rl.and.layer_ok(ilayer)) 
+          if (ilayer.ne.rl.and.layer_ok(ilayer))
      &     nlayers = nlayers + 1
+          
         enddo
-        if (nlayers.le.1) return
+        if (nlayers.le.1)then
+*            print *,'### layer number too small ###'
+           return
+        endif
 
 * Add alignment corrections
         do ilayer = 1, 6
@@ -203,6 +207,9 @@
             sumx2 = sumx2 + z(ilayer) * z(ilayer) * weight
             sumy = sumy + x(ilayer) * weight
             sumxy = sumxy + z(ilayer) * x(ilayer) * weight
+            print *,'### get into ok layer blablabla weight ###'
+         else 
+            print *,'### get NOT into ok layer blablabla weight ###'
           endif
         enddo
  
