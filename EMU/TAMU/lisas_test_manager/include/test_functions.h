@@ -28,5 +28,4 @@ int    test_26_init(void);
 int    test_27_init(void);
 int    test_28_init(void);
 int    test_29_init(void);
-int    test_16cpp_init(void);
 
