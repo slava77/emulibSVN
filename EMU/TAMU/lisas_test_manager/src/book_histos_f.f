@@ -79,151 +79,6 @@ C
 
 *-----------------------------------------------------------------------------
 
-      subroutine book_histos_17f(scan_mode, npoints, xmin, xmax)
-      implicit none  
-
-* Global constants
-      include 'csc_parameters.inc'            ! For NSTRIP, NLAYER
-
-* Arguments
-      integer*4    scan_mode, npoints
-      real*4       xmin, xmax
-
-* Local variables
-      integer*4       FIRST_STRIP
-      parameter       (FIRST_STRIP = 1)
-
-* Local variables
-      integer*4       hid, layer, strip
-      character*50    htitle
-
-      if (scan_mode .eq. 2) then
-* Mean pulse heights, all strips
-        call hbprof(7, 'mean peak SCA vs test pulse DAC', 
-     &   npoints, xmin, xmax, -10., 4100., ' ')
-
-* Calibration input: pulsed strip ADC values
-        do layer = 1, NLAYER
-          do strip = FIRST_STRIP, NSTRIP
-            hid = 1000 + 100 * layer + strip
-            write(htitle, 10) layer, strip
-   10       format('L', i1, ' s' , i2, ' peak strip, ADC vs DAC')
-            call hbprof(hid, htitle, npoints, xmin, xmax, -1., 4100., 
-     &       'I')
-          enddo
-        enddo
-
-* Calibration input: ADC values of strips far ( >2 strips) from pulsed strip 
-        do layer = 1, NLAYER
-          do strip = FIRST_STRIP, NSTRIP
-            hid = 2000 + 100 * layer + strip
-            write(htitle, 20) layer, strip
-   20       format('L', i1, ' s' , i2, ' away from peak, ADC vs DAC')
-            call hbprof(hid, htitle, npoints, xmin, xmax, -1., 4100., 
-     &       'I')
-          enddo
-        enddo
-
-      else if (scan_mode .eq. 3) then
-* Extended pulse shapes
-        do layer = 1, NLAYER
-          do strip = FIRST_STRIP, NSTRIP
-            hid = 5000 + 100 * layer + strip
-            write(htitle, 50) layer, strip
-   50       format('L', i1, ' s' , i2, ' ADC vs timesample')
-            call hbprof(hid, htitle, 160, 0., 160., -1., 4100., 'I')
-          enddo
-        enddo
-        do layer = 1, NLAYER
-          do strip = FIRST_STRIP, NSTRIP
-            hid = 6000 + 100 * layer + strip
-            write(htitle, 60) layer, strip
-   60       format('L', i1, ' s' , i2, ' left xt ADC vs timesample')
-            call hbprof(hid, htitle, 160, 0., 160., -1., 4100., 'I')
-          enddo
-        enddo
-
-        do layer = 1, NLAYER
-          do strip = FIRST_STRIP, NSTRIP
-            hid = 7000 + 100 * layer + strip
-            write(htitle, 70) layer, strip
-   70       format('L', i1, ' s' , i2, ' right xt ADC vs timesample')
-            call hbprof(hid, htitle, 160, 0., 160., -1., 4100., 'I')
-          enddo
-        enddo
-      endif
-      return
-      end
-
-*-----------------------------------------------------------------------------
-
-      subroutine book_histos_20f
-      implicit none  
-
-* Global constants
-      include 'csc_parameters.inc'            ! For NSTRIP, NLAYER
-
-* Arguments
-
-* Local variables
-      integer*4       FIRST_STRIP
-      parameter       (FIRST_STRIP = 1)
-
-* Local variables
-      integer*4       hid, layer, strip
-      character*40    htitle
-
-* Calibration input: pulsed strip ADC values
-      do layer = 1, NLAYER
-        do strip = FIRST_STRIP, NSTRIP
-          hid = 1000 + 100 * layer + strip
-          write(htitle, 10) layer, strip
-   10     format('L', i1, ' strip ' , i2, ' hit time (25 ns bins)')
-          call hbprof(hid, htitle, 16, -0.5, 15.5, -1., 8., 'I')
-        enddo
-      enddo
-
-      return
-      end
-
-*-----------------------------------------------------------------------------
-
-      subroutine book_histos_22f(npoints, xmin, xmax)
-      implicit none  
-
-* Global constants
-      include 'csc_parameters.inc'            ! For NSTRIP, NLAYER
-
-* Arguments
-      integer*4    npoints
-      real*4       xmin, xmax
-
-* Local variables
-      integer*4       FIRST_STRIP
-      parameter       (FIRST_STRIP = 1)
-
-* Local variables
-      integer*4       hid, layer, strip
-      character*40    htitle
-
-* Profile histogram of compator response asymmetry vs test pulse amplitude
-      do layer = 1, NLAYER
-        do strip = FIRST_STRIP, NSTRIP
-          hid = 100 * layer + strip
-          write(htitle, 10) layer, strip
-   10     format('L', i1, ' s ' , i2, ' Comp L/R offset vs DAC')
-          call hbprof(hid, htitle, npoints, xmin, xmax, -21., 21., ' ')
-        enddo
-      enddo
-
-* Reserve storage space for errors
-      call HBARX(0)
-
-      return
-      end
-
-*-----------------------------------------------------------------------------
-
       subroutine book_histos_27f(pass, stage, nwires)
       implicit none  
 
@@ -242,7 +97,7 @@ C
 C  Stage = 0 for histograms filled event-by-event, 1 for histograms filled
 C  during end-of-run (pass) analysis.
 
-* Long-range crosstalk *
+* Long-range crosstalk
       if (pass.eq.2.and.stage.eq.0) then
         do layer = 1, 6
           do icfeb = 1, 5
@@ -259,7 +114,7 @@ C  during end-of-run (pass) analysis.
         enddo
       endif
 
-* Clusterfit residuals *
+* Clusterfit residuals
       if ((pass.eq.2.and.stage.eq.1).or.(pass.eq.3.and.stage.eq.0)) then
         do layer = 1, 6
           do iseg = 1, 5
@@ -271,7 +126,7 @@ C  during end-of-run (pass) analysis.
         enddo
       endif
 
-* Anode timing *
+* Anode timing
       if (pass.eq.2.and.stage.eq.0) then
         do layer = 1, 6
           hid = 60 + layer
@@ -282,7 +137,7 @@ C  during end-of-run (pass) analysis.
         enddo
       endif
 
-* Comparator residuals *
+* Comparator residuals
       if (pass.eq.3.and.stage.eq.0) then
         do layer = 1, 6
           hid = 160 + layer
@@ -292,7 +147,7 @@ C  during end-of-run (pass) analysis.
         enddo
       endif
 
-* Scintillator timing (not part of standard test 27 analysis) * 
+* Scintillator timing (not part of standard test 27 analysis)
       if (pass.eq.2.and.stage.eq.0) then
         do s1 = 1, 12
           do s2 = s1 - 1, s1 + 1
