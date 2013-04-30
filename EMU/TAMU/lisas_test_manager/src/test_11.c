@@ -51,7 +51,7 @@ extern char  number_of_run[80];
 
 static int             hv_status;          // hv for this run, status=0 HV=3600, status=1 hv=3800
 static char * hv_val[2] ={ "3600 V","3800 V"};
-
+//why should it be INT and not floats?
 static int           first_time,  del_time,  all_time;
 static long            del_scaler;
 static unsigned long   first_scaler,all_scaler;
@@ -89,7 +89,7 @@ int test_11_init(void)
   switch (csc_type)
   {
   case 0: nwires = 48; break;
-  case 1: nwires = 64; break;
+  case 1: nwires = 48; break;
   case 2: nwires = 32; break;
   case 3: nwires = 112; break;
   case 4: nwires = 96; break;
@@ -297,6 +297,8 @@ int test_11_event(int pass)
 	static int    first = 1, tbit[32];
 
 	hid = WIRE_HIST_OFFSET +3000;
+
+	//printf ("event %i, time musec int %d, time musec float %d\n", upevt_.event_number, upevt_.time_musec, upevt_.time_musec);
 
 	/* GET TIME and SCALER */
 	if(upevt_.event_number == 1)
@@ -528,15 +530,18 @@ int test_11_finish(void) {
 
   char  *file_his_name;
   int j;
+  float f;
 
   //assign legacy values for rate analysis
   all_scaler = upevt_.event_number;
-  printf("Please input number of seconds it took to collect events: \n");
+  printf("Please input number of milliseconds it took to collect events: \n");
   getint(&j);
-  all_time = j * 1000; // in ms
+  //in earlier time here a factor of 1000 - take it out since
+  //we report NOW ms directly
+  all_time = (float)j; // in ms
 
-  printf("all_scaler= %ld all_time= %d sec,  event_number= %ld \n", all_scaler,
-  (int) (0.001*all_time), upevt_.event_number);
+  printf("all_scaler= %ld all_time= %f sec,  event_number= %ld \n", all_scaler,
+	 (float)(0.001*all_time), upevt_.event_number);
 
   for (ilayer = 0; ilayer < NLAYER; ilayer++) {
     for (iwire = 0; iwire < nwires; iwire++) {
@@ -547,6 +552,7 @@ int test_11_finish(void) {
 
       events = (float)(all_scaler)*1000.*(float)(HSTATI(hid,3,choice,num));
       events = events/(float)(upevt_.event_number);
+      //all time in old codes in seconds
       events = events/(float)(all_time);
 
       enters[ilayer][iwire] = events;
@@ -580,7 +586,7 @@ int test_11_finish(void) {
     HRPUT(0, file_his_name, "N");
     free(file_his_name);
     }
-
+  printf("results will be plotted");
 /* Plot results */
 
   theta = (NSTRIP / 2.) * STRIP_ANGLE;
