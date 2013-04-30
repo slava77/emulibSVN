@@ -119,14 +119,14 @@ void fitit(float *x, float *y, float *yerr, int npoints, float *emm,
 int make_name(char *cscname, int cscnum, int csctype) 
   {
   static char    csc_label[NUM_CSC_TYPES][8] 
-    = {"ME1.2", "ME1.3", "ME2.1", "ME3.1", "ME234.2", "ME4.1", "ME1.1a", "ME1.1b"};
+    = {"ME1.1a", "ME1.1b", "ME1.2", "ME1.3", "ME2.1", "ME3.1", "ME234.2", "ME4.1"};
   csc_num = cscnum;
   csc_type = csctype;
 
-  if (csc_type < 1 || csc_type > NUM_CSC_TYPES) return -1;
+  if (csc_type < 0 || csc_type > NUM_CSC_TYPES) return -1;
   else 
     {
-    sprintf(csc_name, "%s.%03d", csc_label[csc_type-1], csc_num);
+    sprintf(csc_name, "%s.%03d", csc_label[csc_type], csc_num);
     strcpy(cscname, csc_name);  
     return 0;
     }
@@ -463,9 +463,13 @@ int calc_peds_(int mode, float mean[NLAYER][NSTRIP], float rms[NLAYER][NSTRIP])
 	{
 	    hid = 100*(ilayer + 1) + (istrip + 1);
 
+	    /* the htitle as well as the last five parameters are unused
+	       nx xmi and xma refer to the number of X bins, the lower edge of
+	       the first bin, and the upper edge of the last bin */
 	    HGIVE(hid, htitle, nx, xmi, xma, ny, ymi, yma, nwt, loc);
 	    xwidth = (xma - xmi) / nx;
 
+	    /* this should be a call to getarray returning into histo_content */
 	    HUNPAK(hid, histo_content, "HIST", 0);
 
 	    if (mode == 0) 
@@ -539,9 +543,13 @@ int calc_peds(int mode, float *mean[NLAYER], float *rms[NLAYER], int nstrips)
 	{
 	    hid = 100*(ilayer + 1) + (istrip + 1);
 
+	    /* the htitle as well as the last five parameters are unused
+	       nx xmi and xma refer to the number of X bins, the lower edge of
+	       the first bin, and the upper edge of the last bin */
 	    HGIVE(hid, htitle, nx, xmi, xma, ny, ymi, yma, nwt, loc);
 	    xwidth = (xma - xmi) / nx;
 
+	    /* this should be a call to getarray returning into histo_content */
 	    HUNPAK(hid, histo_content, "HIST", 0);
 
 	    if (mode == 0) 
