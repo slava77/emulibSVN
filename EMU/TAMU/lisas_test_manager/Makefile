@@ -14,8 +14,8 @@ OS := $(shell uname)
 
 $(info DAQHOME = $(DAQHOME) )
 ifndef DAQHOME 
-$(warning no DAQHOME is set setting to /home/cscme11/TriDAS/emu/old_code/fast_daq_before_2013Apr08)
-DAQHOME=/home/cscme11/TriDAS/emu/old_code/fast_daq_before_2013Apr08
+$(warning no DAQHOME is set setting to /home/cscme11/TriDAS/emu/lisas_dist)
+DAQHOME=/home/cscme11/TriDAS/emu/lisas_dist
 endif
 ifndef ROOTSYS
 $(error set ROOTSYS)

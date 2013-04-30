@@ -10,7 +10,7 @@ RCFILE=~cscme11/.zshrc
 
 export TRIDASDIST=/home/cscme11/TriDAS
 export EMUDIST=$TRIDASDIST/emu
-export DAQHOME=$EMUDIST/old_code/fast_daq_before_2013Apr08
+export DAQHOME=$EMUDIST/lisas_dist
 export DATADIR=$EMUDIST/data
 export CERNDIR=/cern/pro
 export CVS_RSH=ssh
