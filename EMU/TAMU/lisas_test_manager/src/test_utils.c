@@ -57,10 +57,8 @@ char  testnames[MAX_TEST_NUM][100]=
   "CLCT self-trigger on cosmics test    ", //26
   "High-statistics cosmic test          ", //27
   "Performance vs HV test               ", //28
-  "High rate test                       ",  //29
-  "CFEB Connectivity test (CPP version) "  //30
-}
-;
+  "High rate test                       "  //29
+};
 
 const char* gettestname(int itest){
   return testnames[itest-1];

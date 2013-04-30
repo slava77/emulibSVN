@@ -191,10 +191,6 @@ extern "C" int fast_ana(char *in_file, int max_events, int nskip, int test_num,
       //      if (test_24_init()) goto init_err;
       //      break;
       
-    case 30:
-      if (test_16cpp_init()) goto init_err;
-      break;
-      
     init_err:
     default:
       printf("Couldn't complete initialization for test %d\n", test_num);

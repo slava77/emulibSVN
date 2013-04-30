@@ -2,7 +2,7 @@
 
 #define NUM_CSC_TYPES   8
 #define MAXBINS       200
-#define MAX_TEST_NUM   30
+#define MAX_TEST_NUM   29
 
 #include "csc_parameters.h"
 
