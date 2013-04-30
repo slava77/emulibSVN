@@ -59,8 +59,11 @@ static int nwires;
 
 int test_12_init() 
   {
+    printf("before test begin\n");
   test_begin  = test_12_begin;
+  printf("after test begin\n");
   test_event  = test_12_event;
+  printf("after test event\n");
   test_end    = test_12_end;
   test_finish = test_12_finish;
 
@@ -228,6 +231,8 @@ int test_12_begin(int pass)
 		HBOOK1( hid, htitle, nwires, 0.5, (float)nwires+0.5, 0.0);
 	}
 
+	printf("end of test12 init\n");
+
 	return 0;
 }
 
@@ -237,6 +242,7 @@ int test_12_begin(int pass)
 
 int test_12_event(int pass) 
 {
+  //printf("test12event reached, pass %d\n",pass);
 	int               hid, layer, layer1, layer2, iwire, j;
 	static int        pair_layer[6] = { 2, 1, 4, 3, 6, 5 };
 	static logical    first = _TRUE;
@@ -269,29 +275,38 @@ int test_12_event(int pass)
 	layer = upevt_.alctcal_current_value;
 	hid = layer;
 	for (iwire = 0; iwire < nwires; iwire++) {
-		if (upevt_.alct_dump[layer-1][iwire] > 0) 
-			HFILL(hid, (float)(iwire+1), 0., 1.);
+	  if (upevt_.alct_dump[layer-1][iwire] > 0){ 
+	    // printf (" wire %d, layer %d, dump %d,event%d\n",iwire,layer,upevt_.alct_dump[layer-1][iwire],event_number);
+
+	    HFILL(hid, (float)(iwire+1), 0., 1.);
+	  }
 	}
-    nevents[layer-1]++;
+	//printf("\n");
+	nevents[layer-1]++;
 /* Fill histograms for the layer paired with layer1 (which might have xtalk) */
 	layer1 = pair_layer[layer-1];
 	hid = 10 + layer1;
 	for (iwire = 0; iwire < nwires; iwire++) {
-		if (upevt_.alct_dump[layer1-1][iwire] > 0) 
-			HFILL(hid, (float)(iwire+1), 0., 1.);
+	  if (upevt_.alct_dump[layer1-1][iwire] > 0) {
+	    HFILL(hid, (float)(iwire+1), 0., 1.);
+	    //printf (" wire %d, layer1 %d, layer %d ,dump %d ",iwire,layer1, layer, upevt_.alct_dump[layer-1][iwire]);
+	  }
 	}
 	nevents1[layer1-1]++;
-
+	//printf("\n");
 /* Fill histograms for the layers with no hits expected */
 	for (layer2 = 1; layer2 <= NLAYER; layer2++) {
 		if (layer2 != layer && layer2 != layer1) {
 			hid = 20 + layer2;
 			for (iwire = 0; iwire < nwires; iwire++) {
-				if (upevt_.alct_dump[layer2-1][iwire] > 0) 
-					HFILL(hid, (float)(iwire+1), 0., 1.);
+			  if (upevt_.alct_dump[layer2-1][iwire] > 0){ 
+			    HFILL(hid, (float)(iwire+1), 0., 1.);
+			    //printf (" wire %d, layer %d, layer2 %d, dump %d ", iwire, layer, layer2, upevt_.alct_dump[layer-1][iwire]);
+			  }
 			}
 			nevents2[layer2-1]++;
 		}
+		//printf("\n");
 	}
 
 	//  nevents1[layer1-1]++;

@@ -106,6 +106,8 @@ int test_18_init()
 
     switch (csc_type)
     {
+    case 0:  nstrips = 48; break;
+    case 1:  nstrips = 64; break;
     case 2:  nstrips = 64; break;
     default: nstrips = 80; break;
     }

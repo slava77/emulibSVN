@@ -43,7 +43,7 @@ int test_13_end(int pass);
 int test_13_finish(void);
 int print_time_close(FILE *);
 int print_scan_result(int );
-int check_bad_channels(float** value , float , float , char* );
+int check_bad_channels(float **value , float , float , char* );
 int get_afeb(int , int );
 int get_next_scan(int );
 int save_hist(int );
@@ -1077,7 +1077,7 @@ int print_scan_result(int scan_number)
 
 /*------------------------ check_bad_channels ------------------------------*/
 
-int check_bad_channels( float** value, float lim_low,
+int check_bad_channels( float **value, float lim_low,
 		    float lim_high, char* comment)
   {
     int n_bad_channels; // number of bad channels for this check
