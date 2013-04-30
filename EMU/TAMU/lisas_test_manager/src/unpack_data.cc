@@ -14,12 +14,12 @@ extern "C"
 #include "daq_conf.h"
 #include "csc_event.h"
 }
+j_common_type j_data;
 
 /// -- CMSSW Unpacker --
 #include "csc_unpacker.h"
 
 using namespace std;
-j_common_type j_data;
 
 extern "C" void unpack_data_cc()
 {
@@ -303,7 +303,7 @@ timeSlice( T const & data, int nCFEB, int nSample)
 int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
 {
 
-
+  //cout<<"start of event"<<endl;
   ///** Create and configure binary buffer checker object
   CSCDCCExaminer        bin_checker;
   bin_checker.output1().hide();
@@ -312,37 +312,61 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
   bin_checker.crcTMB (true);
   bin_checker.crcCFEB(true);
   bin_checker.modeDDU(true);
-
+  
   uint32_t binCheckMask = 0x16EBF7F6;
   uint32_t dduBinCheckMask = 0x02080016;
 
-  ///** Binary check of the buffer
+  
+
+    //check if that is still the case
+  //upevt_.time_musec       = combine_shorts(buf[15], buf[16]);
+
+  /// Binary check of the buffer
   uint32_t BinaryErrorStatus = 0, BinaryWarningStatus = 0;
   const uint16_t *tmp = reinterpret_cast<const uint16_t *>(buf);
   bin_checker.setMask(binCheckMask);
   if ( bin_checker.check(tmp,evt_size/sizeof(short)) < 0 )
     {
-      ///**  No ddu trailer found - force checker to summarize errors by adding artificial trailer
+      ///  No ddu trailer found - force checker to summarize errors by adding artificial trailer
       const uint16_t dduTrailer[4] = { 0x8000, 0x8000, 0xFFFF, 0x8000 };
       tmp = dduTrailer;
       bin_checker.check(tmp,uint32_t(4));
+      cout<<"bin checker failed"<<endl;
     }
 
   BinaryErrorStatus   = bin_checker.errors();
   BinaryWarningStatus = bin_checker.warnings();
+  
+  for(unsigned int count=0;count<bin_checker.nERRORS;count++){
+    //if(count==0){
+    //cout<<"in count loop"<<count<<endl;
+      //}
+      cout<<" error "<<bin_checker.errorName(count)<<"/"<<bin_checker.error(count)<<"/"<<BinaryErrorStatus<<endl;
+
+	//"/"<< bin_checker.warning(count)<<
+  }
+  
+ for(unsigned int count=0;count<bin_checker.nWARNINGS;count++){
+    //if(count==0){
+   //cout<<"in count loop"<<count<<endl;
+      //}
+      cout<<" war "<<bin_checker.wrnName(count)<<"/"<<bin_checker.warning(count)<<"/"<<BinaryWarningStatus<<endl;
+
+	//"/"<< bin_checker.warning(count)<<
+  }
 
   if (((BinaryErrorStatus & dduBinCheckMask)>0) || ((BinaryWarningStatus & 0x2) > 0) )
     {
-      std::cerr << "Event is skipped because of format errors" << std::endl;
+      std::cout << "Event is skipped because of format errors" << std::endl;
       return 4; /// Reject bad event data
     }
-
+  
   ///** Reset legacy event data structure
   memset(&(upevt_), 0x0, sizeof(csc_event_type));
 
   ///** Unpack top level
   CSCDDUEventData dduData((uint16_t *) buf, &bin_checker);
-
+  //CSCDDUEventData dduData((uint16_t *) buf);
   ///** Unpack all founded CSC
   std::vector<CSCEventData> chamberDatas;
   chamberDatas.clear();
@@ -350,7 +374,10 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
 
   int nCSCs = chamberDatas.size();
 
-  std::cout << "Found " << nCSCs << " chamber(s) in event" << std::endl;
+  if(nCSCs<1){
+    std::cout<<"no chamber found in data"<<endl;
+  }
+
 
   for (int i=0; i< nCSCs; i++)
     {
@@ -418,7 +445,7 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
               upevt_.alct_nbucket = alctHeader->NTBins();
 	      upevt_.alct_l1a_num = alctHeader->L1Acc();
 	      upevt_.alct_full_bxn= alctHeader->BXNCount();
-	      cout<<"ALCT nbins"<<alctHeader->NTBins()<<endl;
+	      //cout<<"ALCT nbins"<<alctHeader->NTBins()<<endl;
               ///** Process ALCTs
               vector<CSCALCTDigi> alctsDatasTmp = alctHeader->ALCTDigis();
               vector<CSCALCTDigi> alctsDatas;
@@ -439,7 +466,7 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
                   upevt_.alct_accel_muon[lct]   = alctsDatas[lct].getAccelerator();
                   upevt_.alct_wire_group[lct]   = alctsDatas[lct].getKeyWG();
 		  upevt_.alct_patb[lct]         = alctsDatas[lct].getCollisionB();
-
+		  //cout<<"unpacking function a v/p/ac/wg "<<upevt_.alct_valid_patt[lct] <<"/"<<upevt_.alct_patt_quality[lct]<<"/"<<upevt_.alct_accel_muon[lct]<<"/"<< upevt_.alct_wire_group[lct] <<"/"<< upevt_.alct_patb[lct] <<endl;
                   // if ME13, 31, 41, correct wire group
                   // if (correct_wg) upevt_.alct_wire_group[lct] -= 16;
                   // bxn for an lct is calculated as full_bxn + number of lct bin
@@ -465,20 +492,21 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
                         {
                           tbin = tbins[n];
                           upevt_.alct_dump[nLayer-1][wg-1] |= 1<<tbin;
+			  //cout<<" alct_dump["<<nLayer-1<<"]["<<wg-1<<"] "<<upevt_.alct_dump[nLayer-1][wg-1];
                         }
 
                     }
 
                 }
+	      //cout<<endl;
             }
 
 
         }
-      //      cout<<" i get to clct stuff"<<endl;
+      //cout<<" i get to clct stuff"<<endl;
       ///** CLCT Found
       if (data.nclct())
         {
-	 
           upevt_.clct_active = 1;
 	  const CSCTMBHeader* tmbHeader = data.tmbHeader();
 	  int                 tmbfwVersion = tmbHeader->FirmwareVersion();
@@ -486,23 +514,18 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
 
 	  //change later to chamber_type_id=42
           upevt_.chamber_type_id = 21;
-
 	  if(tmbHeader && tmbTrailer)
 	    {
-              upevt_.clct_nbucket = tmbHeader->NTBins();
-	      cout<<"tmb header NTbins "<<tmbHeader->NTBins()<<endl;
-	      
+              upevt_.clct_nbucket = tmbHeader->NTBins();     
 	      //** Process CLCTs	      
 	      vector<CSCCLCTDigi> clctsDataTmp= data.tmbHeader()->CLCTDigis(cid.rawId());
 	      vector<CSCCLCTDigi> clctsData;
-	      
+
 	      for (uint32_t i_clct=0; i_clct<clctsDataTmp.size();i_clct++){
 		if(clctsDataTmp[i_clct].isValid()){
 		  clctsData.push_back(clctsDataTmp[i_clct]);
 		}
 	      }
-	      
-	    
 	    
 	      for (uint32_t clct=0; clct<clctsData.size(); clct++)
 		{
@@ -512,7 +535,8 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
 		  upevt_.clct_patt_number[clct] = clctsData[clct].getPattern();
 		  upevt_.clct_bend[clct]   = clctsData[clct].getBend();
 		  upevt_.clct_half_strip[clct]   = clctsData[clct].getStrip();
-		  
+		  upevt_.clct_key_strip[clct] = clctsData[clct].getKeyStrip();
+		  //cout<<"unpacking function c v/p/b/hs/kwg "<<upevt_.clct_valid_patt[clct] <<"/"<<upevt_.clct_patt_number[clct]<<"/"<<upevt_.clct_bend[clct]<<"/"<< upevt_.clct_half_strip[clct] <<"/"<< upevt_.clct_key_strip[clct] <<endl;
 		  // take rather clctsData[clct].getBX()?
 
 		  upevt_.clct_bxn[clct] = clctsData[clct].getFullBX();
@@ -524,26 +548,46 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
 
 	  // nclct>0 checked before
 
+	  int min_strip=1000;
+	  int max_strip=-1000;
+
 	 ///** Process cathode raw data - layers count from 1
 	 for (int nLayer=1; nLayer<=6; nLayer++)
 	   {
 	     vector<CSCComparatorDigi> comparatorDigis = data.clctData()->comparatorDigis(nLayer);
 	     for(vector<CSCComparatorDigi>::iterator compDigisItr= comparatorDigis.begin();
 		 compDigisItr != comparatorDigis.end();++compDigisItr){
+	       //strips count from 1
 	       int strip=compDigisItr->getStrip();
+	       if(strip<=min_strip){
+		 min_strip=strip;
+	       }
+	       if(strip>=max_strip){
+		 max_strip=strip;
+	       }
 	       vector<int> tbins = compDigisItr->getTimeBinsOn();
 	       int tbin=compDigisItr->getTimeBin();
 	       for(uint32_t n=0; n< tbins.size();n++){
 		 tbin = tbins[n];
-		 upevt_.clct_dump[nLayer-1][strip-1] |= 1<<tbin;
+		 //strip counts from 1
+		 int strip=compDigisItr->getStrip();
+		 upevt_.clct_dump_strips[nLayer-1][strip-1] |= 1<<tbin;
+		 cout<<" clct_strip["<<nLayer-1<<"]["<<strip-1<<"] "<<upevt_.clct_dump_strips[nLayer-1][strip-1];
+		 tbin = tbins[n];
+		 int halfstrip = 2*(compDigisItr->getStrip()-1)+compDigisItr->getComparator();
+		 upevt_.clct_dump_halfstrips[nLayer-1][halfstrip] |= 1<<tbin; 
+		 //cout<<" clct_half_strip["<<nLayer-1<<"]["<<halfstrip<<"] "<<upevt_.clct_dump_halfstrips[nLayer-1][halfstrip]<<" tbin "<<tbin<<endl;
+		 tbin = tbins[n];
+		 upevt_.clct_dump[nLayer-1][(strip-1)/2] |= 1<<tbin;
+		 //cout<<" clct["<<nLayer-1<<"]["<<(strip-1)/2<<"](str "<<strip<< "): "<<upevt_.clct_dump[nLayer-1][(strip-1)/2];
 	       }
 	     }
-
 	   }
-	}else{//close check on number of clct's
+	 //cout<<" min/max strip "<<min_strip<<"/"<<max_strip<<endl;
+	}//else{//close check on number of clct's
     
-	//	cout<<"no clcts found"<<endl;
-      }
+      //cout<<"no clcts found"<<endl;
+      //}
       ///** CFEBs Found
       int N_CFEBs=5, N_Samples=16, N_Layers = 6, N_Strips = 16;
       int TrigTime, SCA_BLK, NmbTimeSamples, ADC, OutOfRange;
@@ -558,7 +602,6 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
 
               NmbTimeSamples= (data.cfebData(nCFEB))->nTimeSamples();
               upevt_.nsca_sample = NmbTimeSamples;
-
 
               if (dmbHeader->cfebAvailable() & (0x1 << nCFEB))    /* Is this CFEB present? */
                 {
@@ -586,10 +629,10 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
 
                           upevt_.adc_out_of_range[nLayer-1][nCFEB*N_Strips+nStrip-1][nSample] = OutOfRange;
                           upevt_.sca[nLayer-1][nCFEB*N_Strips+nStrip-1][nSample] = ADC;
-
                           upevt_.sca_block[nLayer-1][nCFEB*N_Strips+nStrip-1][nSample]  = SCA_BLK;
                           upevt_.sca_trig_time[nLayer-1][nCFEB*N_Strips+nStrip-1][nSample] = TrigTime;
                         }
+		      //cout<<endl;
                     }
                 }
             }
@@ -597,7 +640,10 @@ int get_next_event_cmssw(const char *buf, int32_t evt_size, int32_t first_time)
         }
 
     }
+  //std::cout<<"reach end of unpack function"<<std::endl;
 
 
   return 0;
 }
+
+
