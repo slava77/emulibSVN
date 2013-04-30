@@ -1,0 +1,19 @@
+mess " Test 27 kumac for Chamber ME3/1"
+
+for/close 33; his/del *; his/fil 33 test27_2.his
+opt pto
+lcdir ~/bin
+
+exec align_4.kumac
+* exec crosstalk#non_peak_cfeb
+* exec crosstalk#peak_cfeb
+* lcdir .
+* for/close 33; his/del *; his/fil 33 test27_3.his
+* lcdir ~/bin
+* exec eff#comp
+* exec eff#strip
+* exec residvswr_4
+* exec residvswg_4
+* opt npto
+
+

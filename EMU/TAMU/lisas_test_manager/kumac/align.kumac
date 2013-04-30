@@ -1,0 +1,44 @@
+* get offset vs wiregroup number 
+opt utit
+v/del *
+sigma x=array(64,1.#64.)
+v/cr par(3) r; v/cr errpar(3) r; v/cr ppar(2) r
+v/cr step(3) r; v/cr pmin(3) r; v/cr pmax(3) r
+set mscf .5; set mtyp 20
+zone 2 3
+set ygti 1.1; set yhti .9; set ylab .6
+set plci 2; set pmci 4; title 'Layer Alignment'
+
+do layer = 1, 6
+  his/del *
+  v/cr mean[layer](64) r
+  v/cr emean[layer](64) r
+
+  do wg = 1, 64
+    h = 1000 + (120*[layer]) + [wg]
+    v/in par 20. 0. 0.03
+    his/fit [h] g 0q 0 par step pmin pmax errpar
+    v/in mean[layer]([wg]) par(2)
+    v/in emean[layer]([wg]) errpar(2)
+  enddo
+
+  title 'Layer '//[layer] u
+  null 0 64 -0.04 0.04 
+  v/fit x(1:64) mean[layer] emean[layer] p1 q0 2 ppar
+  p1 = ppar(1)
+  p2 = ppar(2)
+  set dmod 1
+  fun/pl [p1]+([p2]*x) 0 65 s
+  graph 64 x mean[layer] p
+  atit 'wiregroup' 'offset, stripwidths'
+* mess Layer [layer] fit: p1=$unquote($format($eval(ppar(1)),e10.2)) _
+*  p2=$unquote($format($eval(ppar(2)),e10.2))
+  string = p0=$unquote($format($eval(ppar(1)),e10.2))
+  text 35 .030 [string] 0.22
+  string = p1=$unquote($format($eval(ppar(2)),e10.2))
+  text 35 .023 [string] 0.22
+enddo
+*set mtyp 1; opt htit
+pict/print test_27_10.ps
+
+return

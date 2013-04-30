@@ -1,0 +1,58 @@
+macro comp
+* plot comparator efficiencies
+set ygti 1.1; set yhti .9; set ylab .6
+zone 2 3; title 'Good 6-Layer-Fit Tracks (blue) and Comparator Hits within _
+0.5 stripwidths (red)'
+opt utit; opt nsta; opt nfit
+do layer = 1, 6
+  title 'Layer '//[layer] 'u'
+  set hcol 4; h = 150 + [layer]; his/pl [h]
+  set hcol 2; h = 140 + [layer]; his/pl [h] s
+  atit 'halfstrip' 'number of events'
+enddo
+*zone 2 3; title 'Comparator Efficiency'; opt utit
+*do layer = 1, 6
+*  set hcol 1
+*  if ($HEXIST([layer]).eq.1) then
+*    his/del [layer]
+*  endif
+*  hn = 140 + [layer]
+*  hd = 150 + [layer]
+*  his/op/div [hn] [hd] [layer]
+*  null 0 160 0 1; his/pl [layer] 's'
+*  atit 'halfstrip' 'efficiency'
+*enddo
+lcdir .
+pict/print test_27_11.ps
+lcdir ~/bin
+return
+
+macro strip
+* plot cluster efficiencies
+set ygti 1.1; set yhti .9; set ylab .6
+zone 2 3; title 'Good 5-Layer-Fit Tracks (blue) and Good Clusters within _
+0.5 stripwidths (red)'
+opt utit; opt nsta; opt nfit
+do layer = 1, 6
+  title 'Layer '//[layer] 'u'
+  set hcol 4; h = 130 + [layer]; his/pl [h]
+  set hcol 2; h = 120 + [layer]; his/pl [h] s
+  atit 'strip' 'number of events'
+enddo
+*zone 2 3; title 'Efficiency for Finding Good Clusters'; opt utit
+*do layer = 1, 6
+*  set hcol 1
+*  if ($HEXIST([layer]).eq.1) then
+*    his/del [layer]
+*  endif
+*  hn = 120 + [layer]
+*  hd = 130 + [layer]
+*  his/op/div [hn] [hd] [layer]
+*  title 'Layer '//[layer] 'u'
+*  null -0.5 79.5 0 1; his/pl [layer] 's'
+*  atit 'strip' 'efficiency'
+*enddo
+lcdir .
+pict/print test_27_12.ps
+lcdir ~/bin
+return

@@ -1,0 +1,11 @@
+for/close 33; his/del *; his/fil 33 test27_2.his
+opt pto
+exec /home/cscme42/TriDAS/emu/fast_daq/lisas_test_manager.victor/kumac/align.kumac
+exec /home/cscme42/TriDAS/emu/fast_daq/lisas_test_manager.victor/kumac/crosstalk#non_peak_cfeb
+* exec /home/cscme42/TriDAS/emu/fast_daq/lisas_test_manager.victor/kumac/crosstalk#peak_cfeb
+for/close 33; his/del *; his/fil 33 test27_3.his
+exec /home/cscme42/TriDAS/emu/fast_daq/lisas_test_manager.victor/kumac/eff#comp
+exec /home/cscme42/TriDAS/emu/fast_daq/lisas_test_manager.victor/kumac/eff#strip
+exec /home/cscme42/TriDAS/emu/fast_daq/lisas_test_manager.victor/kumac/residvswg
+opt npto
+

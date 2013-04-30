@@ -1,0 +1,90 @@
+macro v1
+
+* get residuals vs wiregroup number 
+opt utit
+v/del *
+exec x_ip_wg
+sigma nwires =64
+sigma strangl = 2.327
+sigma x=array(64,1.#64.)
+sigma ex=array(64,0.#0.)
+v/cr par(3) r; v/cr errpar(3) r; v/cr ppar(2) r
+v/cr step(3) r; v/cr pmin(3) r; v/cr pmax(3) r
+set mscf .5; set mtyp 20; set ygti 1.1
+
+lcdir .
+do xbin = 0, 4
+  his/del *
+  if ([xbin] .eq. 0) then
+    title 'Resolution for 0.0 "L# | xtrack | "L# 0.1 stripwidths'
+    mess 'Resolution for 0.0 < | xtrack | < 0.1 stripwidths'
+  endif
+  if ([xbin] .eq. 1) then
+    title 'Resolution for 0.1 "L# | xtrack | "L# 0.2 stripwidths'
+    mess 'Resolution for 0.1 < | xtrack | < 0.2 stripwidths'
+  endif
+  if ([xbin] .eq. 2) then
+    title 'Resolution for 0.2 "L# | xtrack | "L# 0.3 stripwidths'
+    mess 'Resolution for 0.2 < | xtrack | < 0.3 stripwidths'
+  endif
+  if ([xbin] .eq. 3) then
+    title 'Resolution for 0.3 "L# | xtrack | "L# 0.4 stripwidths'
+    mess 'Resolution for 0.3 < | xtrack | < 0.4 stripwidths'
+  endif
+  if ([xbin] .eq. 4) then
+    title 'Resolution for 0.4 "L# | xtrack | "L# 0.5 stripwidths'
+    mess 'Resolution for 0.4 < | xtrack | < 0.5 stripwidths'
+  endif
+  zone 2 3
+  do layer = 1, 6
+    his/del *
+    v/cr rms[layer](64) r
+    v/cr erms[layer](64) r
+    v/cr srms[layer](64) r
+    v/cr serms[layer](64) r
+
+    do wg = 1, 64
+      h = $eval(20000 + (1200*[layer]) + (10*[wg]) + [xbin])
+      v/in par 100. 0. 0.03
+      his/fit [h] g 0q 0 par step pmin pmax errpar
+     v/in srms[layer]([wg]) par(3)
+     v/in serms[layer]([wg]) errpar(3)
+    enddo
+      v/op/vmul srms[layer] x5 mrms
+	sigma rms[layer]= strangl*mrms
+      v/op/vmul serms[layer] x5 merms
+	sigma erms[layer] = strangl*merms
+    title 'Layer '//[layer] u
+    null 0 nwires 0.0 1500
+    set hcol 4; set pmci 4; set plci 2
+    v/fit x(1:64) rms[layer] erms[layer] p1 q0 2 ppar
+    p1 = ppar(1)
+    p2 = ppar(2)
+    set dmod 1
+    fun/pl [p1]+([p2]*x) 0 65 s
+    graph 64 x rms[layer] p
+    graph/hplot/err x rms[layer] ex erms[layer] 64 0 .1 
+    atit 'wiregroup' 'rms, microns'
+    mess Layer [layer] fit: p1=$unquote($format($eval(ppar(1)),e10.2)) _
+p2=$unquote($format($eval(ppar(2)),e10.2))
+   string = p0=$unquote($format($eval(ppar(1)),e10.2))
+   text 5 1350 [string] 0.22
+   string = p1=$unquote($format($eval(ppar(2)),e10.2))
+   text 5 1200 [string] 0.22
+
+    v/del rms[layer]
+    v/del erms[layer]
+    v/del srms[layer]
+    v/del serms[layer]
+
+  enddo
+* pict/print resvswg[xbin].ps
+  nplot = [xbin] + 13
+
+  pict/print test_27_[nplot].ps
+
+enddo
+*set mtyp 1; opt htit
+lcdir ~/bin
+return
+

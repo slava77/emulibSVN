@@ -1,0 +1,14 @@
+for/close 33; his/del *; his/fil 33 test27_2.his
+opt pto
+exec align.kumac
+message Align.kumac was done
+wait
+
+exec crosstalk#non_peak_cfeb
+* exec crosstalk#peak_cfeb
+for/close 33; his/del *; his/fil 33 test27_3.his
+exec eff#comp
+exec eff#strip
+exec residvswg
+opt npto
+

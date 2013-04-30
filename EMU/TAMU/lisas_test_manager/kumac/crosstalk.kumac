@@ -1,0 +1,90 @@
+macro peak_cfeb
+opt utit
+set ygti 1.1; set yhti 1.0; set ylab .6
+title 'Long-range crosstalk in the same CFEB as the track'
+v/del *
+v/cr par(2) r
+v/cr x(100) r
+v/cr y(100) r
+v/cr ey(100) r
+his/get/abscissa 265 x
+zone 2 3
+set mtyp 0; set hcol 1; set pmci 1; set plci 2;
+
+do s = 1, 5
+  do l = 1, 6
+    title 'Layer '//[l]//' CFEB '//[s] 'U'
+    h = 200 + 10 * [l] + [s]
+*   h = 600 + 10 * [l] + [s]
+    his/get/contents [h] y
+    his/get/errors [h] ey
+    do j = 1, 100
+      if (ey([j]) < 0.10) then
+*       if (([s].ne.4).or.([l].ne.5)) then
+*         message 'Found ey('//[j]//')=' $eval(ey([j]))
+*       endif
+        v/in ey([j]) 1000
+      endif
+    enddo
+    vector/fit x(11:100) y(11:100) ey(11:100) p1 q0 2 par
+*   message 'p1 = '//$eval(par(1))//', p2 ='//$eval(par(2))
+    null 0 10000 -30 10
+    atit 'qclus, 5x5 adc sum' 'qxt, 5 ts sum'
+    text 500 6 'p1 = '//$eval(par(1)) 0.25 
+    text 500 2 'p2 = '//$eval(par(2)) 0.25 
+    his/plot [h] s
+    p1 = par(1)
+    p2 = par(2)
+    fun/plot (([p1])+([p2])*x) 0 10000 s
+  enddo
+lcdir .
+  pict/print 'crosstalk_cfeb'//[s]//'.ps'
+lcdir ~/bin
+enddo
+return
+
+macro non_peak_cfeb
+set ygti 1.1; set yhti 1.0 set ylab .6
+title 'Long-range crosstalk in CFEBs the track didn''t cross'
+opt utit
+v/del *
+v/cr par(2) r
+v/cr x(100) r
+v/cr y(100) r
+v/cr ey(100) r
+his/get/abscissa 265 x
+zone 2 3
+set mtyp 0; set hcol 1; set pmci 1; set plci 2;
+
+do s = 1, 5
+  do l = 1, 6
+    title 'Layer '//[l]//' CFEB '//[s] 'U'
+*   h = 200 + 10 * [l] + [s]
+    h = 600 + 10 * [l] + [s]
+    his/get/contents [h] y
+    his/get/errors [h] ey
+    do j = 1, 100
+      if (ey([j]) < 0.10) then
+*       if (([s].ne.4).or.([l].ne.5)) then
+*         message 'Found ey('//[j]//')=' $eval(ey([j]))
+*       endif
+        v/in ey([j]) 1000
+      endif
+    enddo
+    vector/fit x(11:100) y(11:100) ey(11:100) p1 q0 2 par
+*   message 'p1 = '//$eval(par(1))//', p2 ='//$eval(par(2))
+    null 0 10000 -30 10
+    atit 'qclus, 5x5 adc sum' 'qxt, 5 ts sum'
+    text 500 6 'p1 = '//$eval(par(1)) 0.25 
+    text 500 2 'p2 = '//$eval(par(2)) 0.25 
+    his/plot [h] s
+    p1 = par(1)
+    p2 = par(2)
+    fun/plot (([p1])+([p2])*x) 0 10000 s
+  enddo
+  nplot = [s] + 4
+lcdir .
+  pict/print 'test_27_0'//[nplot]//'.ps'
+lcdir ~/bin
+enddo
+return

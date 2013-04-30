@@ -1,0 +1,14 @@
+opt stat; opt grid
+close 0
+hi/del 0
+hi/file 1 test.his
+zone 2 2
+hi/plot 5001; hi/plot 5002;
+hi/plot 5003; hi/plot 5003;
+wait;
+zone 2 3 
+hi/plot 2001; hi/plot 2002; hi/plot 2003;
+hi/plot 2004; hi/plot 2005; hi/plot 2006;
+wait;
+hi/plot 2011; hi/plot 2012; hi/plot 2013;
+hi/plot 2014; hi/plot 2015; hi/plot 2016;
