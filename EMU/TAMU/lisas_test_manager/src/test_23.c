@@ -92,6 +92,8 @@ int test_23_init(void)
 
     switch (csc_type)
     {
+    case 0:  nstrips = 48; ncfebs = 3; break;
+    case 1:  nstrips = 64; ncfebs = 4; break;
     case 2:  nstrips = 64; ncfebs = 4; break;
     default: nstrips = 80; ncfebs = 5; break;
     }
