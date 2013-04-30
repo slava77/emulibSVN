@@ -4,7 +4,6 @@
 #include "TAxis.h"
 #include "TLegend.h"
 #include <iostream>
-#include <cmath>
 
 void test_28(){
 

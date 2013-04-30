@@ -1,3 +1,4 @@
+
 /*
  * test_25.c (in V1.2 test_20.c)
  * ALCT Self-trigger Test
@@ -13,6 +14,8 @@
 #include <math.h>
 #include <time.h>
 #include <unistd.h>
+//#include <fstream>
+//#include <iostream>
 #include "cfortran.h"
 #include "hbook.h"
 #include "event_ana.h"       /* Function prototypes    */
@@ -56,7 +59,9 @@ static int         plane_threshold, pattern_threshold;
 static long int    nmatches[6], nevents[6];
 static FILE        *fp;
 static FILE        *fp_bad;
-static float       all_time[6], all_scaler[6];
+static FILE        *fp_counter;
+static float       all_time[6], all_scaler[6], time_read[6];
+static int         threshold_limit[6];
 
 int src_status;                      // Status of radioactive source for this run, 
 static char * src_val[2] ={ "No rad.source","With rad.source"};
@@ -83,12 +88,12 @@ int test_25_init(void)
   test_finish = test_25_finish;
 
   num_passes = 1;
-  num_events[0] = 32000;
+  num_events[0] = 200000;
   first = _TRUE;
   switch (csc_type)
   {
   case 0: nwires = 48; break;
-  case 1: nwires = 64; break;
+  case 1: nwires = 48; break;
   case 2: nwires = 32; break;
   case 3: nwires = 112; break;
   case 4: nwires = 96; break;
@@ -111,6 +116,37 @@ int test_25_begin(int pass)
   int     j=0;
   char    htitle[80];
   char *filename;
+
+  threshold_limit[0]=3743;
+  threshold_limit[1]=threshold_limit[0]+2607;
+  threshold_limit[2]=threshold_limit[1]+2793;
+  threshold_limit[3]=threshold_limit[2]+2751;
+  threshold_limit[4]=threshold_limit[3]+2697;
+  threshold_limit[5]=threshold_limit[4]+2753;
+
+
+  // fopen("/home/cscme42/TriDAS/emu/fast_daq/lisas_test_manager.victor/src/test_25_counters.txt", "r");
+  //  ifstream IN("/home/cscme42/TriDAS/emu/fast_daq/lisas_test_manager.victor/src/test_25_counters.txt");
+  /*	if(!GoodRuns.empty()){
+	  GoodRuns.clear();
+	  lumis_min.clear();
+	  lumis_max.clear();
+	}
+	int GoodRun(-1), lumi_min(-1),lumi_max(-1);
+	//cout<<"read run and lumi list from file "<<filename<<endl;
+	char buffer[200];
+	while( IN.getline(buffer, 200, '\n') ){
+	  if (buffer[0] == '#') {continue;} // Skip lines commented with '#'
+	  sscanf(buffer, "%d %d %d", &GoodRun, &lumi_min, &lumi_max);
+	  GoodRuns.push_back(GoodRun);
+	  lumis_min.push_back(lumi_min);
+	  lumis_max.push_back(lumi_max);
+	}
+	//for (unsigned int i=0;i<GoodRuns.size();i++){
+	//cout<<"good runs/lumi min/lumi max: "<<GoodRuns[i] <<"/"<<lumis_min[i] <<"/"<<lumis_max[i] <<endl;
+	//}
+	}*/
+ 
 
   if (pass == 0)
     {
@@ -223,7 +259,9 @@ int test_25_begin(int pass)
 
 int test_25_event(int pass)
   {
-  int              p;
+
+
+  int              p,ct;
   int              ifeb,  got_an_feb = 0;
   static int       last_p,  tlast_usec, tnow_usec;
   static time_t                  tlast_sec,  tnow_sec;
@@ -231,6 +269,17 @@ int test_25_event(int pass)
   static long      del_scaler;
   float del_time;
 
+  //limits are the counts AFTER which the setting was changed
+  //since the test code counts from 0, when the count is reached we change the 
+  //calibration value
+  upevt_.alctcal_current_value=1;
+    for(ct=0;ct<6;ct++){
+      if(upevt_.event_number>=threshold_limit[ct]){
+	upevt_.alctcal_current_value=ct+2;
+      }
+    }
+    //printf("current amplitude %d, event %d\n ",upevt_.alctcal_current_value,upevt_.event_number);
+  
   if (pass == 0)
     {
     
@@ -245,6 +294,10 @@ int test_25_event(int pass)
       first = _FALSE;
       }
 
+
+ 
+    //printf("event number %d, alct_cal_current_value %d\n",upevt_.event_number,upevt_.alctcal_current_value);
+
 /* Get time and scaler data */
     p = upevt_.alctcal_current_value - 1;
     if (p != last_p)
@@ -257,6 +310,7 @@ int test_25_event(int pass)
       all_time[p]   = 0.;
       nevents[p] = 0; 
      }
+
 
     del_scaler = upevt_.num_ungated_triggers - last_scaler;
 
@@ -274,9 +328,9 @@ int test_25_event(int pass)
       }
     else
       {
-	printf (" del_scaler in %ld event  out of limit, skip it. del_scaler was %ld  \n", 
-		upevt_.event_number,
-		del_scaler);
+	//printf (" del_scaler in %ld event  out of limit, skip it. del_scaler was %ld  \n", 
+	//	upevt_.event_number,
+	//	del_scaler);
       }
    
     last_scaler = upevt_.num_ungated_triggers;
@@ -284,38 +338,46 @@ int test_25_event(int pass)
     tlast_usec  = tnow_usec;
 
 /* Check to see if we have an empty event */
-    for (ifeb=0; ifeb < NCFEB; ifeb++) 
+//works only for alct-header 2006
+    /*for (ifeb=0; ifeb < NCFEB; ifeb++) 
       if (upevt_.alct_febs_read > 0) got_an_feb = 1;
     if (! got_an_feb)
       {
       printf("No AFEB data in event %ld\n", upevt_.event_number);
       return 0;
       }
-
+    */
 /* Get the current calibration parameters; for the NPLANES_SCAN mode, we just 
  * have to know the rule for setting the plane threshold, since it isn't 
  * recorded in the calibration data block. The rule is defined in alctcal.c.
  */
+    upevt_.alctcal_scan_mode            = 5;
+
     if (upevt_.alctcal_scan_mode != 5)
       {
       printf("Wrong ALCT scan mode for test 25 (found %d, should be 5)\n",
 	     upevt_.alctcal_scan_mode);
       }
-    pattern_threshold = upevt_.alctcal_current_value;    
+    pattern_threshold = upevt_.alctcal_current_value;  
+
     if (pattern_threshold < 2) plane_threshold = 1;
     else plane_threshold = 2;
-
+    //printf ("event %d, pattern threshold %d, plane threshold %d ", upevt_.event_number, pattern_threshold, plane_threshold);  
 
 /* Fill trigger result histograms */
     if (upevt_.alct_valid_patt[0])
       {
       HFILL(1, (float)upevt_.alct_full_bxn, 0., 1.);
       HFILL(2, (float)(upevt_.alct_full_bxn % 64), 0., 1.);
+
+      float test_something = (float)(upevt_.alct_full_bxn % 64);
       HFILL(11 + p, (float)upevt_.alct_wire_group[0], 0., 1.);
       HFILL(21 + p, (float)upevt_.alct_wire_group[0], 0., 
 	    (float)upevt_.alct_patt_quality[0]);
       if (upevt_.alct_accel_muon[0]) 
 	HFILL(31 + p, (float)upevt_.alct_wire_group[0], 0., 1.);
+
+      //printf(" alct_full_bxn %f, /64 %f, alct_wire_group %f, accel_mu %d\n" ,(float)upevt_.alct_full_bxn, test_something,(float)upevt_.alct_wire_group[0],upevt_.alct_accel_muon[0]);
       }
     else printf("Skipping event %ld which had no valid alct\n", 
 		upevt_.event_number);
@@ -332,6 +394,13 @@ int test_25_event(int pass)
 int test_25_end(int pass)
   {
   int j;
+  //ad hoc addition - transform musecs into secs
+  all_time[0]=5;
+  all_time[1]=20;
+  all_time[2]=30;
+  all_time[3]=40;
+  all_time[4]=50;
+  all_time[5]=60;
 
   if (pass == 0)
     {
@@ -383,7 +452,8 @@ int test_25_finish(void)
     HUNPAK(11 + p, all_lct[p], "HIST", 0);
     HUNPAK(21 + p, quality[p], "HIST", 0);
     HUNPAK(31 + p, accel_lct[p], "HIST", 0);
-
+    //adhoc addition
+    nevents[p]=1000.;
     if (nevents[p] > 0)
       {
       if (all_scaler[p] == 0)
@@ -395,7 +465,7 @@ int test_25_finish(void)
 	}
       f = (all_scaler[p] / nevents[p]) / all_time[p];
       }
-    else f = -1;
+    else f = 1;
 
 /* Plot rates */
     for (j = 0; j < nwires; j++)
@@ -404,7 +474,9 @@ int test_25_finish(void)
       // (R_WG_0 + WG_WIDTH * j) * 1E-3;             /* wire length in meters */
       // data[p][j] = f * all_lct[p][j]/ wire_length;
       data[p][j] = f * all_lct[p][j];
+      //printf("data[%d][%d] ,f_value %f, all_lct-value%f, data %f ",p,j,f,all_lct[p][j], data[p][j]);
       }
+    printf("\n");
     }
   fprintf(fp, "#key WG     npl=1     npl=2     npl=3      npl=4      npl=5      npl=6\n");
   fprintf(fp, "----------------------------------------------------------------------\n");

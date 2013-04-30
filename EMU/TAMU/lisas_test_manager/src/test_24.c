@@ -1,4 +1,3 @@
-
 /*
  * test_24.c (in V1.2 test_19.c)
  * Chamber Gain Map
@@ -90,6 +89,8 @@ int test_24_init(void)
 
     switch (csc_type)
     {
+    case 0:  nstrips = 48; ncfebs = 3; break;
+    case 1:  nstrips = 64; ncfebs = 4; break;
     case 2:  nstrips = 64; ncfebs = 4; break;
     default: nstrips = 80; ncfebs = 5; break;
     }
@@ -253,6 +254,14 @@ int test_24_event(int pass)
 	   upevt_.event_number);
     return -1;
     }
+  key[0]=upevt_.alct_wire_group[0];
+  key[1]=upevt_.alct_wire_group[1];
+  valid[0]=upevt_.alct_valid_patt[0];
+  valid[1]=upevt_.alct_valid_patt[1];
+  accel[0]=upevt_.alct_accel_muon[0];
+  accel[1]=upevt_.alct_accel_muon[1];
+  patt[0]=upevt_.alct_patb[0];
+  patt[1]=upevt_.alct_patb[1];
 
 /* Debug *//*
    if (valid[0]) printf("Event %ld LCT 1 has key wg=%d, pattern=%d, 
@@ -302,10 +311,10 @@ int test_24_event(int pass)
     for (istrip = 0; istrip < nstrips; istrip++)
       {
 
-/* Calculate pedestal from last three samples */
+/* Calculate pedestal from the first two samples */
       pssum = 0;
 //      for (j = 0; j < 3; j++) pssum += upevt_.sca[ilayer][istrip][j];
-      for (j = upevt_.nsca_sample-3; j < upevt_.nsca_sample; j++) pssum += upevt_.sca[ilayer][istrip][j];
+      for (j = 0; j < 2; j++) pssum += upevt_.sca[ilayer][istrip][j];
 /* Find timebin with maximum */
       for (j = 0; j < upevt_.nsca_sample; j++)
 	{
@@ -316,7 +325,7 @@ int test_24_event(int pass)
 	  }
 	}
 /* Calculate cluster sum around the maximum */
-      strip_sum[ilayer][istrip] = -5/3. * pssum;
+      strip_sum[ilayer][istrip] = -5/2. * pssum;
       jm = (jmax[istrip] < 2) ? 2 : jmax[istrip];
       jm = (jm >= upevt_.nsca_sample - 2) ? upevt_.nsca_sample - 3 : jm;
       for (j = jm - 2; j <= jm + 2; j++)
@@ -330,7 +339,7 @@ int test_24_event(int pass)
         max_strip_sum = strip_sum[ilayer][istrip];
         strip_max = istrip;
 	}
-      }
+      }//end of strip loop
 
 /* Debug *//*
     if (strip_max < 32)
@@ -346,28 +355,31 @@ int test_24_event(int pass)
     HFILL(20, (float)jmax[strip_max], 0., 1.);
     if (strip_sum[ilayer][strip_max] > 100) HFILL(21, 
 						  (float)jmax[strip_max], 0., 1.);
-
+    
     // Was 5 
     if (jmax[strip_max] < 3) n_out_of_time[ilayer]++;
     else
       {
-      peak_strip[ilayer] = strip_max;
-
-/* Plot strip_max occupancy (as cross-check) */
-      if (strip_sum[ilayer][strip_max] > 100)
-	{
-        hid = 10 + ilayer + 1;
-        HFILL(hid, (float)(strip_max+1), 0.0, 1.0);
-	}
+	peak_strip[ilayer] = strip_max;
+	
+	/* Plot strip_max occupancy (as cross-check) */
+	if (strip_sum[ilayer][strip_max] > 100)
+	  {
+	    hid = 10 + ilayer + 1;
+	    HFILL(hid, (float)(strip_max+1), 0.0, 1.0);
+	  }
       }
 
-/* Calculate cluster sum */
+    /* Calculate cluster sum */
     if (strip_max < 2) strip_max = 2;
     if (strip_max > nstrips - 3) strip_max = nstrips - 3;
     cluster_sum[ilayer] = 0;
     for (istrip = strip_max - 2; istrip <= strip_max + 2; istrip++) 
       cluster_sum[ilayer] += strip_sum[ilayer][istrip];
-    }
+
+
+    printf("event %d, strip_max %d,max_strip_sum %f, cluster_sum[%d,] %f \n",upevt_.event_number,strip_max,max_strip_sum,ilayer,cluster_sum[ilayer]);
+    }//end of layer loop
 
 /* Do simple cuts to select more-or-less vertical tracks */
   lfirst = -1;

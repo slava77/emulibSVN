@@ -120,7 +120,7 @@ int test_27_init(void)
     switch (csc_type)
     {
     case 0: nwires = 48; break;
-    case 1: nwires = 64; break;
+    case 1: nwires = 48; break;
     case 2: nwires = 32; break;
     case 3: nwires = 112; break;
     case 4: nwires = 96; break;
@@ -131,6 +131,8 @@ int test_27_init(void)
 
     switch (csc_type)
     {
+    case 0:  nstrs = 48; ncfebs = 3; break;
+    case 1:  nstrs = 64; ncfebs = 4; break;
     case 2:  nstrs = 64; ncfebs = 4; break;
     default: nstrs = 80; ncfebs = 5; break;
     }
@@ -510,38 +512,51 @@ int test_27_event(int pass)
 /* Fill histograms */
         for (ilayer = 0; ilayer < NLAYER; ilayer++)
 	  {
-          for (istrip = 16 * ifeb; istrip < 16 * (ifeb + 1); istrip++)
-	    {
-            hid = 100*(ilayer + 1) + (istrip + 1);
-//          for (isample = 0; isample < upevt_.nsca_sample; isample++) 
-            for (isample = 1; isample < 3; isample++){ 
-	      HFILL(hid, (float )(upevt_.sca[ilayer][istrip][isample]), 0.0, 
-		    1.0); 
-	    }
-	    }
+	    for (istrip = 16 * ifeb; istrip < 16 * (ifeb + 1); istrip++)
+	      {
+		hid = 100*(ilayer + 1) + (istrip + 1);
+		//          for (isample = 0; isample < upevt_.nsca_sample; isample++) 
+		for (isample = 1; isample < 3; isample++){ 
+		  HFILL(hid, (float )(upevt_.sca[ilayer][istrip][isample]), 0.0, 
+			1.0); 
+		}
+	      }
 	  }
-	
+	}
       }
-    }
     }
   else if (pass == 2)
     {
+
 
 /* Do wire track-finding to find the radial position of the track. Use the
  * ALCT algorithm for track-finding. Continue with cluster analysis if
  * exactly one track is found.
  */
 
+//modify code - take alct information from CMSSW instead of a new alct calculation
+/*
     if ((status = alctsim(pretrig_time, accel, alct_key, alct_pattern, 
 			  alct_valid, nwires)))
-      {
-      printf("call to alctsim failed; skipping event %ld\n",
+      {      printf("call to alctsim failed; skipping event %ld\n",
 	     upevt_.event_number);
       return -1;
-      }
-
-    if (!alct_valid[0] || alct_valid[1]) isegment = -1; 
-    else isegment = segm_wg((int)(alct_key[0]+1), csc_type);
+*/
+    //nwires defined above, pretrig_time
+    alct_valid[0]=upevt_.alct_valid_patt[0];
+    alct_valid[1]=upevt_.alct_valid_patt[1];
+    accel[0]=upevt_.alct_accel_muon[0];
+    accel[1]=upevt_.alct_accel_muon[1];
+    alct_key[0]=upevt_.alct_wire_group[0];
+    alct_key[1]=upevt_.alct_wire_group[1];
+    alct_pattern[0]=upevt_.alct_patt_quality[0];
+    alct_pattern[1]=upevt_.alct_patt_quality[1];
+    if (!alct_valid[0] || alct_valid[1]){ isegment = -1; 
+      printf("isegment screwed up?");
+    }
+    else{ isegment = segm_wg((int)(alct_key[0]+1), csc_type);
+      printf("isegment %d \n",isegment);
+    }
     /*
     else if (alct_key[0] < 16) isegment = 0;
     else if (alct_key[0] < 28) isegment = 1;
@@ -553,12 +568,13 @@ int test_27_event(int pass)
 /* Must have a wire coordinate to fix the stripwidth in the clusterfit */
     if (isegment < 0)
       {
-/*     	  printf ("Segment <0, key_wg is%d ", alct_key[0]);
-	  if (!alct_valid[0]) printf("Skipping event %ld with no ALCT\n", 
-	                             upevt_.event_number);
-	  if (alct_valid[1]) printf("Skipping event %ld with two ALCT's\n", 
+
+	printf ("Segment <0, key_wg is%d \n", alct_key[0]);
+	if (!alct_valid[0]) printf("Skipping event %ld with no ALCT\n", 
+				   upevt_.event_number);
+	if (alct_valid[1]) printf("Skipping event %ld with two ALCT's\n", 
 	                             upevt_.event_number); 
-*/
+
       return 0;
       }
 
@@ -572,8 +588,9 @@ int test_27_event(int pass)
 	  {
           for (k = 0; k < NALCT_FIFO_TBINS; k++)
 	    {
-	    if (upevt_.alct_dump[ilayer][j] & (1 << k)) 
-	      HFILL(60 + ilayer + 1, (float)j, (float)k, 1.);
+	      if (upevt_.alct_dump[ilayer][j] & (1 << k)){ 
+		HFILL(60 + ilayer + 1, (float)j, (float)k, 1.);
+	      }
 	    }
 	  }
 	}
@@ -587,10 +604,16 @@ int test_27_event(int pass)
       {
       for (istrip = 0; istrip < NSTRIP; istrip++)
 	{
-        for (j = 0; j < upevt_.nsca_sample; j++) sca[ilayer][istrip][j] = 
-				   upevt_.sca[ilayer][istrip][j] - mean[ilayer][istrip];
+	  for (j = 0; j < upevt_.nsca_sample; j++){
+	    sca[ilayer][istrip][j] = 
+	      upevt_.sca[ilayer][istrip][j] - mean[ilayer][istrip];
+	    //if(upevt_.sca[ilayer][istrip][j]>650){
+	    //printf(" sca[%d,][%d,][%d,] %i, mean %f",ilayer,istrip,j,upevt_.sca[ilayer][istrip][j],mean[ilayer][istrip]);
+	    //}
+	  }
 	}
       }
+    //printf("\n");
 
 /* Simulate comparators */
 
@@ -604,6 +627,14 @@ int test_27_event(int pass)
 
     clctsim(comphits, &trigbin_sca, PRETRIG_ALG, TRIG_ALG, clct_key, 
 	    clct_pattern, clct_valid);
+
+
+    clct_valid[0]= upevt_.clct_valid_patt[0];
+    clct_valid[1]= upevt_.clct_valid_patt[1];
+    clct_pattern[0]=upevt_.clct_patt_number[0];
+    clct_pattern[1]=upevt_.clct_patt_number[1];
+    clct_key[0]=upevt_.clct_key_strip[0];
+    clct_key[1]=upevt_.clct_key_strip[1];
 /* Prepare to do cluster fits */
 
     if (clct_valid[0])
@@ -615,15 +646,20 @@ int test_27_event(int pass)
         fprintf(fp2, " %hd %3hd %hd %2hd %3hd %3hd %2hd", accel[j], alct_key[j], 
 		alct_pattern[j], alct_valid[j], clct_key[j], clct_pattern[j], 
 		clct_valid[j]);
+	//printf(" accel, a-key,a-patt,a-val,c-key,c-patt,c-val %hd %3hd %hd %2hd %3hd %3hd %2hd \n", accel[j], alct_key[j],alct_pattern[j], alct_valid[j], clct_key[j], clct_pattern[j],clct_valid[j]);
+	//printf(" accel, a-key,a-patt,a-val,c-key,c-patt,c-val unpacker %hd %3hd %hd %2hd %3hd %3hd %2hd\n", upevt_.alct_accel_muon[j], upevt_.alct_wire_group[j], upevt_.alct_patt_quality[j],upevt_.alct_valid_patt[j], upevt_.clct_key_strip[j], upevt_.clct_patt_number[j], upevt_.clct_valid_patt[j]);
 	}
       fprintf(fp2, "\n");
 
 /* Fill some cross-check histograms */
       key_wg = alct_key[0];
       HFILL(1, (float)(alct_key[0]+1), 0., 1.);
-      if (hs(clct_pattern[0])) HFILL(2, (float)(clct_key[0]+1), 0., 1.);
-      else HFILL(3, (float)(clct_key[0]+1), 0., 1.);
-
+      if (hs(clct_pattern[0])){
+	HFILL(2, (float)(clct_key[0]+1), 0., 1.);
+      }
+      else{
+	HFILL(3, (float)(clct_key[0]+1), 0., 1.);
+      }
 /* Approximate pulse locations are determined by the trigger pattern and the
  * key halfstrip and/or distrip; the meaning of key is algorithm-dependent */
       for (ilayer = 0; ilayer < NLAYER; ilayer++)
@@ -639,6 +675,7 @@ int test_27_event(int pass)
 /* Call gatfit for one cluster */
 
 	strip_width= w_str(csc_type, key_wg+1); 
+	printf("strip width %f\n", strip_width);
         gatfit_(&istrip, &trigbin_sca, mean, rms, &ilayer, 
 	        &strip_width, &isegment,
 		&xclus[ilayer], &xclus_error[ilayer], &xclus_chisq[ilayer], 
@@ -688,14 +725,17 @@ int test_27_event(int pass)
 
       if (trackfit_ok)
 	{
+	  printf ("tackfit ok?");
         if (nlayers_in_fit >= 4)
 	  {
+	    printf ("nlayers OK?");
           for (ilayer = 0; ilayer < NLAYER; ilayer++)
 	    {
             if (layer_ok[ilayer])
 	      {
               hid = 1000 + 120 * (ilayer+1) + key_wg + 1;
               HFILL(hid, resid[ilayer], 0., 1.);
+	      printf("hist 11 are filled");
 	      }
 	    }
 
@@ -705,6 +745,7 @@ int test_27_event(int pass)
 
           theta = stripwidth * emm; //????
           HFILL(4, theta, 0., 1.);
+	  printf("hist 12 are filled");
 
 /* We are not reading scintillators with setup of version 4
           scint_dt = scintana(&j, &k);
@@ -728,7 +769,9 @@ int test_27_event(int pass)
 	    }
 
 	  }
-	}
+	}else{
+	//printf("trackfit is bad");
+      }
       }   /* end of "if valid CLCT" */
 
     }  /* End of pass 2 */
@@ -743,14 +786,18 @@ int test_27_event(int pass)
  */
 
 /* Read the (simulated) trigger results for this event from xclusters.dat */
-      if (upevt_.event_number == 1) file_event_number =0; 
-      if (file_event_number < upevt_.event_number)
+      if (upevt_.event_number == 1){ file_event_number =0; }
+      if (file_event_number < (upevt_.event_number))
 	{
 	  n = fscanf(fp2, "%7ld ", &file_event_number);	  
 	}
 
-      if (file_event_number > upevt_.event_number) return 0;
-      
+      if (file_event_number > (upevt_.event_number)){
+	printf("error file event number %d, upevtnumber %d\n",file_event_number, upevt_.event_number);
+	return 0;
+      }else{
+	printf("NO error file event number %d, upevtnumber %d\n",file_event_number, upevt_.event_number);
+      }
     fscanf(fp2, "%2d ", &trigbin_sca);
 
     for (j = 0; j < 2; j++)
@@ -774,8 +821,8 @@ int test_27_event(int pass)
     if (!alct_valid[0] || alct_valid[1] || !clct_valid[0]) return 0;
 	  HFILL(2,(float)
 		(alct_valid[0]+2*alct_valid[1]
-		+4*clct_valid[0]+8*clct_valid[1]), 0., 1.);
-
+		 +4*clct_valid[0]+8*clct_valid[1]), 0., 1.);
+	  
     key_wg = alct_key[0];
 
     isegment = segm_wg(key_wg+1, csc_type)-1;
@@ -1480,7 +1527,7 @@ int compsim(float sca[NLAYER][NSTRIP][16], int nsample, int clkphase,
               sca_center = (sca[l][s  ][isample] + sca[l][s  ][isample+1]) / 2.;
               sca_right  = (sca[l][s+1][isample] + sca[l][s+1][isample+1]) / 2.;
 	      }
-
+	    
 /* Debug */ /*
    printf("  s%2d: j=%d, jpeak=%d, k=%d, sca_left=%8.1f, "
    "sca_center=%8.1f, sca_right=%8.1f\n", s+1, j, jpeak[j], k, 
@@ -1492,19 +1539,19 @@ int compsim(float sca[NLAYER][NSTRIP][16], int nsample, int clkphase,
               if (sca_left > sca_right) hs = 2 * s;
               else hs = 2 * s + 1;
               comphits[l][hs] |= (1 << jpeak[j]);
-
+	    
 /* Debug */ /*
    printf("L%d hs %3d has comphits = ", l+1, hs+1);
    for (j = 0; j < 32; j++) 
    printf("%01d", (comphits[l][hs] >> j) & 1);
-   printf("\n");
-	    */
+   printf("\n");*/
+	    
 	      }
 	    }
 	  }
 	}
       }
-    }
+  }
 
   return 0;
   }

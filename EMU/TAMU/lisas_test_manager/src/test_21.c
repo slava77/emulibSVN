@@ -90,9 +90,12 @@ int test_21_init()
 				   
     switch (csc_type)
     {
+    case 0:  nstrips = 48; ncfebs = 3; break;
+    case 1:  nstrips = 64; ncfebs = 4; break;
     case 2:  nstrips = 64; ncfebs = 4; break;
     default: nstrips = 80; ncfebs = 5; break;
     }
+    printf("star test 21, nstrips, ncfebs %d%d\n",nstrips,ncfebs);
 
     printf ("csc_type = %d, nstrips = %d\n", csc_type, nstrips);
 
@@ -130,10 +133,10 @@ int  test_21_begin( int pass)
     {
     hid_fhstripR[iLayer]=iLayer+1;
     sprintf(tmp, "halfstrip%d", iLayer+1);
-
+    printf(" t21b halfstrip %d\n", iLayer+1);
     HBOOK1( hid_fhstripR[iLayer] ,tmp,  2*nstrips, 0.5, 2*nstrips+0.5   ,       0.); //mod++   
- 
     }
+    
   return 0;
   }
 
@@ -159,6 +162,9 @@ int test_21_event(int pass)
 		first = 0;
 		num_points = upevt_.stripcal_num_points;
 		trigger_per_step = upevt_.stripcal_trigger_per_step;
+		//printf("cal_num_points %d",upevt_.stripcal_num_points);
+		//printf(" trig_set %d",trigger_per_step);
+		//printf( "cur strip %d\n ",upevt_.stripcal_current_strip);
     }
    
    
@@ -168,7 +174,7 @@ int test_21_event(int pass)
 		return 0;
 	}
  
-	GetCLCTHalfStrips_21();
+	//GetCLCTHalfStrips_21();
    
 	current_hstrip = upevt_.stripcal_current_strip;
 
@@ -176,24 +182,38 @@ int test_21_event(int pass)
     {
 		for(iHStrip = 0; iHStrip < nstrips*2; iHStrip++)
 		{
+		   clct_halfstrips[iLayer][iHStrip]=upevt_.clct_dump_halfstrips[iLayer][iHStrip];
 			for(iBucket = 0; iBucket < upevt_.clct_nbucket; iBucket++)
 			{
 				if(clct_halfstrips[iLayer][iHStrip] & (1 << iBucket))
 				{ 
 					if(iHStrip % 32 + 1 == current_hstrip )
 					{
-						HFILL(hid_fhstripR[iLayer], (float )(iHStrip+1), 0.0, 1.0); //mod++
+						HFILL(hid_fhstripR[iLayer], (float )(iHStrip+1), 0.0, 1.0); //mod++			               
+
+						/*	printf
+					    (
+							"correct Evt# %d, layer %d, get HalfStrip - %d, expected HalfStrip - %d, filled layer %d, strip %d\n", 
+							event_number, 
+							iLayer, 
+							iHStrip %32 + 1, 
+							current_hstrip,
+							hid_fhstripR[iLayer],
+							(float )(iHStrip+1)
+							);*/
 					} 
 					else 
 					{
-/*						printf
+					  /*
+						printf
 					    (
 							"Evt# %d, layer %d, get HalfStrip - %d, expected HalfStrip - %d\n", 
 							event_number, 
 							iLayer, 
 							iHStrip %32 + 1, 
 							current_hstrip
-							);*/
+							);
+					  */
 					}
 
 				}
@@ -337,24 +357,29 @@ void  GetCLCTHalfStrips_21()
 
 	// Unpack halfstrips and strips
 
-	for(iLayer = 0; iLayer < NLAYER; iLayer++) 
-		for(iDiStrip = 0; iDiStrip < nstrips / 2; iDiStrip++) 
+	for(iLayer = 0; iLayer < NLAYER; iLayer++){ 
+	  for(iDiStrip = 0; iDiStrip < nstrips / 2; iDiStrip++){ 
 			for(iBucket = 0; iBucket < (upevt_.clct_nbucket - 2); )
 			{ 
 				iTemp = upevt_.clct_dump[iLayer][iDiStrip]; 
 				if(iTemp & (1 << iBucket))
 				{
-					Strip = (iTemp & (1 << (iBucket + 1))) ? (2 * iDiStrip + 1) : (2 * iDiStrip); 
-					HalfStrip = (iTemp & (1 << (iBucket + 2))) ? (2 * Strip + 1) : (2 * Strip);
-					clct_halfstrips[iLayer][HalfStrip] |= (1 << iBucket);
+				  Strip = (iTemp & (1 << (iBucket + 1))) ? (2 * iDiStrip + 1) : (2 * iDiStrip); //wrong at the moment
+				  printf("bit shift %d, iTemp thingy  %d, bool %d",(1 << (iBucket + 1)),iTemp,(iTemp & (1 << (iBucket + 1))));
+					HalfStrip = (iTemp & (1 << (iBucket + 2))) ? (2 * Strip + 1) : (2 * Strip);//to be checked
+					clct_halfstrips[iLayer][HalfStrip] |= (1 << iBucket);//works?
+					printf("layer %d, distrip %d ,nstrip/2 %d,iBucket_max %d, iBucket %d, clct_halfstrips %d, clct-Strip %d,clct-Halfstrip %d\n",iLayer,iDiStrip, nstrips/2, upevt_.clct_nbucket - 2, iBucket, clct_halfstrips[iLayer][HalfStrip], Strip,HalfStrip);
 					iBucket += 3;
 				}
 				else
 				{
+				  //printf("should we get here,iBucket?%d\n",iBucket);
 					iBucket++;
 				}
 	  
 			}
+	  }
+	}
 }
 
 //==========================================
