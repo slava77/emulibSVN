@@ -14,8 +14,8 @@ OS := $(shell uname)
 
 $(info DAQHOME = $(DAQHOME) )
 ifndef DAQHOME 
-$(warning no DAQHOME is set setting to /home/cscme11/TriDAS/emu/fast_daq_before_2013Apr08)
-DAQHOME=/home/cscme11/TriDAS/emu/fast_daq_before_2013Apr08
+$(warning no DAQHOME is set setting to /home/cscme11/TriDAS/emu/old_code/fast_daq_before_2013Apr08)
+DAQHOME=/home/cscme11/TriDAS/emu/old_code/fast_daq_before_2013Apr08
 endif
 ifndef ROOTSYS
 $(error set ROOTSYS)
@@ -160,7 +160,6 @@ OBJECTS      = \
 	$(ODIR)/test_14.o \
 	$(ODIR)/test_15.o \
 	$(ODIR)/test_16.o \
-	$(ODIR)/test_16cpp.o \
 	$(ODIR)/test_17.o \
 	$(ODIR)/test_18.o \
 	$(ODIR)/test_19.o \
@@ -172,6 +171,7 @@ OBJECTS      = \
 	$(ODIR)/test_25.o \
 	$(ODIR)/test_26.o \
 	$(ODIR)/test_27.o \
+	$(ODIR)/test_28.o \
 	$(ODIR)/clctsim.o \
 	$(ODIR)/alctsim.o \
 	$(ODIR)/book_histos_f.o \
@@ -182,6 +182,7 @@ OBJECTS      = \
 	$(ODIR)/strip_utils.o \
 	$(ODIR)/csc_geom.o \
 	$(ODIR)/test_utils_f.o \
+	$(ODIR)/test_utils_for_root.o \
 	$(ODIR)/screen.o \
 	$(ODIR)/unpack_data.o \
 	$(ODIR)/io_utils.o
@@ -252,42 +253,37 @@ $(ODIR)/test_12.o : $(SDIR)/test_12.c $(IDIR)/one_page_plot.h \
           -c $(SDIR)/test_12.c
 
 $(ODIR)/test_13.o : $(SDIR)/test_13.c  \
-          $(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event_cxx.h 
+          $(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event.h 
 	$(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/test_13.o \
           -c $(SDIR)/test_13.c
 
-$(ODIR)/test_14.o : $(SDIR)/test_14.c  \
-          $(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event_cxx.h 
-	$(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/test_14.o \
-          -c $(SDIR)/test_14.c
+$(ODIR)/test_14.o : $(SDIR)/test_14.cpp  \
+          $(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event.h 
+	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/test_14.o \
+          -c $(SDIR)/test_14.cpp
 
-$(ODIR)/test_15.o : $(SDIR)/test_15.c $(IDIR)/one_page_plot.h \
+$(ODIR)/test_15.o : $(SDIR)/test_15.cpp  \
+	 $(IDIR)/one_page_plot.h \
           $(IDIR)/test_params.h $(IDIR)/test_utils.h \
           $(DAQCOMMON)/include/csc_event.h $(DAQCOMMON)/include/misc.h 
-	$(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/test_15.o \
-          -c $(SDIR)/test_15.c
+	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/test_15.o \
+          -c $(SDIR)/test_15.cpp
 
-$(ODIR)/test_16.o : $(SDIR)/test_16.c  \
-          $(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event_cxx.h 
-	$(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/test_16.o \
-          -c $(SDIR)/test_16.c
+$(ODIR)/test_16.o : $(SDIR)/test_16.cpp  \
+          $(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event.h \
+	$(IDIR)/basic-utilities.h
+	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/test_16.o \
+          -c $(SDIR)/test_16.cpp
 
 $(ODIR)/one-page-plot.o : $(SDIR)/one-page-plot.cpp \
-          $(IDIR)/one-page-plot.h $(DAQCOMMON)/include/csc_event_cxx.h 
+          $(IDIR)/one-page-plot.h $(DAQCOMMON)/include/csc_event.h 
 	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/one-page-plot.o \
           -c $(SDIR)/one-page-plot.cpp
 
 $(ODIR)/basic-utilities.o : $(SDIR)/basic-utilities.cpp $(IDIR)/basic-utilities.h \
-          $(IDIR)/one-page-plot.h $(DAQCOMMON)/include/csc_event_cxx.h 
+          $(IDIR)/one-page-plot.h $(DAQCOMMON)/include/csc_event.h 
 	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/basic-utilities.o \
           -c $(SDIR)/basic-utilities.cpp
-
-$(ODIR)/test_16cpp.o : $(SDIR)/test_16cpp.cpp  \
-	$(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event_cxx.h \
-	$(IDIR)/basic-utilities.h
-	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/test_16cpp.o \
-	 -c $(SDIR)/test_16cpp.cpp
-
 
 $(ODIR)/test_17.o : $(SDIR)/test_17.c $(IDIR)/one_page_plot.h \
           $(IDIR)/test_params.h $(IDIR)/test_utils.h \
@@ -314,7 +310,7 @@ $(ODIR)/test_20.o : $(SDIR)/test_20.c $(IDIR)/one_page_plot.h \
 	$(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/test_20.o -c $(SDIR)/test_20.c
 
 $(ODIR)/test_21.o : $(SDIR)/test_21.c  \
-          $(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event_cxx.h 
+          $(IDIR)/one_page_plot.h $(DAQCOMMON)/include/csc_event.h 
 	$(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/test_21.o \
           -c $(SDIR)/test_21.c
 
@@ -363,11 +359,25 @@ $(ODIR)/test_27.o : $(SDIR)/test_27.c $(SDIR)/csc_geom.c\
 	$(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/test_27.o \
           -c $(SDIR)/test_27.c
 
+$(ODIR)/test_28.o : $(SDIR)/test_28.c $(SDIR)/csc_geom.c\
+	   $(IDIR)/one_page_plot.h \
+          $(IDIR)/test_params.h $(IDIR)/test_utils.h \
+          $(DAQCOMMON)/include/csc_event.h \
+          $(DAQCOMMON)/include/csc_parameters.h 
+	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/test_28.o \
+          -c $(SDIR)/test_28.c
+
 $(ODIR)/test_utils.o : $(SDIR)/test_utils.c $(IDIR)/test_params.h \
           $(IDIR)/test_utils.h $(DAQCOMMON)/include/csc_parameters.h \
 	  $(IDIR)/ana_version.h
 	$(CC) $(CCOPT) $(LOCINC) -o $(ODIR)/test_utils.o -c \
           $(SDIR)/test_utils.c 
+
+$(ODIR)/test_utils_for_root.o : $(SDIR)/test_utils_for_root.cpp $(IDIR)/test_params.h \
+          $(IDIR)/test_utils_for_root.h $(DAQCOMMON)/include/csc_parameters.h \
+	  $(IDIR)/ana_version.h
+	$(CXX) $(CXXOPT) $(LOCINC) -o $(ODIR)/test_utils_for_root.o -c \
+          $(SDIR)/test_utils_for_root.cpp 
 
 $(ODIR)/alctsim.o : $(SDIR)/alctsim.c $(DAQCOMMON)/include/misc.h \
           $(DAQCOMMON)/include/daq_conf.h
