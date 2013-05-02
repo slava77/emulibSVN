@@ -61,8 +61,18 @@ void Test_16_CFEBConnectivity::initCSC(std::string cscID)
   
   cfebdata.Nlayers = NLAYERS;
   
-  if(isME11(cscID)) //isME11 in emu::dqm::utils
+  
+  //isME11() in emu::dqm::utils uses cscID.find("ME+1/1")
+  // instead of cscID.find("ME+1.1") so it doesn't work
+  bool isME11 = false;
+  if ((cscID.find("ME+1.1") == 0) || (cscID.find("ME-1.1") ==0 )) {
+    isME11 = true;
+  }
+ 
+  if(isME11) 
   {
+	cout << "is ME11-type chamber" << endl;
+	chamberSides = 2;
 	cfebdata.Nbins = 64; //me11a
 	cscdata["R01"] = cfebdata; //me11a
 	
@@ -70,6 +80,7 @@ void Test_16_CFEBConnectivity::initCSC(std::string cscID)
 	cscdata["R02"] = cfebdata; //me11b
   
   } else {
+	chamberSides = 1;
 	cfebdata.Nbins = getNumStrips(cscID);
 	cscdata["R01"] = cfebdata;
   }
@@ -184,70 +195,76 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
   TimeBinsTestData& ch_adc_sum2 = adcSum2[cscID];
   
   
+  int NCFEBs = getNumStrips(cscID)/16;
   
-  //"PASS 0"
   if (dmbHeader->cfebAvailable())
     {
-      for (int icfeb=0; icfeb<getNumStrips(cscID)/16; icfeb++)   // loop over cfebs in a given chamber
-      {
-        CSCCFEBData * cfebData =  data.cfebData(icfeb);
-        if (!cfebData) continue;
-
-          for(int ilayer = 2*layerpair + 1; ilayer < 2*(layerpair+1) + 1; ilayer++)		  
+	  //for(int iside=0; iside < chamberSides; iside++) {
+	  
+		//if(iside == 0 && chamberSides == 2) NCFEBs = 4;
+		//if(iside == 1 && chamberSides == 2) NCFEBs = 3;
+		
+		  for (int icfeb=0; icfeb<NCFEBs; icfeb++)   // loop over cfebs in a given chamber
 		  {
-          
-          for (int istrip = 1; istrip <= 16; istrip++)   // loop over cfeb strips
-          {
-			  int nTimeSamples= cfebData->nTimeSamples();
-        	  int adc_max = -1;
-        	  int adc_min = 4096;
-        	  
-        	  // loop for calculating min&max bins later
-        	  int jmin = -1, jmax = 16;
+			CSCCFEBData * cfebData =  data.cfebData(icfeb);
+			if (!cfebData) continue;
+
+			  for(int ilayer = 2*layerpair + 1; ilayer < 2*(layerpair+1) + 1; ilayer++)		  
+			  {
 			  
-			  
-        	  for (int j=0; j<nTimeSamples; j++)
-        	  {
-        		  CSCCFEBDataWord* timeSample=(cfebData->timeSlice(j))->timeSample(ilayer,istrip);
-        		 
-        		  
-        		  if(timeSample->adcCounts > adc_max)
-					  {
-						  adc_max = timeSample->adcCounts;
-						  jmax = j;
-					  }
-					  if(timeSample->adcCounts < adc_min)
-					  {
-						  adc_min = timeSample->adcCounts;
-						  jmin = j;
-					  }
-        	  }
+			  for (int istrip = 1; istrip <= 16; istrip++)   // loop over cfeb strips
+			  {
+				  int nTimeSamples= cfebData->nTimeSamples();
+				  int adc_max = -1;
+				  int adc_min = 4096;
+				  
+				  // loop for calculating min&max bins later
+				  int jmin = -1, jmax = 16;
+				  
+				  
+				  for (int j=0; j<nTimeSamples; j++)
+				  {
+					  CSCCFEBDataWord* timeSample=(cfebData->timeSlice(j))->timeSample(ilayer,istrip);
+					 
+					  
+					  if(timeSample->adcCounts > adc_max)
+						  {
+							  adc_max = timeSample->adcCounts;
+							  jmax = j;
+						  }
+						  if(timeSample->adcCounts < adc_min)
+						  {
+							  adc_min = timeSample->adcCounts;
+							  jmin = j;
+						  }
+				  }
 
-        	  
-        	  min_adc_hist->Fill(jmin);
-        	  max_adc_hist->Fill(jmax);
+				  
+				  min_adc_hist->Fill(jmin);
+				  max_adc_hist->Fill(jmax);
 
-        	  // loop for storing the sums and sums of squares of counts above pedestal 
-              int pedestal = (cfebData->timeSlice(0))->timeSample(ilayer,istrip)->adcCounts;
-              //start at 1 instead of 0 since doing difference w.r.t bin 0
-        	  for (int j=1; j<nTimeSamples; j++)
-        	  {
-                	  int adc_count = (cfebData->timeSlice(j))->timeSample(ilayer,istrip)->adcCounts;
-                	  double count_diff = (double) adc_count - (double) pedestal;
+				  // loop for storing the sums and sums of squares of counts above pedestal 
+				  int pedestal = (cfebData->timeSlice(0))->timeSample(ilayer,istrip)->adcCounts;
+				  //start at 1 instead of 0 since doing difference w.r.t bin 0
+				  for (int j=1; j<nTimeSamples; j++)
+				  {
+						  int adc_count = (cfebData->timeSlice(j))->timeSample(ilayer,istrip)->adcCounts;
+						  double count_diff = (double) adc_count - (double) pedestal;
 
-                                    
-                	  int strip_idx = icfeb*16 + istrip - 1;
-        	          //cout << "count_diff" << count_diff << endl;
-	                  ch_adc_sum[j].content[ilayer-1][strip_idx] += count_diff;
-                	  ch_adc_sum[j].cnts[ilayer-1][strip_idx] += 1;
-        	          ch_adc_sum2[j].content[ilayer-1][strip_idx] += count_diff*count_diff;
-	                  ch_adc_sum2[j].cnts[ilayer-1][strip_idx] += 1;   
+										
+						  int strip_idx = icfeb*16 + istrip - 1;
+						  //cout << "count_diff" << count_diff << endl;
+						  ch_adc_sum[j].content[ilayer-1][strip_idx] += count_diff;
+						  ch_adc_sum[j].cnts[ilayer-1][strip_idx] += 1;
+						  ch_adc_sum2[j].content[ilayer-1][strip_idx] += count_diff*count_diff;
+						  ch_adc_sum2[j].cnts[ilayer-1][strip_idx] += 1;   
 
-        	  }          
-          }
-        }
-      }
-    }
+				  }          
+			  }
+			}
+		  }
+		//}
+	}
 }
 
 
@@ -258,7 +275,8 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 	TestData& cscdata = tdata[cscID];
 	
     TestData2D& r01 = cscdata["R01"];
-    TestData2D& r02 = cscdata["R02"];//if(isME11(cscID)) 
+	//if(chamberSides == 2) 
+    TestData2D& r02 = cscdata["R02"]; 
     	
 	// hist bin starts at 1, jmin/jmax at 0.
 	int i_max = max_adc_hist->GetMaximumBin();
@@ -306,7 +324,7 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 
 	
 	// the stuff below is ported from test_16_finish
-	int     ilayer, istrip, n;
+	int     ilayer, istrip, n, stripstart;
 	float   avg, sigma_sq;
 
 	int nstrips = ch_adc_sum[1].Nbins;
@@ -315,62 +333,54 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 
 	
 	/* Get average max response - min response */
-	for (ilayer = 0; ilayer < TEST_DATA2D_NLAYERS; ilayer++)
-	{
-		for (istrip = 0; istrip < nstrips; istrip++)
+	//cout << "ChamberSides " << chamberSides << endl;
+	for(int iside=0; iside < chamberSides; iside++) {
+		//cout << "iside " << iside << endl;
+		if(iside == 0 && chamberSides == 2) nstrips = 4*16;
+		if(iside == 1 && chamberSides == 2) nstrips = 3*16;
+		
+		for (ilayer = 0; ilayer < TEST_DATA2D_NLAYERS; ilayer++)
 		{
-			if(istrip < 64)
-			{
-				r01.cnts[ilayer][istrip]++;
-			}
-			else
-			{
-				r02.cnts[ilayer][istrip-64]++;
+			stripstart = 0;
+			if(iside == 1) {
+				stripstart = 4*16;
+				nstrips = 3*16;
 			}
 			
-			if ((n = nevents[ilayer][istrip]) > 1) 
+			for (istrip = stripstart; istrip < stripstart+nstrips; istrip++)
 			{
+				if(iside == 0) r01.cnts[ilayer][istrip]++;
+				else r02.cnts[ilayer][istrip-stripstart]++;
+				
+				if ((n = nevents[ilayer][istrip]) > 1) 
+				{
 
-				avg = sum[ilayer][istrip] / n;
-				sigma_sq = (n / (n - 1)) * (sumsq[ilayer][istrip] / n - avg * avg);
-				adc_diff[ilayer][istrip] = avg;
-				adc_diff_err[ilayer][istrip] = sqrt(sigma_sq / n);
-				if(istrip < 64)
+					avg = sum[ilayer][istrip] / n;
+					sigma_sq = (n / (n - 1)) * (sumsq[ilayer][istrip] / n - avg * avg);
+					adc_diff[ilayer][istrip] = avg;
+					adc_diff_err[ilayer][istrip] = sqrt(sigma_sq / n);
+					
+					if(iside == 0) r01.content[ilayer][istrip] = avg;
+					else r02.content[ilayer][istrip-stripstart] = avg;
+					
+				}
+				else if (n == 1)
 				{
-					r01.content[ilayer][istrip] = avg;
+					adc_diff[ilayer][istrip]  = sum[ilayer][istrip];
+					adc_diff_err[ilayer][istrip] = 10.;
+					
+					if(iside == 0) r01.content[ilayer][istrip] = sum[ilayer][istrip];
+					else r02.content[ilayer][istrip-stripstart] = sum[ilayer][istrip];
+					
 				}
 				else
 				{
-					 r02.content[ilayer][istrip-64] = avg;
-				}
-				
-			}
-			else if (n == 1)
-			{
-				adc_diff[ilayer][istrip]  = sum[ilayer][istrip];
-				adc_diff_err[ilayer][istrip] = 10.;
-				
-				if(istrip < 64)
-				{
-					r01.content[ilayer][istrip] = sum[ilayer][istrip];
-				}
-				else
-				{
-					r02.content[ilayer][istrip-64] = sum[ilayer][istrip];
-				}
-			}
-			else
-			{
-				adc_diff[ilayer][istrip] = -999.;
-				adc_diff_err[ilayer][istrip] = 0.;
-				
-				if(istrip < 64)
-				{
-					r01.content[ilayer][istrip] = -999.;
-				}
-				else
-				{
-					r02.content[ilayer][istrip-64] = -999.;
+					adc_diff[ilayer][istrip] = -999.;
+					adc_diff_err[ilayer][istrip] = 0.;
+					
+					if(iside == 0) r01.content[ilayer][istrip] = -999.;
+					else r02.content[ilayer][istrip-stripstart] = -999.;
+					
 				}
 			}
 		}
