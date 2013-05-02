@@ -13,7 +13,7 @@
         <TestResult>
 		<Test>19_CFEBComparators</Test>
                 <Type>strips_cnv</Type>
-		<Title>R01 - CFEB Noise for 20 fC out of limits </Title>
+		<Title>R01 - CFEB Noise for DAC1</Title>
                 <Prefix>CSC</Prefix>
                 <Name>R01</Name>
                 <XMin>0</XMin>
@@ -21,7 +21,7 @@
                 <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
                 <YMin>0</YMin>
-                <YMax>10</YMax>
+                <YMax>100</YMax>
                 <YBins>50</YBins>
                 <YTitle>Noise, DAC Counts</YTitle>
 		<Low1Limit>0.5</Low1Limit>
@@ -32,7 +32,7 @@
  	<TestResult>
                 <Test>19_CFEBComparators</Test>
                 <Type>strips_cnv</Type>
-                <Title>R02 - CFEB Thresholds for 20 fC </Title>
+                <Title>R02 - CFEB Thresholds for DAC1 </Title>
                 <Prefix>CSC</Prefix>
                 <Name>R02</Name>
                 <XMin>0</XMin>
@@ -40,7 +40,7 @@
                 <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
                 <YMin>0</YMin>
-                <YMax>80</YMax>
+                <YMax>800</YMax>
                 <YBins>80</YBins>
                 <YTitle>Threshold, DAC Counts</YTitle>
                 <Low1Limit>0</Low1Limit>
@@ -49,7 +49,8 @@
                 <High1Limit>30</High1Limit>
         </TestResult>
 
-	<!--TestResult>
+	<!--
+	<TestResult>
                 <Test>19_CFEBComparators</Test>
                 <Type>CFEB_cnv</Type>
                 <Title>R03 - Optimal DAC1 values  per chip for 20 fC threshold </Title>
@@ -67,12 +68,13 @@
                 <Low0Limit>3.5</Low0Limit>
                 <High0Limit>50</High0Limit>
                 <High1Limit>50</High1Limit>
-        </TestResult-->
+        </TestResult>
+		-->
 
 	<TestResult>
                 <Test>19_CFEBComparators</Test>
                 <Type>strips_cnv</Type>
-                <Title>R04 - CFEB Thresholds Offset for 20 fC </Title>
+                <Title>R04 - CFEB Thresholds Offset for DAC1 </Title>
                 <Prefix>CSC</Prefix>
                 <Name>R04</Name>
                 <XMin>0</XMin>
@@ -92,7 +94,7 @@
 	<TestResult>
                 <Test>19_CFEBComparators</Test>
                 <Type>strips_cnv</Type>
-                <Title>R05 - CFEB Noise for 40 fC out of limits </Title>  
+                <Title>R05 - CFEB Noise for DAC2 out of limits </Title>  
                 <Prefix>CSC</Prefix>
                 <Name>R05</Name>
                 <XMin>0</XMin>
@@ -100,7 +102,7 @@
                 <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
                 <YMin>0</YMin>
-                <YMax>10</YMax>
+                <YMax>100</YMax>
                 <YBins>50</YBins>
                 <YTitle>Noise, DAC Counts</YTitle>
                 <Low1Limit>0.5</Low1Limit>
@@ -111,7 +113,7 @@
         <TestResult>
                 <Test>19_CFEBComparators</Test>
                 <Type>strips_cnv</Type>
-                <Title>R06 - CFEB Thresholds for 40 fC </Title>
+                <Title>R06 - CFEB Thresholds for DAC2 </Title>
                 <Prefix>CSC</Prefix>
                 <Name>R06</Name>
                 <XMin>0</XMin>
@@ -119,7 +121,7 @@
                 <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
                 <YMin>0</YMin>
-                <YMax>100</YMax>
+                <YMax>1000</YMax>
                 <YBins>100</YBins>
                 <YTitle>Threshold, DAC Counts</YTitle>
                 <Low1Limit>10</Low1Limit>
@@ -131,7 +133,7 @@
         <TestResult>
                 <Test>19_CFEBComparators</Test>
                 <Type>strips_cnv</Type>
-                <Title>R08 - CFEB Thresholds Offsets for 40 fC </Title>
+                <Title>R08 - CFEB Thresholds Offsets for DAC2 </Title>
                 <Prefix>CSC</Prefix>
                 <Name>R08</Name>
                 <XMin>0</XMin>
@@ -171,7 +173,7 @@
 	<TestResult>
                 <Test>19_CFEBComparators</Test>
                 <Type>strips_cnv</Type>
-                <Title>R11 - Calculated CFEB Thresholds for 20 fC </Title>
+                <Title>R11 - Calculated CFEB Thresholds for 15 fC </Title>
                 <Prefix>CSC</Prefix>
                 <Name>R11</Name>
                 <XMin>0</XMin>
@@ -191,7 +193,7 @@
 	<TestResult>
                 <Test>19_CFEBComparators</Test>
                 <Type>strips_cnv</Type>
-                <Title>R12 - Calculated CFEB Offsets for 20 fC </Title>
+                <Title>R12 - Calculated CFEB Offsets for 15 fC </Title>
                 <Prefix>CSC</Prefix>
                 <Name>R12</Name>
                 <XMin>0</XMin>
@@ -208,9 +210,87 @@
                 <High1Limit>8</High1Limit>
         </TestResult>
 
+	<TestResult>
+                <Test>19_CFEBComparators</Test>
+                <Type>strips_cnv</Type>
+                <Title>R14 - CFEB Noise for DAC3 out of limits </Title>  
+                <Prefix>CSC</Prefix>
+                <Name>R14</Name>
+                <XMin>0</XMin>
+                <XMax>112</XMax>
+                <XBins>112</XBins>
+                <XTitle>Strip Number</XTitle>
+                <YMin>0</YMin>
+                <YMax>300</YMax>
+                <YBins>50</YBins>
+                <YTitle>Noise, DAC Counts</YTitle>
+                <Low1Limit>0.5</Low1Limit>
+                <Low0Limit>0.5</Low0Limit>
+                <High0Limit>4.0</High0Limit>
+                <High1Limit>4.0</High1Limit>
+        </TestResult>
+        <TestResult>
+                <Test>19_CFEBComparators</Test>
+                <Type>strips_cnv</Type>
+                <Title>R15 - CFEB Thresholds for DAC3 </Title>
+                <Prefix>CSC</Prefix>
+                <Name>R15</Name>
+                <XMin>0</XMin>
+                <XMax>112</XMax>
+                <XBins>112</XBins>
+                <XTitle>Strip Number</XTitle>
+                <YMin>0</YMin>
+                <YMax>1000</YMax>
+                <YBins>100</YBins>
+                <YTitle>Threshold, DAC Counts</YTitle>
+                <Low1Limit>10</Low1Limit>
+                <Low0Limit>10</Low0Limit>
+                <High0Limit>60</High0Limit>
+                <High1Limit>60</High1Limit>
+        </TestResult>
 
-
-
+	<!--
+	<TestResult>
+                <Test>19_CFEBComparators</Test>
+                <Type>strips_cnv</Type>
+                <Title>R16 - CFEB Thresholds Offset for DAC3 </Title>
+                <Prefix>CSC</Prefix>
+                <Name>R16</Name>
+                <XMin>0</XMin>
+                <XMax>112</XMax>
+                <XBins>112</XBins>
+                <XTitle>Strip Number</XTitle>
+                <YMin>-10</YMin>
+                <YMax>10</YMax>
+                <YBins>40</YBins>
+                <YTitle>Offset, DAC Counts</YTitle>
+                <Low1Limit>-8.0</Low1Limit>
+                <Low0Limit>-8.0</Low0Limit>
+                <High0Limit>8.0</High0Limit>
+                <High1Limit>8.0</High1Limit>
+        </TestResult>
+		-->
+		
+	<TestResult>
+                <Test>19_CFEBComparators</Test>
+                <Type>strips_cnv</Type>
+                <Title>R17 - CFEB Thresholds Offset for DAC3 </Title>
+                <Prefix>CSC</Prefix>
+                <Name>R17</Name>
+                <XMin>0</XMin>
+                <XMax>112</XMax>
+                <XBins>112</XBins>
+                <XTitle>Strip Number</XTitle>
+                <YMin>-100</YMin>
+                <YMax>10</YMax>
+                <YBins>40</YBins>
+                <YTitle>Offset, DAC Counts</YTitle>
+                <Low1Limit>-8.0</Low1Limit>
+                <Low0Limit>-8.0</Low0Limit>
+                <High0Limit>8.0</High0Limit>
+                <High1Limit>8.0</High1Limit>
+        </TestResult>
+		
 	<TestResult>
                 <Test>19_CFEBComparators</Test>
                 <Type>h1</Type>

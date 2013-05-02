@@ -16,7 +16,7 @@
 #include <TProfile.h>
 #include <TFile.h>
 
-#define NMAXSCANC             47 //root of problem, limits curr_pass at 5, causing segfault since not allocated to array
+#define NMAXSCANC             5 //root of problem, limits curr_pass at 5, causing segfault since not allocated to array
 #define NMAXTHRESHC          40 
 #define NMAXBUCKETC          31
 #define NCFEB_CHIP            6
@@ -38,8 +38,10 @@ typedef struct ddu_stats_cfeb_thresh
   long l1a_cntr;
   int empty_evt_cntr;
   int csc_evt_cntr;
-  int pass;
+  int dac;
+  int amp;
   int thresh; 
+  int strip;
 
 } ddu_stats_cfeb_thresh;
 
@@ -55,21 +57,7 @@ typedef struct ThresholdScanDataC
 
 typedef std::map<std::string, ThresholdScanDataC> cscThresholdScanDataC;
 
-///////Move into test generic? -- it already has this for AFEBs
-///////Do CFEBs have calibration parameters like AFEBs?
 
-/*
-typedef struct CFEBCalibParams
-{
-
-  int Nbins;
-  int Nlayers;
-  double capacitances[NCFEB];
-  double gains[NCFEB];
-} CFEBCalibParams;
-
-typedef std::map<std::string, CFEBCalibParams> cscCFEBCalibParams;*/
-/////////////
 
 
 class Test_19_CFEBComparators: public Test_Generic
@@ -102,9 +90,17 @@ protected:
   int first_thresh;
   int thresh_step;
   int ev_per_thresh;
-  int pass;
+  int ampl;
+  int nthresh;
+  int nscan;
+  int current_pulse_dac;
+  int current_strip;
+  
+  float  calibration_pulse[NMAXSCANC];
+  float  calibration_thresh[NMAXTHRESHC];
 
   std::map<int, ddu_stats_cfeb_thresh> DDUstats;
+  //std::map<int, ddu_stats> DDUstats;
   std::map<int, std::map<std::string, test_step> > htree;
   bool fSwitch;
   cscThresholdScanDataC tscan_data;
