@@ -3,21 +3,41 @@
         <TestResult>
 		<Test>16_CFEBConnectivity</Test>
                 <Type>strips_cnv</Type>
-		<Title>ADC Difference</Title>
+		<Title>ADC Difference a</Title>
                 <Prefix>CSC</Prefix>
                 <Name>R01</Name>
                 <XMin>0</XMin>
-                <XMax>112</XMax>
-                <XBins>112</XBins>
+                <XMax>80</XMax>
+                <XBins>80</XBins>
                 <XTitle>Strip Number</XTitle>
                 <YMin>0</YMin>
-                <YMax>15</YMax>
+                <YMax>200</YMax>
                 <YBins>45</YBins>
                 <YTitle>ADC Difference</YTitle>
 		<Low1Limit>0</Low1Limit>
-		<Low0Limit>1</Low0Limit>
-		<High0Limit>10</High0Limit>
-		<High1Limit>14</High1Limit>
+		<Low0Limit>40</Low0Limit>
+		<High0Limit>120</High0Limit>
+		<High1Limit>180</High1Limit>
+        </TestResult>
+
+        <TestResult>
+		<Test>16_CFEBConnectivity</Test>
+                <Type>strips_cnv</Type>
+		<Title>ADC Difference b</Title>
+                <Prefix>CSC</Prefix>
+                <Name>R02</Name>
+                <XMin>0</XMin>
+                <XMax>48</XMax>
+                <XBins>48</XBins>
+                <XTitle>Strip Number</XTitle>
+                <YMin>0</YMin>
+                <YMax>100</YMax>
+                <YBins>30</YBins>
+                <YTitle>ADC Difference</YTitle>
+		<Low1Limit>0</Low1Limit>
+		<Low0Limit>10</Low0Limit>
+		<High0Limit>40</High0Limit>
+		<High1Limit>70</High1Limit>
         </TestResult>
 		
 		<TestResult>
