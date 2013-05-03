@@ -217,7 +217,7 @@ int test_16_event(int pass)
         }
 
       /* Fill histogram to find typical locations of max and min samples */
-      int first_cfeb = csc_type = 0 ? 4 : 0;
+      int first_cfeb = csc_type == 0 ? 4 : 0;
       for (ifeb = first_cfeb; ifeb < ncfebs + first_cfeb; ifeb++)
         {
           if (upevt_.active_febs[ifeb] > 0)
@@ -256,7 +256,7 @@ int test_16_event(int pass)
       layerpair = upevt_.alctcal_current_value;
 
       /* Fill arrays of sum of max-min and (max-min)**2 for each strip */
-      int first_cfeb = csc_type = 0 ? 4 : 0;
+      int first_cfeb = csc_type == 0 ? 4 : 0;
       for (ifeb = first_cfeb; ifeb < ncfebs + first_cfeb; ifeb++)
         {
           if (upevt_.active_febs[ifeb] > 0)
