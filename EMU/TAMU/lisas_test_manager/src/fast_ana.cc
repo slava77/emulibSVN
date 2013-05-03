@@ -369,6 +369,7 @@ extern "C" int fast_ana(char *in_file, int max_events, int nskip, int test_num,
 		      wait_for_return();
 		      exit(1);
 		    }
+		  cout<<"\n ==> Done"<<endl;
 		}
 	      if (test_event(pass) == -2) break;
 	      
