@@ -66,7 +66,8 @@
      &     type.eq.STRIP_PLOT_EVEN .or. type.eq.STRIP_PLOT_ODD .or. 
      &     type.eq.HSTRIP_PLOT) then
          NSTRIPS = limit(7)
-         if (NSTRIPS.ne.80 .and. NSTRIPS.ne.64 .and. NSTRIPS.ne.48) then
+         if (NSTRIPS.ne.80 .and. NSTRIPS.ne.64 .and. NSTRIPS.ne.48 .and. 
+     &        NSTRIPS.ne. 16 ) then
             NSTRIPS = 80
          endif
       else
