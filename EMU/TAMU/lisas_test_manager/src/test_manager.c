@@ -208,7 +208,7 @@ int main(int argc, char ** argv)
 	    {
 	      j = csc.type;
 	      printf("%8s Possible chamber types are:\n", menu_bl);
-	      for (k = 1; k <= NUM_CSC_TYPES; k++) 
+	      for (k = 0; k < NUM_CSC_TYPES; k++) 
 		{
 		  make_name(dummy_name, 0, k);
 		  if ((p = strstr(dummy_name, ".000"))) *p = '\0';
@@ -298,9 +298,7 @@ int show_csc_status(csc_id *csc)
     {"OK", "Failed", "Results missing", "Unknown"};
   static int     active[MAX_TEST_NUM+1] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 
                                             1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-					    1
-  };
+                                            1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
   FILE           *fp;
   
   //Find the results directory, or create it 
