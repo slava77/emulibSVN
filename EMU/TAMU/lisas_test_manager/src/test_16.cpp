@@ -83,7 +83,7 @@ extern "C" int test_16_init(void)
 
   switch (csc_type)
     {
-    case 0:  nstrips = 48, ncfebs = 3; break;
+    case 0:  nstrips = 16, ncfebs = 1; break; //readout corresponding to the old 4+1 config
     case 1:  nstrips = 64; ncfebs = 4; break;
     case 2:  nstrips = 64; ncfebs = 4; break;
     default: nstrips = 80; ncfebs = 5; break;
@@ -227,7 +227,7 @@ int test_16_event(int pass)
                   layerpair = upevt_.alctcal_current_value;
                   for (istrip = 16 * ifeb; istrip < 16 + 16 * ifeb && istrip < NSTRIP; istrip++)
                     {
-                      if (first_istrip >= nstrips) first_istrip = istrip;
+                      if (first_istrip >= nstrips) first_istrip = istrip - first_cfeb*16;
                       adc_max = -1;
                       adc_min = 4096;
                       for (j = 0; j < upevt_.nsca_sample; j++)
@@ -344,8 +344,8 @@ int test_16_end(int pass)
    End-of-test analysis for FAST site test 16
 *******************************************************************************/
 
-#define ADC_DIFF_LOWER_LIMIT              100.0
-#define ADC_DIFF_UPPER_LIMIT              300.0
+const float ADC_DIFF_LOWER_LIMIT[3]  = { 20.0,  50.0, 100.0 };
+const float ADC_DIFF_UPPER_LIMIT[3]  = { 60.0, 150.0, 300.0 };
 
 int test_16_finish(void) {
   int     ilayer, istrip, n, nbadch;
@@ -375,13 +375,15 @@ int test_16_finish(void) {
       }
     }
   }
+  
+  int lType = csc_type > 1? 2 : csc_type;
 
   limits[0] =  0.;                   /* layer histo lower limit */
   limits[1] =  500.;                   /* layer histo upper limit */
   limits[2] =  0.;                   /* summary histo lower limit */
   limits[3] =  500.;                   /* summary histo upper limit */
-  limits[4] = ADC_DIFF_LOWER_LIMIT;   /* lower limit line */
-  limits[5] = ADC_DIFF_UPPER_LIMIT;   /* upper limit line */
+  limits[4] = ADC_DIFF_LOWER_LIMIT[lType];   /* lower limit line */
+  limits[5] = ADC_DIFF_UPPER_LIMIT[lType];   /* upper limit line */
   limits[6] = nstrips;
 
   /* TODO: we need to decide how many cfebs there are per layer based on
@@ -398,20 +400,20 @@ int test_16_finish(void) {
                 "test_16_01.pdf");
 
   fprintf(fp, "List of strips with (ADC max - ADC min)"
-          "%4.1f - %4.1f :\n", ADC_DIFF_LOWER_LIMIT, ADC_DIFF_UPPER_LIMIT);
+          "%4.1f - %4.1f :\n", ADC_DIFF_LOWER_LIMIT[lType], ADC_DIFF_UPPER_LIMIT[lType]);
   fprintf(fp, "layer strip   adc_diff   adc_diff_error\n");
   fprintf(fp, "---------------------------------------------------------\n\n");
   /* Check that results are within limits */
   fprintf(fp_bad, "List of strips with (ADC max - ADC min) outside range "
-          "%4.1f - %4.1f :\n", ADC_DIFF_LOWER_LIMIT, ADC_DIFF_UPPER_LIMIT);
+          "%4.1f - %4.1f :\n", ADC_DIFF_LOWER_LIMIT[lType], ADC_DIFF_UPPER_LIMIT[lType]);
   fprintf(fp_bad, "layer strip   adc_diff   adc_diff_error\n");
   fprintf(fp_bad, "---------------------------------------------------------\n\n");
   for (ilayer = 0; ilayer < NLAYER; ilayer++) {
     for (istrip = first_istrip; istrip < nstrips; istrip++) {
       fprintf(fp, "  %d    %2d     %8.3f  %8.3f\n", ilayer + 1, istrip + 1,
               adc_diff[ilayer][istrip], adc_diff_err[ilayer][istrip]);
-      if ((adc_diff[ilayer][istrip] < ADC_DIFF_LOWER_LIMIT) ||
-          (adc_diff[ilayer][istrip] > ADC_DIFF_UPPER_LIMIT)) {
+      if ((adc_diff[ilayer][istrip] < ADC_DIFF_LOWER_LIMIT[lType]) ||
+          (adc_diff[ilayer][istrip] > ADC_DIFF_UPPER_LIMIT[lType])) {
         nbadch++;
         fprintf(fp_bad, "  %d    %2d     %8.3f  %8.3f\n", ilayer + 1, istrip + 1,
                 adc_diff[ilayer][istrip], adc_diff_err[ilayer][istrip]);
