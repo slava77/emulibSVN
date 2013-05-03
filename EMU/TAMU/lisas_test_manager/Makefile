@@ -30,7 +30,7 @@ endif
 ## Directory structure
 HDIR = $(PWD)
 #$(DAQHOME)/lisas_test_manager
-DAQCOMMON =$(DAQHOME)/daq_common
+DAQCOMMON =$(TRIDASDIST)/emu/lisas_dist/daq_common
 READOUT_CONTROL=$(DAQHOME)/readout_control
 EVTANA=$(DAQHOME)/event_analysis
 
@@ -216,6 +216,8 @@ OBJECTS += $(DAQCOMMON)/lib/daq_common_offline.a
 
 #daq_common_lib:
 #	cd  ../daq_common       ; make
+all : dirs $(BDIR)/lisas_test_manager
+
 
 $(BDIR)/lisas_test_manager : $(BDIR) $(OBJECTS)
 	$(CC) $(CCOPT) $(LOCINC)  -o $(BDIR)/lisas_test_manager $(OBJECTS) \
@@ -429,6 +431,23 @@ $(ODIR)/unpack_data.o : $(SDIR)/unpack_data.cc \
 	$(CC) $(CCOPT) $(LOCINC) $(XINC) -o $(ODIR)/unpack_data.o \
           -c $(SDIR)/unpack_data.cc 
 
+$(DATADIR)/test_results : $(DATADIR)
+	mkdir -p $(DATADIR)/test_results
+
+$(DATADIR)/test_results/temp : $(DATADIR) $(DATADIR)/test_results
+	mkdir -p $(DATADIR)/test_results/temp
+
+$(DATADIR)/cable_map : $(DATADIR)
+	test -h $@ -o -d $@  || ln -s $(TRIDASDIST)/emu/data/cable_map $@
+
+$(DATADIR)/xml : $(DATADIR)
+	test -f $@ -o -d $@  || ln -s $(TRIDASDIST)/emu/data/xml $@
+
+$(DATADIR)/test_info : $(DATADIR)
+	test -f $@ -o -d $@  || ln -s $(TRIDASDIST)/emu/data/test_info $@
+
+dirs : $(DATADIR)/test_results/temp $(DATADIR)/cable_map $(DATADIR)/xml $(DATADIR)/test_info
+
 .PHONY: clean kumac
 
 kumac: 
@@ -441,5 +460,5 @@ clean :
 	rm -f $(BDIR)/lisas_test_manager
 	rm -f $(BDIR)/*.kumac
 
-check : $(DAQCOMMON)
+check : $(DAQCOMMON) 
 	$(error check failed)
