@@ -217,9 +217,9 @@ int main(int argc, char ** argv)
 		}
 	      printf("%8s Give the number of the chamber type [%d]:  ", menu_bl, j);
 	      if (getint(&j) != 0) continue;
-	      if (j < 1 || j > NUM_CSC_TYPES) 
+	      if (j < 0 || j >= NUM_CSC_TYPES) 
 		{
-		  printf("Number must be in the range 1-%d\n", NUM_CSC_TYPES); 
+		  printf("Number must be in the range 0-%d\n", NUM_CSC_TYPES-1); 
 		  continue;
 		}
 	      csc.type = j;
