@@ -443,10 +443,7 @@ $(DATADIR)/cable_map : $(DATADIR)
 $(DATADIR)/xml : $(DATADIR)
 	test -f $@ -o -d $@  || ln -s $(TRIDASDIST)/emu/data/xml $@
 
-$(DATADIR)/test_info : $(DATADIR)
-	test -f $@ -o -d $@  || ln -s $(TRIDASDIST)/emu/data/test_info $@
-
-dirs : $(DATADIR)/test_results/temp $(DATADIR)/cable_map $(DATADIR)/xml $(DATADIR)/test_info
+dirs : $(DATADIR)/test_results/temp $(DATADIR)/cable_map $(DATADIR)/xml
 
 .PHONY: clean kumac
 
