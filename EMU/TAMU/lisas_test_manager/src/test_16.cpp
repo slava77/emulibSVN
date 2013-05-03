@@ -225,7 +225,7 @@ int test_16_event(int pass)
               for (ilayer = 0; ilayer < NLAYER; ilayer++)
                 {
                   layerpair = upevt_.alctcal_current_value;
-                  for (istrip = 16 * ifeb; istrip < 16 + 16 * ifeb; istrip++)
+                  for (istrip = 16 * ifeb; istrip < 16 + 16 * ifeb && istrip < NSTRIP; istrip++)
                     {
                       if (first_istrip >= nstrips) first_istrip = istrip;
                       adc_max = -1;
@@ -263,7 +263,7 @@ int test_16_event(int pass)
             {
               for (ilayer = 2*layerpair; ilayer < 2*(layerpair+1); ilayer++)
                 {
-                  for (istrip = 16 * ifeb; istrip < 16 + 16 * ifeb; istrip++)
+                  for (istrip = 16 * ifeb; istrip < 16 + 16 * ifeb && istrip < NSTRIP; istrip++)
                     {
                       if(upevt_.sca[ilayer][istrip][tsmax[1]]==0)continue;
                       x = 0.;
@@ -271,9 +271,9 @@ int test_16_event(int pass)
                         {
                           x += (float)upevt_.sca[ilayer][istrip][i] - (float)upevt_.sca[ilayer][istrip][0];
                         }
-                      sum[ilayer][istrip] += x;
-                      sumsq[ilayer][istrip] += x * x;
-                      nevents[ilayer][istrip]++;
+                      sum[ilayer][istrip-first_cfeb*16] += x;
+                      sumsq[ilayer][istrip-first_cfeb*16] += x * x;
+                      nevents[ilayer][istrip-first_cfeb*16]++;
                     }
                 }
             }
