@@ -36,3 +36,4 @@ export DATADIR=$LISAHOME/data
 [ ! -d "$LISAHOME/lib" ] && echo mkdir $LISAHOME/lib && mkdir $LISAHOME/lib
 MYG2C=/usr/lib64/libg2c.so.0.0.0
 [ ! -f "$LISAHOME/lib/libg2c.so" ] && echo made symlink to $MYG2C && ln -s $MYG2C $LISAHOME/lib/libg2c.so
+[ -z "${STEPHOME}" ] && echo STEPHOME set to $LISAHOME && export STEPHOME=$LISAHOME
