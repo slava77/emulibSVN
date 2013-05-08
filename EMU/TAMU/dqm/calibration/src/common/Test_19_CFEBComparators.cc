@@ -10,7 +10,7 @@
 #define STRIP_FIRST 1
 #define DMB_TPAMP_FIRST 150
 #define DMB_TPAMP_STEP 48
-#define SCALE_TURNOFF 12 //orig is 12
+#define SCALE_TURNOFF 12
 #define RANGE_TURNOFF 20
 #define STRIPS_PER_RUN 16
 
@@ -24,7 +24,7 @@ Test_19_CFEBComparators::Test_19_CFEBComparators(std::string dfile):
   Test_Generic(dfile)
 {
   testID = "19_CFEBComparators";
-  nExpectedEvents = 5;
+  nExpectedEvents = 25200;
   dduID = 0;
   binCheckMask=0x16EBF7F6; // same value used in Lisa
 
@@ -45,8 +45,6 @@ Test_19_CFEBComparators::~Test_19_CFEBComparators()
 void Test_19_CFEBComparators::initCSC(std::string cscID)
 {
 
- 
-  //= Init per CSC events counters
   nCSCEvents[cscID]=0;
 
   ThresholdScanDataC thdata;
@@ -89,8 +87,8 @@ void Test_19_CFEBComparators::initCSC(std::string cscID)
   cscdata["R17"]=cfebdata;//thr offset dac3
   
   cscdata["R09"]=cfebdata;
-  cscdata["R11"]=cfebdata;
-  cscdata["R12"]=cfebdata;
+  //cscdata["R11"]=cfebdata;
+  //cscdata["R12"]=cfebdata;
   
 
   cfebdata.Nbins = getNumStrips(cscID)/16;
@@ -100,16 +98,13 @@ void Test_19_CFEBComparators::initCSC(std::string cscID)
   cscdata["R16"]=cfebdata;//avg per CFEB thresh dac3
   
   cscdata["R10"]=cfebdata;
-  cscdata["R13"]=cfebdata;
+  //cscdata["R13"]=cfebdata;
 
   
   tdata[cscID] = cscdata;
 
   bookTestsForCSC(cscID);
   
-  nthresh = -1;
-  current_pulse_dac = -1;
-  current_strip = -1;
   
 }
 
@@ -208,12 +203,12 @@ void Test_19_CFEBComparators::analyze(const char * data, int32_t dataSize, uint3
 	int nevt = currL1A;
 	
 	int prevThreshold = DDUstats[dduID].thresh;
-	int prevDAC = DDUstats[dduID].dac;
+	float prevDAC = DDUstats[dduID].dac;
 	int prevStrip = DDUstats[dduID].strip;
 	
 	int strip = (nevt/(DMB_TPAMPS_PER_STRIP * THRESHS_PER_TPAMP * EVENTS_PER_THRESH)) * STRIP_STEP + STRIP_FIRST;
 
-	int dac = ( (nevt % (DMB_TPAMPS_PER_STRIP * THRESHS_PER_TPAMP * EVENTS_PER_THRESH) ) / THRESHS_PER_TPAMP / EVENTS_PER_THRESH) * DMB_TPAMP_STEP + DMB_TPAMP_FIRST;
+	float dac = ( (nevt % (DMB_TPAMPS_PER_STRIP * THRESHS_PER_TPAMP * EVENTS_PER_THRESH) ) / THRESHS_PER_TPAMP / EVENTS_PER_THRESH) * DMB_TPAMP_STEP + DMB_TPAMP_FIRST;
 
 	int thresh_first = dac * SCALE_TURNOFF / 16 - RANGE_TURNOFF;
 	
@@ -228,16 +223,6 @@ void Test_19_CFEBComparators::analyze(const char * data, int32_t dataSize, uint3
 	DDUstats[dduID].amp = amp;
 	DDUstats[dduID].thresh = threshold;
 	
- 	
-  /*if (strip != prevStrip)
-  {
-	
-	prevStrip = strip;
-	nscan = -1;
-	current_pulse_dac = -1;
-	
-  } */
-	
   if (dac != prevDAC)
   {
 	
@@ -245,14 +230,7 @@ void Test_19_CFEBComparators::analyze(const char * data, int32_t dataSize, uint3
 	{
 		
 		prevDAC = dac;
-		
-		//if(calibration_pulse[nscan] == 0)
 		calibration_pulse[nscan] = dac;
-		/*cout << "DMB_TPAMPS_PER_STRIP " << DMB_TPAMPS_PER_STRIP << endl;
-		cout << "nscan " << nscan << " prevDAC " << prevDAC << " dac " << dac << endl;
-		cout << "c_p[nscan] " << calibration_pulse[nscan] << endl;
-		cout << endl;*/
-		
 		nscan++;
 		
 		DDUstats[dduID].empty_evt_cntr=0;
@@ -263,19 +241,11 @@ void Test_19_CFEBComparators::analyze(const char * data, int32_t dataSize, uint3
 		  itr->second.evt_cnt = 0;
 		}
 	}
-	
-	//nthresh = -1;
 
   }
 	
   if (threshold != prevThreshold)
   {
-  
-	/*prevThreshold = threshold;
-	nthresh++;
-	calibration_thresh[nthresh] = threshold;*/
-	
-    //std::cout << "Threshold switch to " << DDUstats[dduID].thresh << std::endl;
 
     DDUstats[dduID].empty_evt_cntr=0;
 	
@@ -287,13 +257,6 @@ void Test_19_CFEBComparators::analyze(const char * data, int32_t dataSize, uint3
   }
   
 	
-	
-	
-	/*cout << nTotalEvents << " " << currL1A << " " 
-		 << strip << " " << DDUstats[dduID].amp
-		 << " " << DDUstats[dduID].dac
-	     << " " << DDUstats[dduID].thresh << endl;*/
-
   int nCSCs = chamberDatas.size();
 
   //= Loop over found chambers and fill data structures
@@ -320,9 +283,6 @@ void Test_19_CFEBComparators::analyzeCSC(const CSCEventData& data)
   std::string cscID = getCSCFromMap(dmbHeader->crateID(), dmbHeader->dmbID(), csctype, cscposition);
   if (cscID == "")  return;
 
-  //cout << "cscID: " << cscID << endl;
-
-
   cscTestData::iterator td_itr = tdata.find(cscID);
   if ( (td_itr == tdata.end()) || (tdata.size() == 0) )
     {
@@ -333,11 +293,7 @@ void Test_19_CFEBComparators::analyzeCSC(const CSCEventData& data)
 	
   nCSCEvents[cscID]++;
   	
-  /*if(nCSCEvents[cscID] >= nExpectedEvents) {
-	
-      LOG4CPLUS_WARN(logger, nCSCEvents[cscID] << " exceeded expected number of events (" << nExpectedEvents << ")");
-  }*/
-  
+
   MonHistos& cschistos = mhistos[cscID];
   
   test_step& tstep = htree[dduID][cscID];
@@ -345,7 +301,7 @@ void Test_19_CFEBComparators::analyzeCSC(const CSCEventData& data)
   ThresholdScanDataC& thdata = tscan_data[cscID];
   
   int curr_thresh =  DDUstats[dduID].thresh;
-  int curr_amp = DDUstats[dduID].amp;
+  int curr_amp = DDUstats[dduID].amp; // pulse number (0, 1, 2)
   
   tstep.evt_cnt++;
   
@@ -370,9 +326,6 @@ void Test_19_CFEBComparators::analyzeCSC(const CSCEventData& data)
              comparatorDigisItr != comparatorDigis.end(); ++comparatorDigisItr)
         {
           int strip = comparatorDigisItr->getStrip();
-		  
-		  //cout << strip << " ";
-		  
 		    
           v01->Fill(strip-1, nLayer-1);
           vector<int> tbins = comparatorDigisItr->getTimeBinsOn();
@@ -383,7 +336,11 @@ void Test_19_CFEBComparators::analyzeCSC(const CSCEventData& data)
 			
           }
 		  
-          thdata.content[curr_amp][nLayer-1][strip-1][curr_thresh-1]++;
+		  float dac = curr_amp * DMB_TPAMP_STEP + DMB_TPAMP_FIRST;
+		  int first_thresh = dac * SCALE_TURNOFF / 16 - RANGE_TURNOFF;
+				
+		  int ithresh = (curr_thresh - first_thresh)/THRESH_STEP;
+          thdata.content[curr_amp][nLayer-1][strip-1][ithresh]++;
 
         }
 		
@@ -407,13 +364,6 @@ void Test_19_CFEBComparators::finishCSC(std::string cscID)
 	cout << "c_p[0] " << calibration_pulse[0] << endl;
 	cout << "c_p[1] " << calibration_pulse[1] << endl;
 	cout << "c_p[2] " << calibration_pulse[2] << endl << endl;
-	//cout << "c_t[0] " << calibration_thresh[0] << endl;
-	//cout << "c_t[1] " << calibration_thresh[1] << endl << endl;
-	
-	/*cout << "corrrect order of pulse amplitudes " << endl;
-	calibration_pulse[0] = 150;
-	calibration_pulse[1] = 198;
-	calibration_pulse[2] = 246;*/
 	
 	cout << "q1 " << INJECT_PULSE_C0 + (INJECT_PULSE_C1*calibration_pulse[0]) << " fC" << endl;
 	cout << "q2 " << INJECT_PULSE_C0 + (INJECT_PULSE_C1*calibration_pulse[1]) << " fC" << endl;
@@ -436,8 +386,8 @@ void Test_19_CFEBComparators::finishCSC(std::string cscID)
     TestData2D& r08 = cscdata["R08"];
 
     TestData2D& r09 = cscdata["R09"];
-    TestData2D& r11 = cscdata["R11"];
-    TestData2D& r12 = cscdata["R12"];
+    //TestData2D& r11 = cscdata["R11"];
+    //TestData2D& r12 = cscdata["R12"];
 	
     TestData2D& r14 = cscdata["R14"];
     TestData2D& r15 = cscdata["R15"];
@@ -447,10 +397,9 @@ void Test_19_CFEBComparators::finishCSC(std::string cscID)
     TestData2D& r03 = cscdata["R03"];
     TestData2D& r07 = cscdata["R07"];
     TestData2D& r10 = cscdata["R10"];
-    TestData2D& r13 = cscdata["R13"];
+    //TestData2D& r13 = cscdata["R13"];
 
     ThresholdScanDataC& thdata = tscan_data[cscID];
-    //CFEBCalibParams& cal_params = cfeb_cal_params[cscID];
 
 	int nCFEBs = getNumStrips(cscID)/16;
 	
@@ -477,42 +426,20 @@ void Test_19_CFEBComparators::finishCSC(std::string cscID)
           {
 
             float  chisq, mean, par[3], rms;
-
-
-			if(i == 3 && j == 30) {
-			
-				for(int k = 0; k < sizeof(thdata.content[amp][i][j])/sizeof(thdata.content[amp][i][j][0]); k++)
-				{
-					cout << "scan: " << amp << " l: " << i << " s: " << j << " - thd[amp][l][s][" << k << "]: " << thdata.content[amp][i][j][k] << endl; 
-				}
-				
-				
-			  }
-			  
 			
             calc_thresh(MAX_CALIB_POINTSC, thdata.content[amp][i][j], par, &chisq);
+			
+			
+			int dac = amp * DMB_TPAMP_STEP + DMB_TPAMP_FIRST;
+			int first_thresh = dac * SCALE_TURNOFF / 16 - RANGE_TURNOFF;
+			if(first_thresh < 0) first_thresh = 0;
 
             if (chisq >= 0.)
             {
 			
-				float dac = amp * DMB_TPAMP_STEP + DMB_TPAMP_FIRST;
-				int first_thresh = dac * SCALE_TURNOFF / 16 - RANGE_TURNOFF;
-				if(first_thresh < 0) first_thresh = 0;
 			
 			  mean = par[1]*(THRESH_STEP)+ first_thresh;
 			  rms = par[2]*(THRESH_STEP);
-			  
-			  
-			  
-				if(i==3 && j==30
-					|| i==2&&j==22
-					|| i==4 && j==9) {
-					
-					
-					cout << "l " << i << " s " << j << " - " << "par[1]: " << par[1] << " par[2]: " << par[2] << " thstep: " << THRESH_STEP << " thfirst " << first_thresh << endl;
-									
-				}
-				
 				
             }
             else
@@ -524,7 +451,7 @@ void Test_19_CFEBComparators::finishCSC(std::string cscID)
                              Form(": Layer %d strip %2d has threshold = %6.2f and noise = %6.2f "
                                   "\tpar0 %f, mean %f, rms %f, chisq %f",
                                   i + 1, j + 1, mean, rms,
-                                  par[0], par[1]*THRESH_STEP+THRESH_FIRST, par[2], chisq) );
+                                  par[0], par[1]*THRESH_STEP+first_thresh, par[2]*THRESH_STEP, chisq) );
 
             }
 
@@ -580,12 +507,7 @@ void Test_19_CFEBComparators::finishCSC(std::string cscID)
           r04.content[ilayer][istrip] =
             r02.content[ilayer][istrip] - r03.content[0][istrip/16];
 			
-			cout << "r04[l][s] " << r04.content[ilayer][istrip]
-				 << " r02[l][s] " << r02.content[ilayer][istrip]
-				 << " r03[0][s/16] " << r03.content[0][istrip/16]
-				 << endl;
-
-r04.content[ilayer][istrip] =
+			r04.content[ilayer][istrip] =
             r02.content[ilayer][istrip] - r03.content[0][istrip/16];
         }
       }
@@ -672,7 +594,7 @@ r04.content[ilayer][istrip] =
           r09.content[i][j] = (r06.content[i][j]-r02.content[i][j]) /
                               (delta_pulse );
 
-          ///* Calculate CFEB Threshold for 15 fC
+          /*// Calculate CFEB Threshold for 15 fC
           float q1 = (INJECT_PULSE_C0+INJECT_PULSE_C1 * calibration_pulse[0]) * INJECT_PULSE_C1;
           float q2 = (INJECT_PULSE_C0+INJECT_PULSE_C1 * calibration_pulse[1]) * INJECT_PULSE_C1;
 
@@ -681,14 +603,14 @@ r04.content[ilayer][istrip] =
               ((q2-15.)*r02.content[i][j]+ (15.-q1)*r06.content[i][j])/(q2-q1);
           else
             r11.content[i][j] = -99.; //not defined
-
+		  */
         }
 
       }
 
 	  
       ///* Calculate averaged per CFEB board Threshold for 15 fC
-      for (int icfeb = 0; icfeb < nCFEBs; icfeb++)
+      /*for (int icfeb = 0; icfeb < nCFEBs; icfeb++)
       {
 		int goodchans = 0;
 	    for(int ilayer = 0; ilayer < NLAYER; ilayer++)
@@ -708,7 +630,7 @@ r04.content[ilayer][istrip] =
       }
 
 	  
-      ///* Calculate CFEB Threshold Offsets for 15 fC
+      // Calculate CFEB Threshold Offsets for 15 fC
       for (int istrip = 0; istrip < getNumStrips(cscID); istrip++)
       {
         for (int ilayer = 0; ilayer < NLAYERS; ilayer++)
@@ -718,34 +640,7 @@ r04.content[ilayer][istrip] =
       
         }
 		
-      }
-
-
-
-      // == Save results to text files
-      std::string rpath = "Test_"+testID+"/"+outDir;
-      std::string path = rpath+"/"+cscID+"/";
-
-
-      std::ofstream res_out((path+cscID+"_"+testID+"_R13.results").c_str());
-
-      res_out << "#----------------------------------------------------------------------------\n"
-              << "#Results of CFEB Threshold Test for " << cscID
-              << "\n#----------------------------------------------------------------------------\n\n"
-
-              << "#Calculated threshold for 20 fC, in DACthr\n"
-              << "#CFEB #   DAC thr for 20 fC\n"
-              << "#----------------------------------------------------------------------------" << std::endl;
-
-      for (int icfeb = 0; icfeb < nCFEBs; icfeb++)
-      {
-          res_out << std::setw(5)<< (icfeb+1) << "\t" << std::setw(4) << (int)r13.content[0][icfeb] << std::endl;
-      }
-
-      res_out << "\n# " << now() << std::endl;
-      res_out.close();
-
-
+      }*/
 
     }
 

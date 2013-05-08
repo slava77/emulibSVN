@@ -16,7 +16,7 @@
 #include <TProfile.h>
 #include <TFile.h>
 
-#define NMAXSCANC             5 //root of problem, limits curr_pass at 5, causing segfault since not allocated to array
+#define NMAXSCANC             5
 #define NMAXTHRESHC          40 
 #define NMAXBUCKETC          31
 #define NCFEB_CHIP            6
@@ -24,9 +24,9 @@
 #define MAX_CALIB_POINTSC   256
 
 #define NLAYER 6
-#define NSTRIP 112 //80?
+#define NSTRIP 112
 
-// Injected pulse in fC is A0+A1*DAC_calibration_pulse
+// Injected pulse in fC is C0+C1*DAC_calibration_pulse
 #define INJECT_PULSE_C0  0. 
 #define INJECT_PULSE_C1  0.655 // for the new DAC 
 
@@ -38,14 +38,12 @@ typedef struct ddu_stats_cfeb_thresh
   long l1a_cntr;
   int empty_evt_cntr;
   int csc_evt_cntr;
-  int dac;
+  float dac;
   int amp;
   int thresh; 
   int strip;
 
 } ddu_stats_cfeb_thresh;
-
-
 
 
 typedef struct ThresholdScanDataC
@@ -56,8 +54,6 @@ typedef struct ThresholdScanDataC
 } ThresholdScanDataC;
 
 typedef std::map<std::string, ThresholdScanDataC> cscThresholdScanDataC;
-
-
 
 
 class Test_19_CFEBComparators: public Test_Generic
@@ -85,27 +81,15 @@ protected:
   int dduID;
   int ltc_bug;
   
-  int num_tpamps;
-  int num_thresh;
-  int first_thresh;
-  int thresh_step;
-  int ev_per_thresh;
-  int ampl;
-  int nthresh;
   int nscan;
-  int current_pulse_dac;
-  int current_strip;
   
   float  calibration_pulse[NMAXSCANC];
   float  calibration_thresh[NMAXTHRESHC];
 
   std::map<int, ddu_stats_cfeb_thresh> DDUstats;
-  //std::map<int, ddu_stats> DDUstats;
   std::map<int, std::map<std::string, test_step> > htree;
   bool fSwitch;
   cscThresholdScanDataC tscan_data;
-  //cscCFEBCalibParams cfeb_cal_params;
-  
   
 private:
   

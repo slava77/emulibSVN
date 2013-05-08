@@ -3,12 +3,12 @@
         <TestResult>
 		<Test>16_CFEBConnectivity</Test>
                 <Type>strips_cnv</Type>
-		<Title>ADC Difference a</Title>
+		<Title>ADC Difference B</Title>
                 <Prefix>CSC</Prefix>
                 <Name>R01</Name>
                 <XMin>0</XMin>
-                <XMax>80</XMax>
-                <XBins>80</XBins>
+                <XMax>112</XMax>
+                <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
                 <YMin>0</YMin>
                 <YMax>200</YMax>
@@ -23,7 +23,7 @@
         <TestResult>
 		<Test>16_CFEBConnectivity</Test>
                 <Type>strips_cnv</Type>
-		<Title>ADC Difference b</Title>
+		<Title>ADC Difference A</Title>
                 <Prefix>CSC</Prefix>
                 <Name>R02</Name>
                 <XMin>0</XMin>
