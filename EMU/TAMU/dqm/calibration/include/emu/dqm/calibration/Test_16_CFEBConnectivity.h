@@ -34,6 +34,8 @@ protected:
   void analyzeCSC(const CSCEventData& data);
   void finishCSC(std::string cscID);
   bool checkResults(std::string cscID);
+  
+  int chamberSides;
 
   cscTimeBinsTestData adcSum;
   cscTimeBinsTestData adcSum2;

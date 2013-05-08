@@ -370,8 +370,10 @@ void Test_19_CFEBComparators::analyzeCSC(const CSCEventData& data)
              comparatorDigisItr != comparatorDigis.end(); ++comparatorDigisItr)
         {
           int strip = comparatorDigisItr->getStrip();
+		  
 		  //cout << strip << " ";
 		  
+		    
           v01->Fill(strip-1, nLayer-1);
           vector<int> tbins = comparatorDigisItr->getTimeBinsOn();
           for (uint32_t n=0; n < tbins.size(); n++)
@@ -477,15 +479,41 @@ void Test_19_CFEBComparators::finishCSC(std::string cscID)
             float  chisq, mean, par[3], rms;
 
 
+			if(i == 3 && j == 30) {
+			
+				for(int k = 0; k < sizeof(thdata.content[amp][i][j])/sizeof(thdata.content[amp][i][j][0]); k++)
+				{
+					cout << "scan: " << amp << " l: " << i << " s: " << j << " - thd[amp][l][s][" << k << "]: " << thdata.content[amp][i][j][k] << endl; 
+				}
+				
+				
+			  }
+			  
+			
             calc_thresh(MAX_CALIB_POINTSC, thdata.content[amp][i][j], par, &chisq);
 
             if (chisq >= 0.)
             {
-			  mean = par[1]*(THRESH_STEP)+ THRESH_FIRST;
+			
+				float dac = amp * DMB_TPAMP_STEP + DMB_TPAMP_FIRST;
+				int first_thresh = dac * SCALE_TURNOFF / 16 - RANGE_TURNOFF;
+				if(first_thresh < 0) first_thresh = 0;
+			
+			  mean = par[1]*(THRESH_STEP)+ first_thresh;
 			  rms = par[2]*(THRESH_STEP);
-				if(i==5 && j==5) {
-					cout << "mean " << mean << " rms " << rms << endl;
+			  
+			  
+			  
+				if(i==3 && j==30
+					|| i==2&&j==22
+					|| i==4 && j==9) {
+					
+					
+					cout << "l " << i << " s " << j << " - " << "par[1]: " << par[1] << " par[2]: " << par[2] << " thstep: " << THRESH_STEP << " thfirst " << first_thresh << endl;
+									
 				}
+				
+				
             }
             else
             {
