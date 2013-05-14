@@ -928,7 +928,7 @@ void Test_Generic::bookCommonHistos()
       {
         ybins = strtol(params["YBins"].c_str(), &stopstring, 10);
       }
-      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv"))
+      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv"))
       {
         /*
             // = Set actual number of strips depending on Chamber type
@@ -970,7 +970,7 @@ void Test_Generic::bookCommonHistos()
 
         emucnvs[itr->first]=cnv;
       }
-      if ((cnvtype.find("h") == 0) && (scope=="EMU"))
+      if ((cnvtype.find("h") == 0 && !(cnvtype.find("half") == 0)) && (scope=="EMU"))
       {
         // std::cout << "Booking " << name << std::endl;
         if (cnvtype.find("h1") != std::string::npos)
@@ -1067,6 +1067,12 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
           xmax=getNumStrips(cscID);
           xbins=getNumStrips(cscID);
         }
+        if (params["XScale"] == "halfstrips")
+        {
+          xmin=0;
+          xmax=getNumStrips(cscID)*2;
+          xbins=getNumStrips(cscID)*2;
+        }
         // params["SetNdivisionsX"]=Form("%d",(int)xbins);;
       }
 
@@ -1084,15 +1090,26 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
           ymax=getNumStrips(cscID);
           ybins=getNumStrips(cscID);
         }
+        if (params["YScale"] == "halfstrips")
+        {
+          ymin=0;
+          ymax=getNumStrips(cscID)*2;
+          ybins=getNumStrips(cscID)*2;
+        }
         // params["SetNdivisionsY"]=Form("%d",(int)ybins);
       }
 
-      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") )
+      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv"))
       {
         if (cnvtype == "strips_cnv") {
           // = Set actual number of strips depending on Chamber type
           xbins = getNumStrips(cscID);
           xmax = getNumStrips(cscID);
+        }
+        if (cnvtype == "halfstrips_cnv") {
+          // = Set actual number of strips depending on Chamber type
+          xbins = getNumStrips(cscID)*2;
+          xmax = getNumStrips(cscID)*2;
         }
         if (cnvtype == "wires_cnv") {
           // = Set actual number of wiregroups depending on Chamber type
@@ -1135,7 +1152,7 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
         csccnvs[itr->first]=cnv;
       }
 
-      if ((cnvtype.find("h") == 0) && (scope=="CSC"))
+      if ((cnvtype.find("h") == 0 && !(cnvtype.find("half") == 0)) && (scope=="CSC"))
       {
         if (cnvtype.find("h1") != std::string::npos)
         {
@@ -1399,6 +1416,7 @@ void Test_Generic::finish()
           //    if (fEnoughData) {
           std::string cnvtype = cnv->GetCanvasType();
           if (cnvtype == "strips_cnv") text_res <<  "Layer Strip    Value Status Masked" << std::endl;
+          else if (cnvtype == "halfstrips_cnv") text_res <<  "Layer  HlafStrip    Value Status Masked" << std::endl;
           else if (cnvtype == "wires_cnv") text_res <<  "Layer  Wire    Value Status Masked" << std::endl;
           else if (cnvtype == "cfeb_cnv") text_res <<  "Layer  CFEB    Value Status Masked" << std::endl;
           else if (cnvtype == "afeb_cnv") text_res <<  "AFEB    Value Status Masked" << std::endl;
