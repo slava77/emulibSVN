@@ -31,6 +31,7 @@
 #include "emu/dqm/calibration/Test_CFEB04.h"
 #include "emu/dqm/calibration/Test_16_CFEBConnectivity.h"
 #include "emu/dqm/calibration/Test_19_CFEBComparators.h"
+#include "emu/dqm/calibration/Test_25_ALCTTrigger.h"
 #include "emu/dqm/calibration/Test_AFEB05.h"
 #include "emu/dqm/calibration/Test_AFEB06.h"
 #include "emu/dqm/calibration/Test_AFEB07.h"
@@ -162,7 +163,6 @@ int main(int argc, char **argv)
 
   LOG4CPLUS_INFO (logger,  "Reading Events from " << startEvent
                   << " to " << NumberOfEvents);
-  LOG4CPLUS_INFO (logger,  "test");
 
 
 
@@ -217,6 +217,14 @@ int main(int argc, char **argv)
       LOG4CPLUS_INFO(logger, "Detected data for Test 19: CFEB Comparator Thresholds and Noise");
       test_analyzer = new Test_19_CFEBComparators(datafile);
       xmlTestCfg = "file://" + cfgDir + "/emuTest_19_CFEBComparators.xml";
+  }
+  else if ( (datafile.find("Test_25") != std::string::npos) ||
+            (datafile.find("test25") != std::string::npos) ||
+			(datafile.find("Test25") != std::string::npos) )
+  {
+      LOG4CPLUS_INFO(logger, "Detected data for Test 25: ALCT Self-Trigger");
+      test_analyzer = new Test_25_ALCTTrigger(datafile);
+      xmlTestCfg = "file://" + cfgDir + "/emuTest_25_ALCTTrigger.xml";
   }
   else if ( (datafile.find("ALCT_Connectivity") != std::string::npos) ||
         (datafile.find("Test_12") != std::string::npos) )

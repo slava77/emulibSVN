@@ -43,7 +43,8 @@ Sources=\
 	Test_AFEB06.cc \
 	Test_AFEB07.cc \
 	Test_16_CFEBConnectivity.cc \
-        Test_19_CFEBComparators.cc
+    Test_19_CFEBComparators.cc \
+    Test_25_ALCTTrigger.cc
 
 
 
