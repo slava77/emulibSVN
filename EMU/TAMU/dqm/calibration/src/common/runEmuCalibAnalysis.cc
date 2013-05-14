@@ -31,6 +31,7 @@
 #include "emu/dqm/calibration/Test_CFEB04.h"
 #include "emu/dqm/calibration/Test_16_CFEBConnectivity.h"
 #include "emu/dqm/calibration/Test_19_CFEBComparators.h"
+#include "emu/dqm/calibration/Test_21_CFEBComparatorLogic.h"
 #include "emu/dqm/calibration/Test_25_ALCTTrigger.h"
 #include "emu/dqm/calibration/Test_AFEB05.h"
 #include "emu/dqm/calibration/Test_AFEB06.h"
@@ -178,83 +179,92 @@ int main(int argc, char **argv)
   // Test_CFEB02 test_analyzer(datafile);
   Test_Generic* test_analyzer = NULL;
 
-
-  if ( (datafile.find("CFEB_SCAPed") != std::string::npos) ||
-        (datafile.find("Test_15") != std::string::npos) ||
-	(datafile.find("test15") != std::string::npos) )
-  {
-    LOG4CPLUS_INFO(logger, "Detected data for Test CFEB02: Pedestals and Noise");
-    test_analyzer = new Test_CFEB02(datafile);
-    xmlTestCfg = "file://" + cfgDir +"/emuTest_CFEB02.xml";
-  }
-  else if ( (datafile.find("CFEB_CrossTalk") != std::string::npos) ||
-	(datafile.find("Test_17_") != std::string::npos) )
-  {
-    LOG4CPLUS_INFO(logger, "Detected data for Test CFEB03: Pulse Response and Cross Talks");
-    test_analyzer = new Test_CFEB03(datafile);
-    xmlTestCfg = "file://" + cfgDir +"/emuTest_CFEB03.xml";
-  }
-  else if ( (datafile.find("CFEB_Gains") != std::string::npos) ||
-	(datafile.find("Test_17b") != std::string::npos) ||
-	(datafile.find("test17b") != std::string::npos) )
-  {
-    LOG4CPLUS_INFO(logger, "Detected data for Test CFEB04: Amplifier Gain");
-    test_analyzer = new Test_CFEB04(datafile);
-    xmlTestCfg = "file://" + cfgDir +"/emuTest_CFEB04.xml";
-  }
+  if ( (datafile.find("ALCT_Connectivity") != std::string::npos) ||
+	    (datafile.find("Test_12") != std::string::npos) )
+    {   
+      LOG4CPLUS_INFO(logger, "Detected data for Test AFEB05: Connectivity");
+      test_analyzer = new Test_AFEB05(datafile);
+      xmlTestCfg = "file://" + cfgDir +"/emuTest_AFEB05.xml";
+    }
+  else if ( (datafile.find("ALCT_Thresholds") != std::string::npos) ||
+	    (datafile.find("Test_13") != std::string::npos) )
+    {
+      LOG4CPLUS_INFO(logger, "Detected data for Test AFEB06: Thresholds and Analog Noise");
+      test_analyzer = new Test_AFEB06(datafile);
+      xmlTestCfg = "file://" + cfgDir +"/emuTest_AFEB06.xml";
+    }
+  else if ( (datafile.find("ALCT_Delays") != std::string::npos) ||
+	    (datafile.find("test14") != std::string::npos) ||
+	    (datafile.find("Test_14") != std::string::npos) )
+    {
+      LOG4CPLUS_INFO(logger, "Detected data for Test AFEB07: AFEB-ALCT Time Delays");
+      test_analyzer = new Test_AFEB07(datafile);
+      xmlTestCfg = "file://" + cfgDir +"/emuTest_AFEB07.xml";
+    }
+  else if ( (datafile.find("CFEB_SCAPed") != std::string::npos) ||
+	    (datafile.find("Test_15") != std::string::npos) ||
+	    (datafile.find("test15") != std::string::npos) )
+    {
+      LOG4CPLUS_INFO(logger, "Detected data for Test CFEB02: Pedestals and Noise");
+      test_analyzer = new Test_CFEB02(datafile);
+      xmlTestCfg = "file://" + cfgDir +"/emuTest_CFEB02.xml";
+    }
   else if ( (datafile.find("Test_16") != std::string::npos) ||
             (datafile.find("test16") != std::string::npos) ||
-			(datafile.find("Test16") != std::string::npos) )
-  {
+	    (datafile.find("Test16") != std::string::npos) )
+    {
       LOG4CPLUS_INFO(logger, "Detected data for Test 16: CFEB Connectivity");
       test_analyzer = new Test_16_CFEBConnectivity(datafile);
       xmlTestCfg = "file://" + cfgDir + "/emuTest_16_CFEBConnectivity.xml";
-  }
+    }
+  else if ( (datafile.find("CFEB_CrossTalk") != std::string::npos) ||
+	    (datafile.find("Test_17_") != std::string::npos) )
+    {
+      LOG4CPLUS_INFO(logger, "Detected data for Test CFEB03: Pulse Response and Cross Talks");
+      test_analyzer = new Test_CFEB03(datafile);
+      xmlTestCfg = "file://" + cfgDir +"/emuTest_CFEB03.xml";
+    }
+  else if ( (datafile.find("CFEB_Gains") != std::string::npos) ||
+	    (datafile.find("Test_17b") != std::string::npos) ||
+	    (datafile.find("test17b") != std::string::npos) )
+    {
+      LOG4CPLUS_INFO(logger, "Detected data for Test CFEB04: Amplifier Gain");
+      test_analyzer = new Test_CFEB04(datafile);
+      xmlTestCfg = "file://" + cfgDir +"/emuTest_CFEB04.xml";
+    }
   else if ( (datafile.find("Test_19") != std::string::npos) ||
             (datafile.find("test19") != std::string::npos) ||
-			(datafile.find("Test19") != std::string::npos) )
-  {
+	    (datafile.find("Test19") != std::string::npos) )
+    {
       LOG4CPLUS_INFO(logger, "Detected data for Test 19: CFEB Comparator Thresholds and Noise");
       test_analyzer = new Test_19_CFEBComparators(datafile);
       xmlTestCfg = "file://" + cfgDir + "/emuTest_19_CFEBComparators.xml";
-  }
+    }
+  else if ( (datafile.find("CFEBComparatorLogic") != std::string::npos) ||
+            (datafile.find("test21") != std::string::npos) ||
+            (datafile.find("test_21") != std::string::npos) ||
+            (datafile.find("Test_21") != std::string::npos) ||
+	    (datafile.find("Test21") != std::string::npos) )
+    {
+      LOG4CPLUS_INFO(logger, "Detected data for Test 21: CFEB Comparator Logic (left/right half-strip) test");
+      test_analyzer = new Test_21_CFEBComparatorLogic(datafile);
+      xmlTestCfg = "file://" + cfgDir + "/emuTest_21_CFEBComparatorLogic.xml";
+    }
   else if ( (datafile.find("Test_25") != std::string::npos) ||
             (datafile.find("test25") != std::string::npos) ||
-			(datafile.find("Test25") != std::string::npos) )
-  {
+	    (datafile.find("Test25") != std::string::npos) )
+    {
       LOG4CPLUS_INFO(logger, "Detected data for Test 25: ALCT Self-Trigger");
       test_analyzer = new Test_25_ALCTTrigger(datafile);
       xmlTestCfg = "file://" + cfgDir + "/emuTest_25_ALCTTrigger.xml";
-  }
-  else if ( (datafile.find("ALCT_Connectivity") != std::string::npos) ||
-        (datafile.find("Test_12") != std::string::npos) )
-  {   
-    LOG4CPLUS_INFO(logger, "Detected data for Test AFEB05: Connectivity");
-    test_analyzer = new Test_AFEB05(datafile);
-    xmlTestCfg = "file://" + cfgDir +"/emuTest_AFEB05.xml";
-  }
-  else if ( (datafile.find("ALCT_Thresholds") != std::string::npos) ||
-        (datafile.find("Test_13") != std::string::npos) )
-  {
-    LOG4CPLUS_INFO(logger, "Detected data for Test AFEB06: Thresholds and Analog Noise");
-    test_analyzer = new Test_AFEB06(datafile);
-    xmlTestCfg = "file://" + cfgDir +"/emuTest_AFEB06.xml";
-  }
-  else if ( (datafile.find("ALCT_Delays") != std::string::npos) ||
-	(datafile.find("test14") != std::string::npos) ||
-        (datafile.find("Test_14") != std::string::npos) )
-  {
-    LOG4CPLUS_INFO(logger, "Detected data for Test AFEB07: AFEB-ALCT Time Delays");
-    test_analyzer = new Test_AFEB07(datafile);
-    xmlTestCfg = "file://" + cfgDir +"/emuTest_AFEB07.xml";
-  }
+    }
   else
-  {
-    LOG4CPLUS_FATAL (logger, "Unrecognizable Test Type for data file name " << datafile);
-    return -1;
-  }
-
-
+    {
+      LOG4CPLUS_FATAL (logger, "Unrecognizable Test Type for data file name " << datafile);
+      return -1;
+    }
+  
+  
   test_analyzer->setSQLiteDBName(SQLiteDB);
   test_analyzer->init();
   test_analyzer->setCSCMapFile(cscMapFile);
