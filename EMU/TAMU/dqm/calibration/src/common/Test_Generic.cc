@@ -928,7 +928,7 @@ void Test_Generic::bookCommonHistos()
       {
         ybins = strtol(params["YBins"].c_str(), &stopstring, 10);
       }
-      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv"))
+      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv") || (cnvtype == "mwires_cnv") )
       {
         /*
             // = Set actual number of strips depending on Chamber type
@@ -1099,7 +1099,7 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
         // params["SetNdivisionsY"]=Form("%d",(int)ybins);
       }
 
-      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv"))
+      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv") || (cnvtype == "mwires_cnv"))
       {
         if (cnvtype == "strips_cnv") {
           // = Set actual number of strips depending on Chamber type
@@ -1111,7 +1111,7 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
           xbins = getNumStrips(cscID)*2;
           xmax = getNumStrips(cscID)*2;
         }
-        if (cnvtype == "wires_cnv") {
+        if (cnvtype == "wires_cnv" || (cnvtype == "mwires_cnv")) {
           // = Set actual number of wiregroups depending on Chamber type
           xbins = getNumWireGroups(cscID);
           xmax = getNumWireGroups(cscID);
@@ -1383,12 +1383,22 @@ void Test_Generic::finish()
         if (itr != cscdata.end())
         {
           TestData2D& data = itr->second;
+		 
+		  if(cnv->GetCanvasType() == "mwires_cnv") {
+			for(int i = 0; i < mask.Nlayers; i++) {
+			  for(int j = 0; j < mask.Nbins; j++) {
+				mask.content[i][j] = (i == 3) ? 0 : 1;
+			  } // use mask to only pass layer 4 through
+			}
+		  }
+		  
           cnv->AddTextDatafile(dataFile);
           cnv->AddTextRun(dataTime);
           cnv->AddTextAnalysis(testTime +", version " + ANALYSIS_VER);
           if (fEnoughData)
           {
-            res=cnv->Fill(data,mask);
+		    //only fill histogram for "layer" 4 data if type is mstrip (just like lisastestmanager)
+			res=cnv->Fill(data,mask);
             if (res>sum_res) sum_res=res;
             // fres << "\t['" << itr->first << "','" << res << "']," << std::endl;
             csc_fres << "\t['" << itr->first << "','" << res << "']," << std::endl;
@@ -1416,8 +1426,9 @@ void Test_Generic::finish()
           //    if (fEnoughData) {
           std::string cnvtype = cnv->GetCanvasType();
           if (cnvtype == "strips_cnv") text_res <<  "Layer Strip    Value Status Masked" << std::endl;
-          else if (cnvtype == "halfstrips_cnv") text_res <<  "Layer  HlafStrip    Value Status Masked" << std::endl;
+          else if (cnvtype == "halfstrips_cnv") text_res <<  "Layer  HalfStrip    Value Status Masked" << std::endl;
           else if (cnvtype == "wires_cnv") text_res <<  "Layer  Wire    Value Status Masked" << std::endl;
+          else if (cnvtype == "mwires_cnv") text_res <<  "Layer  Wire    Value Status Masked" << std::endl;
           else if (cnvtype == "cfeb_cnv") text_res <<  "Layer  CFEB    Value Status Masked" << std::endl;
           else if (cnvtype == "afeb_cnv") text_res <<  "AFEB    Value Status Masked" << std::endl;
           else text_res <<  "Layer  Chan    Value Status Masked" << std::endl;
@@ -1425,6 +1436,8 @@ void Test_Generic::finish()
           {
             for (int j=0; j<data.Nbins; j++)
             {
+			  //include only layer 4 if mwire plot (just like in lisastestmanager)
+			  if(cnvtype == "mwires_cnv" && i != 3) continue;
               //          text_res << std::fixed << std::setprecision(2) << std::setw(5) << (i+1) << std::setw(6) << (j+1)
               //      << std::setw(9) << data.content[i][j] << std::endl;
               std::string validity="OK";

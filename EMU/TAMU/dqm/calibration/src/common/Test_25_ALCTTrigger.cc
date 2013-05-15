@@ -57,6 +57,7 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
 
 
   cscdata["R01"]=afebdata;
+  cscdata["R02"]=afebdata;
 
   tdata[cscID] = cscdata;
 
@@ -212,13 +213,49 @@ void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
 
   tstep.evt_cnt++;
 
+  
   if (data.nalct())
   {
     const CSCAnodeData* alctData = data.alctData();
-    if (alctData)
-    {
-      
-    }
+	const CSCALCTHeader* alctHeader = data.alctHeader();
+    const CSCALCTTrailer* alctTrailer = data.alctTrailer();
+    if (alctHeader && alctTrailer)
+	{
+	  alct_full_bxn= alctHeader->BXNCount();
+  
+	  vector<CSCALCTDigi> alctsDatasTmp = alctHeader->ALCTDigis();
+	  vector<CSCALCTDigi> alctsDatas;
+
+	  for (uint32_t lct=0; lct<alctsDatasTmp.size(); lct++)
+		{
+		  if (alctsDatasTmp[lct].isValid())
+			alctsDatas.push_back(alctsDatasTmp[lct]);
+
+		}
+
+	  for (uint32_t lct=0; lct<alctsDatas.size(); lct++)
+		{
+		  if (lct>=2) continue;
+		  alct_valid_patt[lct]   = (alctsDatas[lct].isValid())?1:0;
+		  alct_patt_quality[lct] = alctsDatas[lct].getQuality();
+		  alct_accel_muon[lct]   = alctsDatas[lct].getAccelerator();
+		  alct_wire_group[lct]   = alctsDatas[lct].getKeyWG();
+		  
+		  /*cout << "valid_patt " << alct_valid_patt[lct]
+		       << " alct_patt_quality " << alct_patt_quality[lct]
+		       << " alct_accel_muon " << alct_accel_muon[lct]
+		       << " alct_wire_group " << alct_wire_group[lct];*/
+		  
+		}
+		
+		//cout << endl << "alct_full_bxn " << alct_full_bxn << endl;
+
+		
+		
+		
+		
+		
+	}
   }
 }
 
@@ -238,6 +275,15 @@ void Test_25_ALCTTrigger::finishCSC(std::string cscID)
 
     TestData& cscdata= td_itr->second;
     TestData2D& r01 = cscdata["R01"];
+    TestData2D& r02 = cscdata["R02"];
+  
+
+	for(int i = 0; i < 6; i++) {
+		for(int j = 0; j < getNumWireGroups(cscID); j++) {
+			r01.content[i][j] = i / 2.0;
+			r02.content[i][j] = i / 2.0;
+		}
+	}
     
 
   }

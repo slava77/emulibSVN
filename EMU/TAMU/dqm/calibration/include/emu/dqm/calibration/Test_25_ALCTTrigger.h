@@ -67,7 +67,13 @@ protected:
   std::map<int, std::map<std::string, test_step> > htree;
   cscThresholdScanDataA tscan_data;
 
-
+  unsigned short alct_valid_patt[2];     /* ALCT valid pattern flag          */
+  unsigned short alct_patt_quality[2];   /* ALCT pattern quality (0-3)       */
+  unsigned short alct_accel_muon[2];     /* ALCT accelerator muon            */
+  unsigned short alct_wire_group[2];     /* ALCT Wire-Gang ID (0-111)        */
+  unsigned short alct_full_bxn;          /* ALCT Full Bunch Crossing Number  */
+  
+  
 };
 
 #endif
