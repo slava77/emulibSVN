@@ -10,29 +10,16 @@ using namespace boost::algorithm;
 Test_25_ALCTTrigger::Test_25_ALCTTrigger(std::string dfile): Test_Generic(dfile)
 {
   testID    = "25_ALCTTrigger";
-  nExpectedEvents   = 14000;
+  nExpectedEvents   = 15000;
   dduID     = 0;
-  //  binCheckMask=0x16CFF3F6;
   binCheckMask  = 0x1FEBF3F6;
-  //  binCheckMask=0xF7CB3BF6;
-  ltc_bug   = 2;
   logger = Logger::getInstance(testID);
-
 }
-
 
 void Test_25_ALCTTrigger::initCSC(std::string cscID)
 {
   //= Init per CSC events counters
   nCSCEvents[cscID]=0;
-
-  ThresholdScanDataA thdata;
-  thdata.Nbins = getNumWireGroups(cscID);
-  thdata.Nlayers = 6;
-
-  memset(thdata.content, 0, sizeof (thdata.content));
-
-  tscan_data[cscID] = thdata;
 
   TestData cscdata;
   TestData2D afebdata;
@@ -51,6 +38,13 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
   {
     cscdata["_MASK"]=afebdata;
   }
+  
+	for(int i = 0; i < cscdata["_MASK"].Nlayers; i++) {
+	  for(int j = 0; j < cscdata["_MASK"].Nbins; j++) {
+		cscdata["_MASK"].content[i][j] = (i == 3) ? 0 : 1;
+	  } // use mask to only pass layer/plane 4 through
+	}
+		  
 
   for (int i=0; i<TEST_DATA2D_NLAYERS; i++)
     for (int j=0; j<TEST_DATA2D_NBINS; j++) afebdata.content[i][j]=0.;
@@ -58,12 +52,34 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
 
   cscdata["R01"]=afebdata;
   cscdata["R02"]=afebdata;
+  cscdata["R03"]=afebdata; // all lct
+  cscdata["R04"]=afebdata; // quality
+  cscdata["R05"]=afebdata; // accel lct
 
   tdata[cscID] = cscdata;
 
   bookTestsForCSC(cscID);
+  
+  cout << "bins (#wg): " << getNumWireGroups(cscID) << endl;
+  
+  first = true;
+  threshold_limit[0]=4021;
+  threshold_limit[1]=threshold_limit[0]+2514;
+  threshold_limit[2]=threshold_limit[1]+2905;
+  threshold_limit[3]=threshold_limit[2]+2874;
+  threshold_limit[4]=threshold_limit[3]+2426;
+  threshold_limit[5]=threshold_limit[4]+2042;
+  
+  cout << "tl[4] " << threshold_limit[4] << " tl[5] " << threshold_limit[5] << endl;
+  
+  src_status = 0; //0-No rad.source/1-With rad.source
 
-
+  if(src_status > 0)
+  {
+    //Radiation source strength (0-Weak(IHEP) / 1-Normal(all other FAST sites))
+    source_type = 1; // source is high-intensity by default
+  }
+  
 }
 
 void Test_25_ALCTTrigger::analyze(const char * data, int32_t dataSize, uint32_t errorStat, int32_t nodeNumber)
@@ -175,7 +191,8 @@ void Test_25_ALCTTrigger::analyze(const char * data, int32_t dataSize, uint32_t 
 
 void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
 {
-
+  int currVal = 1;
+  int last_plane;
 
   const CSCDMBHeader* dmbHeader = data.dmbHeader();
   const CSCDMBTrailer* dmbTrailer = data.dmbTrailer();
@@ -183,15 +200,9 @@ void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
   {
     return;
   }
-
-
   int csctype=0, cscposition=0;
   std::string cscID = getCSCFromMap(dmbHeader->crateID(), dmbHeader->dmbID(), csctype, cscposition);
-  // std::string cscID(Form("CSC_%03d_%02d", data.dmbHeader().crateID(), data.dmbHeader().dmbID()));
-  // == Do not process unmapped CSCs and ME1/1 chambers
   if (cscID == "") return;
-  // if ((cscID.find("ME+1.1") == 0) || (cscID.find("ME-1.1") ==0) ) return;
-
 
   cscTestData::iterator td_itr = tdata.find(cscID);
   if ( (td_itr == tdata.end()) || (tdata.size() == 0) )
@@ -202,16 +213,42 @@ void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
   }
   nCSCEvents[cscID]++;
 
-  // std::cout << nCSCEvents[cscID] << " " << cscID << std::endl;
-  // == Define aliases to access chamber specific data
-
-  MonHistos& cschistos = mhistos[cscID];
-
-  test_step& tstep = htree[dduID][cscID];// test_steps[cscID];
-
-  ThresholdScanDataA& thdata = tscan_data[cscID];
-
+  test_step& tstep = htree[dduID][cscID];
   tstep.evt_cnt++;
+  
+           
+	TestData& cscdata = tdata[cscID];
+	
+    TestData2D& r03 = cscdata["R03"]; // all lct
+    TestData2D& r04 = cscdata["R04"]; // quality
+    TestData2D& r05 = cscdata["R05"]; // accel lct
+	
+    for(int ct=0;ct<6;ct++){
+      if(nCSCEvents[cscID]>=threshold_limit[ct]){
+	    currVal=ct+2;
+      }
+    }
+	
+	int plane;
+	if(first) {
+	  for(plane=0; plane<6; plane++) {
+	    last_plane = -1;
+		nmatches[plane] = 0;
+	  }
+	  first = false;
+	}
+	
+	plane = currVal;
+	if(plane != last_plane) {
+      last_plane = plane;
+      all_scaler[plane] = 0.;
+      all_time[plane]   = 0.;
+      nevents[plane] = 0; 
+	}
+
+    pattern_threshold = currVal;  
+    if (pattern_threshold < 2) plane_threshold = 1;
+    else plane_threshold = 2;
 
   
   if (data.nalct())
@@ -240,21 +277,20 @@ void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
 		  alct_patt_quality[lct] = alctsDatas[lct].getQuality();
 		  alct_accel_muon[lct]   = alctsDatas[lct].getAccelerator();
 		  alct_wire_group[lct]   = alctsDatas[lct].getKeyWG();
-		  
-		  /*cout << "valid_patt " << alct_valid_patt[lct]
-		       << " alct_patt_quality " << alct_patt_quality[lct]
-		       << " alct_accel_muon " << alct_accel_muon[lct]
-		       << " alct_wire_group " << alct_wire_group[lct];*/
-		  
+
+		}
+
+		if(alct_valid_patt[0]) {
+
+		  r03.cnts[plane-1][alct_wire_group[0]]++;
+		  r04.cnts[plane-1][alct_wire_group[0]]+=alct_patt_quality[0];
+		  if(alct_accel_muon[0])
+			r05.cnts[plane-1][alct_wire_group[0]]++;
+			
+
 		}
 		
-		//cout << endl << "alct_full_bxn " << alct_full_bxn << endl;
-
-		
-		
-		
-		
-		
+	  
 	}
   }
 }
@@ -273,19 +309,38 @@ void Test_25_ALCTTrigger::finishCSC(std::string cscID)
   if (td_itr != tdata.end())
   {
 
+    all_time[0]=5;
+    all_time[1]=20;
+    all_time[2]=30;
+    all_time[3]=40;
+    all_time[4]=50;
+    all_time[5]=60;
+  
     TestData& cscdata= td_itr->second;
     TestData2D& r01 = cscdata["R01"];
     TestData2D& r02 = cscdata["R02"];
-  
+    TestData2D& r03 = cscdata["R03"]; // all lct
+    TestData2D& r04 = cscdata["R04"]; // quality
+    TestData2D& r05 = cscdata["R05"]; // accel lct
 
-	for(int i = 0; i < 6; i++) {
-		for(int j = 0; j < getNumWireGroups(cscID); j++) {
-			r01.content[i][j] = i / 2.0;
-			r02.content[i][j] = i / 2.0;
-		}
+	
+    for(int plane = 0; plane < 6; plane++) {
+	  float f = 1/all_time[plane];
+
+	  for(int j = 0; j < getNumWireGroups(cscID); j++) {
+	    r01.content[plane][j] = f * r03.cnts[plane][j];
+	  }
+	}
+	
+	//quality
+	for(int plane = 0; plane < 6; plane++) {
+	  for(int j = 0; j < getNumWireGroups(cscID); j++) {
+	    if (r03.cnts[plane][j] > 0)
+		  r02.content[plane][j] = (double)r04.cnts[plane][j] / (double)r03.cnts[plane][j];
+        else r02.content[plane][j] = -1;
+	  }
 	}
     
-
   }
 }
 
@@ -295,10 +350,7 @@ bool Test_25_ALCTTrigger::checkResults(std::string cscID)
   cscTestData::iterator td_itr =  tdata.find(cscID);
   if (td_itr != tdata.end())
   {
-    // TestData& cscdata= td_itr->second;
-    // TestData2D& r01 = cscdata["R01"];
-
-    // int badChannels=0;
+  
   }
 
   return isValid;

@@ -1387,14 +1387,6 @@ void Test_Generic::finish()
         {
           TestData2D& data = itr->second;
 		 
-		  if(cnv->GetCanvasType() == "mwires_cnv") {
-			for(int i = 0; i < mask.Nlayers; i++) {
-			  for(int j = 0; j < mask.Nbins; j++) {
-				mask.content[i][j] = (i == 3) ? 0 : 1;
-			  } // use mask to only pass layer 4 through
-			}
-		  }
-		  
           cnv->AddTextDatafile(dataFile);
           cnv->AddTextRun(dataTime);
           cnv->AddTextAnalysis(testTime +", version " + ANALYSIS_VER);
@@ -1439,8 +1431,6 @@ void Test_Generic::finish()
           {
             for (int j=0; j<data.Nbins; j++)
             {
-			  //include only layer 4 if mwire plot (just like in lisastestmanager)
-			  if(cnvtype == "mwires_cnv" && i != 3) continue;
               //          text_res << std::fixed << std::setprecision(2) << std::setw(5) << (i+1) << std::setw(6) << (j+1)
               //      << std::setw(9) << data.content[i][j] << std::endl;
               std::string validity="OK";

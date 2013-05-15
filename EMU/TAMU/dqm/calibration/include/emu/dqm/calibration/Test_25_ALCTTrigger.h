@@ -15,9 +15,35 @@
 #include <TProfile.h>
 #include <TFile.h>
 
+#define HIST_1PLANE_LOW_LIMIT0        0.
+#define HIST_2PLANE_LOW_LIMIT0        0.
+#define HIST_3PLANE_LOW_LIMIT0        0.
+#define HIST_4PLANE_LOW_LIMIT0        0.
+#define HIST_5PLANE_LOW_LIMIT0        0.
+#define HIST_6PLANE_LOW_LIMIT0        0.
 
-#define NMAXSCAN            2
-#define MAX_CALIB_POINTS   256
+#define HIST_1PLANE_HIGH_LIMIT0     200.
+#define HIST_2PLANE_HIGH_LIMIT0      27.
+#define HIST_3PLANE_HIGH_LIMIT0      27.
+#define HIST_4PLANE_HIGH_LIMIT0      20.
+#define HIST_5PLANE_HIGH_LIMIT0      13.5
+#define HIST_6PLANE_HIGH_LIMIT0      10.5
+
+#define HIST_1PLANE_LOW_LIMIT1        0.
+#define HIST_2PLANE_LOW_LIMIT1        0.
+#define HIST_3PLANE_LOW_LIMIT1        0.
+#define HIST_4PLANE_LOW_LIMIT1        0.
+#define HIST_5PLANE_LOW_LIMIT1        0.
+#define HIST_6PLANE_LOW_LIMIT1        0.
+
+#define HIST_1PLANE_HIGH_LIMIT1   ((source_type) ? 20000. : 2000.)
+#define HIST_2PLANE_HIGH_LIMIT1   ((source_type) ? 200.   : 20.)
+#define HIST_3PLANE_HIGH_LIMIT1   ((source_type) ? 20.    : 10.)
+#define HIST_4PLANE_HIGH_LIMIT1   ((source_type) ? 16.    : 8.)
+#define HIST_5PLANE_HIGH_LIMIT1   10.
+#define HIST_6PLANE_HIGH_LIMIT1   ((source_type) ? 8.     : 5.)
+
+#define MAX_SCALER              1000000.
 
 typedef struct ddu_stats_afeb
 {
@@ -27,19 +53,8 @@ typedef struct ddu_stats_afeb
   long l1a_cntr;
   int empty_evt_cntr;
   int csc_evt_cntr;
-  int pass;
-  int thresh; 
 
 } ddu_stats_afeb;
-
-typedef struct ThresholdScanDataA
-{
-  int Nbins;
-  int Nlayers;
-  int content[NMAXSCAN][NLAYERS][MAX_WIREGROUPS][MAX_CALIB_POINTS];
-} ThresholdScanDataA;
-
-typedef std::map<std::string, ThresholdScanDataA>    cscThresholdScanDataA;
 
 
 class Test_25_ALCTTrigger: public Test_Generic
@@ -60,20 +75,25 @@ protected:
   int currL1A;
   int startL1A;
   int dduID;
-  int ltc_bug;
   
 
   std::map<int, ddu_stats_afeb> DDUstats;
   std::map<int, std::map<std::string, test_step> > htree;
-  cscThresholdScanDataA tscan_data;
 
   unsigned short alct_valid_patt[2];     /* ALCT valid pattern flag          */
   unsigned short alct_patt_quality[2];   /* ALCT pattern quality (0-3)       */
   unsigned short alct_accel_muon[2];     /* ALCT accelerator muon            */
   unsigned short alct_wire_group[2];     /* ALCT Wire-Gang ID (0-111)        */
   unsigned short alct_full_bxn;          /* ALCT Full Bunch Crossing Number  */
-  
-  
+  	 
+  int first, plane_threshold, pattern_threshold;
+  long int nmatches[6], nevents[6];
+  float all_time[6], all_scaler[6];
+  int threshold_limit[6];
+  int src_status; // Status of radioactive source for this run, 
+  int nwires;
+  int source_type;
+
 };
 
 #endif
