@@ -69,6 +69,7 @@ protected:
   void analyzeCSC(const CSCEventData& data);
   void finishCSC(std::string cscID);
   bool checkResults(std::string cscID);
+  bool loadThresholdParams(std::string dfile);
 
   std::map<std::string, uint32_t> l1a_cntrs;
   std::map<int, int> dduL1A;
@@ -87,8 +88,7 @@ protected:
   unsigned short alct_full_bxn;          /* ALCT Full Bunch Crossing Number  */
   	 
   int first, plane_threshold, pattern_threshold;
-  long int nmatches[6], nevents[6];
-  float all_time[6], all_scaler[6];
+  float all_time[6];
   int threshold_limit[6];
   int src_status; // Status of radioactive source for this run, 
   int nwires;

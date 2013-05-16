@@ -14,6 +14,19 @@ Test_25_ALCTTrigger::Test_25_ALCTTrigger(std::string dfile): Test_Generic(dfile)
   dduID     = 0;
   binCheckMask  = 0x1FEBF3F6;
   logger = Logger::getInstance(testID);
+  
+  if(!loadThresholdParams(dfile)) {
+    LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters.");
+  } else {
+    LOG4CPLUS_INFO(logger, "Loaded threshold parameters.");
+  }
+  
+  src_status = 0; //0-No rad.source/1-With rad.source
+  if(src_status > 0)
+  {
+    //Radiation source strength (0-Weak(IHEP) / 1-Normal(all other FAST sites))
+    source_type = 1; // source is high-intensity by default
+  }
 }
 
 void Test_25_ALCTTrigger::initCSC(std::string cscID)
@@ -46,8 +59,12 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
 	}
 		  
 
-  for (int i=0; i<TEST_DATA2D_NLAYERS; i++)
-    for (int j=0; j<TEST_DATA2D_NBINS; j++) afebdata.content[i][j]=0.;
+  for (int i=0; i<TEST_DATA2D_NLAYERS; i++) {
+    for (int j=0; j<TEST_DATA2D_NBINS; j++) {
+      afebdata.content[i][j]=0.;
+      afebdata.cnts[i][j]=0;
+	}
+  }
 
 
   cscdata["R01"]=afebdata;
@@ -60,26 +77,9 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
 
   bookTestsForCSC(cscID);
   
-  cout << "bins (#wg): " << getNumWireGroups(cscID) << endl;
+  //cout << "bins (#wg): " << getNumWireGroups(cscID) << endl;
   
   first = true;
-  threshold_limit[0]=4021;
-  threshold_limit[1]=threshold_limit[0]+2514;
-  threshold_limit[2]=threshold_limit[1]+2905;
-  threshold_limit[3]=threshold_limit[2]+2874;
-  threshold_limit[4]=threshold_limit[3]+2426;
-  threshold_limit[5]=threshold_limit[4]+2042;
-  
-  cout << "tl[4] " << threshold_limit[4] << " tl[5] " << threshold_limit[5] << endl;
-  
-  src_status = 0; //0-No rad.source/1-With rad.source
-
-  if(src_status > 0)
-  {
-    //Radiation source strength (0-Weak(IHEP) / 1-Normal(all other FAST sites))
-    source_type = 1; // source is high-intensity by default
-  }
-  
 }
 
 void Test_25_ALCTTrigger::analyze(const char * data, int32_t dataSize, uint32_t errorStat, int32_t nodeNumber)
@@ -212,6 +212,8 @@ void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
     addCSCtoMap(cscID, dmbHeader->crateID(), dmbHeader->dmbID());
   }
   nCSCEvents[cscID]++;
+  
+  int evtNum = nCSCEvents[cscID];
 
   test_step& tstep = htree[dduID][cscID];
   tstep.evt_cnt++;
@@ -224,26 +226,20 @@ void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
     TestData2D& r05 = cscdata["R05"]; // accel lct
 	
     for(int ct=0;ct<6;ct++){
-      if(nCSCEvents[cscID]>=threshold_limit[ct]){
+      if(evtNum>=threshold_limit[ct]){
 	    currVal=ct+2;
       }
     }
 	
 	int plane;
 	if(first) {
-	  for(plane=0; plane<6; plane++) {
-	    last_plane = -1;
-		nmatches[plane] = 0;
-	  }
+	  last_plane = -1;
 	  first = false;
 	}
 	
 	plane = currVal;
 	if(plane != last_plane) {
       last_plane = plane;
-      all_scaler[plane] = 0.;
-      all_time[plane]   = 0.;
-      nevents[plane] = 0; 
 	}
 
     pattern_threshold = currVal;  
@@ -309,13 +305,6 @@ void Test_25_ALCTTrigger::finishCSC(std::string cscID)
   if (td_itr != tdata.end())
   {
 
-    all_time[0]=5;
-    all_time[1]=20;
-    all_time[2]=30;
-    all_time[3]=40;
-    all_time[4]=50;
-    all_time[5]=60;
-  
     TestData& cscdata= td_itr->second;
     TestData2D& r01 = cscdata["R01"];
     TestData2D& r02 = cscdata["R02"];
@@ -325,10 +314,13 @@ void Test_25_ALCTTrigger::finishCSC(std::string cscID)
 
 	
     for(int plane = 0; plane < 6; plane++) {
-	  float f = 1/all_time[plane];
-
+	  float f = 1000./all_time[plane]; //ms to seconds
 	  for(int j = 0; j < getNumWireGroups(cscID); j++) {
-	    r01.content[plane][j] = f * r03.cnts[plane][j];
+	    r01.content[plane][j] = f * (float)r03.cnts[plane][j];
+		/*cout << "layer " << plane << " wg " << j << " f " << f
+		     << " all_time " << all_time[plane] << " r03.cnts "
+			 << r03.cnts[plane][j] << " r01.cont " << r01.content[plane][j]
+			 << endl;*/
 	  }
 	}
 	
@@ -354,4 +346,54 @@ bool Test_25_ALCTTrigger::checkResults(std::string cscID)
   }
 
   return isValid;
+}
+
+bool Test_25_ALCTTrigger::loadThresholdParams(std::string dfile)
+{
+
+  std::string line;
+  std::stringstream st;
+  std::string fileStr = dfile;
+  replace_all(fileStr, "raw", "txt");
+  
+  st << fileStr;
+  
+  int evts;
+  float time;
+  
+  int count = 0;
+  ifstream threshparams(st.str().c_str());
+  
+  if(threshparams) {
+  
+    while (!threshparams.eof())
+    {
+      getline(threshparams, line);
+      trim(line);
+      if ((line.length() == 0) || (line.find("#") != string::npos)) continue;
+      
+	  //std::cout << line << std::endl;
+
+      int iparse=sscanf(line.c_str(),"%f         %d",
+                        &time, &evts);
+						
+	if(iparse == 2) {
+      
+	  all_time[count] = time;
+	  cout << "all_time[" << count << "] " << all_time[count] << endl;
+	  if(count > 0) {
+	    threshold_limit[count] = evts + threshold_limit[count-1];
+	  } else {
+		threshold_limit[count] = evts;
+	  }
+	  count++;
+	  }
+    }
+    threshparams.close();
+  
+  } else {
+    LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters file: " << fileStr);
+    return false;
+  }
+  return true;
 }
