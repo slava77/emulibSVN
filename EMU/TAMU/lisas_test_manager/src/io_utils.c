@@ -16,18 +16,18 @@ int rand(void);
  */
 
 int getint(int *n) {
-    int default_n, i, j;
-    char line[80];
-
-    default_n = *n;
-    i = scanf("%[^\n]", line);  /* Read up to the first "\n"=return */
-    getchar();
-    j = sscanf(line, "%d", n);
-    if (!(i > 0 && j > 0)) {
-        *n = default_n;
-        if (i > 0) return -1;
-    }
-    return 0;
+  int default_n, i, j;
+  char line[80];
+  
+  default_n = *n;
+  i = scanf("%[^\n]", line);  /* Read up to the first "\n"=return */
+  getchar();
+  j = sscanf(line, "%d", n);
+  if (!(i > 0 && j > 0)) {
+    *n = default_n;
+    if (i > 0) return -1;
+  }
+  return 0;
 }
 
 /* gethex: read in a hex integer, with n as the default
