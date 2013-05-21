@@ -108,7 +108,7 @@ int test_11_init(void)
 
 int test_11_begin(int pass) 
   {
-  int j;
+  int j = 0;
   int adb, hid, ilayer, ifeb, iwire;
   float his_min = 0.5, his_max = nwires +0.5; // they depend on CSC type
   char htitle[80];
@@ -523,19 +523,19 @@ int test_11_finish(void) {
   float   ratio_tbins_a[NLAYER][nwires];
 
   time_t  t;
-  char    choice[4];
+  char    choice[4] = {' ', 0}; //don't forget a zero in the end
 
   char    timestring[40];
   char    title[80];
 
   char  *file_his_name;
-  int j;
-  float f;
+  int j = 0;
+  float f = 0;
 
   //assign legacy values for rate analysis
   all_scaler = upevt_.event_number;
   printf("Please input number of milliseconds it took to collect events: \n");
-  getint(&j);
+  getint(&j); 
   //in earlier time here a factor of 1000 - take it out since
   //we report NOW ms directly
   all_time = (float)j; // in ms
