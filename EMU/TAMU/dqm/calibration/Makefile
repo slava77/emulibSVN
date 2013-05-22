@@ -42,10 +42,11 @@ Sources=\
 	Test_AFEB05.cc \
 	Test_AFEB06.cc \
 	Test_AFEB07.cc \
+	Test_11_AFEBNoise.cc \
 	Test_16_CFEBConnectivity.cc \
-        Test_19_CFEBComparators.cc \
+	Test_19_CFEBComparators.cc \
 	Test_21_CFEBComparatorLogic.cc \
-        Test_25_ALCTTrigger.cc
+	Test_25_ALCTTrigger.cc
 
 
 

@@ -1392,7 +1392,6 @@ void Test_Generic::finish()
           cnv->AddTextAnalysis(testTime +", version " + ANALYSIS_VER);
           if (fEnoughData)
           {
-		    //only fill histogram for "layer" 4 data if type is mstrip (just like lisastestmanager)
 			res=cnv->Fill(data,mask);
             if (res>sum_res) sum_res=res;
             // fres << "\t['" << itr->first << "','" << res << "']," << std::endl;

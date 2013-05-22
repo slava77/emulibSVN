@@ -29,6 +29,7 @@
 #include "emu/dqm/calibration/Test_CFEB02.h"
 #include "emu/dqm/calibration/Test_CFEB03.h"
 #include "emu/dqm/calibration/Test_CFEB04.h"
+#include "emu/dqm/calibration/Test_11_AFEBNoise.h"
 #include "emu/dqm/calibration/Test_16_CFEBConnectivity.h"
 #include "emu/dqm/calibration/Test_19_CFEBComparators.h"
 #include "emu/dqm/calibration/Test_21_CFEBComparatorLogic.h"
@@ -257,6 +258,14 @@ int main(int argc, char **argv)
       LOG4CPLUS_INFO(logger, "Detected data for Test 25: ALCT Self-Trigger");
       test_analyzer = new Test_25_ALCTTrigger(datafile);
       xmlTestCfg = "file://" + cfgDir + "/emuTest_25_ALCTTrigger.xml";
+    }
+  else if ( (datafile.find("Test_11") != std::string::npos) ||
+            (datafile.find("test11") != std::string::npos) ||
+	    (datafile.find("Test11") != std::string::npos) )
+    {
+      LOG4CPLUS_INFO(logger, "Detected data for Test 11: AFEB Counting Noise");
+      test_analyzer = new Test_11_AFEBNoise(datafile);
+      xmlTestCfg = "file://" + cfgDir + "/emuTest_11_AFEBNoise.xml";
     }
   else
     {
