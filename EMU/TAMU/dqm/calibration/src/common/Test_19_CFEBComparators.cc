@@ -1,19 +1,6 @@
 #include "emu/dqm/calibration/Test_19_CFEBComparators.h"
 #include <boost/algorithm/string.hpp>
 
-#define DMB_TPAMPS_PER_STRIP 3
-#define THRESH_STEP 3
-#define THRESH_FIRST 0
-#define THRESHS_PER_TPAMP 35
-#define EVENTS_PER_THRESH 15
-#define STRIP_STEP 1
-#define STRIP_FIRST 1
-#define DMB_TPAMP_FIRST 150
-#define DMB_TPAMP_STEP 48
-#define SCALE_TURNOFF 12
-#define RANGE_TURNOFF 20
-#define STRIPS_PER_RUN 16
-
 using namespace XERCES_CPP_NAMESPACE;
 
 using namespace emu::dqm::utils;
@@ -32,8 +19,18 @@ Test_19_CFEBComparators::Test_19_CFEBComparators(std::string dfile):
   logger = Logger::getInstance(testID);
 
   
-  printf ("The calibration coefficients are C0=%3.2f C1=%3.2f \n",
-          INJECT_PULSE_C0, INJECT_PULSE_C1);
+  dmb_tpamps_per_strip = 3;
+  thresh_step = 3;
+  thresh_first = 0;
+  threshs_per_tpamp = 35;
+  events_per_thresh = 15;
+  strip_step = 1;
+  strip_first = 1;
+  dmb_tpamp_first = 150;
+  dmb_tpamp_step = 48;
+  scale_turnoff = 12;
+  range_turnoff = 20;
+  strips_per_run = 16;
 		  
 }
 
@@ -206,17 +203,17 @@ void Test_19_CFEBComparators::analyze(const char * data, int32_t dataSize, uint3
 	float prevDAC = DDUstats[dduID].dac;
 	int prevStrip = DDUstats[dduID].strip;
 	
-	int strip = (nevt/(DMB_TPAMPS_PER_STRIP * THRESHS_PER_TPAMP * EVENTS_PER_THRESH)) * STRIP_STEP + STRIP_FIRST;
+	int strip = (nevt/(dmb_tpamps_per_strip * threshs_per_tpamp * events_per_thresh)) * strip_step + strip_first;
 
-	float dac = ( (nevt % (DMB_TPAMPS_PER_STRIP * THRESHS_PER_TPAMP * EVENTS_PER_THRESH) ) / THRESHS_PER_TPAMP / EVENTS_PER_THRESH) * DMB_TPAMP_STEP + DMB_TPAMP_FIRST;
+	float dac = ( (nevt % (dmb_tpamps_per_strip * threshs_per_tpamp * events_per_thresh) ) / threshs_per_tpamp / events_per_thresh) * dmb_tpamp_step + dmb_tpamp_first;
 
-	int thresh_first = dac * SCALE_TURNOFF / 16 - RANGE_TURNOFF;
+	int thresh_first = dac * scale_turnoff / 16 - range_turnoff;
 	
-	int amp = (nevt % (DMB_TPAMPS_PER_STRIP * THRESHS_PER_TPAMP * EVENTS_PER_THRESH) ) / THRESHS_PER_TPAMP / EVENTS_PER_THRESH;
+	int amp = (nevt % (dmb_tpamps_per_strip * threshs_per_tpamp * events_per_thresh) ) / threshs_per_tpamp / events_per_thresh;
 	
 	if(thresh_first < 0) thresh_first = 0;
 
-	int threshold = ((nevt % (THRESHS_PER_TPAMP * EVENTS_PER_THRESH)) / EVENTS_PER_THRESH) * THRESH_STEP + thresh_first;
+	int threshold = ((nevt % (threshs_per_tpamp * events_per_thresh)) / events_per_thresh) * thresh_step + thresh_first;
 	
 
 	DDUstats[dduID].dac = dac;
@@ -226,7 +223,7 @@ void Test_19_CFEBComparators::analyze(const char * data, int32_t dataSize, uint3
   if (dac != prevDAC)
   {
 	
-	if(nscan < DMB_TPAMPS_PER_STRIP)
+	if(nscan < dmb_tpamps_per_strip)
 	{
 		
 		prevDAC = dac;
@@ -336,10 +333,10 @@ void Test_19_CFEBComparators::analyzeCSC(const CSCEventData& data)
 			
           }
 		  
-		  float dac = curr_amp * DMB_TPAMP_STEP + DMB_TPAMP_FIRST;
-		  int first_thresh = dac * SCALE_TURNOFF / 16 - RANGE_TURNOFF;
+		  float dac = curr_amp * dmb_tpamp_step + dmb_tpamp_first;
+		  int first_thresh = dac * scale_turnoff / 16 - range_turnoff;
 				
-		  int ithresh = (curr_thresh - first_thresh)/THRESH_STEP;
+		  int ithresh = (curr_thresh - first_thresh)/thresh_step;
           thdata.content[curr_amp][nLayer-1][strip-1][ithresh]++;
 
         }
@@ -417,7 +414,7 @@ void Test_19_CFEBComparators::finishCSC(std::string cscID)
       CSCMapItem::MapItem mapitem = cratemap->item(id);
 
 
-      for (int amp=0; amp<DMB_TPAMPS_PER_STRIP; amp++)
+      for (int amp=0; amp<dmb_tpamps_per_strip; amp++)
       {
 
         for (int i=0; i<NLAYERS; i++)
@@ -430,16 +427,16 @@ void Test_19_CFEBComparators::finishCSC(std::string cscID)
             calc_thresh(MAX_CALIB_POINTSC, thdata.content[amp][i][j], par, &chisq);
 			
 			
-			int dac = amp * DMB_TPAMP_STEP + DMB_TPAMP_FIRST;
-			int first_thresh = dac * SCALE_TURNOFF / 16 - RANGE_TURNOFF;
+			int dac = amp * dmb_tpamp_step + dmb_tpamp_first;
+			int first_thresh = dac * scale_turnoff / 16 - range_turnoff;
 			if(first_thresh < 0) first_thresh = 0;
 
             if (chisq >= 0.)
             {
 			
 			
-			  mean = par[1]*(THRESH_STEP)+ first_thresh;
-			  rms = par[2]*(THRESH_STEP);
+			  mean = par[1]*(thresh_step)+ first_thresh;
+			  rms = par[2]*(thresh_step);
 				
             }
             else
@@ -451,7 +448,7 @@ void Test_19_CFEBComparators::finishCSC(std::string cscID)
                              Form(": Layer %d strip %2d has threshold = %6.2f and noise = %6.2f "
                                   "\tpar0 %f, mean %f, rms %f, chisq %f",
                                   i + 1, j + 1, mean, rms,
-                                  par[0], par[1]*THRESH_STEP+first_thresh, par[2]*THRESH_STEP, chisq) );
+                                  par[0], par[1]*thresh_step+first_thresh, par[2]*thresh_step, chisq) );
 
             }
 
@@ -844,5 +841,89 @@ int Test_19_CFEBComparators::calc_thresh(int npoints, int* content, float* par, 
     return 0;
   }
   return 0;
+
+}
+void Test_19_CFEBComparators::setTestParams()
+{
+
+  LOG4CPLUS_INFO (logger, "Setting additional test parameters.");
+  std::map<std::string, std::string>::iterator itr;
+  
+  itr = test_params.find("dmb_tpamps_per_strip");
+  if (itr != test_params.end() )
+    {
+      dmb_tpamps_per_strip = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: dmb_tpamps_per_strip: " << dmb_tpamps_per_strip);
+    }
+  itr = test_params.find("thresh_step");
+  if (itr != test_params.end() )
+    {
+      thresh_step = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: thresh_step: " << thresh_step);
+    }
+  itr = test_params.find("thresh_first");
+  if (itr != test_params.end() )
+    {
+      thresh_first = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: thresh_first: " << thresh_first);
+    }
+  itr = test_params.find("threshs_per_tpamp");
+  if (itr != test_params.end() )
+    {
+      threshs_per_tpamp = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: threshs_per_tpamp: " << threshs_per_tpamp);
+    }
+  itr = test_params.find("events_per_thresh");
+  if (itr != test_params.end() )
+    {
+      events_per_thresh = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: events_per_thresh: " << events_per_thresh);
+    }
+  itr = test_params.find("strip_step");
+  if (itr != test_params.end() )
+    {
+      strip_step = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: strip_step: " << strip_step);
+    }
+  itr = test_params.find("strip_first");
+  if (itr != test_params.end() )
+    {
+      strip_first = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: strip_first: " << strip_first);
+    }
+  itr = test_params.find("dmb_tpamp_first");
+  if (itr != test_params.end() )
+    {
+      dmb_tpamp_first = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: dmb_tpamp_first: " << dmb_tpamp_first);
+    }
+  itr = test_params.find("dmb_tpamp_step");
+  if (itr != test_params.end() )
+    {
+      dmb_tpamp_step = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: dmb_tpamp_step: " << dmb_tpamp_step);
+    }
+  itr = test_params.find("scale_turnoff");
+  if (itr != test_params.end() )
+    {
+      scale_turnoff = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: scale_turnoff: " << scale_turnoff);
+    }
+  itr = test_params.find("range_turnoff");
+  if (itr != test_params.end() )
+    {
+      range_turnoff = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: range_turnoff: " << range_turnoff);
+    }
+  itr = test_params.find("strips_per_run");
+  if (itr != test_params.end() )
+    {
+      strips_per_run = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: strips_per_run: " << strips_per_run);
+    }
+
+	
+  nExpectedEvents = dmb_tpamps_per_strip * strips_per_run * events_per_thresh * threshs_per_tpamp;
+	LOG4CPLUS_INFO (logger, "nExpectedEvents: " << nExpectedEvents);
 
 }

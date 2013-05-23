@@ -71,7 +71,7 @@ protected:
   void analyzeCSC(const CSCEventData& data);
   void finishCSC(std::string cscID);
   bool checkResults(std::string cscID);
-  bool loadCFEBCalibParams(std::string cscID);
+  void setTestParams();
   int calc_thresh(int npoints, int* content, float* par, float* chisq);
 
   std::map<std::string, uint32_t> l1a_cntrs;
@@ -90,6 +90,20 @@ protected:
   std::map<int, std::map<std::string, test_step> > htree;
   bool fSwitch;
   cscThresholdScanDataC tscan_data;
+  
+  int dmb_tpamps_per_strip;
+  int thresh_step;
+  int thresh_first;
+  int threshs_per_tpamp;
+  int events_per_thresh;
+  int strip_step;
+  int strip_first;
+  int dmb_tpamp_first;
+  int dmb_tpamp_step;
+  int scale_turnoff;
+  int range_turnoff;
+  int strips_per_run;
+		  
   
 private:
   

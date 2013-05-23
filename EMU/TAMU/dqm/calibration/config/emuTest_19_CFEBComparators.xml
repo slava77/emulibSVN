@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Booking xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         
-		<!--
-		Config tag overrides nExpectedEvents within the
-		test's c++ code
 		
 		<Config>
-                <ExpectedEvents>25200</ExpectedEvents>
-                <Description>CFEB Thresholds</Description>
-        </Config> -->
+			<dmb_tpamps_per_strip>3</dmb_tpamps_per_strip>
+			<thresh_step>3</thresh_step>
+			<thresh_first>0</thresh_first>
+			<threshs_per_tpamp>35</threshs_per_tpamp>
+			<events_per_thresh>15</events_per_thresh>
+			<strip_step>1</strip_step>
+			<strip_first>1</strip_first>
+			<dmb_tpamp_first>150</dmb_tpamp_first>
+			<dmb_tpamp_step>48</dmb_tpamp_step>
+			<scale_turnoff>12</scale_turnoff>
+			<range_turnoff>20</range_turnoff>
+			<strips_per_run>16</strips_per_run>
+        </Config>
 		
         <TestResult>
 		<Test>19_CFEBComparators</Test>
