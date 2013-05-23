@@ -2,7 +2,7 @@
 <Booking xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 		<Config>
-			<duration_ms>31000</duration_ms>
+			<duration_ms>30000</duration_ms>
         </Config>
 
 
@@ -38,7 +38,7 @@
                 <XTitle>Wiregroup Number</XTitle>
                 <YMin>0</YMin>
                 <YMax>1</YMax>
-                <YBins>100</YBins>
+                <YBins>50</YBins>
                 <YTitle>Probability</YTitle>
 		<Low1Limit>0</Low1Limit>
 		<Low0Limit>0.1</Low0Limit>

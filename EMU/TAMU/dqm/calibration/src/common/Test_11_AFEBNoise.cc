@@ -10,7 +10,7 @@ using namespace boost::algorithm;
 Test_11_AFEBNoise::Test_11_AFEBNoise(std::string dfile): Test_Generic(dfile)
 {
   testID    = "11_AFEBNoise";
-  nExpectedEvents   = 15000;
+  nExpectedEvents   = 10000;
   binCheckMask  = 0x1FEBF3F6;
   logger = Logger::getInstance(testID);
   
@@ -51,11 +51,11 @@ void Test_11_AFEBNoise::initCSC(std::string cscID)
   }
 
 
-  cscdata["R01"]=afebdata; //alct wire occupancy
-  cscdata["R02"]=afebdata; //isolated hit occupancy
-  cscdata["R03"]=afebdata; //second tbins for separate tbins
-  cscdata["R04"]=afebdata; // alct wire occupancy - first tbin
-  cscdata["R05"]=afebdata; // second tbins for first tbin
+  cscdata["R01"]=afebdata; //cnts: alct wire occupancy
+  cscdata["R02"]=afebdata; //cnts: isolated hit occupancy
+  cscdata["R03"]=afebdata; //cnts: second tbins for separate tbins
+  cscdata["R04"]=afebdata; //cnts: alct wire occupancy - first tbin
+  cscdata["R05"]=afebdata; //cnts: second tbins for first tbin
   //cscdata["R06"]=afebdata;
   
   cscdata["R10"]=afebdata; //wire_array
@@ -181,21 +181,11 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
           for (uint32_t n=0; n < tbins.size(); n++)
           {
 		  
-		  
 			if ((prev_tbin >=0) && (tbins[n] != (prev_tbin+1)) )
 				disc_on = 0;
 			
 			prev_tbin = tbins[n];
 			
-			/*if(evtNum == 1001 || evtNum == 2100) {
-				
-				cout << "evt" << evtNum << "\ttbinssize " << tbins.size()
-					 << "\tlayer " << nLayer << "\twire " << wg
-					 << "\tn " << n << "\ttbin " << tbins[n] 
-					 << "\tdiscon " << disc_on << "\tdiscon2 "
-					 << disc_on_2 << "\tprevtbin " << prev_tbin << endl;
-			
-			}*/
 
 			if(disc_on_2 == 0) {
 				disc_on_2 = 1;
@@ -203,9 +193,9 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
 
 			} else {
 				if(disc_on == 0) {
-					cout << "evt" << evtNum << " afterpulses===="
+					/*cout << "evt" << evtNum << " afterpulses===="
 					     << "layer " << nLayer << " wire " << wg
-						 << " tbin " << tbins[n] << endl;
+						 << " tbin " << tbins[n] << endl;*/
 					 r05.cnts[nLayer-1][wg-1]++;
 						 
 				}
@@ -219,8 +209,6 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
 				r03.cnts[nLayer-1][wg-1]++;
 			}
 			
-			
-		    //disc_on = 0;
           }
 		  	  
 			wire_array.content[nLayer-1][num_wires_hit[nLayer-1]]=wg-1;
@@ -235,7 +223,9 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
 	for(int ilayer = 0; ilayer < NLAYERS; ilayer++) {
 	
 		if(num_wires_hit[ilayer] == 1) {
-			r02.cnts[ilayer][last_wire[ilayer]+1]++;
+			r02.cnts[ilayer][last_wire[ilayer]]++;
+			//last_wire[ilayer]+1 (+1 for x in all r02.cnts[][x])
+			//starts from 0 in calibration, 1 in lisa
 		}
 		else if(num_wires_hit[ilayer] > 1) {
 		
@@ -245,14 +235,14 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
 				{
 					if(wire_array.content[ilayer][iwire]!=(wire_array.content[ilayer][iwire+1]-1))
 					{
-						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]+1]++;
+						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]]++;
 					}
 				}
 				else if(iwire==(num_wires_hit[ilayer]-1)) 
 				{
 					if(wire_array.content[ilayer][iwire]!=(wire_array.content[ilayer][iwire-1]+1))  
 					{
-						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]+1]++;
+						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]]++;
 					}
 				}
 				else
@@ -262,7 +252,7 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
 					  && wire_array.content[ilayer][iwire] !=
 					    (wire_array.content[ilayer][iwire-1]+1)  ) 
 					{
-						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]+1]++;
+						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]]++;
 						
 					} 
 				}
@@ -283,15 +273,11 @@ void Test_11_AFEBNoise::finishCSC(std::string cscID)
     return;
   }
 
-  
   cscTestData::iterator td_itr =  tdata.find(cscID);
   if (td_itr != tdata.end())
   {
   
-	
     cout << "duration_ms " << duration_ms << endl;
-	//don't forget to comment out below line
-	duration_ms = 30000;
 
     TestData& cscdata= td_itr->second;
     TestData2D& r01 = cscdata["R01"]; // rate1 in LTM
@@ -341,9 +327,9 @@ void Test_11_AFEBNoise::finishCSC(std::string cscID)
 			if(r04.content[ilayer][iwire] > 0) {
 				r03.content[ilayer][iwire] = r05.content[ilayer][iwire] / r04.content[ilayer][iwire];
 				
-				cout << "r05cont " << r05.content[ilayer][iwire] 
+				/*cout << "r05cont " << r05.content[ilayer][iwire] 
 				     << " r05cnt " << r05.cnts[ilayer][iwire]
-				     << " r04 " << r04.content[ilayer][iwire]  << endl;
+				     << " r04 " << r04.content[ilayer][iwire]  << endl;*/
 			} else {
 				r03.content[ilayer][iwire] = -99.;
 			}
@@ -373,11 +359,10 @@ void Test_11_AFEBNoise::setTestParams()
   if (itr != test_params.end() )
   {
     duration_ms = atoi((itr->second).c_str());
-	cout << "SET DURATION_MS!" << endl;
+	cout << "duration_ms set to " << duration_ms << endl;
   } else{
-	cout << "did not find it :(" << endl;
+	cout << "Did not find parameter for duration in milliseconds" << endl;
   }
 	
-  cout << "duration_ms " << duration_ms << endl;
 
 }
