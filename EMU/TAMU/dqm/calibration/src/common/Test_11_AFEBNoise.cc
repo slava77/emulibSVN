@@ -56,7 +56,6 @@ void Test_11_AFEBNoise::initCSC(std::string cscID)
   cscdata["R03"]=afebdata; //cnts: second tbins for separate tbins
   cscdata["R04"]=afebdata; //cnts: alct wire occupancy - first tbin
   cscdata["R05"]=afebdata; //cnts: second tbins for first tbin
-  //cscdata["R06"]=afebdata;
   
   cscdata["R10"]=afebdata; //wire_array
 
@@ -144,7 +143,6 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
   TestData2D& r03 = cscdata["R03"];
   TestData2D& r04 = cscdata["R04"];
   TestData2D& r05 = cscdata["R05"];
-  //TestData2D& r06 = cscdata["R06"];
     
   TestData2D& wire_array = cscdata["R10"];
   
@@ -220,12 +218,12 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
     }
 	
 	//r02 counts hits that are isolated
+	bool startFill = false;
 	for(int ilayer = 0; ilayer < NLAYERS; ilayer++) {
 	
 		if(num_wires_hit[ilayer] == 1) {
+			startFill = true;
 			r02.cnts[ilayer][last_wire[ilayer]]++;
-			//last_wire[ilayer]+1 (+1 for x in all r02.cnts[][x])
-			//starts from 0 in calibration, 1 in lisa
 		}
 		else if(num_wires_hit[ilayer] > 1) {
 		
@@ -235,14 +233,14 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
 				{
 					if(wire_array.content[ilayer][iwire]!=(wire_array.content[ilayer][iwire+1]-1))
 					{
-						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]]++;
+						if(startFill) r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]]++;
 					}
 				}
 				else if(iwire==(num_wires_hit[ilayer]-1)) 
 				{
 					if(wire_array.content[ilayer][iwire]!=(wire_array.content[ilayer][iwire-1]+1))  
 					{
-						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]]++;
+						if(startFill) r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]]++;
 					}
 				}
 				else
@@ -252,7 +250,7 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
 					  && wire_array.content[ilayer][iwire] !=
 					    (wire_array.content[ilayer][iwire-1]+1)  ) 
 					{
-						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]]++;
+						if(startFill) r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]]++;
 						
 					} 
 				}
@@ -285,11 +283,6 @@ void Test_11_AFEBNoise::finishCSC(std::string cscID)
     TestData2D& r03 = cscdata["R03"];
     TestData2D& r04 = cscdata["R04"]; // rate_1
     TestData2D& r05 = cscdata["R05"]; // rate_4
-    //TestData2D& r06 = cscdata["R06"];
-	//r01 singles rate
-	//r02 isolated hit probability
-	//r03 afterpulsing probability
-	
     //singles rate
 	for (int ilayer = 0; ilayer < NLAYERS; ilayer++) {
 		for (int iwire = 0; iwire < getNumWireGroups(cscID); iwire++) {
@@ -301,7 +294,7 @@ void Test_11_AFEBNoise::finishCSC(std::string cscID)
 	//isolated hit probability
 	for (int ilayer = 0; ilayer < NLAYERS; ilayer++) {
 		for (int iwire = 0; iwire < getNumWireGroups(cscID); iwire++) {
-		
+			
 			r02.content[ilayer][iwire] = ((float)r02.cnts[ilayer][iwire] / ((float)duration_ms * 1E-3));
 			
 			if(r01.content[ilayer][iwire] > 0) {
@@ -312,24 +305,14 @@ void Test_11_AFEBNoise::finishCSC(std::string cscID)
 		}
 	}
 	
-	
 	//afterpulsing probability
 	for (int ilayer = 0; ilayer < NLAYERS; ilayer++) {
 		for (int iwire = 0; iwire < getNumWireGroups(cscID); iwire++) {
 		
 			r04.content[ilayer][iwire] = ((float)r04.cnts[ilayer][iwire] / ((float)duration_ms * 1E-3));
-		}
-		
-		for (int iwire = 0; iwire < getNumWireGroups(cscID); iwire++) {
-		
-			r05.content[ilayer][iwire] = ((float)r05.cnts[ilayer][iwire] / ((float)duration_ms * 1E-3));
 			
 			if(r04.content[ilayer][iwire] > 0) {
-				r03.content[ilayer][iwire] = r05.content[ilayer][iwire] / r04.content[ilayer][iwire];
-				
-				/*cout << "r05cont " << r05.content[ilayer][iwire] 
-				     << " r05cnt " << r05.cnts[ilayer][iwire]
-				     << " r04 " << r04.content[ilayer][iwire]  << endl;*/
+				r03.content[ilayer][iwire] = (float)r05.cnts[ilayer][iwire] / (float)r04.cnts[ilayer][iwire];
 			} else {
 				r03.content[ilayer][iwire] = -99.;
 			}
@@ -353,16 +336,15 @@ bool Test_11_AFEBNoise::checkResults(std::string cscID)
 
 void Test_11_AFEBNoise::setTestParams()
 {
- cout << "setting test params" << endl;
- std::map<std::string, std::string>::iterator itr;
+  LOG4CPLUS_INFO (logger, "Setting additional test parameters.");
+  std::map<std::string, std::string>::iterator itr;
   itr = test_params.find("duration_ms");
   if (itr != test_params.end() )
   {
     duration_ms = atoi((itr->second).c_str());
-	cout << "duration_ms set to " << duration_ms << endl;
-  } else{
-	cout << "Did not find parameter for duration in milliseconds" << endl;
+    LOG4CPLUS_INFO (logger, "parameter: duration_ms: " << duration_ms);
   }
 	
 
 }
+	
