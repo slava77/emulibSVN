@@ -26,6 +26,12 @@ protected:
   void analyzeCSC(const CSCEventData& data);
   void finishCSC(std::string cscID);
   bool checkResults(std::string cscID);
+  void setTestParams();
+  
+  int num_wires_hit[NLAYERS];
+  int last_wire[NLAYERS];
+  
+  int duration_ms;
 
 
 };

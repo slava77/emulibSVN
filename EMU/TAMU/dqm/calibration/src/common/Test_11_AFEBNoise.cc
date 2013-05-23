@@ -13,7 +13,10 @@ Test_11_AFEBNoise::Test_11_AFEBNoise(std::string dfile): Test_Generic(dfile)
   nExpectedEvents   = 15000;
   binCheckMask  = 0x1FEBF3F6;
   logger = Logger::getInstance(testID);
-
+  
+  duration_ms = 30000;
+  
+  
 }
 
 void Test_11_AFEBNoise::initCSC(std::string cscID)
@@ -48,8 +51,14 @@ void Test_11_AFEBNoise::initCSC(std::string cscID)
   }
 
 
-  cscdata["R01"]=afebdata;
-  cscdata["R02"]=afebdata;
+  cscdata["R01"]=afebdata; //alct wire occupancy
+  cscdata["R02"]=afebdata; //isolated hit occupancy
+  cscdata["R03"]=afebdata; //second tbins for separate tbins
+  cscdata["R04"]=afebdata; // alct wire occupancy - first tbin
+  cscdata["R05"]=afebdata; // second tbins for first tbin
+  //cscdata["R06"]=afebdata;
+  
+  cscdata["R10"]=afebdata; //wire_array
 
   tdata[cscID] = cscdata;
 
@@ -125,16 +134,142 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
   nCSCEvents[cscID]++;
   
   int evtNum = nCSCEvents[cscID];
-
-        
+  int nwires = getNumWireGroups(cscID);
+  
   TestData& cscdata = tdata[cscID];
 	
   TestData2D& r01 = cscdata["R01"];
   TestData2D& r02 = cscdata["R02"];
+    
+  TestData2D& r03 = cscdata["R03"];
+  TestData2D& r04 = cscdata["R04"];
+  TestData2D& r05 = cscdata["R05"];
+  //TestData2D& r06 = cscdata["R06"];
+    
+  TestData2D& wire_array = cscdata["R10"];
+  
 
+  for(int i = 0; i < NLAYERS; i++) {
+	for(int j = 0; j < nwires; j++) {
+		wire_array.content[i][j] = -10;
+	}
+  }
+        
+  MonHistos& cschistos = mhistos[cscID];
+  
+  TH2F* v01 = reinterpret_cast<TH2F*>(cschistos["V01"]); //wire occupancy
+  TH2F* v02 = reinterpret_cast<TH2F*>(cschistos["V02"]); //time bin occupancy
   if (data.nalct())
   {
-    
+    const CSCAnodeData* alctData = data.alctData();
+    if (alctData)
+    {
+      for (int nLayer=1; nLayer<=6; nLayer++)
+      {
+		num_wires_hit[nLayer-1] = 0;
+		
+        vector<CSCWireDigi> wireDigis = alctData->wireDigis(nLayer);
+        for (vector<CSCWireDigi>:: iterator wireDigisItr = wireDigis.begin();
+             wireDigisItr != wireDigis.end(); ++wireDigisItr)
+        {
+          int wg = wireDigisItr->getWireGroup();
+          v01->Fill(wg-1, nLayer-1);
+          vector<int> tbins = wireDigisItr->getTimeBinsOn();
+		  int disc_on = 0;
+		  int disc_on_2 = 0;
+          int prev_tbin = -1;
+          for (uint32_t n=0; n < tbins.size(); n++)
+          {
+		  
+		  
+			if ((prev_tbin >=0) && (tbins[n] != (prev_tbin+1)) )
+				disc_on = 0;
+			
+			prev_tbin = tbins[n];
+			
+			/*if(evtNum == 1001 || evtNum == 2100) {
+				
+				cout << "evt" << evtNum << "\ttbinssize " << tbins.size()
+					 << "\tlayer " << nLayer << "\twire " << wg
+					 << "\tn " << n << "\ttbin " << tbins[n] 
+					 << "\tdiscon " << disc_on << "\tdiscon2 "
+					 << disc_on_2 << "\tprevtbin " << prev_tbin << endl;
+			
+			}*/
+
+			if(disc_on_2 == 0) {
+				disc_on_2 = 1;
+				r04.cnts[nLayer-1][wg-1]++;
+
+			} else {
+				if(disc_on == 0) {
+					cout << "evt" << evtNum << " afterpulses===="
+					     << "layer " << nLayer << " wire " << wg
+						 << " tbin " << tbins[n] << endl;
+					 r05.cnts[nLayer-1][wg-1]++;
+						 
+				}
+			}
+			
+			if(disc_on == 0) {
+				disc_on = 1;
+				v02->Fill(wg-1, (nLayer-1)*32+tbins[n]);
+				r01.cnts[nLayer-1][wg-1]++;
+			} else {
+				r03.cnts[nLayer-1][wg-1]++;
+			}
+			
+			
+		    //disc_on = 0;
+          }
+		  	  
+			wire_array.content[nLayer-1][num_wires_hit[nLayer-1]]=wg-1;
+			num_wires_hit[nLayer-1]++; 
+			last_wire[nLayer-1]=wg-1;
+
+        }
+      }
+    }
+	
+	//r02 counts hits that are isolated
+	for(int ilayer = 0; ilayer < NLAYERS; ilayer++) {
+	
+		if(num_wires_hit[ilayer] == 1) {
+			r02.cnts[ilayer][last_wire[ilayer]+1]++;
+		}
+		else if(num_wires_hit[ilayer] > 1) {
+		
+			for(int iwire = 0; iwire < num_wires_hit[ilayer]; iwire++)
+			{
+				if(iwire==0)
+				{
+					if(wire_array.content[ilayer][iwire]!=(wire_array.content[ilayer][iwire+1]-1))
+					{
+						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]+1]++;
+					}
+				}
+				else if(iwire==(num_wires_hit[ilayer]-1)) 
+				{
+					if(wire_array.content[ilayer][iwire]!=(wire_array.content[ilayer][iwire-1]+1))  
+					{
+						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]+1]++;
+					}
+				}
+				else
+				{
+					if(  wire_array.content[ilayer][iwire] !=
+					    (wire_array.content[ilayer][iwire+1]-1)
+					  && wire_array.content[ilayer][iwire] !=
+					    (wire_array.content[ilayer][iwire-1]+1)  ) 
+					{
+						r02.cnts[ilayer][(int)wire_array.content[ilayer][iwire]+1]++;
+						
+					} 
+				}
+			}
+		}
+	}
+
   }
 }
 
@@ -148,21 +283,73 @@ void Test_11_AFEBNoise::finishCSC(std::string cscID)
     return;
   }
 
+  
   cscTestData::iterator td_itr =  tdata.find(cscID);
   if (td_itr != tdata.end())
   {
+  
+	
+    cout << "duration_ms " << duration_ms << endl;
+	//don't forget to comment out below line
+	duration_ms = 30000;
 
     TestData& cscdata= td_itr->second;
-    TestData2D& r01 = cscdata["R01"];
-    TestData2D& r02 = cscdata["R02"];
-
-	for(int i = 0; i < 6; i++) {
-	  for(int j = 0; j < getNumWireGroups(cscID); j++) {
-		  r01.content[i][j] = i+j;
-		  r02.content[i][j] = i+j;
-	  }
+    TestData2D& r01 = cscdata["R01"]; // rate1 in LTM
+    TestData2D& r02 = cscdata["R02"]; // rate3
+    TestData2D& r03 = cscdata["R03"];
+    TestData2D& r04 = cscdata["R04"]; // rate_1
+    TestData2D& r05 = cscdata["R05"]; // rate_4
+    //TestData2D& r06 = cscdata["R06"];
+	//r01 singles rate
+	//r02 isolated hit probability
+	//r03 afterpulsing probability
+	
+    //singles rate
+	for (int ilayer = 0; ilayer < NLAYERS; ilayer++) {
+		for (int iwire = 0; iwire < getNumWireGroups(cscID); iwire++) {
+		
+			r01.content[ilayer][iwire] = ((float)r01.cnts[ilayer][iwire] / ((float)duration_ms * 1E-3));
+		}
 	}
-    
+	
+	//isolated hit probability
+	for (int ilayer = 0; ilayer < NLAYERS; ilayer++) {
+		for (int iwire = 0; iwire < getNumWireGroups(cscID); iwire++) {
+		
+			r02.content[ilayer][iwire] = ((float)r02.cnts[ilayer][iwire] / ((float)duration_ms * 1E-3));
+			
+			if(r01.content[ilayer][iwire] > 0) {
+				r02.content[ilayer][iwire] /= r01.content[ilayer][iwire];
+			} else {
+				r02.content[ilayer][iwire] = -99.;
+			}
+		}
+	}
+	
+	
+	//afterpulsing probability
+	for (int ilayer = 0; ilayer < NLAYERS; ilayer++) {
+		for (int iwire = 0; iwire < getNumWireGroups(cscID); iwire++) {
+		
+			r04.content[ilayer][iwire] = ((float)r04.cnts[ilayer][iwire] / ((float)duration_ms * 1E-3));
+		}
+		
+		for (int iwire = 0; iwire < getNumWireGroups(cscID); iwire++) {
+		
+			r05.content[ilayer][iwire] = ((float)r05.cnts[ilayer][iwire] / ((float)duration_ms * 1E-3));
+			
+			if(r04.content[ilayer][iwire] > 0) {
+				r03.content[ilayer][iwire] = r05.content[ilayer][iwire] / r04.content[ilayer][iwire];
+				
+				cout << "r05cont " << r05.content[ilayer][iwire] 
+				     << " r05cnt " << r05.cnts[ilayer][iwire]
+				     << " r04 " << r04.content[ilayer][iwire]  << endl;
+			} else {
+				r03.content[ilayer][iwire] = -99.;
+			}
+		}
+	}
+	
   }
 }
 
@@ -176,4 +363,21 @@ bool Test_11_AFEBNoise::checkResults(std::string cscID)
   }
 
   return isValid;
+}
+
+void Test_11_AFEBNoise::setTestParams()
+{
+ cout << "setting test params" << endl;
+ std::map<std::string, std::string>::iterator itr;
+  itr = test_params.find("duration_ms");
+  if (itr != test_params.end() )
+  {
+    duration_ms = atoi((itr->second).c_str());
+	cout << "SET DURATION_MS!" << endl;
+  } else{
+	cout << "did not find it :(" << endl;
+  }
+	
+  cout << "duration_ms " << duration_ms << endl;
+
 }

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Booking xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Config>
+			<duration_ms>31000</duration_ms>
+        </Config>
+
+
         <TestResult>
 		<Test>11_AFEBNoise</Test>
-                <Type>strips_cnv</Type>
-		<Title>ALCT self-trigger LCT rates</Title>
+                <Type>wires_cnv</Type>
+		<Title>Singles Rate</Title>
                 <Prefix>CSC</Prefix>
                 <Name>R01</Name>
                 <XMin>0</XMin>
@@ -11,19 +17,19 @@
                 <XBins>112</XBins>
                 <XTitle>Wiregroup Number</XTitle>
                 <YMin>0</YMin>
-                <YMax>20</YMax>
-                <YBins>30</YBins>
-                <YTitle>4/6 planes rate, Hz/m</YTitle>
+                <YMax>200</YMax>
+                <YBins>100</YBins>
+                <YTitle>Hz</YTitle>
 		<Low1Limit>0</Low1Limit>
 		<Low0Limit>0</Low0Limit>
-		<High0Limit>15</High0Limit>
-		<High1Limit>20</High1Limit>
+		<High0Limit>100</High0Limit>
+		<High1Limit>200</High1Limit>
         </TestResult> 
 		
 		<TestResult>
 		<Test>11_AFEBNoise</Test>
-                <Type>strips_cnv</Type>
-		<Title>ALCT self-trigger average quality</Title>
+                <Type>wires_cnv</Type>
+		<Title>Isolated Hit Probability</Title>
                 <Prefix>CSC</Prefix>
                 <Name>R02</Name>
                 <XMin>0</XMin>
@@ -31,14 +37,34 @@
                 <XBins>112</XBins>
                 <XTitle>Wiregroup Number</XTitle>
                 <YMin>0</YMin>
-                <YMax>3.5</YMax>
-                <YBins>40</YBins>
-                <YTitle>4/6 planes rate, avg quality</YTitle>
-		<Low1Limit>0.5</Low1Limit>
-		<Low0Limit>1.0</Low0Limit>
-		<High0Limit>3.0</High0Limit>
-		<High1Limit>3.5</High1Limit>
-        </TestResult>
+                <YMax>1</YMax>
+                <YBins>100</YBins>
+                <YTitle>Probability</YTitle>
+		<Low1Limit>0</Low1Limit>
+		<Low0Limit>0.1</Low0Limit>
+		<High0Limit>1</High0Limit>
+		<High1Limit>1</High1Limit>
+        </TestResult> 
+		
+		<TestResult>
+		<Test>11_AFEBNoise</Test>
+                <Type>wires_cnv</Type>
+		<Title>Afterpulsing Probability</Title>
+                <Prefix>CSC</Prefix>
+                <Name>R03</Name>
+                <XMin>0</XMin>
+                <XMax>112</XMax>
+                <XBins>112</XBins>
+                <XTitle>Wiregroup Number</XTitle>
+                <YMin>0</YMin>
+                <YMax>0.1</YMax>
+                <YBins>50</YBins>
+                <YTitle>Probability</YTitle>
+		<Low1Limit>0</Low1Limit>
+		<Low0Limit>0</Low0Limit>
+		<High0Limit>0.05</High0Limit>
+		<High1Limit>0.07</High1Limit>
+        </TestResult> 
 
 		<TestResult>
                 <Test>11_AFEBNoise</Test>
@@ -57,5 +83,46 @@
 		<SetLabelSizeY>0.03</SetLabelSizeY>
 		<SetNdivisionsX>20</SetNdivisionsX>                
 		<SetLeftMargin>0.3</SetLeftMargin>
+        </TestResult>
+		
+		<TestResult>
+                <Test>11_AFEBNoise</Test>
+                <Type>h2</Type>
+                <Title>V01 - Wire Groups Occupancy</Title>
+                <Prefix>CSC</Prefix>
+                <Name>V01</Name>
+                <XMin>0</XMin>
+                <XMax>112</XMax>
+                <XBins>112</XBins>
+                <XTitle>Wire Group</XTitle>
+                <YMin>0</YMin>
+                <YMax>6</YMax>
+                <YBins>6</YBins>
+                <YTitle>Layer</YTitle>
+                <SetLabelSizeX>0.02</SetLabelSizeX>
+                <SetLabelSizeY>0.03</SetLabelSizeY>
+                <SetOption>colz</SetOption>
+		<XScale>wires</XScale>
+		<SetMinimum>0</SetMinimum>
+        </TestResult>
+
+        <TestResult>
+                <Test>11_AFEBNoise</Test>
+                <Type>h2</Type>
+                <Title>V02 - Raw Hit Time Bin Occupancy</Title>
+                <Prefix>CSC</Prefix>
+                <Name>V02</Name>
+                <XMin>0</XMin>
+                <XMax>112</XMax>
+                <XBins>112</XBins>
+                <XTitle>Wire Group</XTitle>
+                <YMin>0</YMin>
+                <YMax>192</YMax>
+                <YBins>192</YBins>
+                <YTitle>(32 x Layer) + Time Bins</YTitle>
+                <SetLabelSizeX>0.02</SetLabelSizeX>
+                <SetLabelSizeY>0.03</SetLabelSizeY>
+                <SetOption>colz</SetOption>
+		<XScale>wires</XScale>
         </TestResult>
 </Booking>
