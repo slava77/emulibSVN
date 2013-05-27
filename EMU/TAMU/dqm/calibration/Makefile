@@ -47,8 +47,8 @@ Sources=\
 	Test_19_CFEBComparators.cc \
 	Test_21_CFEBComparatorLogic.cc \
 	Test_25_ALCTTrigger.cc \
-	Test_30_PipelineDepth.cc
-
+	Test_30_PipelineDepth.cc \
+	Test_GasGain.cc
 
 
 Executables = runEmuCalibAnalysis.cc
