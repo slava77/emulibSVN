@@ -132,7 +132,7 @@ void Test_11_AFEBNoise::analyzeCSC(const CSCEventData& data)
   }
   nCSCEvents[cscID]++;
   
-  int evtNum = nCSCEvents[cscID];
+  //unused  int evtNum = nCSCEvents[cscID];
   int nwires = getNumWireGroups(cscID);
   
   TestData& cscdata = tdata[cscID];
@@ -347,4 +347,3 @@ void Test_11_AFEBNoise::setTestParams()
 	
 
 }
-	

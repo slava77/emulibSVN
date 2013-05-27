@@ -278,7 +278,7 @@ void Test_AFEB05::finishCSC(std::string cscID)
 
     TestData& cscdata= td_itr->second;
 
-    TestData2D& mask = cscdata["_MASK"];
+    //unused    TestData2D& mask = cscdata["_MASK"];
 
     TestData2D& r01 = cscdata["R01"];
     TestData2D& r02 = cscdata["R02"];
@@ -326,10 +326,10 @@ bool Test_AFEB05::checkResults(std::string cscID)
   cscTestData::iterator td_itr =  tdata.find(cscID);
   if (td_itr != tdata.end())
   {
-    TestData& cscdata= td_itr->second;
-    TestData2D& r01 = cscdata["R01"];
+    //unused    TestData& cscdata= td_itr->second;
+    //unused    TestData2D& r01 = cscdata["R01"];
 
-    int badChannels=0;
+    //unused    int badChannels=0;
   }
 
   return isValid;

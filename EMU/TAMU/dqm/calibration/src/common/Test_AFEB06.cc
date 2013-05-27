@@ -800,7 +800,7 @@ int Test_AFEB06::calc_thresh(int npoints, int* content, float* par, float* chisq
   // SO, WE WILL NOT REPEAT SOME NOTES HERE AGAIN.
 
   //AGAIN: looking for the first (left) "good" index of the data array
-  for (i=(right_bound-1); i>left_bound-0.1; i--)
+  for (i=(int)(right_bound-1); i>(int)(left_bound-0.1); i--)
     {
       if(content[first_index] <= content[i])
         {

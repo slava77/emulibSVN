@@ -249,8 +249,8 @@ void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
   
   if (data.nalct())
   {
-    const CSCAnodeData* alctData = data.alctData();
-	const CSCALCTHeader* alctHeader = data.alctHeader();
+    //unused    const CSCAnodeData* alctData = data.alctData();
+    const CSCALCTHeader* alctHeader = data.alctHeader();
     const CSCALCTTrailer* alctTrailer = data.alctTrailer();
     if (alctHeader && alctTrailer)
 	{
@@ -310,7 +310,7 @@ void Test_25_ALCTTrigger::finishCSC(std::string cscID)
     TestData2D& r02 = cscdata["R02"];
     TestData2D& r03 = cscdata["R03"]; // all lct
     TestData2D& r04 = cscdata["R04"]; // quality
-    TestData2D& r05 = cscdata["R05"]; // accel lct
+    //unused    TestData2D& r05 = cscdata["R05"]; // accel lct
 
 	
     for(int plane = 0; plane < 6; plane++) {

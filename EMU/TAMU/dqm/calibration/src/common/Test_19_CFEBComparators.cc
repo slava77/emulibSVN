@@ -201,13 +201,13 @@ void Test_19_CFEBComparators::analyze(const char * data, int32_t dataSize, uint3
 	
 	int prevThreshold = DDUstats[dduID].thresh;
 	float prevDAC = DDUstats[dduID].dac;
-	int prevStrip = DDUstats[dduID].strip;
+	//unused	int prevStrip = DDUstats[dduID].strip;
 	
-	int strip = (nevt/(dmb_tpamps_per_strip * threshs_per_tpamp * events_per_thresh)) * strip_step + strip_first;
+	//unused	int strip = (nevt/(dmb_tpamps_per_strip * threshs_per_tpamp * events_per_thresh)) * strip_step + strip_first;
 
 	float dac = ( (nevt % (dmb_tpamps_per_strip * threshs_per_tpamp * events_per_thresh) ) / threshs_per_tpamp / events_per_thresh) * dmb_tpamp_step + dmb_tpamp_first;
 
-	int thresh_first = dac * scale_turnoff / 16 - range_turnoff;
+	int thresh_first = (int)(dac * scale_turnoff / 16 - range_turnoff);
 	
 	int amp = (nevt % (dmb_tpamps_per_strip * threshs_per_tpamp * events_per_thresh) ) / threshs_per_tpamp / events_per_thresh;
 	
@@ -334,7 +334,7 @@ void Test_19_CFEBComparators::analyzeCSC(const CSCEventData& data)
           }
 		  
 		  float dac = curr_amp * dmb_tpamp_step + dmb_tpamp_first;
-		  int first_thresh = dac * scale_turnoff / 16 - range_turnoff;
+		  int first_thresh = (int)(dac * scale_turnoff / 16 - range_turnoff);
 				
 		  int ithresh = (curr_thresh - first_thresh)/thresh_step;
           thdata.content[curr_amp][nLayer-1][strip-1][ithresh]++;
@@ -792,7 +792,7 @@ int Test_19_CFEBComparators::calc_thresh(int npoints, int* content, float* par, 
   // SO, WE WILL NOT REPEAT SOME NOTES HERE AGAIN.
 
   //AGAIN: looking for the first (left) "good" index of the data array
-  for (i=(right_bound-1); i>left_bound-0.1; i--)
+  for (i=(int)(right_bound-1); i>(int)(left_bound-0.1); i--)
   {
     if(content[first_index] <= content[i])
     {

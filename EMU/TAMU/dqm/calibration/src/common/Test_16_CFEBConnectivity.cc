@@ -303,7 +303,7 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 		for(int j = 0; j<TEST_DATA2D_NBINS; j++) {
 			sum[i][j]=0.;
 			sumsq[i][j]=0.;
-			nevents[i][j]=0.;
+			nevents[i][j]=0;
 		}
 	}
 

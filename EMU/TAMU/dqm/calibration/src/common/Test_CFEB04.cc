@@ -60,6 +60,7 @@ void Test_CFEB04::initCSC(std::string cscID)
   tstep.active_strip=0;
   tstep.dac_step=1;
   tstep.evt_cnt=0;
+  tstep.max_adc = -1;
   test_steps[cscID]=tstep;
 
   htree[dduID][cscID]=tstep;
@@ -384,7 +385,7 @@ void Test_CFEB04::analyzeCSC(const CSCEventData& data)
                       + (cfebData->timeSlice(1))->timeSample(layer,curr_strip)->adcCounts)/2.;
 
           double Qmax=-99.;
-          int imax;
+          int imax = -1;
           for (int itime=0; itime<nTimeSamples; itime++)   // loop over time samples (8 or 16)
           {
             CSCCFEBDataWord* timeSample=(cfebData->timeSlice(itime))->timeSample(layer,curr_strip);
@@ -811,7 +812,7 @@ double Test_CFEB04::fivePoleFitTime( int tmax,  double* adc, double t_peak)
   double fpNorm   = adc[1]; // this is tmax bin
   double t0       = 0.;
   double t0peak   = 109.6;   // this is offset of peak from start time t0
-  double p0       = 4./t0peak;
+  //unused  double p0       = 4./t0peak;
   int n_fit  = 4;
   if ( tmax == 6 ) n_fit = 3;
 

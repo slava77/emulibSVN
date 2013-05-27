@@ -162,7 +162,7 @@ void Test_AFEB07::analyze(const char * data, int32_t dataSize, uint32_t errorSta
 
   int delaySwitch=400*ltc_bug;
 
-  if (currL1A > nExpectedEvents) return;
+  if ((unsigned int)currL1A > nExpectedEvents) return;
   if (currL1A% delaySwitch ==1)
   {
     DDUstats[dduID].dac=currL1A / delaySwitch ;
@@ -218,7 +218,7 @@ void Test_AFEB07::analyzeCSC(const CSCEventData& data)
 
   // std::cout << nCSCEvents[cscID] << " " << cscID << std::endl;
   // == Define aliases to access chamber specific data
-  TestData& cscdata = tdata[cscID];
+  //unused  TestData& cscdata = tdata[cscID];
 
   MonHistos& cschistos = mhistos[cscID];
 
@@ -290,7 +290,7 @@ void Test_AFEB07::finishCSC(std::string cscID)
 
     TestData& cscdata= td_itr->second;
 
-    TestData2D& mask = cscdata["_MASK"];
+    //unused    TestData2D& mask = cscdata["_MASK"];
 
     TestData2D& r01 = cscdata["R01"];
     TestData2D& r02 = cscdata["R02"];
@@ -542,7 +542,7 @@ void Test_AFEB07::finishCSC(std::string cscID)
                                          / m_avg[chip];
         else d[chip] = -1;
         std::cout << Form("chip%d bmax:%.f avg:%.f b_avg:%.f m_avg:%.f dchip:%.f\n", chip, bmax, avg, b_avg[chip], m_avg[chip], d[chip]);
-        idelay[chip] = rint(d[chip]);
+        idelay[chip] = (int)rint(d[chip]);
       }
 
 
