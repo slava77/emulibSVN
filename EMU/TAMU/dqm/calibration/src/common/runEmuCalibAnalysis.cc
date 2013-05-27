@@ -37,6 +37,7 @@
 #include "emu/dqm/calibration/Test_AFEB05.h"
 #include "emu/dqm/calibration/Test_AFEB06.h"
 #include "emu/dqm/calibration/Test_AFEB07.h"
+#include "emu/dqm/calibration/Test_30_PipelineDepth.h"
 
 
 using namespace log4cplus;
@@ -180,7 +181,15 @@ int main(int argc, char **argv)
   // Test_CFEB02 test_analyzer(datafile);
   Test_Generic* test_analyzer = NULL;
 
-  if ( (datafile.find("ALCT_Connectivity") != std::string::npos) ||
+  if ( (datafile.find("Test_11") != std::string::npos) ||
+            (datafile.find("test11") != std::string::npos) ||
+	    (datafile.find("Test11") != std::string::npos) )
+    {
+      LOG4CPLUS_INFO(logger, "Detected data for Test 11: AFEB Counting Noise");
+      test_analyzer = new Test_11_AFEBNoise(datafile);
+      xmlTestCfg = "file://" + cfgDir + "/emuTest_11_AFEBNoise.xml";
+    }
+  else if ( (datafile.find("ALCT_Connectivity") != std::string::npos) ||
 	    (datafile.find("Test_12") != std::string::npos) )
     {   
       LOG4CPLUS_INFO(logger, "Detected data for Test AFEB05: Connectivity");
@@ -259,13 +268,13 @@ int main(int argc, char **argv)
       test_analyzer = new Test_25_ALCTTrigger(datafile);
       xmlTestCfg = "file://" + cfgDir + "/emuTest_25_ALCTTrigger.xml";
     }
-  else if ( (datafile.find("Test_11") != std::string::npos) ||
-            (datafile.find("test11") != std::string::npos) ||
-	    (datafile.find("Test11") != std::string::npos) )
+  else if ( (datafile.find("Test_30") != std::string::npos) ||
+            (datafile.find("test30") != std::string::npos) ||
+	    (datafile.find("Test30") != std::string::npos) )
     {
-      LOG4CPLUS_INFO(logger, "Detected data for Test 11: AFEB Counting Noise");
-      test_analyzer = new Test_11_AFEBNoise(datafile);
-      xmlTestCfg = "file://" + cfgDir + "/emuTest_11_AFEBNoise.xml";
+      LOG4CPLUS_INFO(logger, "Detected data for Test 30: Pipeline depth");
+      test_analyzer = new Test_30_PipelineDepth(datafile);
+      xmlTestCfg = "file://" + cfgDir + "/emuTest_30_PipelineDepth.xml";
     }
   else
     {

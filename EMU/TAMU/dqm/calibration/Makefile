@@ -46,7 +46,8 @@ Sources=\
 	Test_16_CFEBConnectivity.cc \
 	Test_19_CFEBComparators.cc \
 	Test_21_CFEBComparatorLogic.cc \
-	Test_25_ALCTTrigger.cc
+	Test_25_ALCTTrigger.cc \
+	Test_30_PipelineDepth.cc
 
 
 
