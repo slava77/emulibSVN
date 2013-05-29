@@ -301,6 +301,9 @@ int Test_Generic::loadTestCfg()
 
   parser->parse(configFile.c_str());
   DOMDocument *doc = parser->getDocument();
+  if (!doc){
+    LOG4CPLUS_ERROR (logger, "Failed to load or parse config file: tried "<<configFile);
+  }
   DOMNodeList *l = doc->getElementsByTagName( XMLString::transcode("Booking") );
   if ( l->getLength() != 1 )
   {
@@ -376,6 +379,9 @@ int Test_Generic::loadTestCfg()
     }
   }
 
+
+  //if we got to this point, the config was loaded OK
+  LOG4CPLUS_INFO (logger, "Done loading test config file: " << configFile);
   delete parser;
 
   bookCommonHistos();
