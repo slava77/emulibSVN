@@ -13,6 +13,7 @@ vector<string> AFEB::teststand::utils::splitSting( const string& str, const stri
     start = found + 1;
     found = str.find_first_of( delimiters, start );
   }
+  pieces.push_back(str.substr(start));
   return pieces;
 }
 
