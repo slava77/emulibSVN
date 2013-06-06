@@ -29,6 +29,7 @@ protected:
   bool checkResults(std::string cscID);
 
   cscCFEBSCAData sdata;
+  bool isME11;
 
 };
 
