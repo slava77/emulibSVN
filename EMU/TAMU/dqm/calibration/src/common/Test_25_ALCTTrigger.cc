@@ -51,12 +51,6 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
   {
     cscdata["_MASK"]=afebdata;
   }
-  
-	for(int i = 0; i < cscdata["_MASK"].Nlayers; i++) {
-	  for(int j = 0; j < cscdata["_MASK"].Nbins; j++) {
-		cscdata["_MASK"].content[i][j] = (i == 3) ? 0 : 1;
-	  } // use mask to only pass layer/plane 4 through
-	}
 		  
 
   for (int i=0; i<TEST_DATA2D_NLAYERS; i++) {

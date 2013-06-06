@@ -64,6 +64,12 @@ void Test_21_CFEBComparatorLogic::initCSC(std::string cscID)
       tdata[cscID]["_MASK"].Nlayers = nLayers;
       tdata[cscID]["_MASK"].Nbins = nBins;
     }
+	
+	for(int i = 0; i < nLayers; i++) {
+	  for(int j = 0; j < nBins; j++) {
+		tdata[cscID]["_MASK"].content[i][j] = (j == 0 || j==(nBins-1)) ? 2 : 0;
+	  } // use mask to only pass layer/plane 4 through
+	}
       
   //initialize local arrays here as well
   TestData2D& ldata = halfStrips[cscID];

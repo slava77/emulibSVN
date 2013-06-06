@@ -11,13 +11,22 @@
                 <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
                 <YMin>0</YMin>
-                <YMax>200</YMax>
-                <YBins>45</YBins>
+                <YMax>150</YMax>
+                <YBins>40</YBins>
                 <YTitle>ADC Difference</YTitle>
-		<Low1Limit>0</Low1Limit>
+		<Low1Limit>40</Low1Limit>
 		<Low0Limit>40</Low0Limit>
 		<High0Limit>120</High0Limit>
-		<High1Limit>180</High1Limit>
+		<High1Limit>120</High1Limit>
+
+                <YMin42>0</YMin42>
+                <YMax42>350</YMax42>
+                <YBins42>75</YBins42>
+                <Low1Limit42>100</Low1Limit42>
+                <Low0Limit42>100</Low0Limit42>
+                <High0Limit42>300</High0Limit42>
+                <High1Limit42>300</High1Limit42>
+
         </TestResult>
 
         <TestResult>
@@ -38,6 +47,7 @@
 		<Low0Limit>10</Low0Limit>
 		<High0Limit>40</High0Limit>
 		<High1Limit>70</High1Limit>
+
         </TestResult>
 		
 		<TestResult>

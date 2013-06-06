@@ -429,9 +429,20 @@ int TestCanvas_6gr1h::Fill (TestData2D& data, TestData2D& mask)
       fY[fNbin] = data.content[fNlayer][fNbin];
 
       // if (fY[fNbin] == -999.) continue;
-	
-      if (mask.content[fNlayer][fNbin] == 0)
+
+      if (mask.content[fNlayer][fNbin] == 2)
+        continue; //special points we don't want to plot at all
+		
+      if (mask.content[fNlayer][fNbin] == 0 && cnvType != "mwires_cnv")
+      {
         theRightHisto->Fill(fY[fNbin]);
+      }
+	  
+      if (cnvType == "mwires_cnv" && fNlayer == 3)
+      {
+        theRightHisto->Fill(fY[fNbin]);
+      }
+	  
 
       if (fY[fNbin] <= theHighLimit && fY[fNbin] >= theLowLimit)
       {

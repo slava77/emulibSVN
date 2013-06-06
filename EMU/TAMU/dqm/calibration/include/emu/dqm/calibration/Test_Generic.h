@@ -312,6 +312,7 @@ protected:
   // int getNumStrips(std::string cscID);
   void saveCSCList();
   void doBinCheck();
+  bool isME11(std::string cscID);
 
   virtual void initCSC(std::string cscID) = 0;
   virtual void bookTestsForCSC(std::string cscID);

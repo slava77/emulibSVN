@@ -15,7 +15,7 @@ static char* F_CSC = "ME+2.2.28";
 Test_CFEB02::Test_CFEB02(std::string dfile): Test_Generic(dfile)
 {
   testID = "CFEB02";
-  nExpectedEvents = 15000;
+  nExpectedEvents = 10000;
   //  binCheckMask=0x16CFF3F6;
   binCheckMask=0x1FEBF3F6;
   //  binCheckMask=0xF7CB3BF6;
