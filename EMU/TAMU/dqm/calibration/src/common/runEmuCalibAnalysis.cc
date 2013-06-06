@@ -37,6 +37,7 @@
 #include "emu/dqm/calibration/Test_AFEB05.h"
 #include "emu/dqm/calibration/Test_AFEB06.h"
 #include "emu/dqm/calibration/Test_AFEB07.h"
+#include "emu/dqm/calibration/Test_GasGain.h"
 #include "emu/dqm/calibration/Test_30_PipelineDepth.h"
 
 
@@ -267,6 +268,15 @@ int main(int argc, char **argv)
       LOG4CPLUS_INFO(logger, "Detected data for Test 25: ALCT Self-Trigger");
       test_analyzer = new Test_25_ALCTTrigger(datafile);
       xmlTestCfg = "file://" + cfgDir + "/emuTest_25_ALCTTrigger.xml";
+    }
+  //note that historically this was called Step 24, but the present implementation uses step27 files as input
+  else if (datafile.find("STEP_27") != std::string::npos
+	   || datafile.find("Test_27") != std::string::npos)
+    {
+      LOG4CPLUS_INFO(logger, "Detected data for Gas Gain Test");
+      test_analyzer = new Test_GasGain(datafile);
+      xmlTestCfg = "file://" + cfgDir +"/emuTest_GasGain.xml";
+      cout<<xmlTestCfg<<endl;
     }
   else if ( (datafile.find("Test_30") != std::string::npos) ||
             (datafile.find("test30") != std::string::npos) ||
