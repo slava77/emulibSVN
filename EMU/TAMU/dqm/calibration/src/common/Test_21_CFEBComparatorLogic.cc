@@ -40,15 +40,7 @@ void Test_21_CFEBComparatorLogic::initCSC(std::string cscID)
   
   //isME11() in emu::dqm::utils uses cscID.find("ME+1/1")
   // instead of cscID.find("ME+1.1") so it doesn't work
-  bool isME11 = false;
-  if ((cscID.find("ME+1.1") == 0) || (cscID.find("ME-1.1") ==0 )) {
-    isME11 = true;
-  }
- 
-  if(isME11) 
-  {
-	cout << "is ME11-type chamber" << endl;
-  }
+  bool isME11 = ((cscID.find("ME+1.1") == 0) || (cscID.find("ME-1.1") == 0));
 
   int nBins = getNumStrips(cscID)*2;
 
@@ -63,6 +55,28 @@ void Test_21_CFEBComparatorLogic::initCSC(std::string cscID)
     {
       tdata[cscID]["_MASK"].Nlayers = nLayers;
       tdata[cscID]["_MASK"].Nbins = nBins;
+
+	  int halfstripsPerBoard = 16*2;
+	  int ME11AB = 2; //0 for a, 1 for b, 2 for 4-1 mode or 4-3 mode
+	  //hardcoded right now, presumably will be taken from xml later?
+	  int nBoards = getNumStrips(cscID)/16;
+
+	  if(!isME11) ME11AB = -1;
+
+	  int maskFirst = 0;
+	  int maskLast = halfstripsPerBoard*nBoards;
+
+	  int maskBoundary = (ME11AB == 2) ? (4*halfstripsPerBoard) : 0;
+	  //no boundary if only me11a or me11b, or nonme11 of course
+
+	  for(int i = 0; i < nLayers; i++) {
+	    tdata[cscID]["_MASK"].content[i][maskFirst] = 1;
+	    tdata[cscID]["_MASK"].content[i][maskLast-1] = 1;
+	    if(isME11) {
+	      tdata[cscID]["_MASK"].content[i][maskBoundary] = 1;
+	      tdata[cscID]["_MASK"].content[i][maskBoundary-1] = 1;
+	    } // only ME11-type need boundary mask (between A,B sides)
+	  } // mask edge half-strips since not possible to be pulsed
     }
 	
 	for(int i = 0; i < nLayers; i++) {
@@ -219,4 +233,40 @@ void Test_21_CFEBComparatorLogic::finishCSC(std::string cscID)
 bool Test_21_CFEBComparatorLogic::checkResults(std::string cscID)
 {
   return true;
+}
+
+void Test_21_CFEBComparatorLogic::setTestParams()
+{
+
+  LOG4CPLUS_INFO (logger, "Setting additional test parameters.");
+  std::map<std::string, std::string>::iterator itr;
+  
+  itr = test_params.find("events_per_hstrip");
+  if (itr != test_params.end() )
+  {
+    events_per_hstrip = atoi((itr->second).c_str());
+    LOG4CPLUS_INFO (logger, "parameter: events_per_hstrip: " << events_per_hstrip);
+  }
+  itr = test_params.find("hstrips_per_run");
+  if (itr != test_params.end() )
+  {
+    hstrips_per_run = atoi((itr->second).c_str());
+    LOG4CPLUS_INFO (logger, "parameter: hstrips_per_run: " << hstrips_per_run);
+  }
+  itr = test_params.find("hstrip_step");
+  if (itr != test_params.end() )
+  {
+    hstrip_step = atoi((itr->second).c_str());
+    LOG4CPLUS_INFO (logger, "parameter: hstrip_step: " << hstrip_step);
+  }
+  itr = test_params.find("hstrip_first");
+  if (itr != test_params.end() )
+  {
+    hstrip_first = atoi((itr->second).c_str());
+    LOG4CPLUS_INFO (logger, "parameter: hstrip_first: " << hstrip_first);
+  }
+  	
+  nExpectedEvents = events_per_hstrip * hstrips_per_run;
+  LOG4CPLUS_INFO (logger, "nExpectedEvents: " << nExpectedEvents);
+
 }

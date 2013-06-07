@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Booking xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Config>
+			<events_per_hstrip>250</events_per_hstrip>
+			<hstrips_per_run>32</hstrips_per_run>
+			<hstrip_step>1</hstrip_step>
+			<hstrip_first>1</hstrip_first>
+			
+        </Config>
+		
         <TestResult>
 		<Test>21_CFEBComparatorLogic</Test>
                 <Type>halfstrips_cnv</Type>
