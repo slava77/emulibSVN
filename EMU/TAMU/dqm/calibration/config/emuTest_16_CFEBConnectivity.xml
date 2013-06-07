@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Booking xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-		<Config>
-			<events_per_layer>1000</events_per_layer>
+	<Config>
+		<events_per_layer>1000</events_per_layer>
         </Config>
 		
         <TestResult>
@@ -15,15 +15,22 @@
                 <XMax>112</XMax>
                 <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
-                <YMin>0</YMin>
-                <YMax>150</YMax>
-                <YBins>40</YBins>
+                <YMin>50</YMin>
+                <YMax>350</YMax>
+                <YBins>80</YBins>
                 <YTitle>ADC Difference</YTitle>
-		<Low1Limit>40</Low1Limit>
-		<Low0Limit>40</Low0Limit>
-		<High0Limit>120</High0Limit>
-		<High1Limit>120</High1Limit>
+		<Low1Limit>100</Low1Limit>
+		<Low0Limit>100</Low0Limit>
+		<High0Limit>300</High0Limit>
+		<High1Limit>300</High1Limit>
 
+		<YMin_ME11>0</YMin_ME11>
+                <YMax_ME11>150</YMax_ME11>
+                <YBins_ME11>80</YBins_ME11>
+                <Low1Limit_ME11>40</Low1Limit_ME11>
+                <Low0Limit_ME11>40</Low0Limit_ME11>
+                <High0Limit_ME11>150</High0Limit_ME11>
+                <High1Limit_ME11>150</High1Limit_ME11>
 
         </TestResult>
 
@@ -39,7 +46,7 @@
                 <XTitle>Strip Number</XTitle>
                 <YMin>0</YMin>
                 <YMax>100</YMax>
-                <YBins>30</YBins>
+                <YBins>50</YBins>
                 <YTitle>ADC Difference</YTitle>
 		<Low1Limit>0</Low1Limit>
 		<Low0Limit>10</Low0Limit>

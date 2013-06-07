@@ -45,12 +45,10 @@ int Test_Generic::getNumStrips(std::string cscID)
 }
 */
 
-
 bool Test_Generic::isME11(std::string cscID)
 {
-  return ((cscID.find("ME+1.1") == 0) || (cscID.find("ME-1.1") ==0 ));
+  return ((cscID.find("ME+1.1") == 0) || (cscID.find("ME-1.1") == 0));
 }
-
 
 Test_Generic::Test_Generic(std::string dfile): dataFile(dfile), logger(Logger::getInstance("Generic"))
 {
@@ -997,6 +995,7 @@ void Test_Generic::bookCommonHistos()
       {
         ybins = strtol(params["YBins"].c_str(), &stopstring, 10);
       }
+	  
       if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv") || (cnvtype == "mwires_cnv") )
       {
         /*
@@ -1098,33 +1097,58 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
       std::string ytitle = params["YTitle"];
       double low0limit=0., low1limit=0.;
       double high0limit=0., high1limit=0.;
-      	  
-        if (params["XMin"] != "") xmin = atof(params["XMin"].c_str());
-        if (params["XMax"] != "") xmax = atof(params["XMax"].c_str());
-        if (params["YMin"] != "") ymin = atof(params["YMin"].c_str());
-        if (params["YMax"] != "") ymax = atof(params["YMax"].c_str());
-        if (params["XBins"] != "") xbins = strtol(params["XBins"].c_str(), &stopstring, 10);
-        if (params["YBins"] != "") ybins = strtol(params["YBins"].c_str(), &stopstring, 10);
-        if (params["Low0Limit"] != "") low0limit = atof(params["Low0Limit"].c_str());
-        if (params["Low1Limit"] != "") low1limit = atof(params["Low1Limit"].c_str());
-        if (params["High0Limit"] != "") high0limit = atof(params["High0Limit"].c_str());
-        if (params["High1Limit"] != "") high1limit = atof(params["High1Limit"].c_str());
-		
-      if(!isME11(cscID)) {
-        if (params["XMin42"] != "") xmin = atof(params["XMin42"].c_str());
-        if (params["XMax42"] != "") xmax = atof(params["XMax42"].c_str());
-        if (params["YMin42"] != "") ymin = atof(params["YMin42"].c_str());
-        if (params["YMax42"] != "") ymax = atof(params["YMax42"].c_str());
-        if (params["XBins42"] != "") xbins = strtol(params["XBins42"].c_str(), &stopstring, 10);
-        if (params["YBins42"] != "") ybins = strtol(params["YBins42"].c_str(), &stopstring, 10);
-        if (params["Low0Limit42"] != "") low0limit = atof(params["Low0Limit42"].c_str());
-        if (params["Low1Limit42"] != "") low1limit = atof(params["Low1Limit42"].c_str());
-        if (params["High0Limit42"] != "") high0limit = atof(params["High0Limit42"].c_str());
-        if (params["High1Limit42"] != "") high1limit = atof(params["High1Limit42"].c_str());
-      }  
 	  
+      if (params["XMin"] != "")
+      {
+        xmin = atof(params["XMin"].c_str());
+      }
+      if (params["XMax"] != "")
+      {
+        xmax = atof(params["XMax"].c_str());
+      }
+      if (params["YMin"] != "")
+      {
+        ymin = atof(params["YMin"].c_str());
+      }
+      if (params["YMax"] != "")
+      {
+        ymax = atof(params["YMax"].c_str());
+      }
+      if (params["XBins"] != "")
+      {
+        xbins = strtol(params["XBins"].c_str(), &stopstring, 10);
+      }
+      if (params["YBins"] != "")
+      {
+        ybins = strtol(params["YBins"].c_str(), &stopstring, 10);
+      }
 	  
-
+	  if(isME11(cscID)) {
+	    if (params["XMin_ME11"] != "")
+        {
+          xmin = atof(params["XMin_ME11"].c_str());
+        }
+        if (params["XMax_ME11"] != "")
+        {
+          xmax = atof(params["XMax_ME11"].c_str());
+        }
+        if (params["YMin_ME11"] != "")
+        {
+          ymin = atof(params["YMin_ME11"].c_str());
+        }
+        if (params["YMax_ME11"] != "")
+        {
+          ymax = atof(params["YMax_ME11"].c_str());
+        }
+        if (params["XBins_ME11"] != "")
+        {
+          xbins = strtol(params["XBins_ME11"].c_str(), &stopstring, 10);
+        }
+        if (params["YBins_ME11"] != "")
+        {
+          ybins = strtol(params["YBins_ME11"].c_str(), &stopstring, 10);
+        }
+	  }
 	  
       if (params["XScale"] != "")
       {
@@ -1196,6 +1220,43 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
         }
 
 
+
+        if (params["Low0Limit"] != "")
+        {
+          low0limit = atof(params["Low0Limit"].c_str());
+        }
+        if (params["Low1Limit"] != "")
+        {
+          low1limit = atof(params["Low1Limit"].c_str());
+        }
+        if (params["High0Limit"] != "")
+        {
+          high0limit = atof(params["High0Limit"].c_str());
+        }
+        if (params["High1Limit"] != "")
+        {
+          high1limit = atof(params["High1Limit"].c_str());
+        }
+		
+		
+	    if(isME11(cscID)) {
+          if (params["Low0Limit_ME11"] != "")
+          {
+            low0limit = atof(params["Low0Limit_ME11"].c_str());
+          }
+          if (params["Low1Limit_ME11"] != "")
+          {
+            low1limit = atof(params["Low1Limit_ME11"].c_str());
+          }
+          if (params["High0Limit_ME11"] != "")
+          {
+            high0limit = atof(params["High0Limit_ME11"].c_str());
+          }
+          if (params["High1Limit_ME11"] != "")
+          {
+            high1limit = atof(params["High1Limit_ME11"].c_str());
+          }
+        }
 
         // TestCanvas_6gr1h* cnv = new TestCanvas_6gr1h((cscID+"_CFEB02_R03").c_str(), (cscID+": CFEB02 R03").c_str(),80, 0.0, 80.0, 60, 0., 6.0);
         TestCanvas_6gr1h* cnv = new TestCanvas_6gr1h(name, title,xbins, xmin, xmax, ybins, ymin, ymax);
@@ -1486,7 +1547,6 @@ void Test_Generic::finish()
               //          text_res << std::fixed << std::setprecision(2) << std::setw(5) << (i+1) << std::setw(6) << (j+1)
               //      << std::setw(9) << data.content[i][j] << std::endl;
               std::string validity="OK";
-				
               if (data.content[i][j] < limits[0])
               {
                 validity="L1";
