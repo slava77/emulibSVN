@@ -10,7 +10,7 @@
 			<events_per_thresh>15</events_per_thresh>
 			<strip_step>1</strip_step>
 			<strip_first>1</strip_first>
-			<dmb_tpamp_first>150</dmb_tpamp_first>
+			<dmb_tpamp_first>32</dmb_tpamp_first>
 			<dmb_tpamp_step>48</dmb_tpamp_step>
 			<scale_turnoff>12</scale_turnoff>
 			<range_turnoff>20</range_turnoff>
@@ -31,10 +31,10 @@
                 <YMax>10</YMax>
                 <YBins>50</YBins>
                 <YTitle>Noise, DAC Counts</YTitle>
-		<Low1Limit>0.0</Low1Limit>
+		<Low1Limit>1.0</Low1Limit>
 		<Low0Limit>1.0</Low0Limit>
 		<High0Limit>6.0</High0Limit>
-		<High1Limit>9.0</High1Limit>
+		<High1Limit>6.0</High1Limit>
         </TestResult>
  	<TestResult>
                 <Test>19_CFEBComparators</Test>
@@ -47,13 +47,13 @@
                 <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
                 <YMin>0</YMin>
-                <YMax>150</YMax>
-                <YBins>100</YBins>
+                <YMax>100</YMax>
+                <YBins>50</YBins>
                 <YTitle>Threshold, DAC Counts</YTitle>
-                <Low1Limit>30</Low1Limit>
-                <Low0Limit>60</Low0Limit>
-                <High0Limit>140</High0Limit>
-                <High1Limit>150</High1Limit>
+                <Low1Limit>10</Low1Limit>
+                <Low0Limit>10</Low0Limit>
+                <High0Limit>60</High0Limit>
+                <High1Limit>60</High1Limit>
         </TestResult>
 
 	<TestResult>
@@ -71,8 +71,8 @@
                 <YBins>50</YBins>
                 <YTitle>Offset, DAC Counts</YTitle>
                 <Low1Limit>-30.0</Low1Limit>
-                <Low0Limit>-20.0</Low0Limit>
-                <High0Limit>20.0</High0Limit>
+                <Low0Limit>-30.0</Low0Limit>
+                <High0Limit>30.0</High0Limit>
                 <High1Limit>30.0</High1Limit>
         </TestResult>
 
@@ -91,10 +91,10 @@
                 <YMax>10</YMax>
                 <YBins>50</YBins>
                 <YTitle>Noise, DAC Counts</YTitle>
-				<Low1Limit>0.0</Low1Limit>
-				<Low0Limit>1.0</Low0Limit>
-				<High0Limit>6.0</High0Limit>
-				<High1Limit>9.0</High1Limit>
+		<Low1Limit>1.0</Low1Limit>
+		<Low0Limit>1.0</Low0Limit>
+		<High0Limit>6.0</High0Limit>
+		<High1Limit>6.0</High1Limit>
         </TestResult>
 	
         <TestResult>
@@ -107,14 +107,14 @@
                 <XMax>112</XMax>
                 <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
-                <YMin>100</YMin>
-                <YMax>220</YMax>
+                <YMin>0</YMin>
+                <YMax>200</YMax>
                 <YBins>100</YBins>
                 <YTitle>Threshold, DAC Counts</YTitle>
-                <Low1Limit>120</Low1Limit>
-                <Low0Limit>140</Low0Limit>
-                <High0Limit>200</High0Limit>
-                <High1Limit>210</High1Limit>
+                <Low1Limit>40</Low1Limit>
+                <Low0Limit>40</Low0Limit>
+                <High0Limit>150</High0Limit>
+                <High1Limit>150</High1Limit>
         </TestResult>
 
         <TestResult>
@@ -132,8 +132,8 @@
                 <YBins>50</YBins>
                 <YTitle>Offset, DAC Counts</YTitle>
                 <Low1Limit>-30.0</Low1Limit>
-                <Low0Limit>-20.0</Low0Limit>
-                <High0Limit>20.0</High0Limit>
+                <Low0Limit>-30.0</Low0Limit>
+                <High0Limit>30.0</High0Limit>
                 <High1Limit>30.0</High1Limit>
         </TestResult>
 
@@ -151,10 +151,10 @@
                 <YMax>5</YMax>
                 <YBins>30</YBins>
                 <YTitle>Slope, DACthr/fC</YTitle>
-                <Low1Limit>0.5</Low1Limit>
+                <Low1Limit>1.5</Low1Limit>
                 <Low0Limit>1.5</Low0Limit>
                 <High0Limit>3.5</High0Limit>
-                <High1Limit>4.0</High1Limit>
+                <High1Limit>3.5</High1Limit>
         </TestResult>
 
 	<!--<TestResult>
@@ -226,14 +226,14 @@
                 <XMax>112</XMax>
                 <XBins>112</XBins>
                 <XTitle>Strip Number</XTitle>
-                <YMin>150</YMin>
-                <YMax>300</YMax>
+                <YMin>50</YMin>
+                <YMax>250</YMax>
                 <YBins>100</YBins>
                 <YTitle>Threshold, DAC Counts</YTitle>
-                <Low1Limit>200</Low1Limit>
-                <Low0Limit>220</Low0Limit>
-                <High0Limit>260</High0Limit>
-                <High1Limit>280</High1Limit>
+                <Low1Limit>75</Low1Limit>
+                <Low0Limit>75</Low0Limit>
+                <High0Limit>200</High0Limit>
+                <High1Limit>200</High1Limit>
         </TestResult>
 		
 	<TestResult>

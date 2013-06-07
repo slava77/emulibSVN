@@ -203,7 +203,7 @@ void Test_19_CFEBComparators::analyze(const char * data, int32_t dataSize, uint3
 	float prevDAC = DDUstats[dduID].dac;
 	//unused	int prevStrip = DDUstats[dduID].strip;
 	
-	//unused	int strip = (nevt/(dmb_tpamps_per_strip * threshs_per_tpamp * events_per_thresh)) * strip_step + strip_first;
+	int strip = (nevt/(dmb_tpamps_per_strip * threshs_per_tpamp * events_per_thresh)) * strip_step + strip_first;
 
 	float dac = ( (nevt % (dmb_tpamps_per_strip * threshs_per_tpamp * events_per_thresh) ) / threshs_per_tpamp / events_per_thresh) * dmb_tpamp_step + dmb_tpamp_first;
 
@@ -219,6 +219,8 @@ void Test_19_CFEBComparators::analyze(const char * data, int32_t dataSize, uint3
 	DDUstats[dduID].dac = dac;
 	DDUstats[dduID].amp = amp;
 	DDUstats[dduID].thresh = threshold;
+	DDUstats[dduID].strip = strip;
+	//cout << nevt << "- dac " << dac << " amp " << amp << " threshld " << threshold << endl;
 	
   if (dac != prevDAC)
   {
@@ -299,6 +301,7 @@ void Test_19_CFEBComparators::analyzeCSC(const CSCEventData& data)
   
   int curr_thresh =  DDUstats[dduID].thresh;
   int curr_amp = DDUstats[dduID].amp; // pulse number (0, 1, 2)
+  int curr_strip = DDUstats[dduID].strip;
   
   tstep.evt_cnt++;
   
@@ -337,7 +340,15 @@ void Test_19_CFEBComparators::analyzeCSC(const CSCEventData& data)
 		  int first_thresh = (int)(dac * scale_turnoff / 16 - range_turnoff);
 				
 		  int ithresh = (curr_thresh - first_thresh)/thresh_step;
-          thdata.content[curr_amp][nLayer-1][strip-1][ithresh]++;
+          
+		  /*if(nCSCEvents[cscID]%2000 == 0) {
+			cout << nCSCEvents[cscID] << "- strip " << strip - 1 << " - currstrip-1 " << curr_strip-1 << " - curramp " << curr_amp << " dac " << dac << " first_thresh "
+			     << first_thresh << " curr_thresh " << curr_thresh << " ithresh "
+				 << ithresh << endl;
+		  }*/
+		  
+			if((strip-curr_strip) % 16 == 0)
+			  thdata.content[curr_amp][nLayer-1][strip-1][ithresh]++;
 
         }
 		

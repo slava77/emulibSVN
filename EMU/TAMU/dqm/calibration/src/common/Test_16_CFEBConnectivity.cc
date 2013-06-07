@@ -1,5 +1,4 @@
 #include "emu/dqm/calibration/Test_16_CFEBConnectivity.h"
-#define EVTS_PER_LAYERPAIR 1000
 
 using namespace XERCES_CPP_NAMESPACE;
 
@@ -10,12 +9,15 @@ Test_16_CFEBConnectivity::Test_16_CFEBConnectivity(std::string dfile):
   Test_Generic(dfile)
 {
   testID = "16_CFEBConnectivity";
-  nExpectedEvents = 3000;
   //  binCheckMask=0x16CFF3F6;
   //  binCheckMask=0x1FEBF3F6;
   binCheckMask=0x16EBF7F6; // same value used in Lisa's test16
   //  binCheckMask=0xF7CB3BF6;
   logger = Logger::getInstance(testID);
+  
+  events_per_layer = 1000;
+  nExpectedEvents = 3*events_per_layer;
+  //events_per_layer is actually for pair of layers
   
   min_adc_hist = new TH1F("min adc","min_adc_hist",16,0.0,16.0);
   max_adc_hist = new TH1F("max adc","max_adc_hist",16,0.0,16.0);
@@ -186,7 +188,7 @@ void Test_16_CFEBConnectivity::analyzeCSC(const CSCEventData& data)
   }
   
   
-  int layerpair = (nCSCEvents[cscID]) / EVTS_PER_LAYERPAIR;
+  int layerpair = (nCSCEvents[cscID]) / events_per_layer;
   
   nCSCEvents[cscID]++;
 
@@ -391,4 +393,19 @@ void Test_16_CFEBConnectivity::finishCSC(std::string cscID)
 bool Test_16_CFEBConnectivity::checkResults(std::string cscID)
 {
   return true;
+}
+
+void Test_16_CFEBConnectivity::setTestParams()
+{
+  LOG4CPLUS_INFO (logger, "Setting additional test parameters.");
+  std::map<std::string, std::string>::iterator itr;
+  itr = test_params.find("events_per_layer");
+  if (itr != test_params.end() )
+  {
+    events_per_layer = atoi((itr->second).c_str());
+    LOG4CPLUS_INFO (logger, "parameter: events_per_layer: " << events_per_layer);
+	nExpectedEvents = 3*events_per_layer; //events_per_layer is actually for pair of layers
+  }
+	
+
 }

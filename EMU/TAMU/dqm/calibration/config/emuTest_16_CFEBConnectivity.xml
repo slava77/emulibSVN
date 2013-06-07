@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Booking xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<Config>
+			<events_per_layer>1000</events_per_layer>
+        </Config>
+		
         <TestResult>
 		<Test>16_CFEBConnectivity</Test>
                 <Type>strips_cnv</Type>
@@ -19,13 +24,6 @@
 		<High0Limit>120</High0Limit>
 		<High1Limit>120</High1Limit>
 
-                <YMin42>0</YMin42>
-                <YMax42>350</YMax42>
-                <YBins42>75</YBins42>
-                <Low1Limit42>100</Low1Limit42>
-                <Low0Limit42>100</Low0Limit42>
-                <High0Limit42>300</High0Limit42>
-                <High1Limit42>300</High1Limit42>
 
         </TestResult>
 
