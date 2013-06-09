@@ -43,9 +43,9 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
 
 
   // Channels mask
-  if (tmasks.find(cscID) != tmasks.end())
+  if (amasks.find(cscID) != amasks.end())
   {
-    cscdata["_MASK"]=tmasks[cscID];
+    cscdata["_MASK"]=amasks[cscID];
   }
   else
   {

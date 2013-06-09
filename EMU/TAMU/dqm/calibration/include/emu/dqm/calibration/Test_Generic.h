@@ -289,10 +289,10 @@ public:
     loadTestCfg();
     setTestParams();
   }
-  void setMasksFile(std::string mfile)
+  void setMasksFile(std::string mfile, std::string testID="")
   {
     masksFile = mfile;
-    loadMasks();
+    loadMasks(testID);
   }
   void setSQLiteDBName(std::string filename)
   {
@@ -324,7 +324,7 @@ protected:
 
   virtual void setTestParams() {};
   int loadTestCfg();
-  int loadMasks();
+  int loadMasks(std::string testID="");
   // virtual void bookTestCanvases(std::string cscID);
   virtual void analyzeCSC(const CSCEventData& data) = 0;
   virtual void finishCSC(std::string cscID) = 0;
@@ -341,7 +341,8 @@ protected:
 
   cscTestCanvases tcnvs;
   testParamsCfg xmlCfg;
-  TestData tmasks;
+  TestData tmasks;	// cathode masks
+  TestData amasks; 	// anode masks
 
 
   uint32_t nTotalEvents;
