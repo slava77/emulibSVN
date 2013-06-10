@@ -1028,7 +1028,7 @@ void Test_Generic::bookCommonHistos()
         ybins = strtol(params["YBins"].c_str(), &stopstring, 10);
       }
 	  
-      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv") || (cnvtype == "mwires_cnv") )
+      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv") || (cnvtype == "mwires_cnv") || (cnvtype == "gasgain_cnv"))
       {
         /*
             // = Set actual number of strips depending on Chamber type
@@ -1228,7 +1228,7 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
         // params["SetNdivisionsY"]=Form("%d",(int)ybins);
       }
 
-      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv") || (cnvtype == "mwires_cnv"))
+      if ((cnvtype == "strips_cnv") || (cnvtype == "wires_cnv") || (cnvtype == "cfeb_cnv") || (cnvtype == "halfstrips_cnv") || (cnvtype == "mwires_cnv") || (cnvtype == "gasgain_cnv"))
       {
         if (cnvtype == "strips_cnv") {
           // = Set actual number of strips depending on Chamber type
@@ -1249,6 +1249,12 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
           // = Set actual number of wiregroups depending on Chamber type
           xbins = getNumStrips(cscID)/16;
           xmax = getNumStrips(cscID)/16;
+        }
+        if(cnvtype == "gasgain_cnv") {
+          int ncfebs=getNumStrips(cscID)/16;
+          int nsegments=5;
+          xbins=ncfebs*nsegments;
+          xmax=ncfebs*nsegments;
         }
 
 
@@ -1571,6 +1577,7 @@ void Test_Generic::finish()
           else if (cnvtype == "mwires_cnv") text_res <<  "Layer  Wire    Value Status Masked" << std::endl;
           else if (cnvtype == "cfeb_cnv") text_res <<  "Layer  CFEB    Value Status Masked" << std::endl;
           else if (cnvtype == "afeb_cnv") text_res <<  "AFEB    Value Status Masked" << std::endl;
+          else if (cnvtype == "gasgain_cnv") text_res <<  "GasGain    Value Status Masked" << std::endl;
           else text_res <<  "Layer  Chan    Value Status Masked" << std::endl;
           for (int i=0; i<data.Nlayers; i++)
           {
