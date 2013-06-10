@@ -78,12 +78,6 @@ void Test_21_CFEBComparatorLogic::initCSC(std::string cscID)
 	    } // only ME11-type need boundary mask (between A,B sides)
 	  } // mask edge half-strips since not possible to be pulsed
     }
-	
-	for(int i = 0; i < nLayers; i++) {
-	  for(int j = 0; j < nBins; j++) {
-		tdata[cscID]["_MASK"].content[i][j] = (j == 0 || j==(nBins-1)) ? 2 : 0;
-	  } // use mask to only pass layer/plane 4 through
-	}
       
   //initialize local arrays here as well
   TestData2D& ldata = halfStrips[cscID];
