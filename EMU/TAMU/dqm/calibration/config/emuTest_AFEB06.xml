@@ -39,10 +39,15 @@
                 <YMax>80</YMax>
                 <YBins>80</YBins>
                 <YTitle>Threshold, DAC Counts</YTitle>
-                <Low1Limit>0</Low1Limit>
-                <Low0Limit>2</Low0Limit>
-                <High0Limit>25</High0Limit>
-                <High1Limit>30</High1Limit>
+                <Low1Limit>4</Low1Limit>
+                <Low0Limit>4</Low0Limit>
+                <High0Limit>50</High0Limit>
+                <High1Limit>50</High1Limit>
+                
+                <Low1Limit_ME11>0</Low1Limit_ME11>
+                <Low0Limit_ME11>2</Low0Limit_ME11>
+                <High0Limit_ME11>25</High0Limit_ME11>
+                <High1Limit_ME11>30</High1Limit_ME11>
         </TestResult>
 
 	<!--TestResult>
@@ -120,8 +125,11 @@
                 <YTitle>Threshold, DAC Counts</YTitle>
                 <Low1Limit>10</Low1Limit>
                 <Low0Limit>10</Low0Limit>
-                <High0Limit>60</High0Limit>
-                <High1Limit>60</High1Limit>
+                <High0Limit>80</High0Limit>
+                <High1Limit>80</High1Limit>
+                
+                <High0Limit_ME11>60</High0Limit_ME11>
+                <High1Limit_ME11>60</High1Limit_ME11>
         </TestResult>
 
         <TestResult>
@@ -155,13 +163,16 @@
                 <XBins>112</XBins>
                 <XTitle>Wire Group Number</XTitle>
                 <YMin>0.5</YMin>
-                <YMax>2</YMax>
+                <YMax>2.2</YMax>
                 <YBins>30</YBins>
                 <YTitle>Slope, DACthr/fC</YTitle>
                 <Low1Limit>0.9</Low1Limit>
                 <Low0Limit>0.9</Low0Limit>
-                <High0Limit>1.6</High0Limit>
-                <High1Limit>1.6</High1Limit>
+                <High0Limit>2.0</High0Limit>
+                <High1Limit>2.0</High1Limit>
+                
+                <High0Limit_ME11>1.6</High0Limit_ME11>
+                <High1Limit_ME11>1.6</High1Limit_ME11>
         </TestResult>
 
 	<TestResult>
@@ -174,14 +185,17 @@
                 <XMax>112</XMax>
                 <XBins>112</XBins>
                 <XTitle>Wire Group Number</XTitle>
-                <YMin>-10</YMin>
+                <YMin>-12</YMin>
                 <YMax>80</YMax>
                 <YBins>180</YBins>
                 <YTitle>Threshold, DAC Counts</YTitle>
-                <Low1Limit>-8</Low1Limit>
+                <Low1Limit>-10</Low1Limit>
                 <Low0Limit>0</Low0Limit>
                 <High0Limit>25</High0Limit>
                 <High1Limit>30</High1Limit>
+                
+                
+                <Low1Limit_ME11>-8</Low1Limit_ME11>
         </TestResult>
 
 	<TestResult>

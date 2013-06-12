@@ -3,6 +3,8 @@
 	<Config>
 		<ExpectedEvents>1</ExpectedEvents>
 		<Description>Pipeline Depth Test</Description>
+		<PD_min>64</PD_min>
+		<PD_max>73</PD_max>
         </Config>
 
 		<TestResult>

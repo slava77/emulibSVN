@@ -222,3 +222,23 @@ void Test_30_PipelineDepth::colNormalize(TH2F* hist){
 	return;
 }
 
+void Test_30_PipelineDepth::setTestParams()
+{
+
+  LOG4CPLUS_INFO (logger, "Setting additional test parameters.");
+  std::map<std::string, std::string>::iterator itr;
+  
+  itr = test_params.find("PD_min");
+  if (itr != test_params.end() )
+  {
+    PD_min = atoi((itr->second).c_str());
+    LOG4CPLUS_INFO (logger, "parameter: PD_min: " << PD_min);
+  }
+  itr = test_params.find("PD_max");
+  if (itr != test_params.end() )
+  {
+    PD_max = atoi((itr->second).c_str());
+    LOG4CPLUS_INFO (logger, "parameter: PD_max: " << PD_max);
+  }
+  current_PD = PD_min;
+}

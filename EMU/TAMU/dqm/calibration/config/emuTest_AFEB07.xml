@@ -18,10 +18,14 @@
                 <YMax>280</YMax>
                 <YBins>140</YBins>
                 <YTitle>Intercept, ns</YTitle>
-		<Low1Limit>150</Low1Limit>
-		<Low0Limit>150</Low0Limit>
-		<High0Limit>250</High0Limit>
-		<High1Limit>250</High1Limit>
+		<Low1Limit>175</Low1Limit>
+		<Low0Limit>175</Low0Limit>
+		<High0Limit>200</High0Limit>
+		<High1Limit>200</High1Limit>
+        
+        
+		<Low1Limit_ME11>150</Low1Limit_ME11>
+		<Low0Limit_ME11>150</Low0Limit_ME11>
         </TestResult>
  	<TestResult>
                 <Test>AFEB07</Test>
@@ -37,10 +41,15 @@
                 <YMax>4</YMax>
                 <YBins>40</YBins>
                 <YTitle>Slope</YTitle>
-                <Low1Limit>1.4</Low1Limit>
+                <Low1Limit>1.5</Low1Limit>
                 <Low0Limit>1.5</Low0Limit>
-                <High0Limit>2.4</High0Limit>
+                <High0Limit>2.5</High0Limit>
                 <High1Limit>2.5</High1Limit>
+                
+                <Low1Limit_ME11>1.4</Low1Limit_ME11>
+                <Low0Limit_ME11>1.5</Low0Limit_ME11>
+                <High0Limit_ME11>2.4</High0Limit_ME11>
+                <High1Limit_ME11>2.5</High1Limit_ME11>
         </TestResult>
 
 	<TestResult>

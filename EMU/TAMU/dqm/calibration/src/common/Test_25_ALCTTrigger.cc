@@ -386,7 +386,7 @@ bool Test_25_ALCTTrigger::loadThresholdParams(std::string dfile)
     threshparams.close();
   
   } else {
-    LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters file: " << fileStr);
+    LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters file. Expected txt file: " << fileStr);
     return false;
   }
   return true;

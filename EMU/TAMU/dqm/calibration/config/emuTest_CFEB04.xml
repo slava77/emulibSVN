@@ -18,10 +18,10 @@
                 <YMax>50</YMax>
                 <YBins>250</YBins>
                 <YTitle>Gain slope A</YTitle>
-		<Low1Limit>2</Low1Limit>
+		<Low1Limit>4</Low1Limit>
 		<Low0Limit>4</Low0Limit>
 		<High0Limit>12</High0Limit>
-		<High1Limit>20</High1Limit>
+		<High1Limit>12</High1Limit>
         </TestResult>
 
 	<!--TestResult>
@@ -61,7 +61,7 @@
                 <Low1Limit>0</Low1Limit>
                 <Low0Limit>0</Low0Limit>
                 <High0Limit>50</High0Limit>
-                <High1Limit>100</High1Limit>
+                <High1Limit>50</High1Limit>
         </TestResult>
 
 	<TestResult>
@@ -98,10 +98,10 @@
                 <YMax>6</YMax>
                 <YBins>300</YBins>
                 <YTitle>Normalized gains</YTitle>
-                <Low1Limit>0.2</Low1Limit>
+                <Low1Limit>0.7</Low1Limit>
                 <Low0Limit>0.8</Low0Limit>
                 <High0Limit>1.2</High0Limit>
-                <High1Limit>5</High1Limit>
+                <High1Limit>1.3</High1Limit>
         </TestResult>
 
         <TestResult>

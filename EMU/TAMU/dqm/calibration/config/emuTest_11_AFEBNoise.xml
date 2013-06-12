@@ -22,8 +22,8 @@
                 <YTitle>Hz</YTitle>
 		<Low1Limit>0</Low1Limit>
 		<Low0Limit>0</Low0Limit>
-		<High0Limit>100</High0Limit>
-		<High1Limit>200</High1Limit>
+		<High0Limit>30</High0Limit>
+		<High1Limit>30</High1Limit>
         </TestResult> 
 		
 		<TestResult>
