@@ -1239,6 +1239,12 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
           // = Set actual number of strips depending on Chamber type
           xbins = getNumStrips(cscID)*2;
           xmax = getNumStrips(cscID)*2;
+	  if (isME11(cscID) && params["n_ME11_TMB_DCFEBs"] != ""){
+	    int nDCFEBs =  atof(params["n_ME11_TMB_DCFEBs"].c_str());
+	    LOG4CPLUS_INFO(logger, "Detected n_ME11_TMB_DCFEBs and it's ME11, use the value "<< nDCFEBs);
+	    if (nDCFEBs >7 ) nDCFEBs = 7;
+	    if (nDCFEBs > 0 ) { xbins = nDCFEBs*16*2; xmax = xbins; }
+	  }
         }
         if (cnvtype == "wires_cnv" || (cnvtype == "mwires_cnv")) {
           // = Set actual number of wiregroups depending on Chamber type
@@ -1544,7 +1550,7 @@ void Test_Generic::finish()
           cnv->AddTextAnalysis(testTime +", version " + ANALYSIS_VER);
           if (fEnoughData)
           {
-			res=cnv->Fill(data,mask);
+	    res=cnv->Fill(data,mask);
             if (res>sum_res) sum_res=res;
             // fres << "\t['" << itr->first << "','" << res << "']," << std::endl;
             csc_fres << "\t['" << itr->first << "','" << res << "']," << std::endl;
