@@ -77,6 +77,7 @@ class TestCanvas_6gr1h: public TCanvas
   int theColorWhite;       ///< White
   int theColorGray;        ///< Gray
   int theColorGreenLight;  ///< Light green
+  int theColorGreen;   ///< Dark green
   int theColorGreenDark;   ///< Dark green
   int theColorRedLight;    ///< Light red
   int theColorRedDark;     ///< Dark red

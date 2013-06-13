@@ -20,6 +20,7 @@ TestCanvas_6gr1h::TestCanvas_6gr1h (std::string name, std::string title, Int_t N
   theColorWhite         = TColor::GetColor("#ffffff"); ///< White
   theColorGray          = TColor::GetColor("#aaaaaa"); ///< Gray
   theColorGreenLight    = TColor::GetColor("#009900"); ///< Light green
+  theColorGreen         = TColor::GetColor("#007a00"); ///< Light green
   theColorGreenDark     = TColor::GetColor("#005500"); ///< Dark green
   theColorRedLight      = TColor::GetColor("#ff0000"); ///< Light red
   theColorRedDark       = TColor::GetColor("#cc0000"); ///< Dark red
@@ -555,7 +556,7 @@ int TestCanvas_6gr1h::Fill (TestData2D& data, TestData2D& mask)
   }
   if (!fIsRedSolid && !fIsYellowSolid && fIsEmpty)
   {
-    theFillColor = theColorBlueLight;
+    theFillColor = theColorGreen;//all unmasked are good, use a different shade of green
     fQualityTest = 3;
   }
   if (fIsRedSolid)
