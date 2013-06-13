@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Booking xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-		<Config>
-			<events_per_hstrip>250</events_per_hstrip>
-			<hstrips_per_run>32</hstrips_per_run>
-			<hstrip_step>1</hstrip_step>
-			<hstrip_first>1</hstrip_first>
-			
+	<Config>
+		<events_per_hstrip>250</events_per_hstrip>
+		<hstrips_per_run>32</hstrips_per_run>
+		<hstrip_step>1</hstrip_step>
+		<hstrip_first>1</hstrip_first>
+                <!--<n_ME11_TMB_DCFEBs>7</n_ME11_TMB_DCFEBs>-->
         </Config>
 		
         <TestResult>
@@ -16,8 +16,8 @@
                 <Prefix>CSC</Prefix>
                 <Name>R01</Name>
                 <XMin>0</XMin>
-                <XMax>160</XMax>
-                <XBins>160</XBins>
+                <XMax>224</XMax>
+                <XBins>224</XBins>
                 <XTitle>Half-strip Number</XTitle>
                 <YMin>0</YMin>
                 <YMax>1.5</YMax>
@@ -27,6 +27,7 @@
 		<Low0Limit>0.95</Low0Limit>
 		<High0Limit>1.05</High0Limit>
 		<High1Limit>1.15</High1Limit>
+                <!--<n_ME11_TMB_DCFEBs>7</n_ME11_TMB_DCFEBs>-->
         </TestResult>
 
 	<TestResult>

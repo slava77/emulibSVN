@@ -16,6 +16,8 @@ Test_21_CFEBComparatorLogic::Test_21_CFEBComparatorLogic(std::string dfile):
   hstrip_step = 1;
   hstrip_first =1;
 
+  n_ME11_TMB_DCFEBs = -1;//don't use by default
+
   nExpectedEvents = events_per_hstrip*hstrips_per_run;
 
   //do we need this?  binCheckMask=0x16EBF7F6; // same value used in Lisa's test16
@@ -40,9 +42,17 @@ void Test_21_CFEBComparatorLogic::initCSC(std::string cscID)
   
   //isME11() in emu::dqm::utils uses cscID.find("ME+1/1")
   // instead of cscID.find("ME+1.1") so it doesn't work
-  bool isME11 = ((cscID.find("ME+1.1") == 0) || (cscID.find("ME-1.1") == 0));
+  bool isME11 = (this->isME11(cscID) || emu::dqm::utils::isME11(cscID));
 
-  int nBins = getNumStrips(cscID)*2;
+  int n_TMB_DCFEBs = getNumCFEBs(cscID); 
+  if (isME11 && n_ME11_TMB_DCFEBs > 0 )
+    {
+      n_TMB_DCFEBs = n_ME11_TMB_DCFEBs;
+    }
+  //this is a TMB data based test
+  int n_TMB_strips = n_TMB_DCFEBs*16;
+
+  int nBins = n_TMB_strips*2;
 
   tdata[cscID]["R01"].Nlayers = nLayers;
   tdata[cscID]["R01"].Nbins = nBins;
@@ -59,7 +69,7 @@ void Test_21_CFEBComparatorLogic::initCSC(std::string cscID)
 	  int halfstripsPerBoard = 16*2;
 	  int ME11AB = 2; //0 for a, 1 for b, 2 for 4-1 mode or 4-3 mode
 	  //hardcoded right now, presumably will be taken from xml later?
-	  int nBoards = getNumStrips(cscID)/16;
+	  int nBoards = n_TMB_strips/16;
 
 	  if(!isME11) ME11AB = -1;
 
@@ -132,7 +142,21 @@ void Test_21_CFEBComparatorLogic::analyzeCSC(const CSCEventData& data)
   nCSCEvents[cscID]++;
   
 
-  int NCFEBs = getNumStrips(cscID)/16;
+  int NCFEBs = getNumCFEBs(cscID);
+  if ((this->isME11(cscID) || emu::dqm::utils::isME11(cscID)) && n_ME11_TMB_DCFEBs > 0 )
+    {
+      NCFEBs = n_ME11_TMB_DCFEBs;
+    } 
+  const CSCTMBHeader * tmbHeader = data.tmbHeader();
+  if (tmbHeader && nCSCEvents[cscID] < 2){
+    int nCFEBs_TMBHeader = tmbHeader->NCFEBs();
+    if (nCFEBs_TMBHeader < NCFEBs)
+      {
+	LOG4CPLUS_WARN(logger, "Trying "<< NCFEBs<<" NCFEBs, while TMB has only "<< tmbHeader->NCFEBs()<<" use n from TMB");
+	NCFEBs = nCFEBs_TMBHeader;
+      }
+  }
+
   TestData2D& chamber_halfStrips = halfStrips[cscID];
   TestData2D& chamber_halfStripsMultiple = halfStripsMultiple[cscID];
   TestData2D& chamber_halfStripsFake = halfStripsFake[cscID];
@@ -259,7 +283,19 @@ void Test_21_CFEBComparatorLogic::setTestParams()
     hstrip_first = atoi((itr->second).c_str());
     LOG4CPLUS_INFO (logger, "parameter: hstrip_first: " << hstrip_first);
   }
-  	
+  
+  itr = test_params.find("n_ME11_TMB_DCFEBs");
+  if (itr != test_params.end() )
+    {  
+      n_ME11_TMB_DCFEBs = atoi((itr->second).c_str());
+      LOG4CPLUS_INFO (logger, "parameter: n_ME11_TMB_DCFEBs: " << n_ME11_TMB_DCFEBs);
+      if (n_ME11_TMB_DCFEBs > 7)
+	{
+	  LOG4CPLUS_ERROR(logger, "parameter: n_ME11_TMB_DCFEBs should be less than 7, default to max 7");
+	  n_ME11_TMB_DCFEBs = 7;
+	}
+    }
+
   nExpectedEvents = events_per_hstrip * hstrips_per_run;
   LOG4CPLUS_INFO (logger, "nExpectedEvents: " << nExpectedEvents);
 

@@ -43,7 +43,7 @@ private:
   int hstrips_per_run;
   int hstrip_step;
   int hstrip_first;
- 
+  int n_ME11_TMB_DCFEBs;
 };
 
 #endif
