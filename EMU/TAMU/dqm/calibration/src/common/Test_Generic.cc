@@ -1303,7 +1303,7 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
         }
 
         // TestCanvas_6gr1h* cnv = new TestCanvas_6gr1h((cscID+"_CFEB02_R03").c_str(), (cscID+": CFEB02 R03").c_str(),80, 0.0, 80.0, 60, 0., 6.0);
-        TestCanvas_6gr1h* cnv = new TestCanvas_6gr1h(name, title,xbins, xmin, xmax, ybins, ymin, ymax);
+        TestCanvas_6gr1h* cnv = new TestCanvas_6gr1h(name, title,xbins, xmin, xmax, ybins, ymin, ymax, cnvtype);
         cnv->SetXTitle(xtitle);
         cnv->SetYTitle(ytitle);
         cnv->AddTextTest(testID);
@@ -1580,7 +1580,7 @@ void Test_Generic::finish()
           if (cnvtype == "strips_cnv") text_res <<  "Layer Strip    Value Status Masked" << std::endl;
           else if (cnvtype == "halfstrips_cnv") text_res <<  "Layer  HalfStrip    Value Status Masked" << std::endl;
           else if (cnvtype == "wires_cnv") text_res <<  "Layer  Wire    Value Status Masked" << std::endl;
-          else if (cnvtype == "mwires_cnv") text_res <<  "Layer  Wire    Value Status Masked" << std::endl;
+          else if (cnvtype == "mwires_cnv") text_res <<  "m/6 Planes  Wire    Value Status Masked" << std::endl;
           else if (cnvtype == "cfeb_cnv") text_res <<  "Layer  CFEB    Value Status Masked" << std::endl;
           else if (cnvtype == "afeb_cnv") text_res <<  "AFEB    Value Status Masked" << std::endl;
           else if (cnvtype == "gasgain_cnv") text_res <<  "GasGain    Value Status Masked" << std::endl;

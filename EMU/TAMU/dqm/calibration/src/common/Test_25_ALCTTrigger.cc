@@ -20,13 +20,6 @@ Test_25_ALCTTrigger::Test_25_ALCTTrigger(std::string dfile): Test_Generic(dfile)
   } else {
     LOG4CPLUS_INFO(logger, "Loaded threshold parameters.");
   }
-  
-  src_status = 0; //0-No rad.source/1-With rad.source
-  if(src_status > 0)
-  {
-    //Radiation source strength (0-Weak(IHEP) / 1-Normal(all other FAST sites))
-    source_type = 1; // source is high-intensity by default
-  }
 }
 
 void Test_25_ALCTTrigger::initCSC(std::string cscID)
@@ -41,6 +34,12 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
   memset(afebdata.content, 0, sizeof (afebdata.content));
   memset(afebdata.cnts, 0, sizeof (afebdata.cnts));
 
+  for(int i = 0; i < TEST_DATA2D_NLAYERS; i++) {
+    for(int j = 0; j < TEST_DATA2D_NBINS; j++) {
+      afebdata.content[i][j] = 0.;
+      afebdata.cnts[i][j] = 0;
+    }
+  }
 
   // Channels mask
   if (amasks.find(cscID) != amasks.end())
@@ -50,16 +49,13 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
   else
   {
     cscdata["_MASK"]=afebdata;
-  }
-		  
-
-  for (int i=0; i<TEST_DATA2D_NLAYERS; i++) {
-    for (int j=0; j<TEST_DATA2D_NBINS; j++) {
-      afebdata.content[i][j]=0.;
-      afebdata.cnts[i][j]=0;
-	}
-  }
-
+  } 
+ 
+  for(int i = 0; i < cscdata["_MASK"].Nlayers; i++) { 
+      for(int j = 0; j < cscdata["_MASK"].Nbins; j++) { 
+        cscdata["_MASK"].content[i][j] = (i == 3) ? 0 : 1; 
+      } // use mask to only pass layer/plane 4 through 
+   } 
 
   cscdata["R01"]=afebdata;
   cscdata["R02"]=afebdata;
@@ -387,6 +383,7 @@ bool Test_25_ALCTTrigger::loadThresholdParams(std::string dfile)
   
   } else {
     LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters file. Expected txt file: " << fileStr);
+    LOG4CPLUS_ERROR(logger, "Check STEP DAQ to see if text file produced, or rename file if it exists.");
     return false;
   }
   return true;

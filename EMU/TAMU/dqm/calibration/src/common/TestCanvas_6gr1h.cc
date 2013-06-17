@@ -1,6 +1,6 @@
 #include "emu/dqm/calibration/TestCanvas_6gr1h.h"
 
-TestCanvas_6gr1h::TestCanvas_6gr1h (std::string name, std::string title, Int_t Nbinsx, Double_t xlow, Double_t xup, Int_t Nbinsy, Double_t ylow, Double_t yup)
+TestCanvas_6gr1h::TestCanvas_6gr1h (std::string name, std::string title, Int_t Nbinsx, Double_t xlow, Double_t xup, Int_t Nbinsy, Double_t ylow, Double_t yup, std::string cnvtype)
 {
 
   theName  = name.c_str();
@@ -172,9 +172,13 @@ TestCanvas_6gr1h::TestCanvas_6gr1h (std::string name, std::string title, Int_t N
   std::string fTitleLeftHisto;
   for (fIndexLeftHisto = 0; fIndexLeftHisto < NLAYERS; fIndexLeftHisto++)
   {
+    
     fTitleLeftHisto = Form("Layer_%d", fIndexLeftHisto + 1);
-    theLeftHisto[fIndexLeftHisto] = new TH2F((name+"_"+fTitleLeftHisto).c_str(), fTitleLeftHisto.c_str(), theNbinsx, theXlow, theXup, theNbinsy, theYlow, theYup);
+    if(cnvtype == "mwires_cnv") {
+        fTitleLeftHisto = Form("%d/6 plane", fIndexLeftHisto + 1);
+    }
 
+    theLeftHisto[fIndexLeftHisto] = new TH2F((name+"_"+fTitleLeftHisto).c_str(), fTitleLeftHisto.c_str(), theNbinsx, theXlow, theXup, theNbinsy, theYlow, theYup);
     theLeftHisto[fIndexLeftHisto]->GetXaxis()->CenterTitle(true);
     theLeftHisto[fIndexLeftHisto]->GetXaxis()->SetTitle("Title X");
     theLeftHisto[fIndexLeftHisto]->GetXaxis()->SetTitleFont(fTextFont);
@@ -431,16 +435,10 @@ int TestCanvas_6gr1h::Fill (TestData2D& data, TestData2D& mask)
 
       // if (fY[fNbin] == -999.) continue;
 		
-      if (mask.content[fNlayer][fNbin] == 0 && cnvType != "mwires_cnv")
+      if (mask.content[fNlayer][fNbin] == 0)
       {
         theRightHisto->Fill(fY[fNbin]);
       }
-	  
-      if (cnvType == "mwires_cnv" && fNlayer == 3)
-      {
-        theRightHisto->Fill(fY[fNbin]);
-      } // only populate histogram for 4th plane (see Test_25_ALCTTrigger.cc)
-	  
 
       if (fY[fNbin] <= theHighLimit && fY[fNbin] >= theLowLimit)
       {
