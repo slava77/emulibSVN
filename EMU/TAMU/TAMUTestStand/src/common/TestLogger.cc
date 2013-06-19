@@ -35,8 +35,9 @@ void TestLogger::openFile(std::string boardName)
 {
   time_t t = time(NULL);
   std::stringstream ss;
+  ss << DEFAULT_LOGGING_DIRECTORY << "/";
   ss << tester << "_Board" << boardName << "_" << t;
-  log.open(ss.str().c_str());
+  log.open(ss.str().c_str(), std::ios_base::out | std::ios_base::app);
   std::cout << "Opening File: " << ss.str() << std::endl;
   log << "<log board=\"" << boardName << "\" time=\"" << t << "\">" << std::endl;
 }
@@ -53,6 +54,8 @@ void TestLogger::startTest(std::string testName)
   {
     log << "<test label=\"" << currentTest << "\">" << std::endl;
   }
+  else
+    log << "NOT LOGGING" << std::endl;
 }
 void TestLogger::endTest(int result)
 {
@@ -62,6 +65,10 @@ void TestLogger::endTest(int result)
     log << "<result value=\"" << result << "\"></result>" << std::endl;
     log << "</test>" << std::endl;
   }
+}
+bool TestLogger::isTesting()
+{
+  return testing;
 }
 void TestLogger::reportError(int error)
 {
@@ -74,6 +81,10 @@ void TestLogger::beginLogging()
 void TestLogger::endLogging()
 {
   logging = false;
+}
+bool TestLogger::isLogging()
+{
+  return logging;
 }
 void TestLogger::setBoard(std::string board)
 {

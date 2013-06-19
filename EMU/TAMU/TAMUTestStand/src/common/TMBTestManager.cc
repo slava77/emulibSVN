@@ -41,7 +41,16 @@ void TMBTestManager::Init(ConfigurablePCrates * sys)
 
   RegisterTestGroup<CCBBackplaneTester>("CCBBackplaneTester");
   RegisterTestGroup<FirmwareTester>("FirmwareTester");
-  RegisterTestGroup<TMBExternalTester>("TMBExternalTester");
+  //RegisterTestGroup<TMBExternalTester>("TMBExternalTester");
+
+  std::vector< TMB * > tmbs = sys_->crate()->tmbs();
+
+  for (size_t i = 0; i < tmbs.size(); i++)
+  {
+    testing_.push_back(false);
+    logging_.push_back(false);
+    boardLabel_.push_back("");
+  }
 }
 
 
@@ -79,7 +88,9 @@ std::ostringstream & TMBTestManager::GetTestOutput(std::string test_group, int t
 
 void TMBTestManager::SetBoardLabel(std::string board, int tmb)
 {
-  boardLabel_ = board;
+  boardLabel_[tmb] = board;
+  testing_[tmb] = true;
+  logging_[tmb] = true;
   std::map< std::string, std::vector<boost::shared_ptr<TestWorkerBase> > >::iterator i = tests_.begin();
   for(; i != tests_.end(); ++i)
   {
@@ -87,9 +98,50 @@ void TMBTestManager::SetBoardLabel(std::string board, int tmb)
   }
 }
 
-std::string TMBTestManager::GetBoardLabel()
+std::string TMBTestManager::GetBoardLabel(int tmb)
 {
-  return boardLabel_;
+  return boardLabel_[tmb];
+}
+
+bool TMBTestManager::IsLogging(int tmb)
+{
+  return logging_[tmb];
+}
+
+bool TMBTestManager::IsTesting(int tmb)
+{
+  return testing_[tmb];
+}
+
+void TMBTestManager::BeginLogging(int tmb)
+{
+  logging_[tmb] = true;
+  std::map< std::string, std::vector<boost::shared_ptr<TestWorkerBase> > >::iterator i = tests_.begin();
+  for(; i != tests_.end(); ++i)
+  {
+    i->second[tmb]->BeginLogging();
+  }
+}
+
+void TMBTestManager::EndLogging(int tmb)
+{
+  logging_[tmb] = false;
+  std::map< std::string, std::vector<boost::shared_ptr<TestWorkerBase> > >::iterator i = tests_.begin();
+  for(; i != tests_.end(); ++i)
+  {
+    i->second[tmb]->EndLogging();
+  }
+}
+
+void TMBTestManager::EndTesting(int tmb)
+{
+  testing_[tmb] = false;
+  logging_[tmb] = false;
+  std::map< std::string, std::vector<boost::shared_ptr<TestWorkerBase> > >::iterator i = tests_.begin();
+  for(; i != tests_.end(); ++i)
+  {
+    i->second[tmb]->EndTesting();
+  }
 }
 
 

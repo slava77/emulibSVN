@@ -36,9 +36,11 @@ public:
   void closeFile();
   void startTest(std::string);
   void endTest(int);
+  bool isTesting();
   void reportError(int);
   void beginLogging();
   void endLogging();
+  bool isLogging();
   void setBoard(std::string);
   void setWorkingDirectory(std::string);
   void setTester(std::string);

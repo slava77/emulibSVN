@@ -50,6 +50,12 @@ const int CCB_VME_TMB_RESERVED0 = 0xBB;
 const int CCB_COM_RR0 = 0x00;
 const int CCB_COM_RR_LOAD_CCB_RX0 = 0xC0;
 const int CCB_COM_RR_LOAD_UNUSED = 0xC1;
+const int CCB_COM_RR_LOAD_DSN_0 = 0xC2;
+const int CCB_COM_RR_LOAD_DSN_1 = 0xC3;
+const int CCB_COM_RR_LOAD_DSN_2 = 0xC4;
+const int CCB_COM_RR_LOAD_DSN_3 = 0xC5;
+const int CCB_COM_RR_LOAD_DSN_4 = 0xC6;
+const int CCB_COM_RR_LOAD_DSN_5 = 0xC7;
 const int CCB_COM_RR_READ = 0xCC;
 const int CCB_COM_RR_LOAD_PULSE_COUNTER = 0xCD;
 const int CCB_COM_RR_LOAD_DATA_BUS = 0xCE;
@@ -198,6 +204,17 @@ const int PULSE_IN_COMMANDS[] =
      CCB_VME_TMB_RESERVED0
     };
 const int LENGTH_PULSE_IN_COMMANDS = sizeof(PULSE_IN_COMMANDS)/sizeof(PULSE_IN_COMMANDS[0]);
+
+const int DSN_COMMANDS[] =
+    {
+      CCB_COM_RR_LOAD_DSN_0,
+      CCB_COM_RR_LOAD_DSN_1,
+      CCB_COM_RR_LOAD_DSN_2,
+      CCB_COM_RR_LOAD_DSN_3,
+      CCB_COM_RR_LOAD_DSN_4,
+      CCB_COM_RR_LOAD_DSN_5
+    };
+const int LENGTH_DSN_COMMANDS = sizeof(DSN_COMMANDS)/sizeof(DSN_COMMANDS[0]);
 
 
 //// Special bits that are set by TMB in RR after issuing the CCB_COM_RR0 command on command bus.

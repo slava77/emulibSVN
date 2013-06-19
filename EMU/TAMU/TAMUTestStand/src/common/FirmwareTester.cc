@@ -214,7 +214,7 @@ int FirmwareTester::TestRPCLoopback()
   return errcode;
 }
 
-int FirmwareTester::CheckStatusConnector(int const * command_array, int const length_command_array, string label, bool report = true)
+int FirmwareTester::CheckStatusConnector(int const * command_array, int const length_command_array, string label, bool report)
 {
   bool ok = true;
   const int load_stat_command = command_array[0];

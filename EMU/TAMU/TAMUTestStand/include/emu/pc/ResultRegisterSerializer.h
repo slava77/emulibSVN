@@ -19,6 +19,9 @@ const uint32_t TMB_RR_COMMAND_WIDTH = TMB_RESULT_REGISTER_COMMAND_WIDTH;
 const uint32_t TMB_RESULT_REGISTER_DATA_WIDTH = 12;
 const uint32_t TMB_RR_DATA_WIDTH = TMB_RESULT_REGISTER_DATA_WIDTH;
 
+/// width of the digital serial number
+const uint32_t DSN_WIDTH = 64;
+
 
 /** \class ResultRegisterSerializer
  *

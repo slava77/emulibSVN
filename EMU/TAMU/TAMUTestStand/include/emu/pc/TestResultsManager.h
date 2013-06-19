@@ -29,6 +29,9 @@
 #include <boost/regex.hpp>
 #include "boost/filesystem/path.hpp"
 #include "boost/filesystem/operations.hpp"
+#include "xercesc/parsers/XercesDOMParser.hpp"
+#include "xercesc/dom/DOM.hpp"
+#include "xercesc/dom/DOMNode.hpp"
 
 namespace emu { namespace pc {
 
@@ -62,12 +65,14 @@ public:
   // Default Constructor
   TestResultsManager()
   {
+    xercesc::XMLPlatformUtils::Initialize();
     initializeKeys();
     currentPath_ = DEFAULT_LOG_PATH;
     resultsTable_.addColumn("BoardLabel");
     resultsTable_.addColumn("TestLabel");
     resultsTable_.addColumn("TestTime");
     resultsTable_.addColumn("TestResult");
+    resultsTable_.addColumn("ErrorCodes");
   };
 
   // Load logs on construction
@@ -144,6 +149,8 @@ private:
    * process a single line from file_
    */
   void processLine();
+
+  void processXML();
 
   /*
    *

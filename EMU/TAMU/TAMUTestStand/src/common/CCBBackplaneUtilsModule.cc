@@ -54,6 +54,7 @@ CCBBackplaneUtilsModule::CCBBackplaneUtilsModule(xdaq::WebApplication *app, Conf
 
   TMBSlot_ = 4;
   TMBStatus_ = std::numeric_limits<unsigned long long int>::max();
+  DSN_ = std::numeric_limits<unsigned long long int>::max();
   
   TMBReservedBit_ = 0;
 
@@ -164,6 +165,23 @@ void CCBBackplaneUtilsModule::BackplaneTestsBlock(xgi::Input * in, xgi::Output *
         << bitset< 20 >(TMBStatus_) << " = " << bitset< 12 >(tmb_counter & 0xFFF) << "." << bitset< 8 >(command_bus) << endl;
   }
   *out << form() << endl << br() << endl;
+
+
+  *out << cgicc::b("DSN RR readback:") << br() << endl;
+
+  *out << form().set("method", "GET").set("action", actionURL) << endl;
+  *out << "Read DSN of Mezz in slot " << endl;
+  sprintf(buf, "%d", TMBSlot_);
+  *out << input().set("type", "text").set("style", "width:2em").set("maxlength", "2").set("value", buf).set("name", "tmb_slot") << endl;
+  *out << input().set("type", "submit").set("name", "command").set("value", "DSN -> RR") << endl;
+  // only write out bit values if they were requested:
+  if (DSN_ < std::numeric_limits<unsigned long long int>::max())
+  {
+    *out << " &nbsp; slot "<< TMBSlot_ <<": 0x" << hex << DSN_ << dec << " = " << bitset< 64 >(DSN_) << endl;
+  }
+  *out << form() << endl << br() << endl;
+
+
 
   *out << cgicc::b("Write 5 DMB_reserved_out bits and read them back through TMB_reserved_in:") << br() << endl;
   *out << form().set("method", "GET").set("action", actionURL) << endl;
@@ -306,6 +324,23 @@ void CCBBackplaneUtilsModule::RunBackplaneCommand(xgi::Input * in, xgi::Output *
 
       ResultRegisterSerializer reader(ccb, TMBSlot_);
       TMBStatus_ = reader.read();
+    }
+    else if (command == "DSN -> RR")
+    {
+      TMBSlot_ = 4;
+      if (cgi.getElement("tmb_slot") != cgi.getElements().end())
+      {
+        TMBSlot_ = cgi["tmb_slot"]->getIntegerValue(2, 20);
+      }
+      unsigned int shift = 0;
+      DSN_ = 0;
+
+      for(int i=0; i<LENGTH_DSN_COMMANDS; ++i)
+      {
+        uint32_t read = ResultRegisterData(LoadAndReadResultRegister(sys_->ccb(),TMBSlot_,DSN_COMMANDS[i]));
+        DSN_ |= read << shift;
+        shift += TMB_RR_DATA_WIDTH;
+      }
     }
     else if (command == "data bus -> RR")
     {
@@ -617,6 +652,11 @@ void CCBBackplaneUtilsModule::CCBSignals(xgi::Input * in, xgi::Output * out )
 
    if(sig > 0 && sig <= 0x3F) sys_->ccb()->signal_csrb2(sig);
    this->CCBLowLevelUtilsPage(in,out);
+}
+
+void CCBBackplaneUtilsModule::ReadDigitalSerialNumber(xgi::Input * in, xgi::Output * out )
+{
+
 }
 
 

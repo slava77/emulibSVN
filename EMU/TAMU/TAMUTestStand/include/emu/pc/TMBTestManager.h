@@ -54,8 +54,15 @@ public:
   void SetBoardLabel(std::string, int tmb);
 
   /// Gets the label of the board being tested
-  std::string GetBoardLabel();
+  std::string GetBoardLabel(int tmb);
 
+  bool IsLogging(int tmb);
+  bool IsTesting(int tmb);
+
+  void BeginLogging(int tmb);
+  void EndLogging(int tmb);
+
+  void EndTesting(int tmb);
 private:
 
   /// forbid copying
@@ -85,7 +92,10 @@ private:
   //std::ostringstream testOutputs_[10];
 
   /// Label of the board being tested
-  std::string boardLabel_;
+  std::vector<std::string> boardLabel_;
+
+  std::vector<bool> logging_;
+  std::vector<bool> testing_;
 };
 
 

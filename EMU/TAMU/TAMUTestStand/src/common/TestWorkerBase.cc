@@ -180,7 +180,7 @@ int TestWorkerBase::RunTest(const std::string &test)
     out() << "------------------------------" << endl;
     MessageOK(out(), "Status of All tests ... ", result);
   }
-  else if (testProcedures_.find(test) == testProcedures_.end()) // make sure that the test label was registerd
+  else if (testProcedures_.find(test) == testProcedures_.end()) // make sure that the test label was registered
   {
     std::stringstream s;
     s << __func__ << ": WARNING! test with label " << test << " was not registered!" << endl;
@@ -205,6 +205,21 @@ int TestWorkerBase::RunTest(const std::string &test)
   
   cout << "Time: " << timer.sec() << "sec for test with label " << test << endl;
   return result;
+}
+
+void TestWorkerBase::BeginLogging()
+{
+  log_.beginLogging();
+}
+
+void TestWorkerBase::EndLogging()
+{
+  log_.endLogging();
+}
+
+void TestWorkerBase::EndTesting()
+{
+  log_.closeFile();
 }
 
 void TestWorkerBase::SetTester(std::string tester)

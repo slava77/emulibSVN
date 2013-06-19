@@ -82,6 +82,12 @@ public:
   /// \return 0 if success, numerical error code > 0 if problem
   int RunTest(const std::string &test);
 
+  void BeginLogging();
+
+  void EndLogging();
+
+  void EndTesting();
+
   void SetTester(std::string);
 
   /// Allows to set the results output destination.
@@ -117,6 +123,16 @@ protected:
 
   /// issue L1Reset through CCB
   virtual void L1Reset();
+
+  /// Compare float values with some tolerance
+  /// and report error ID if the comparison fails
+  bool CompareAndReport(float testval, float compareval, float tolerance, bool print_pass, unsigned int errorID);
+  bool CompareAndReport(float testval, float compareval, float tolerance, unsigned int errorID);
+
+  /// Compare integer values with some tolerance
+  /// and report error ID if the comparison fails
+  bool CompareAndReport(int testval, int compareval, bool equal, bool print_pass, unsigned int errorID);
+  bool CompareAndReport(int testval, int compareval, bool equal, unsigned int errorID);
 
   // Holders for CCB and TMB pointers.
   // This class is not responsible for deleting the pointers ("aggregation")

@@ -71,7 +71,7 @@ private:
   /**
    * Check status of connector test
    */
-  int CheckStatusConnector(int const *, int const, std::string, bool);
+  int CheckStatusConnector(int const *, int const, std::string, bool b = true);
 
   /**
    * Template for connector tests

@@ -36,6 +36,7 @@ public:
   void HardReset(xgi::Input * in, xgi::Output * out );
   void CCBConfig(xgi::Input * in, xgi::Output * out );
   void CCBSignals(xgi::Input * in, xgi::Output * out );
+  void ReadDigitalSerialNumber(xgi::Input * in, xgi::Output * out );
 
   void RunBackplaneCommand(xgi::Input * in, xgi::Output * out );
 
@@ -54,7 +55,7 @@ private:
 
   int TMBSlot_;
   // use a large capacity datatype for reading in serialized TMB status:
-  unsigned long long int TMBStatus_;
+  unsigned long long int TMBStatus_, DSN_;
   
   std::string HardResetTestResult_;
 

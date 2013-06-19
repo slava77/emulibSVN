@@ -63,6 +63,12 @@ public:
   /// Set boardLabel for logging purposes (XGI bound method)
   void SetBoardLabel(xgi::Input * in, xgi::Output * out);
 
+  /// Toggle logging (XGI bound method)
+  void ToggleLogging(xgi::Input * in, xgi::Output * out);
+
+  /// End Testing for a board (XGI bound method)
+  void EndTesting(xgi::Input * in, xgi::Output * out);
+
   /// Initialize CCBBackplaneTester's for all TMBs in the "current" crate. The "current" crate has to be already set externally.
   void Init();
 

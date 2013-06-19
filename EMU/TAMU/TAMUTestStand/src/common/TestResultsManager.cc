@@ -18,16 +18,24 @@ using std::vector;
 void TestResultsManager::processFile(string f_name)
 {
   if(TestResultsManagerCallTrace) cout << __func__ << " " << f_name << endl;
+
+  bool is_xml;
+
   boost::regex regEx0("(.*)(CCBBackplaneTests_Board)(\\w+)(_)(\\d+)(\\.log)");
   boost::regex regEx1("(.*)(CCBBackplaneTests_Board)(\\w+)(_)(\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2})(\\.log)");
+  boost::regex regEx2("(.*)(CCBBackplaneTester_Board)(\\w+)(_)(\\d+)(\\.log)");
+  boost::regex regEx3("(.*)(CCBBackplaneTester_Board)(\\w+)(_)(\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2})(\\.log)");
   boost::smatch matches0;
   boost::smatch matches1;
+  boost::smatch matches2;
+  boost::smatch matches3;
   if(boost::regex_match(f_name, matches0, regEx0))
   {
     boardLabel_ = matches0[3];
     boardLabels_.insert(boardLabel_);
     time_ = timeToString(atoi(matches0[5].str().c_str()));
     file_.open(f_name.c_str());
+    is_xml = false;
   }
   else if(boost::regex_match(f_name, matches1, regEx1))
   {
@@ -35,13 +43,37 @@ void TestResultsManager::processFile(string f_name)
     boardLabels_.insert(boardLabel_);
     time_ = matches1[5];
     file_.open(f_name.c_str());
+    is_xml = false;
+  }
+  else if(boost::regex_match(f_name, matches2, regEx2))
+  {
+    boardLabel_ = matches2[3];
+    boardLabels_.insert(boardLabel_);
+    time_ = timeToString(atoi(matches0[5].str().c_str()));
+    file_.open(f_name.c_str());
+    is_xml = true;
+  }
+  else if(boost::regex_match(f_name, matches3, regEx3))
+  {
+    boardLabel_ = matches3[3];
+    boardLabels_.insert(boardLabel_);
+    time_ = matches3[5];
+    file_.open(f_name.c_str());
+    is_xml = true;
   }
   else
     return;
 
-  while(!file_.eof())
+  if(is_xml)
   {
-    processLine();
+    processXML();
+  }
+  else
+  {
+    while(!file_.eof())
+    {
+      processLine();
+    }
   }
 
   file_.close();
@@ -55,9 +87,12 @@ void TestResultsManager::processDirectory(const std::string dir_name)
   fs::path someDir(dir_name);
   fs::directory_iterator end_iter;
 
+  //Verify path
   if(fs::exists(someDir) && fs::is_directory(someDir))
   {
     currentPath_ = someDir.string();
+
+    //Iterate over files in directory
     for(fs::directory_iterator dir_iter(someDir) ; dir_iter != end_iter ; ++dir_iter)
     {
       fs::path file(*dir_iter);
@@ -81,28 +116,24 @@ void TestResultsManager::initializeKeys()
 
   string label = "LogBegin";
   key.regEx = "(TMB-CCB Backplane Tests ME\\+)(\\d*)(/)(\\d*)(/)(\\d*)( output:)";
-  //key.identifiers = "jdjdjdj";
   key.identifiers = "0101010";
   keyLabels_.insert(label);
   keys_.insert(pair<string, Key>(label, key));
 
   label = "TestBegin";
   key.regEx = "(Test with label\\s*)(\\w*)(\\s*...\\s*start)";
-  //key.identifiers = "jdj";
   key.identifiers = "010";
   keyLabels_.insert(label);
   keys_.insert(pair<string, Key>(label, key));
 
   label = "TestResult";
   key.regEx = "(Test with label\\s*)(\\w*)(\\s*status\\s*...\\s*->\\s*)(PASS|FAIL)(!*)";
-  //key.identifiers = "jdjd";
   key.identifiers = "0101";
   keyLabels_.insert(label);
   keys_.insert(pair<string, Key>(label, key));
 
   label = "CompareValues";
   key.regEx = "(CompareValues:\\s*)(.*)(\\s*->\\s*)(PASS|FAIL)(!*\\s*:\\s*)(\\w*)(\\s*)(==|!=)(\\s*)(\\w*)";
-  //key.identifiers = "jdjdjdjdjd";
   key.identifiers = "0101010101";
   keyLabels_.insert(label);
   keys_.insert(pair<string, Key>(label, key));
@@ -175,6 +206,14 @@ void TestResultsManager::processLine()
   {
     insertTestResult(boardLabel_, testLabel_, time_, data_list[1]);
   }
+}
+
+void TestResultsManager::processXML()
+{
+  xercesc::XercesDOMParser* parser = new xercesc::XercesDOMParser();
+
+  parser->setValidationScheme(xercesc::XercesDOMParser::Val_Auto);
+  parser->setValidationConstraintFatal(false);
 }
 
 void TestResultsManager::sortTable()

@@ -103,14 +103,62 @@ void CCBBackplaneTestModule::CCBBackplaneTestsPage(xgi::Input * in, xgi::Output 
                         thisChamber->GetLabel().c_str(), thisCrate->GetLabel().c_str(), thisTMB->slot() )
   );
 
+
   *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;") << endl;
   *out << cgicc::legend("Board Selection:").set("style", "color:blue") <<endl;
-  *out << form().set("method","GET").set("action", "/" + urn + "/SetBoardLabel" ) << endl;
-  *out << "Board Label: " << tm_.GetBoardLabel() << cgicc::br() << endl;
-  *out << input().set("type", "hidden").set("name", "return").set("value", "CCBBackplaneTestsPage") << endl;
-  *out << input().set("type", "text").set("name", "label").set("size", "20").set("value", "") << endl;
-  *out << input().set("type","submit").set("value", "Set Board Label").set("style", "color:blue") << endl;
-  *out << form() << endl;
+  *out << "<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"font-family: arial;\">" << endl;
+  *out << "<tbody>" << endl;
+  *out << "<tr>" << endl;
+
+  *out << "<td>" << endl;
+  if(tm_.IsTesting(tmb))
+  {
+    *out << form().set("method","GET").set("action", "/" + urn + "/EndTesting" ) << endl;
+    *out << input().set("type", "hidden").set("name", "return").set("value", "CCBBackplaneTestsPage") << endl;
+    *out << "Board Label: " << tm_.GetBoardLabel(tmb) << cgicc::br() << endl;
+    *out << input().set("type","submit").set("value", "Finish Testing").set("style", "color:blue") << endl;
+    *out << form() << endl;
+  }
+  else
+  {
+    *out << form().set("method","GET").set("action", "/" + urn + "/SetBoardLabel" ) << endl;
+    *out << input().set("type", "hidden").set("name", "return").set("value", "CCBBackplaneTestsPage") << endl;
+    *out << cgicc::br() << endl;
+    *out << input().set("type", "text").set("name", "label").set("size", "20").set("value", "") << endl;
+    *out << input().set("type","submit").set("value", "Set Board Label").set("style", "color:blue") << endl;
+    *out << form() << endl;
+  }
+  *out << "</td>" << endl;
+
+  *out << "<td>" << endl;
+
+  if(tm_.IsTesting(tmb))
+  {
+    if(tm_.IsLogging(tmb))
+    {
+      *out << form().set("method","GET").set("action", "/" + urn + "/ToggleLogging" ) << endl;
+      *out << "Logging" << cgicc::br() << endl;
+      *out << input().set("type", "hidden").set("name", "return").set("value", "CCBBackplaneTestsPage") << endl;
+      *out << input().set("type","submit").set("value", "Pause Logging").set("style", "color:blue") << endl;
+      *out << form() << endl;
+    }
+    else
+    {
+      *out << form().set("method","GET").set("action", "/" + urn + "/ToggleLogging" ) << endl;
+      *out << "Not Logging" << cgicc::br() << endl;
+      *out << input().set("type", "hidden").set("name", "return").set("value", "CCBBackplaneTestsPage") << endl;
+      *out << input().set("type","submit").set("value", "Resume Logging").set("style", "color:blue") << endl;
+      *out << form() << endl;
+    }
+  }
+  else
+  {
+    *out << "To start logging set board label." << endl;
+  }
+  *out << "</td>" << endl;
+  *out << "</tr>" << endl;
+  *out << "</tbody>" << endl;
+  *out << "</table>" << endl;
   *out << cgicc::fieldset() << endl;
 
   string tmbStr = toolbox::toString("%d",tmb);
@@ -155,7 +203,7 @@ void CCBBackplaneTestModule::CCBBackplaneTestsPage(xgi::Input * in, xgi::Output 
   TestButton(tmb, "CCB_reserved", "CCBReserved", out);
   TestButton(tmb, "TMB_reserved_out", "TMBReservedOut", out);
   TestButton(tmb, "DMB_reserved_out", "DMBReservedOut", out);
-  TestButton(tmb, "Dummy", "Dummy", out);
+  //TestButton(tmb, "Dummy", "Dummy", out);
 
   *out << tr();
   /////////////////////////////////////////////////////////
@@ -445,7 +493,7 @@ void CCBBackplaneTestModule::FirmwareTestsPage(xgi::Input * in, xgi::Output * ou
   *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;") << endl;
   *out << cgicc::legend("Board Selection:").set("style", "color:blue") <<endl;
   *out << form().set("method","GET").set("action", "/" + urn + "/SetBoardLabel" ) << endl;
-  *out << "Board Label: " << tm_.GetBoardLabel() << cgicc::br() << endl;
+  *out << "Board Label: " << tm_.GetBoardLabel(tmb) << cgicc::br() << endl;
   *out << input().set("type", "hidden").set("name", "return").set("value", "FirmwareTestsPage") << endl;
   *out << input().set("type", "text").set("name", "label").set("size", "20").set("value", "") << endl;
   *out << input().set("type","submit").set("value", "Set Board Label").set("style", "color:blue") << endl;
@@ -780,6 +828,8 @@ void CCBBackplaneTestModule::CCBBackplaneLogTestsOutput(xgi::Input * in, xgi::Ou
   cgicc::Cgicc cgi(in);
   cgicc::form_iterator name = cgi.getElement("tmb");
 
+  int tmb = sys_->tmbN();
+
   if (name != cgi.getElements().end())
   {
     tmbN_ = cgi["tmb"]->getIntegerValue();
@@ -803,7 +853,7 @@ void CCBBackplaneTestModule::CCBBackplaneLogTestsOutput(xgi::Input * in, xgi::Ou
 
   //string tmb_slot = toolbox::toString("%d", sys_->tmbs()[tmbN_]->slot());
   std::stringstream file_name;
-  file_name << "CCBBackplaneTests_Board" << tm_.GetBoardLabel() << "_" << time(NULL) << ".log";
+  file_name << "CCBBackplaneTests_Board" << tm_.GetBoardLabel(tmb) << "_" << time(NULL) << ".log";
   emu::utils::saveAsFileDialog(out, tm_.GetTestOutput("CCBBackplaneTester", tmbN_).str(), file_name.str());
 }
 
@@ -811,6 +861,8 @@ void CCBBackplaneTestModule::FirmwareLogTestsOutput(xgi::Input * in, xgi::Output
 {
   cgicc::Cgicc cgi(in);
   cgicc::form_iterator name = cgi.getElement("tmb");
+
+  int tmb = sys_->tmbN();
 
   if (name != cgi.getElements().end())
   {
@@ -835,7 +887,7 @@ void CCBBackplaneTestModule::FirmwareLogTestsOutput(xgi::Input * in, xgi::Output
 
   //string tmb_slot = toolbox::toString("%d", sys_->tmbs()[tmbN_]->slot());
   std::stringstream file_name;
-  file_name << "FirmwareTests_Board" << tm_.GetBoardLabel() << "_" << time(NULL) << ".log";
+  file_name << "FirmwareTests_Board" << tm_.GetBoardLabel(tmb) << "_" << time(NULL) << ".log";
   emu::utils::saveAsFileDialog(out, tm_.GetTestOutput("FirmwareTester", tmbN_).str(), file_name.str());
 }
 
@@ -863,6 +915,30 @@ void CCBBackplaneTestModule::SetBoardLabel(xgi::Input * in, xgi::Output * out)
     cout << __func__ << ":  returnPage " << returnPage << endl;
 
   }
+
+  this->CCBBackplaneTestsPage(in,out);
+}
+
+void CCBBackplaneTestModule::ToggleLogging(xgi::Input * in, xgi::Output * out)
+{
+  int tmb = sys_->tmbN();
+
+  if(tm_.IsLogging(tmb))
+  {
+    tm_.EndLogging(tmb);
+  }
+  else
+  {
+    tm_.BeginLogging(tmb);
+  }
+
+  this->CCBBackplaneTestsPage(in,out);
+}
+
+void CCBBackplaneTestModule::EndTesting(xgi::Input * in, xgi::Output * out)
+{
+  int tmb = sys_->tmbN();
+  tm_.EndTesting(tmb);
 
   this->CCBBackplaneTestsPage(in,out);
 }

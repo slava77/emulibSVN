@@ -7,7 +7,7 @@
          Dflt_Srv_MAC="00-17-9A-73-89-F0"
          Ethernet_CR="0050"
          Ext_FIFO_CR="0002"
-         MAC_addr="02-00-00-00-00-30"
+         MAC_addr="02-00-00-00-00-1D"
          MCAST_1="FF-FF-FF-FF-FF-FE"
          MCAST_2="FF-FF-FF-FF-FF-FD"
          MCAST_3="FF-FF-FF-FF-FF-FC"
