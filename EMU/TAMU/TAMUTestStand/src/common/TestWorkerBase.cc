@@ -135,7 +135,7 @@ void TestWorkerBase::SetTestStatus(const std::string &test, int status)
   testStatuses_[test] = status;
 }
 
-void TestWorkerBase::ReportError(int error)
+void TestWorkerBase::ReportError(TestError & error)
 {
   log_.reportError(error);
 }

@@ -16,6 +16,8 @@
 #include <sstream>
 #include <string>
 #include <set>
+#include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h> // for sleep()
 #include <boost/bind.hpp>
 
@@ -216,6 +218,7 @@ int FirmwareTester::TestRPCLoopback()
 
 int FirmwareTester::CheckStatusConnector(int const * command_array, int const length_command_array, string label, bool report)
 {
+  TestError er;
   bool ok = true;
   const int load_stat_command = command_array[0];
 
@@ -246,7 +249,20 @@ int FirmwareTester::CheckStatusConnector(int const * command_array, int const le
       if(on)
         out() << "ON";
       else
+      {
+        er.signalID << "FIBER" << stat_index;
+        er.errorID << er.signalID.str() << "_OFF";
+        er.errorDescription << "Fiber" << stat_index << " is not enabled.";
+        ReportError(er);
         out() << "OFF";
+      }
+      if(errorcount)
+      {
+        er.signalID << "FIBER" << stat_index;
+        er.errorID << er.signalID.str() << "_HAS_ERRORS";
+        er.errorDescription << "Fiber" << stat_index << " has " << errorcount << " errors.";
+        ReportError(er);
+      }
       out() << ": Error Count: "<< dec << errorcount << endl;
     }
     //cout << '\t' << label << stat_index << " Error Count: "<< dec << errorcount << endl;
@@ -295,6 +311,7 @@ int FirmwareTester::TestCableConnector()
  */
 int FirmwareTester::TestFiberConnector()
 {
+  TestError er;
   int error = 0;
   int errcode = 0;
   int Niter = 24;
@@ -320,6 +337,9 @@ int FirmwareTester::TestFiberConnector()
   }
   else if(connector_stat & 0x1 == false)
   {
+    er.errorID << "FIBERS_DISABLED";
+    er.errorDescription << "Fiber test is disabled.";
+    ReportError(er);
     out() << "Fiber Test: Disabled" << endl;
     errcode = 1;
     return errcode;
@@ -330,6 +350,7 @@ int FirmwareTester::TestFiberConnector()
     out() << "All Links Active: False" << endl;
     out() << "Fiber Status: " << hex << connector_stat << endl;
     out() << "Fiber Invalid Status: " << hex << invalid_stat << endl;
+    CheckStatusConnector(FIBER_COMMANDS, LENGTH_FIBER_COMMANDS, "Fiber", true);
     errcode = 1;
     return errcode;
   }
@@ -350,10 +371,13 @@ int FirmwareTester::TestFiberConnector()
   }
 
   // Attempt to generate an error on a single fiber
+  bool fiber_has_error[LENGTH_FIBER_COMMANDS];
+  std::fill_n(fiber_has_error, LENGTH_FIBER_COMMANDS, false);
   Niter = 100;
   for(int i=0; i<Niter && !error; ++i)
   {
     bool first_error = false;
+
     ccb_->WriteRegister(CCB_CSRB2_COMMAND_BUS, CCB_COM_FORCE_FIBER_ERROR);
     for(int stat_index=1; stat_index < LENGTH_FIBER_COMMANDS; ++stat_index)
     {
@@ -378,9 +402,13 @@ int FirmwareTester::TestFiberConnector()
       out() << "Successful generation of error on single fiber!" << endl;
       error = true;
     }
+    ccb_->WriteRegister(CCB_CSRB2_COMMAND_BUS, CCB_VME_TMB_SOFT_RESET);
   }
   if(!error)
   {
+    er.errorID << "FIBER_NO_ERRORS";
+    er.errorDescription << "Unable to generate errors on any fiber!";
+    ReportError(er);
     out() << "Unable to generate errors on any fiber!" << endl;
     CheckStatusConnector(FIBER_COMMANDS, LENGTH_FIBER_COMMANDS, "Fiber");
     errcode = 1;
@@ -388,6 +416,16 @@ int FirmwareTester::TestFiberConnector()
   }
   else
   {
+    for(int i=1; i<LENGTH_FIBER_COMMANDS; ++i)
+    {
+      if(!fiber_has_error[i])
+      {
+        er.signalID << "FIBER" << i;
+        er.errorID << er.signalID.str() << "_NO_ERROR_";
+        er.errorDescription << "Unable to generate errors on fiber " << i <<  ".";
+        ReportError(er);
+      }
+    }
     error = false; //Reset error status
   }
 
@@ -411,6 +449,9 @@ int FirmwareTester::TestFiberConnector()
   }
   if(!error)
   {
+    er.errorID << "FIBER_NO_ERRORS";
+    er.errorDescription << "Unable to generate errors on all fibers!";
+    ReportError(er);
     out() << "Unable to generate errors on all fibers!" << endl;
     CheckStatusConnector(FIBER_COMMANDS, LENGTH_FIBER_COMMANDS, "Fiber");
     errcode = 1;

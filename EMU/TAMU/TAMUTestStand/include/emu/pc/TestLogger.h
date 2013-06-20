@@ -25,6 +25,12 @@
 
 namespace emu { namespace pc {
 
+struct TestError {
+  std::stringstream errorID;
+  std::stringstream errorDescription;
+  std::stringstream signalID;
+};
+
 const std::string DEFAULT_LOGGING_DIRECTORY = "log";
 
 class TestLogger
@@ -37,7 +43,7 @@ public:
   void startTest(std::string);
   void endTest(int);
   bool isTesting();
-  void reportError(int);
+  void reportError(TestError &);
   void beginLogging();
   void endLogging();
   bool isLogging();

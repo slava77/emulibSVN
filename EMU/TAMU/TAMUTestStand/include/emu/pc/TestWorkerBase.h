@@ -72,7 +72,7 @@ public:
 
   /// Report an error during a test
   /// Errors reported are written to the log if logging is enabled
-  void ReportError(int error);
+  void ReportError(TestError & error);
 
   /// Setter for the board label within the logger
   void SetBoardLabel(std::string);
