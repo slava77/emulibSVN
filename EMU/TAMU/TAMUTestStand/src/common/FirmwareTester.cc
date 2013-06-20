@@ -463,7 +463,15 @@ int FirmwareTester::TestFiberConnector()
   }
 
   // Attempt to clear error counters
-
+  ccb_->WriteRegister(CCB_CSRB2_COMMAND_BUS, CCB_VME_TMB_SOFT_RESET);
+  error |= CheckStatusConnector(FIBER_COMMANDS, LENGTH_FIBER_COMMANDS, "Fiber", true);
+  if(error)
+  {
+    er.errorID << "FIBER_CANNOT_CLEAR_ERRORS";
+    er.errorDescription << "Unable to clear fiber error counts";
+    ReportError(er);
+    return error;
+  }
 
   return errcode;
 }
