@@ -16,7 +16,7 @@
                 <XTitle>Strip Number</XTitle>
                 <YMin>600</YMin>
                 <YMax>1200</YMax>
-                <YBins>600</YBins>
+                <YBins>100</YBins>
                 <YTitle>Maximum Amplitude</YTitle>
 		<Low1Limit>650</Low1Limit>
 		<Low0Limit>700</Low0Limit>

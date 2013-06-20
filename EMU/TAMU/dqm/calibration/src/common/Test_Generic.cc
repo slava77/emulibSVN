@@ -1123,12 +1123,13 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
       std::string title = cscID+": "+testID+" "+params["Title"];
       double xmin=0., xmax=0.;
       int xbins=0;
-      double ymin=0., ymax=0.;
+      double ymin=0., ymax=0., ymax2=0.;
       int ybins=0;
       std::string xtitle = params["XTitle"];
       std::string ytitle = params["YTitle"];
       double low0limit=0., low1limit=0.;
       double high0limit=0., high1limit=0.;
+      double high0limit2=0., high1limit2=0.;
 	  
       if (params["XMin"] != "")
       {
@@ -1154,6 +1155,10 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
       {
         ybins = strtol(params["YBins"].c_str(), &stopstring, 10);
       }
+      if (params["YMax2"] != "")
+      {
+        ymax2 = atof(params["YMax2"].c_str());
+      } else { ymax2 = 0; }
 	  
 	  if(isME11(cscID)) {
 	    if (params["XMin_ME11"] != "")
@@ -1281,6 +1286,14 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
         {
           high1limit = atof(params["High1Limit"].c_str());
         }
+        if (params["High0Limit2"] != "")
+        {  // for Test 25
+          high0limit2 = atof(params["High0Limit2"].c_str());
+        } else high1limit2 = 0;
+        if (params["High0Limit2"] != "")
+        {  // for Test 25
+          high1limit2 = atof(params["High1Limit2"].c_str());
+        } else high1limit2 = 0;
 		
 		
 	    if(isME11(cscID)) {
@@ -1303,13 +1316,13 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
         }
 
         // TestCanvas_6gr1h* cnv = new TestCanvas_6gr1h((cscID+"_CFEB02_R03").c_str(), (cscID+": CFEB02 R03").c_str(),80, 0.0, 80.0, 60, 0., 6.0);
-        TestCanvas_6gr1h* cnv = new TestCanvas_6gr1h(name, title,xbins, xmin, xmax, ybins, ymin, ymax, cnvtype);
+        TestCanvas_6gr1h* cnv = new TestCanvas_6gr1h(name, title,xbins, xmin, xmax, ybins, ymin, ymax, cnvtype, ymax2);
         cnv->SetXTitle(xtitle);
         cnv->SetYTitle(ytitle);
         cnv->AddTextTest(testID);
         cnv->AddTextResult(params["Title"]);
-        cnv->SetLimits(low1limit,low0limit, high0limit, high1limit);
         cnv->SetCanvasType(cnvtype);
+        cnv->SetLimits(low1limit,low0limit, high0limit, high1limit, high0limit2, high1limit2);
         csccnvs[itr->first]=cnv;
       }
 

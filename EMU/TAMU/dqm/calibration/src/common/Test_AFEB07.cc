@@ -14,7 +14,6 @@ Test_AFEB07::Test_AFEB07(std::string dfile): Test_Generic(dfile)
   //  binCheckMask=0xF7CB3BF6;
   ltc_bug=2;
   logger = Logger::getInstance(testID);
-  std::cout << "in test afeb07";
 }
 
 
@@ -279,9 +278,9 @@ void Test_AFEB07::finishCSC(std::string cscID)
 {
   if (nCSCEvents[cscID] < nExpectedEvents)
   {
-    LOG4CPLUS_ERROR(logger, Form("%s: Not enough events for test analysis (%d events), BUT STILL CONTINUING TO TEST", cscID.c_str(), nCSCEvents[cscID] ));
+    LOG4CPLUS_ERROR(logger, Form("%s: Not enough events for test analysis (%d events)", cscID.c_str(), nCSCEvents[cscID] ));
     // = Set error
-    // return;
+    return;
   }
 
   cscTestData::iterator td_itr =  tdata.find(cscID);
@@ -469,7 +468,7 @@ void Test_AFEB07::finishCSC(std::string cscID)
       if (c_itr != cnvs.end() )
       {
         TestCanvas_6gr1h* cnv = dynamic_cast<TestCanvas_6gr1h*>(c_itr->second);
-        if (cnv != NULL) cnv->SetLimits(intercept_lower_limit-5, intercept_lower_limit, intercept_upper_limit, intercept_upper_limit+5);
+        if (cnv != NULL) cnv->SetLimits(intercept_lower_limit-5, intercept_lower_limit, intercept_upper_limit, intercept_upper_limit+5,0,0);
       }
 
 
