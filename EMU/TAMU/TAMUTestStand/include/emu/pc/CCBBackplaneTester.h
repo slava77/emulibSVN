@@ -120,7 +120,7 @@ private:
    * Test DMB_L1A_Release via loopback board,
    * tested by writing into CCB_reserved3 (CSRB6[1])
    */
-  int TestDMBL1AReleaseLoopback();
+  //int TestDMBL1AReleaseLoopback();
 
   /**
    * Check for errors in LED front panel visual testing through testStatuses_

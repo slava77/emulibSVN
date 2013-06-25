@@ -85,6 +85,7 @@ void FirmwareTester::RegisterTestProcedures()
 
 int FirmwareTester::CheckStatusLoopback(int const * command_array, int const length_command_array, string label)
 {
+  TestError er;
   string test = TestLabelFromProcedureName(__func__);
   bool ok = true;
   const int error_count_command = command_array[0];
@@ -108,6 +109,18 @@ int FirmwareTester::CheckStatusLoopback(int const * command_array, int const len
       out() << label << "Loopback Error Count: " << dec << r.error_count << "\n";*/
 
     //out() << "\tErrors from bits: ";
+    if(r.overflow)
+    {
+      er.errorID << label << "_ERRORS_OVERFLOW";
+      er.errorDescription << label << " errors overflowing.";
+      ReportError(er);
+    }
+    else
+    {
+      er.errorID << label << "_ERRORS";
+      er.errorDescription << label << " has " << r.error_count << " errors.";
+      ReportError(er);
+    }
     // Walk over range of commands
     for(int command_index = 1; command_index < length_command_array; ++command_index)
     {
@@ -128,6 +141,10 @@ int FirmwareTester::CheckStatusLoopback(int const * command_array, int const len
         // Check for individual bit errors
         if((stat>>stat_index) & 0x1)
         {
+          er.signalID << label << TMB_RR_DATA_WIDTH*(command_index-1)+(stat_index);
+          er.errorID << er.signalID.str() << "_ERROR";
+          er.errorDescription << er.signalID.str() << " had an error during the test";
+          ReportError(er);
           ok &= false;
           //out() << (command_index-1)*TMB_RR_DATA_WIDTH + stat_index << ' ';
           cout << '1';
@@ -192,24 +209,24 @@ int FirmwareTester::TestRPCLoopback()
   int tmp_errcode = 0;
 
   L1Reset();
-  tmp_errcode = TemplateTestLoopback(RPCLOOP_COMMANDS, LENGTH_RPCLOOP_COMMANDS, "RPC", test);
+  tmp_errcode = TemplateTestLoopback(RPCLOOP_COMMANDS, LENGTH_RPCLOOP_COMMANDS, "RAT", test);
   errcode |= tmp_errcode;
   out() << "RPCLoopback Test With Fiber OFF -> " << (tmp_errcode ? "FAIL":"PASS") << endl;
 
   L1Reset();
   ccb_->WriteRegister(CCB_CSRB2_COMMAND_BUS, CCB_COM_START_TRIG_FIBER);
-  tmp_errcode = TemplateTestLoopback(RPCLOOP_COMMANDS, LENGTH_RPCLOOP_COMMANDS, "RPC", test);
+  tmp_errcode = TemplateTestLoopback(RPCLOOP_COMMANDS, LENGTH_RPCLOOP_COMMANDS, "RAT", test);
   errcode |= tmp_errcode;
   out() << "RPCLoopback Test With Fiber ON -> " << (tmp_errcode ? "FAIL":"PASS") << endl;
 
   L1Reset();
-  tmp_errcode = TemplateTestLoopback(RPCLOOP_SLOW_COMMANDS, LENGTH_RPCLOOP_SLOW_COMMANDS, "RPCSlow", test);
+  tmp_errcode = TemplateTestLoopback(RPCLOOP_SLOW_COMMANDS, LENGTH_RPCLOOP_SLOW_COMMANDS, "RATSlow", test);
   errcode |= tmp_errcode;
   out() << "RPCLoopbackSlow Test With Fiber OFF -> " << (tmp_errcode ? "FAIL":"PASS") << endl;
 
   L1Reset();
   ccb_->WriteRegister(CCB_CSRB2_COMMAND_BUS, CCB_COM_START_TRIG_FIBER);
-  tmp_errcode = TemplateTestLoopback(RPCLOOP_SLOW_COMMANDS, LENGTH_RPCLOOP_SLOW_COMMANDS, "RPCSlow", test);
+  tmp_errcode = TemplateTestLoopback(RPCLOOP_SLOW_COMMANDS, LENGTH_RPCLOOP_SLOW_COMMANDS, "RATSlow", test);
   errcode |= tmp_errcode;
   out() << "RPCLoopbackSlow Test With Fiber ON -> " << (tmp_errcode ? "FAIL":"PASS") << endl;
 
@@ -245,22 +262,22 @@ int FirmwareTester::CheckStatusConnector(int const * command_array, int const le
     ok &= (on && !errorcount && (connector_stat & 0x1));
     if(report)
     {
-      out() << label << stat_index << ":";
+      out() << label << stat_index-1 << ":";
       if(on)
         out() << "ON";
       else
       {
-        er.signalID << "FIBER" << stat_index;
+        er.signalID << "FIBER" << stat_index-1;
         er.errorID << er.signalID.str() << "_OFF";
-        er.errorDescription << "Fiber" << stat_index << " is not enabled.";
+        er.errorDescription << "Fiber" << stat_index-1 << " is not enabled.";
         ReportError(er);
         out() << "OFF";
       }
       if(errorcount)
       {
-        er.signalID << "FIBER" << stat_index;
+        er.signalID << "FIBER" << stat_index-1;
         er.errorID << er.signalID.str() << "_HAS_ERRORS";
-        er.errorDescription << "Fiber" << stat_index << " has " << errorcount << " errors.";
+        er.errorDescription << "Fiber" << stat_index-1 << " has " << errorcount << " errors.";
         ReportError(er);
       }
       out() << ": Error Count: "<< dec << errorcount << endl;

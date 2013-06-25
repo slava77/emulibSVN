@@ -157,6 +157,8 @@ private:
 
   /// test label -> test status association
   std::map<std::string, int> testStatuses_;
+
+  std::vector<TestError> testErrors_;
 };
 
 

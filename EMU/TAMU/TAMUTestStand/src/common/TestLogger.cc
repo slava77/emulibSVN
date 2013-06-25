@@ -72,14 +72,17 @@ bool TestLogger::isTesting()
 }
 void TestLogger::reportError(TestError & error)
 {
-  log << "<error errorID=\"" << error.errorID.str()
-      << "\" description=\"" << error.errorDescription.str()
-      << "\" signalID=\"" << error.signalID.str()
-      << "\"></error>"
-      << std::endl;
-  error.errorID.str(std::string());
-  error.errorDescription.str(std::string());
-  error.signalID.str(std::string());
+  if(logging)
+  {
+    log << "<error errorID=\"" << error.errorID.str()
+        << "\" description=\"" << error.errorDescription.str()
+        << "\" signalID=\"" << error.signalID.str()
+        << "\"></error>"
+        << std::endl;
+    error.errorID.str(std::string());
+    error.errorDescription.str(std::string());
+    error.signalID.str(std::string());
+  }
 }
 void TestLogger::beginLogging()
 {
