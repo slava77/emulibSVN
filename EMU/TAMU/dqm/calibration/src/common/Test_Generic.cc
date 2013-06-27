@@ -1317,11 +1317,11 @@ void Test_Generic::bookTestsForCSC(std::string cscID)
 
         // TestCanvas_6gr1h* cnv = new TestCanvas_6gr1h((cscID+"_CFEB02_R03").c_str(), (cscID+": CFEB02 R03").c_str(),80, 0.0, 80.0, 60, 0., 6.0);
         TestCanvas_6gr1h* cnv = new TestCanvas_6gr1h(name, title,xbins, xmin, xmax, ybins, ymin, ymax, cnvtype, ymax2);
+        cnv->SetCanvasType(cnvtype);
         cnv->SetXTitle(xtitle);
         cnv->SetYTitle(ytitle);
         cnv->AddTextTest(testID);
         cnv->AddTextResult(params["Title"]);
-        cnv->SetCanvasType(cnvtype);
         cnv->SetLimits(low1limit,low0limit, high0limit, high1limit, high0limit2, high1limit2);
         csccnvs[itr->first]=cnv;
       }

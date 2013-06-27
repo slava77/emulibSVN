@@ -186,7 +186,7 @@ TestCanvas_6gr1h::TestCanvas_6gr1h (std::string name, std::string title, Int_t N
     
     fTitleLeftHisto = Form("Layer_%d", fIndexLeftHisto + 1);
     if(cnvtype == "mwires_cnv") {
-        fTitleLeftHisto = Form("%d/6 plane", fIndexLeftHisto + 1);
+        fTitleLeftHisto = Form("%d/6 planes", fIndexLeftHisto + 1);
     }
     
     theLeftHisto[fIndexLeftHisto] = new TH2F((name+"_"+fTitleLeftHisto).c_str(), fTitleLeftHisto.c_str(), theNbinsx, theXlow, theXup, theNbinsy, theYlow, ((fIndexLeftHisto == 0 && cnvtype == "mwires_cnv" && theHighHighLimit2 > 0) ? theYup2 : theYup));
@@ -326,7 +326,8 @@ void TestCanvas_6gr1h::SetXTitle (std::string text)
 void TestCanvas_6gr1h::SetYTitle (std::string text)
 {
 
-  theLeftHistoBackground->GetYaxis()->SetTitle(text.c_str());
+  std::cout << "cnvType " << cnvType << std::endl;
+  theLeftHistoBackground->GetYaxis()->SetTitle((cnvType != "mwires_cnv") ? text.c_str() : "");
   theRightHisto->GetXaxis()->SetTitle(text.c_str());
 
 }
