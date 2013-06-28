@@ -326,7 +326,6 @@ void TestCanvas_6gr1h::SetXTitle (std::string text)
 void TestCanvas_6gr1h::SetYTitle (std::string text)
 {
 
-  std::cout << "cnvType " << cnvType << std::endl;
   theLeftHistoBackground->GetYaxis()->SetTitle((cnvType != "mwires_cnv") ? text.c_str() : "");
   theRightHisto->GetXaxis()->SetTitle(text.c_str());
 
