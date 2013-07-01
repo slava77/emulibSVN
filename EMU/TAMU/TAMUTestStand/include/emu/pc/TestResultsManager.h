@@ -22,16 +22,42 @@
 
 //Emu Includes
 #include "emu/utils/String.h"
+#include "emu/utils/DOM.h"
+#include "emu/utils/Xalan.h"
 #include "emu/pc/BasicTable.h"
 #include "emu/pc/TestUtils.h"
+#include "emu/pc/XMLUtils.h"
+#include "emu/pc/XMLWrapper.h"
 
 //Library Includes
 #include <boost/regex.hpp>
 #include "boost/filesystem/path.hpp"
 #include "boost/filesystem/operations.hpp"
+
+#include "xercesc/dom/DOMXPathResult.hpp"
+#include "xercesc/util/XMLString.hpp"
+#include "xercesc/util/PlatformUtils.hpp"
+#include "xercesc/framework/LocalFileInputSource.hpp"
+#include "xercesc/framework/MemBufInputSource.hpp"
+#include "xercesc/framework/StdOutFormatTarget.hpp"
+#include "xercesc/framework/MemBufFormatTarget.hpp"
 #include "xercesc/parsers/XercesDOMParser.hpp"
-#include "xercesc/dom/DOM.hpp"
-#include "xercesc/dom/DOMNode.hpp"
+#include "xercesc/sax/SAXParseException.hpp"
+
+#include "xalanc/PlatformSupport/XSLException.hpp"
+#include "xalanc/XPath/XObject.hpp"
+#include "xalanc/XPath/XPathEvaluator.hpp"
+#include "xalanc/XPath/NodeRefList.hpp"
+#include "xalanc/DOMSupport/XalanDocumentPrefixResolver.hpp"
+#include "xalanc/XercesParserLiaison/XercesDOMSupport.hpp"
+#include "xalanc/XercesParserLiaison/XercesDOMSupport.hpp"
+#include "xalanc/XalanTransformer/XercesDOMWrapperParsedSource.hpp"
+#include "xalanc/XercesParserLiaison/XercesParserLiaison.hpp"
+#include "xalanc/XercesParserLiaison/XercesDocumentWrapper.hpp"
+#include "xalanc/XSLT/XSLTInputSource.hpp"
+#include "xalanc/XalanSourceTree/XalanSourceTreeParserLiaison.hpp"
+#include "xalanc/XalanSourceTree/XalanSourceTreeDOMSupport.hpp"
+#include "xalanc/XalanSourceTree/XalanSourceTreeInit.hpp"
 
 namespace emu { namespace pc {
 
@@ -65,7 +91,6 @@ public:
   // Default Constructor
   TestResultsManager()
   {
-    xercesc::XMLPlatformUtils::Initialize();
     initializeKeys();
     currentPath_ = DEFAULT_LOG_PATH;
     resultsTable_.addColumn("BoardLabel");
@@ -150,7 +175,7 @@ private:
    */
   void processLine();
 
-  void processXML();
+  void processXML(std::string);
 
   /*
    *

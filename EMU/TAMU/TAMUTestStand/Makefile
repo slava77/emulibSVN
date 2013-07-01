@@ -34,7 +34,9 @@ Sources=\
 	TestResultsManager.cc \
 	TestResultsManagerModule.cc \
 	BasicTable.cc \
-	TestLogger.cc
+	TestLogger.cc \
+	XMLUtils.cc \
+	XMLWrapper.cc
 
 
 IncludeDirs = \

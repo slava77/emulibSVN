@@ -23,8 +23,7 @@ void TestResultsManager::processFile(string f_name)
 
   boost::regex regEx0("(.*)(CCBBackplaneTests_Board)(\\w+)(_)(\\d+)(\\.log)");
   boost::regex regEx1("(.*)(CCBBackplaneTests_Board)(\\w+)(_)(\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2})(\\.log)");
-  boost::regex regEx2("(.*)(CCBBackplaneTester_Board)(\\w+)(_)(\\d+)(\\.log)");
-  boost::regex regEx3("(.*)(CCBBackplaneTester_Board)(\\w+)(_)(\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2})(\\.log)");
+  boost::regex regEx2("(.*)(CCBBackplaneTester_Board)(\\w+)");
   boost::smatch matches0;
   boost::smatch matches1;
   boost::smatch matches2;
@@ -53,20 +52,12 @@ void TestResultsManager::processFile(string f_name)
     file_.open(f_name.c_str());
     is_xml = true;
   }
-  else if(boost::regex_match(f_name, matches3, regEx3))
-  {
-    boardLabel_ = matches3[3];
-    boardLabels_.insert(boardLabel_);
-    time_ = matches3[5];
-    file_.open(f_name.c_str());
-    is_xml = true;
-  }
   else
     return;
 
   if(is_xml)
   {
-    processXML();
+    processXML(f_name);
   }
   else
   {
@@ -208,12 +199,33 @@ void TestResultsManager::processLine()
   }
 }
 
-void TestResultsManager::processXML()
+void TestResultsManager::processXML(std::string f_name)
 {
-  xercesc::XercesDOMParser* parser = new xercesc::XercesDOMParser();
+  try
+  {
+    XALAN_USING_XALAN(XalanNode)
+    XALAN_USING_XALAN(XalanDOMString)
+    XALAN_USING_XALAN(XPathEvaluator)
+    XALAN_USING_XALAN(NodeRefListBase)
+    XALAN_USING_XALAN(XObjectPtr);
 
-  parser->setValidationScheme(xercesc::XercesDOMParser::Val_Auto);
-  parser->setValidationConstraintFatal(false);
+    XMLWrapper xml_wrap(f_name);
+    XObjectPtr xptr = xml_wrap.evaluate("/root/log");
+    if(xptr.null()) std::cout << "It's NULL!!!!!!!!!!!" << std::endl;
+    const NodeRefListBase & nodes = xptr->nodeset();
+    for(size_t i=0, len = nodes.getLength(); i<len; ++i)
+    {
+      XalanDOMString attr("time");
+      const XMLCh * time = nodes.item(i)->getAttributes()->getNamedItem(attr)->getNodeValue().c_str();
+      std::cout << XMLString::transcode(time) << "\n";
+    }
+
+  }
+  catch(...)
+  {
+    std::cout << "Error on: " << f_name << std::endl;
+  }
+
 }
 
 void TestResultsManager::sortTable()
