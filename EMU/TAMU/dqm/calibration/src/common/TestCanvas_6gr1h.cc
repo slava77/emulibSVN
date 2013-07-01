@@ -181,6 +181,8 @@ TestCanvas_6gr1h::TestCanvas_6gr1h (std::string name, std::string title, Int_t N
 
   int fIndexLeftHisto;
   std::string fTitleLeftHisto;
+  double epsilon = (theYup-theYlow)/1000.0; //some pts not displayed when on the edge, so push apart range (not test limits) by epsilon
+
   for (fIndexLeftHisto = 0; fIndexLeftHisto < NLAYERS; fIndexLeftHisto++)
   {
     
@@ -189,7 +191,7 @@ TestCanvas_6gr1h::TestCanvas_6gr1h (std::string name, std::string title, Int_t N
         fTitleLeftHisto = Form("%d/6 planes", fIndexLeftHisto + 1);
     }
     
-    theLeftHisto[fIndexLeftHisto] = new TH2F((name+"_"+fTitleLeftHisto).c_str(), fTitleLeftHisto.c_str(), theNbinsx, theXlow, theXup, theNbinsy, theYlow, ((fIndexLeftHisto == 0 && cnvtype == "mwires_cnv" && theHighHighLimit2 > 0) ? theYup2 : theYup));
+    theLeftHisto[fIndexLeftHisto] = new TH2F((name+"_"+fTitleLeftHisto).c_str(), fTitleLeftHisto.c_str(), theNbinsx, theXlow, theXup, theNbinsy, theYlow-epsilon, ((fIndexLeftHisto == 0 && cnvtype == "mwires_cnv" && theHighHighLimit2 > 0) ? theYup2+epsilon : theYup+epsilon));
     theLeftHisto[fIndexLeftHisto]->GetXaxis()->CenterTitle(true);
     theLeftHisto[fIndexLeftHisto]->GetXaxis()->SetTitle("Title X");
     theLeftHisto[fIndexLeftHisto]->GetXaxis()->SetTitleFont(fTextFont);
@@ -447,7 +449,7 @@ int TestCanvas_6gr1h::Fill (TestData2D& data, TestData2D& mask)
   int fNbin;
   
   double theYupBoth, theHighLimitBoth, theHighHighLimitBoth;
-  
+ 
   for (fNlayer = 0; fNlayer < data.Nlayers; fNlayer++)
   {
   

@@ -443,7 +443,7 @@ void Test_CFEB02::analyzeCSC(const CSCEventData& data)
                 }
 
                 int scaNumber=8*conv_blk[scaBlock]+cap;
-				
+
                 if(scaNumber < 0) {
                   if(isME11) {
                     scaNumber = 0;
