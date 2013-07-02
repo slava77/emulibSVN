@@ -50,12 +50,10 @@ public:
   void setBoard(std::string);
   std::string getBoard();
   void setWorkingDirectory(std::string);
-  //void setTester(std::string);
 
 private:
   bool testing;
   bool logging;
-  //std::string tester;
   std::string currentBoard;
   std::string currentTest;
   std::string workingDirectory;

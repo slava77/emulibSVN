@@ -162,6 +162,11 @@ int TestWorkerBase::RunTest(const std::string &test)
     return -1;
   }*/
 
+  if(!log_->isTesting())
+  {
+    return -1;
+  }
+
   // first, special case of running all tests:
   if (test == "All")
   {

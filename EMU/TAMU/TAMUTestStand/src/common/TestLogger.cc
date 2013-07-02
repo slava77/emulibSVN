@@ -37,7 +37,6 @@ void TestLogger::openFile(std::string boardName)
   time_t t = time(NULL);
   std::stringstream ss;
   ss << workingDirectory << "/";
-  //ss << tester << "_Board" << boardName;
   ss << "Board_" << boardName;
   log.open(ss.str().c_str(), std::ios_base::out | std::ios_base::app);
   std::cout << "Opening File: " << ss.str() << std::endl;
@@ -112,12 +111,6 @@ void TestLogger::setWorkingDirectory(std::string dir)
 {
   workingDirectory = dir;
 }
-
-/*void TestLogger::setTester(std::string t)
-{
-  tester = t;
-}*/
-
 
 
 

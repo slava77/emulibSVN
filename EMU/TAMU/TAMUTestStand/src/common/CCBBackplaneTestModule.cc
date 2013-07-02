@@ -742,6 +742,7 @@ void CCBBackplaneTestModule::FirmwareTestsPage(xgi::Input * in, xgi::Output * ou
 
 void CCBBackplaneTestModule::CheckFirmwareTestEnable()
 {
+  if(!tm_.IsTesting(tmbN_)) return;
   int result;
   // Walk over TEST_COUNT_COMMANDS
   for(int i = 0; i < LENGTH_FIRMWARE_TEST_COUNT_COMMANDS; ++i)
