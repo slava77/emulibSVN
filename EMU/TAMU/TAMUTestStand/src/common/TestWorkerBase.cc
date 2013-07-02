@@ -31,7 +31,6 @@ TestWorkerBase::TestWorkerBase()
 : ccb_(0)
 , tmb_(0)
 , out_(&cout)
-, log_()
 {}
 
 
@@ -43,6 +42,10 @@ void TestWorkerBase::RedirectOutput(std::ostream * output)
   out_ = output ;
 }
 
+void TestWorkerBase::SetLogger(TestLogger * log)
+{
+  log_ = log;
+}
 
 void TestWorkerBase::RegisterTheTest(const std::string &test, TestProcedure proc)
 {
@@ -137,12 +140,12 @@ void TestWorkerBase::SetTestStatus(const std::string &test, int status)
 
 void TestWorkerBase::ReportError(TestError & error)
 {
-  log_.reportError(error);
+  log_->reportError(error);
 }
 
 void TestWorkerBase::SetBoardLabel(std::string board)
 {
-  log_.setBoard(board);
+  log_->setBoard(board);
 }
 
 int TestWorkerBase::RunTest(const std::string &test)
@@ -191,14 +194,14 @@ int TestWorkerBase::RunTest(const std::string &test)
   else
   {
     out() << "Test with label " << test << " ... start" << endl;
-    log_.startTest(test);
+    log_->startTest(test);
     if (test != "Dummy")
     {
       PrepareHWForTest();
     }
     // run the test
     result = testProcedures_[test]();
-    log_.endTest(result);
+    log_->endTest(result);
     testResults_[test] = result;
     MessageOK(out(), "Test with label " + test + " status ... ", result);
   }
@@ -207,26 +210,20 @@ int TestWorkerBase::RunTest(const std::string &test)
   return result;
 }
 
-void TestWorkerBase::BeginLogging()
+void TestWorkerBase::ResumeLogging()
 {
-  log_.beginLogging();
+  log_->resumeLogging();
 }
 
-void TestWorkerBase::EndLogging()
+void TestWorkerBase::PauseLogging()
 {
-  log_.endLogging();
+  log_->pauseLogging();
 }
 
-void TestWorkerBase::EndTesting()
+void TestWorkerBase::FinishTesting()
 {
-  log_.closeFile();
+  log_->closeFile();
 }
-
-void TestWorkerBase::SetTester(std::string tester)
-{
-  log_.setTester(tester);
-}
-
 
 void TestWorkerBase::HardReset()
 {

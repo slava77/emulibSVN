@@ -44,17 +44,18 @@ public:
   void endTest(int);
   bool isTesting();
   void reportError(TestError &);
-  void beginLogging();
-  void endLogging();
+  void resumeLogging();
+  void pauseLogging();
   bool isLogging();
   void setBoard(std::string);
+  std::string getBoard();
   void setWorkingDirectory(std::string);
-  void setTester(std::string);
+  //void setTester(std::string);
 
 private:
   bool testing;
   bool logging;
-  std::string tester;
+  //std::string tester;
   std::string currentBoard;
   std::string currentTest;
   std::string workingDirectory;

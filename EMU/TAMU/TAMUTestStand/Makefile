@@ -8,6 +8,12 @@ include $(XDAQ_ROOT)/config/mfAutoconf.rules
 include $(XDAQ_ROOT)/config/mfDefs.$(XDAQ_OS)
 include $(BUILD_HOME)/emu/rpm_version
 
+# change the optimization level for debugging
+CCFlags = -g -O0 -Wall
+#.PHONY: flag_check
+#flag_check:
+#	@echo "Checking g++ flags:  $(CCFlags)"
+
 # Packages to be built
 #
 Project=emu

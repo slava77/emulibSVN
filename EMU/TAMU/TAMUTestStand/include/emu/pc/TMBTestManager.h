@@ -35,6 +35,8 @@ public:
   /// Note: destructor is trivial, and copy c-tor & assignment operator are forbidden
   TMBTestManager();
 
+  ~TMBTestManager();
+
   /// Initialize tests for all TMBs in the "current" crate ("current" crate has to be already set externally).
   /// The pointer to ConfigurablePCrates data is managed externally
   void Init(ConfigurablePCrates * sys);
@@ -62,7 +64,7 @@ public:
   void BeginLogging(int tmb);
   void EndLogging(int tmb);
 
-  void EndTesting(int tmb);
+  void FinishTesting(int tmb);
 private:
 
   /// forbid copying
@@ -91,11 +93,8 @@ private:
   std::map<std::string, std::ostringstream * > testOutputs_;
   //std::ostringstream testOutputs_[10];
 
-  /// Label of the board being tested
-  std::vector<std::string> boardLabel_;
-
-  std::vector<bool> logging_;
-  std::vector<bool> testing_;
+  /// Loggers
+  std::vector<TestLogger *> logs_;
 };
 
 
@@ -127,7 +126,7 @@ void TMBTestManager::RegisterTestGroup(const std::string &test_group)
     tmp->SetTMB(tmbs[i]);
     tmp->SetCCB(ccb);
     tmp->RedirectOutput(&testOutputs_[test_group][i]);
-    tmp->SetTester(test_group);
+    tmp->SetLogger(logs_[i]);
     tests_[test_group].push_back(tmp);
 
     //if (i >= testOutputs_.size())

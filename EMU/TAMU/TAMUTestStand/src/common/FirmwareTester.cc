@@ -401,12 +401,18 @@ int FirmwareTester::TestFiberConnector()
       int errorcount = ResultRegisterData(LoadAndReadResultRegister(ccb_, tmb_->slot(), FIBER_COMMANDS[stat_index]));
       if(errorcount)
       {
+        fiber_has_error[stat_index] = true;
         if(first_error)
         {
           out() << "Unable to generate error on single fiber!" << endl;
-          CheckStatusConnector(FIBER_COMMANDS, LENGTH_FIBER_COMMANDS, "Fiber");
-          errcode = 1;
-          return errcode;
+          er.errorID << "FIBER_MULTI_ERROR";
+          er.errorDescription << "Unable to generate error on single fiber. Errors detected on multiple fibers: ";
+          for(int j=1; j<LENGTH_FIBER_COMMANDS; ++j)
+          {
+            if(fiber_has_error[i])
+              er.errorDescription << i << ", ";
+          }
+          ReportError(er);
         }
         else
         {
@@ -433,16 +439,6 @@ int FirmwareTester::TestFiberConnector()
   }
   else
   {
-    for(int i=1; i<LENGTH_FIBER_COMMANDS; ++i)
-    {
-      if(!fiber_has_error[i])
-      {
-        er.signalID << "FIBER" << i;
-        er.errorID << er.signalID.str() << "_NO_ERROR_";
-        er.errorDescription << "Unable to generate errors on fiber " << i <<  ".";
-        ReportError(er);
-      }
-    }
     error = false; //Reset error status
   }
 
@@ -480,7 +476,8 @@ int FirmwareTester::TestFiberConnector()
   }
 
   // Attempt to clear error counters
-  ccb_->WriteRegister(CCB_CSRB2_COMMAND_BUS, CCB_VME_TMB_SOFT_RESET);
+  ccb_->WriteRegister(CCB_VME_TMB_SOFT_RESET, 1);
+  usleep(1000);
   error |= CheckStatusConnector(FIBER_COMMANDS, LENGTH_FIBER_COMMANDS, "Fiber", true);
   if(error)
   {

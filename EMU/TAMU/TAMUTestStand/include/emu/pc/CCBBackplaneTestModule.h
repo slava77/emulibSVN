@@ -67,7 +67,7 @@ public:
   void ToggleLogging(xgi::Input * in, xgi::Output * out);
 
   /// End Testing for a board (XGI bound method)
-  void EndTesting(xgi::Input * in, xgi::Output * out);
+  void FinishTesting(xgi::Input * in, xgi::Output * out);
 
   /// Initialize CCBBackplaneTester's for all TMBs in the "current" crate. The "current" crate has to be already set externally.
   void Init();

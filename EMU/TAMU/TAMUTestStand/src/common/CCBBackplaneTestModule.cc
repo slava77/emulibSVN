@@ -113,7 +113,7 @@ void CCBBackplaneTestModule::CCBBackplaneTestsPage(xgi::Input * in, xgi::Output 
   *out << "<td>" << endl;
   if(tm_.IsTesting(tmb))
   {
-    *out << form().set("method","GET").set("action", "/" + urn + "/EndTesting" ) << endl;
+    *out << form().set("method","GET").set("action", "/" + urn + "/FinishTesting" ) << endl;
     *out << input().set("type", "hidden").set("name", "return").set("value", "CCBBackplaneTestsPage") << endl;
     *out << "Board Label: " << tm_.GetBoardLabel(tmb) << cgicc::br() << endl;
     *out << input().set("type","submit").set("value", "Finish Testing").set("style", "color:blue") << endl;
@@ -499,7 +499,7 @@ void CCBBackplaneTestModule::FirmwareTestsPage(xgi::Input * in, xgi::Output * ou
     *out << "<td>" << endl;
     if(tm_.IsTesting(tmb))
     {
-      *out << form().set("method","GET").set("action", "/" + urn + "/EndTesting" ) << endl;
+      *out << form().set("method","GET").set("action", "/" + urn + "/FinishTesting" ) << endl;
       *out << input().set("type", "hidden").set("name", "return").set("value", "CCBBackplaneTestsPage") << endl;
       *out << "Board Label: " << tm_.GetBoardLabel(tmb) << cgicc::br() << endl;
       *out << input().set("type","submit").set("value", "Finish Testing").set("style", "color:blue") << endl;
@@ -982,10 +982,10 @@ void CCBBackplaneTestModule::ToggleLogging(xgi::Input * in, xgi::Output * out)
   this->CCBBackplaneTestsPage(in,out);
 }
 
-void CCBBackplaneTestModule::EndTesting(xgi::Input * in, xgi::Output * out)
+void CCBBackplaneTestModule::FinishTesting(xgi::Input * in, xgi::Output * out)
 {
   int tmb = sys_->tmbN();
-  tm_.EndTesting(tmb);
+  tm_.FinishTesting(tmb);
 
   this->CCBBackplaneTestsPage(in,out);
 }

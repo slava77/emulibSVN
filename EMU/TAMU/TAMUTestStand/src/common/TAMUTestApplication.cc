@@ -82,7 +82,7 @@ TAMUTestApplication::TAMUTestApplication(xdaq::ApplicationStub * s)
   bindMemberMethod(this, &ccbBackplaneTestModule_, &CCBBackplaneTestModule::TestLEDFrontPanel, "TestLEDFrontPanel");
   bindMemberMethod(this, &ccbBackplaneTestModule_, &CCBBackplaneTestModule::SetBoardLabel, "SetBoardLabel");
   bindMemberMethod(this, &ccbBackplaneTestModule_, &CCBBackplaneTestModule::ToggleLogging, "ToggleLogging");
-  bindMemberMethod(this, &ccbBackplaneTestModule_, &CCBBackplaneTestModule::EndTesting, "EndTesting");
+  bindMemberMethod(this, &ccbBackplaneTestModule_, &CCBBackplaneTestModule::FinishTesting, "FinishTesting");
 
   //------------------------------------------------------
   // bind methods of ccbBackplaneUtilsModule_

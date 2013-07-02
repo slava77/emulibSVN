@@ -49,7 +49,7 @@ private:
   // They are implemented as private, and should be accessed only through the interface offered by TestWorkerBase.
 
   /// dummy test
-  int TestDummy() {return 0;}
+  //int TestDummy() {return 0;}
 
   /**
    * Write to DataBus and check that it is cleared after L1Reset signal is sent.

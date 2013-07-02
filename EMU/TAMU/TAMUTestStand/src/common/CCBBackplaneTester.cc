@@ -78,7 +78,7 @@ void CCBBackplaneTester::RegisterTestProcedures()
   RegisterTheTest("DMBReservedInLoopback", boost::bind( &CCBBackplaneTester::TestDMBReservedInLoopback, this));
   //RegisterTheTest("DMBL1AReleaseLoopback", boost::bind( &CCBBackplaneTester::TestDMBL1AReleaseLoopback, this));
   RegisterTheTest("TestLEDFrontPanel", boost::bind( &CCBBackplaneTester::TestLEDFrontPanel, this));
-  RegisterTheTest("Dummy", boost::bind( &CCBBackplaneTester::TestDummy, this));
+  //RegisterTheTest("Dummy", boost::bind( &CCBBackplaneTester::TestDummy, this));
 
   SetTestStatus("TestLEDFrontPanel", -1);
 }

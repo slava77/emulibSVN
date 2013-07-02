@@ -14,7 +14,7 @@ namespace emu { namespace pc {
 TestLogger::TestLogger():
     testing(false),
     logging(false),
-    tester(),
+    //tester(),
     currentBoard(),
     currentTest(),
     workingDirectory(DEFAULT_LOGGING_DIRECTORY),
@@ -24,7 +24,7 @@ TestLogger::TestLogger():
 TestLogger::TestLogger(std::string t):
     testing(false),
     logging(false),
-    tester(t),
+    //tester(t),
     currentBoard(),
     currentTest(),
     workingDirectory(DEFAULT_LOGGING_DIRECTORY),
@@ -33,22 +33,24 @@ TestLogger::TestLogger(std::string t):
 }
 void TestLogger::openFile(std::string boardName)
 {
+  testing  = true;
   time_t t = time(NULL);
   std::stringstream ss;
   ss << workingDirectory << "/";
-  ss << tester << "_Board" << boardName;
+  //ss << tester << "_Board" << boardName;
+  ss << "Board_" << boardName;
   log.open(ss.str().c_str(), std::ios_base::out | std::ios_base::app);
   std::cout << "Opening File: " << ss.str() << std::endl;
   log << "<log board=\"" << boardName << "\" time=\"" << t << "\">" << std::endl;
 }
 void TestLogger::closeFile()
 {
+  testing  = false;
   log << "</log>\n";
   log.close();
 }
 void TestLogger::startTest(std::string testName)
 {
-  testing  = true;
   currentTest = testName;
   if(logging)
   {
@@ -59,7 +61,6 @@ void TestLogger::startTest(std::string testName)
 }
 void TestLogger::endTest(int result)
 {
-  testing  = false;
   if(logging)
   {
     log << "<result value=\"" << result << "\"></result>" << std::endl;
@@ -84,11 +85,11 @@ void TestLogger::reportError(TestError & error)
     error.signalID.str(std::string());
   }
 }
-void TestLogger::beginLogging()
+void TestLogger::resumeLogging()
 {
   logging = true;
 }
-void TestLogger::endLogging()
+void TestLogger::pauseLogging()
 {
   logging = false;
 }
@@ -103,15 +104,19 @@ void TestLogger::setBoard(std::string board)
   if(log.is_open()) closeFile();
   openFile(board);
 }
+std::string TestLogger::getBoard()
+{
+  return currentBoard;
+}
 void TestLogger::setWorkingDirectory(std::string dir)
 {
   workingDirectory = dir;
 }
 
-void TestLogger::setTester(std::string t)
+/*void TestLogger::setTester(std::string t)
 {
   tester = t;
-}
+}*/
 
 
 

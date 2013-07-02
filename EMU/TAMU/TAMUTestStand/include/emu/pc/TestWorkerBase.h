@@ -82,13 +82,17 @@ public:
   /// \return 0 if success, numerical error code > 0 if problem
   int RunTest(const std::string &test);
 
-  void BeginLogging();
+  // Pause logging test results
+  void ResumeLogging();
 
-  void EndLogging();
+  // Resume logging test results
+  void PauseLogging();
 
-  void EndTesting();
+  // Finish testing session
+  void FinishTesting();
 
-  void SetTester(std::string);
+  // Set test logger
+  void SetLogger(TestLogger *);
 
   /// Allows to set the results output destination.
   /// Initially, the internal out_ output is set to std::cout in the constructor.
@@ -144,7 +148,7 @@ private:
   /// where to store the output with results
   std::ostream * out_ ;
 
-  TestLogger log_;
+  TestLogger * log_;
 
   /// keep _ordered_ list of test labels
   std::vector<std::string> testLabels_;

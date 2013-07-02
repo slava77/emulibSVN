@@ -25,6 +25,13 @@ TMBTestManager::TMBTestManager()
 : sys_(0)
 {}
 
+TMBTestManager::~TMBTestManager()
+{
+  for(unsigned int i=0; i<logs_.size(); ++i)
+  {
+    delete logs_[i];
+  }
+}
 
 void TMBTestManager::Init(ConfigurablePCrates * sys)
 {
@@ -37,20 +44,18 @@ void TMBTestManager::Init(ConfigurablePCrates * sys)
     return;
   }
 
+  std::vector< TMB * > tmbs = sys_->crate()->tmbs();
+
+  for (size_t i = 0; i < tmbs.size(); i++)
+  {
+    logs_.push_back(new TestLogger());
+  }
+
   // ****** register the tests here: ******
 
   RegisterTestGroup<CCBBackplaneTester>("CCBBackplaneTester");
   RegisterTestGroup<FirmwareTester>("FirmwareTester");
   //RegisterTestGroup<TMBExternalTester>("TMBExternalTester");
-
-  std::vector< TMB * > tmbs = sys_->crate()->tmbs();
-
-  for (size_t i = 0; i < tmbs.size(); i++)
-  {
-    testing_.push_back(false);
-    logging_.push_back(false);
-    boardLabel_.push_back("");
-  }
 }
 
 
@@ -88,60 +93,37 @@ std::ostringstream & TMBTestManager::GetTestOutput(std::string test_group, int t
 
 void TMBTestManager::SetBoardLabel(std::string board, int tmb)
 {
-  boardLabel_[tmb] = board;
-  testing_[tmb] = true;
-  logging_[tmb] = true;
-  std::map< std::string, std::vector<boost::shared_ptr<TestWorkerBase> > >::iterator i = tests_.begin();
-  for(; i != tests_.end(); ++i)
-  {
-    i->second[tmb]->SetBoardLabel(board);
-  }
+  logs_[tmb]->setBoard(board);
 }
 
 std::string TMBTestManager::GetBoardLabel(int tmb)
 {
-  return boardLabel_[tmb];
+  return logs_[tmb]->getBoard();
 }
 
 bool TMBTestManager::IsLogging(int tmb)
 {
-  return logging_[tmb];
+  return logs_[tmb]->isLogging();
 }
 
 bool TMBTestManager::IsTesting(int tmb)
 {
-  return testing_[tmb];
+  return logs_[tmb]->isTesting();
 }
 
 void TMBTestManager::BeginLogging(int tmb)
 {
-  logging_[tmb] = true;
-  std::map< std::string, std::vector<boost::shared_ptr<TestWorkerBase> > >::iterator i = tests_.begin();
-  for(; i != tests_.end(); ++i)
-  {
-    i->second[tmb]->BeginLogging();
-  }
+  logs_[tmb]->resumeLogging();
 }
 
 void TMBTestManager::EndLogging(int tmb)
 {
-  logging_[tmb] = false;
-  std::map< std::string, std::vector<boost::shared_ptr<TestWorkerBase> > >::iterator i = tests_.begin();
-  for(; i != tests_.end(); ++i)
-  {
-    i->second[tmb]->EndLogging();
-  }
+  logs_[tmb]->pauseLogging();
 }
 
-void TMBTestManager::EndTesting(int tmb)
+void TMBTestManager::FinishTesting(int tmb)
 {
-  testing_[tmb] = false;
-  logging_[tmb] = false;
-  std::map< std::string, std::vector<boost::shared_ptr<TestWorkerBase> > >::iterator i = tests_.begin();
-  for(; i != tests_.end(); ++i)
-  {
-    i->second[tmb]->EndTesting();
-  }
+  logs_[tmb]->closeFile();
 }
 
 
