@@ -15,11 +15,8 @@ Test_25_ALCTTrigger::Test_25_ALCTTrigger(std::string dfile): Test_Generic(dfile)
   binCheckMask  = 0x1FEBF3F6;
   logger = Logger::getInstance(testID);
   
-  if(!loadThresholdParams(dfile)) {
-    LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters.");
-  } else {
-    LOG4CPLUS_INFO(logger, "Loaded threshold parameters.");
-  }
+  dataFileName = dfile;
+
 }
 
 void Test_25_ALCTTrigger::initCSC(std::string cscID)
@@ -56,6 +53,12 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
         cscdata["_MASK"].content[i][j] = (i == 3) ? 0 : 1; 
       } // use mask to only pass layer/plane 4 through 
    } 
+
+  if(!loadThresholdParams(dataFileName, cscID)) {
+    LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters for " << cscID);
+  } else {
+    LOG4CPLUS_INFO(logger, "Loaded threshold parameters for " << cscID);
+  }
 
   cscdata["R01"]=afebdata;
   cscdata["R02"]=afebdata;
@@ -192,6 +195,7 @@ void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
   }
   int csctype=0, cscposition=0;
   std::string cscID = getCSCFromMap(dmbHeader->crateID(), dmbHeader->dmbID(), csctype, cscposition);
+  //cout << dmbHeader->crateID() << " " << dmbHeader->dmbID() << " " << csctype << " " << cscposition << endl;
   if (cscID == "") return;
 
   cscTestData::iterator td_itr = tdata.find(cscID);
@@ -216,7 +220,7 @@ void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
     TestData2D& r05 = cscdata["R05"]; // accel lct
 	
     for(int ct=0;ct<6;ct++){
-      if(evtNum>=threshold_limit[ct]){
+      if(evtNum>=threshold_limit[cscID].events[ct]){
 	    currVal=ct+2;
       }
     }
@@ -304,11 +308,11 @@ void Test_25_ALCTTrigger::finishCSC(std::string cscID)
 
 	
     for(int plane = 0; plane < 6; plane++) {
-	  float f = 1000./all_time[plane]; //ms to seconds
+	  float f = 1000./threshold_limit[cscID].time[plane]; //ms to seconds
 	  for(int j = 0; j < getNumWireGroups(cscID); j++) {
 	    r01.content[plane][j] = f * (float)r03.cnts[plane][j];
 		/*cout << "layer " << plane << " wg " << j << " f " << f
-		     << " all_time " << all_time[plane] << " r03.cnts "
+		     << " threshold_limit[cscID].time " << threshold_limit[cscID].time[plane] << " r03.cnts "
 			 << r03.cnts[plane][j] << " r01.cont " << r01.content[plane][j]
 			 << endl;*/
 	  }
@@ -338,7 +342,7 @@ bool Test_25_ALCTTrigger::checkResults(std::string cscID)
   return isValid;
 }
 
-bool Test_25_ALCTTrigger::loadThresholdParams(std::string dfile)
+bool Test_25_ALCTTrigger::loadThresholdParams(std::string dfile, std::string cscID)
 {
 
   std::string line;
@@ -349,41 +353,61 @@ bool Test_25_ALCTTrigger::loadThresholdParams(std::string dfile)
   st << fileStr;
   
   int evts;
-  float time;
+  float timems;
+
+  bool foundTXT = false;
+  //bool foundCSC = false;
+  bool foundCSC = true; // just make true if you want to bypass cscID searching (i.e., use first set of numbers in txt file)
   
   int count = 0;
   ifstream threshparams(st.str().c_str());
   
   if(threshparams) {
-  
+    foundTXT = true;
     while (!threshparams.eof())
     {
       getline(threshparams, line);
       trim(line);
+
+      if(!foundCSC) {
+        if(line.find(cscID) != string::npos) {
+            foundCSC = true;
+        } else {
+            continue;
+        }
+      }
+
       if ((line.length() == 0) || (line.find("#") != string::npos)) continue;
       
-	  //std::cout << line << std::endl;
+      int iparse=sscanf(line.c_str(),"%f         %d", &timems, &evts);
+			
+      if(count > 5) {
+        break;
+      }
 
-      int iparse=sscanf(line.c_str(),"%f         %d",
-                        &time, &evts);
-						
-	if(iparse == 2) {
-      
-	  all_time[count] = time;
-	  cout << "all_time[" << count << "] " << all_time[count] << endl;
-	  if(count > 0) {
-	    threshold_limit[count] = evts + threshold_limit[count-1];
-	  } else {
-		threshold_limit[count] = evts;
-	  }
-	  count++;
-	  }
+      if(iparse == 2) {
+        cout << "count " << count << endl;
+    	  threshold_limit[cscID].time[count] = (int)timems;
+    	  if(count > 0) {
+    	    threshold_limit[cscID].events[count] = evts + threshold_limit[cscID].events[count-1];
+    	  } else {
+      		threshold_limit[cscID].events[count] = evts;
+    	  }
+        cout << "threshold_limit['" << cscID << "'].time[" << count << "] " << threshold_limit[cscID].time[count] << endl;
+        cout << "threshold_limit['" << cscID << "'].events[" << count << "] " << threshold_limit[cscID].events[count] << endl;
+    	  count++;
+  	  }
     }
     threshparams.close();
-  
-  } else {
+  }
+
+  if(!foundTXT) {
     LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters file. Expected txt file: " << fileStr);
     LOG4CPLUS_ERROR(logger, "Check STEP DAQ to see if text file produced, or rename file if it exists.");
+    return false;
+  }
+  if(!foundCSC) {
+    LOG4CPLUS_ERROR(logger, "Unable to find cscID " << cscID << " in text file " << fileStr);
     return false;
   }
   return true;
