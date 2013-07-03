@@ -45,7 +45,7 @@ protected:
   void analyzeCSC(const CSCEventData& data);
   void finishCSC(std::string cscID);
   bool checkResults(std::string cscID);
-  bool loadThresholdParams(std::string dfile, std::string cscID);
+  bool loadThresholdParams(std::string dfile, std::string cscID, int crateID, int DMBslot);
 
   std::map<std::string, uint32_t> l1a_cntrs;
   std::map<int, int> dduL1A;

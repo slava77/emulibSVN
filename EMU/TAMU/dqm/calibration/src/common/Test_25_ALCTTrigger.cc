@@ -54,11 +54,7 @@ void Test_25_ALCTTrigger::initCSC(std::string cscID)
       } // use mask to only pass layer/plane 4 through 
    } 
 
-  if(!loadThresholdParams(dataFileName, cscID)) {
-    LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters for " << cscID);
-  } else {
-    LOG4CPLUS_INFO(logger, "Loaded threshold parameters for " << cscID);
-  }
+  
 
   cscdata["R01"]=afebdata;
   cscdata["R02"]=afebdata;
@@ -142,7 +138,6 @@ void Test_25_ALCTTrigger::analyze(const char * data, int32_t dataSize, uint32_t 
   chamberDatas = dduData.cscData();
   CSCDDUHeader dduHeader  = dduData.header();
 
-
   // std::cout << nTotalEvents << " " << chamberDatas.size() << std::endl;
 
   if (chamberDatas.size() >0)
@@ -205,6 +200,16 @@ void Test_25_ALCTTrigger::analyzeCSC(const CSCEventData& data)
     initCSC(cscID);
     addCSCtoMap(cscID, dmbHeader->crateID(), dmbHeader->dmbID());
   }
+
+
+  if(nCSCEvents[cscID] == 0) {
+    if(!loadThresholdParams(dataFileName, cscID, dmbHeader->crateID(), dmbHeader->dmbID())) {
+      LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters for " << cscID);
+    } else {
+      LOG4CPLUS_INFO(logger, "Loaded threshold parameters for " << cscID);
+    }
+  }
+
   nCSCEvents[cscID]++;
   
   int evtNum = nCSCEvents[cscID];
@@ -342,25 +347,37 @@ bool Test_25_ALCTTrigger::checkResults(std::string cscID)
   return isValid;
 }
 
-bool Test_25_ALCTTrigger::loadThresholdParams(std::string dfile, std::string cscID)
+bool Test_25_ALCTTrigger::loadThresholdParams(std::string dfile, std::string cscID, int crateID, int DMBslot)
 {
 
   std::string line;
-  std::stringstream st;
+  std::stringstream straw, storig;
   std::string fileStr = dfile;
+  std::string cscIDslash = cscID;
+  std::string timeStamp = fileStr.substr(fileStr.find("_UTC")-14,14);
+  std::string runNumber = fileStr.substr(fileStr.find("_EmuRUI")-9,9);
+  std::string filePath = fileStr.substr(0,fileStr.find("csc_"));
+  replace_all(cscIDslash, ".", "/");
   replace_all(fileStr, "raw", "txt");
-  
-  st << fileStr;
+
+  storig << filePath << "Test25_CrateId" << setfill('0') << setw(2) << (crateID) 
+        << "_TMBslot" << setfill('0') << setw(2) << (DMBslot-1) << runNumber
+        << timeStamp << "_UTC.txt";
+
+  straw << fileStr;
   
   int evts;
   float timems;
 
   bool foundTXT = false;
-  //bool foundCSC = false;
-  bool foundCSC = true; // just make true if you want to bypass cscID searching (i.e., use first set of numbers in txt file)
-  
+
   int count = 0;
-  ifstream threshparams(st.str().c_str());
+  
+  //std::string txtFileName = straw.str(); // string (raw) -- same as raw, with .txt
+  std::string txtFileName = storig.str(); // string (original) used by daq
+  //storig example: Test25_CrateId10_TMBslot16_00000001_130702_080727_UTC.txt
+
+  ifstream threshparams(txtFileName.c_str());
   
   if(threshparams) {
     foundTXT = true;
@@ -368,14 +385,6 @@ bool Test_25_ALCTTrigger::loadThresholdParams(std::string dfile, std::string csc
     {
       getline(threshparams, line);
       trim(line);
-
-      if(!foundCSC) {
-        if(line.find(cscID) != string::npos) {
-            foundCSC = true;
-        } else {
-            continue;
-        }
-      }
 
       if ((line.length() == 0) || (line.find("#") != string::npos)) continue;
       
@@ -386,28 +395,21 @@ bool Test_25_ALCTTrigger::loadThresholdParams(std::string dfile, std::string csc
       }
 
       if(iparse == 2) {
-        cout << "count " << count << endl;
     	  threshold_limit[cscID].time[count] = (int)timems;
     	  if(count > 0) {
     	    threshold_limit[cscID].events[count] = evts + threshold_limit[cscID].events[count-1];
     	  } else {
       		threshold_limit[cscID].events[count] = evts;
     	  }
-        cout << "threshold_limit['" << cscID << "'].time[" << count << "] " << threshold_limit[cscID].time[count] << endl;
-        cout << "threshold_limit['" << cscID << "'].events[" << count << "] " << threshold_limit[cscID].events[count] << endl;
+        //cout << "threshold_limit['" << cscID << "'].time[" << count << "] " << threshold_limit[cscID].time[count] << endl;
+        //cout << "threshold_limit['" << cscID << "'].events[" << count << "] " << threshold_limit[cscID].events[count] << endl;
     	  count++;
   	  }
     }
     threshparams.close();
-  }
-
-  if(!foundTXT) {
-    LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters file. Expected txt file: " << fileStr);
+  } else {
+    LOG4CPLUS_ERROR(logger, "Unable to load threshold parameters file. Expected txt file: " << txtFileName);
     LOG4CPLUS_ERROR(logger, "Check STEP DAQ to see if text file produced, or rename file if it exists.");
-    return false;
-  }
-  if(!foundCSC) {
-    LOG4CPLUS_ERROR(logger, "Unable to find cscID " << cscID << " in text file " << fileStr);
     return false;
   }
   return true;
