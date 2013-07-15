@@ -117,8 +117,6 @@ public:
 
   std::vector<std::string> getLogTestTimes(std::string, std::string);
 
-  std::vector<std::string> getLogTestNames(std::string, std::string);
-
   std::string getTestName(std::string, std::string);
 
   std::string getTestResult(std::string, std::string);
