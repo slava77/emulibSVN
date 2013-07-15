@@ -600,7 +600,7 @@ void CCBBackplaneTestModule::FirmwareTestsPage(xgi::Input * in, xgi::Output * ou
   *out << cgicc::form() << endl;
   *out << cgicc::td();
 
-  ///Cable Button
+  /*///Cable Button
   *out << cgicc::td().set("ALIGN","center");
   *out << cgicc::form().set("method","GET").set("action", "/" + urn + "/RunFirmwareCommand" ) << endl;
 
@@ -615,7 +615,7 @@ void CCBBackplaneTestModule::FirmwareTestsPage(xgi::Input * in, xgi::Output * ou
   *out << cgicc::input().set("type", "hidden").set("value", "ToggleCableTest").set("name", "command");
   *out << cgicc::form() << endl;
   *out << cgicc::td();
-
+*/
   ///Fiber Button
   *out << cgicc::td().set("ALIGN","center");
   *out << cgicc::form().set("method","GET").set("action", "/" + urn + "/RunFirmwareCommand" ) << endl;
@@ -681,6 +681,7 @@ void CCBBackplaneTestModule::FirmwareTestsPage(xgi::Input * in, xgi::Output * ou
   *out << cgicc::form() << endl;
   *out << cgicc::td();
 
+/*
   // Cable_connector button
   testResult = tm_.GetTester("FirmwareTester", tmb)->GetTestResult("TestCableConnector");
   *out << cgicc::td().set("ALIGN","center");
@@ -696,6 +697,7 @@ void CCBBackplaneTestModule::FirmwareTestsPage(xgi::Input * in, xgi::Output * ou
   *out << cgicc::input().set("type", "hidden").set("value", "TestCableConnector").set("name", "test_label");
   *out << cgicc::form() << endl;
   *out << cgicc::td();
+*/
 
   // Fiber_connector button
   testResult = tm_.GetTester("FirmwareTester", tmb)->GetTestResult("TestFiberConnector");

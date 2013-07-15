@@ -1,13 +1,12 @@
 /*
- * TestResultsManager.h
+ * XMLManager.h
  *
- *  Created on: Jul 26, 2012
- *      Author: Austin Schneider
+ *  Created on: Jul 3, 2013
+ *      Author: cscdev
  */
 
-#ifndef TESTRESULTSMANAGER_H_
-#define TESTRESULTSMANAGER_H_
-
+#ifndef XMLMANAGER_H_
+#define XMLMANAGER_H_
 
 //System Includes
 #include <fstream>
@@ -27,7 +26,6 @@
 #include "emu/pc/BasicTable.h"
 #include "emu/pc/TestUtils.h"
 #include "emu/pc/XMLWrapper.h"
-#include "emu/pc/XMLManager.h"
 
 //Library Includes
 #include <boost/regex.hpp>
@@ -59,75 +57,41 @@
 #include "xalanc/XalanSourceTree/XalanSourceTreeDOMSupport.hpp"
 #include "xalanc/XalanSourceTree/XalanSourceTreeInit.hpp"
 
-namespace emu { namespace pc {
+namespace emu {
+namespace pc {
 
-class TestResultsManager
-{
-  static const bool TestResultsManagerCallTrace = true;
-public:
-  struct TestError {
-    std::string errorID;
-    std::string errorDescription;
-    std::string signalID;
-  };
 
+class XMLManager {
 private:
-  // the last directory path to be set
-  std::string currentPath_;
+  boost::regex nameFormat;
+  unsigned int nameSubmatch;
 
-  std::set<std::string> boardLabels_;
-
-  std::set<std::string> testLabels_;
-
-  XMLManager xm_;
-
-  void refreshBoardLabels();
-  void refreshTestLabels();
+  std::vector<XMLWrapper *> fileList_;
+  std::set<std::string> namesList_;
+  std::map<std::string, boost::filesystem::path> paths_;
+  std::map<std::string, XMLWrapper *> files_;
+  std::map<std::string, std::time_t> lastModified_;
 
 public:
+  XMLManager();
+  XMLManager(std::string, unsigned int);
+  ~XMLManager();
 
-  // Default Constructor
-  TestResultsManager()
-  {
-    xm_.setNameFormat("(.*)(Board_)(.+)", 3);
-  };
+  void setNameFormat(std::string, unsigned int);
 
-  // Load logs on construction
-  TestResultsManager(const std::string dir_name)
-  {
-    TestResultsManager();
-    processDirectory(dir_name);
-  };
+  std::set<std::string> getNamesList();
 
+  void loadFiles(std::string);
+  void loadFile(std::string);
+  bool refresh(std::string);
+  bool refresh();
 
-  /// Process a directory of log files for test results
-  void processDirectory(const std::string dir_name);
+  XObjectPtr evaluate(std::string, XPathEvaluator &, XMLCh *);
+  XObjectPtr evaluate(std::string, XPathEvaluator &, std::string);
 
-  std::set<std::string> getBoardLabels();
-
-  std::set<std::string> getTestLabels();
-
-  std::vector<std::string> getTestTimes(std::string, std::string);
-
-  std::string getLatestTestTime(std::string, std::string);
-
-  std::vector<std::string> getBoardLogTimes(std::string);
-
-  std::string getLatestBoardLogTime(std::string);
-
-  std::vector<std::string> getLogTestTimes(std::string, std::string);
-
-  std::vector<std::string> getLogTestNames(std::string, std::string);
-
-  std::string getTestName(std::string, std::string);
-
-  std::string getTestResult(std::string, std::string);
-
-  std::vector<TestError> getTestErrors(std::string, std::string);
 };
 
-} } //namespaces
+}
+} // namespaces
 
-
-
-#endif /* TESTRESULTSMANAGER_H_ */
+#endif /* XMLMANAGER_H_ */

@@ -35,6 +35,8 @@ class TestWorkerBase
 {
 public:
 
+  typedef TestLogger::TestError TestError;
+
   TestWorkerBase();
 
   virtual ~TestWorkerBase();

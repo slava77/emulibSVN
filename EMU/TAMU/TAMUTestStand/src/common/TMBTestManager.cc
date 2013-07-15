@@ -124,6 +124,10 @@ void TMBTestManager::EndLogging(int tmb)
 void TMBTestManager::FinishTesting(int tmb)
 {
   logs_[tmb]->closeFile();
+  for(unsigned int i=0; i<testGroupLabels_.size(); ++i)
+  {
+    tests_[testGroupLabels_[i]][tmb]->FinishTesting();
+  }
 }
 
 

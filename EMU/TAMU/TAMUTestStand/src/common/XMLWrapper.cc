@@ -8,8 +8,6 @@
 
 #include "emu/pc/XMLWrapper.h"
 
-#include "emu/pc/XMLUtils.h"
-
 namespace emu {
 namespace pc {
 
@@ -17,20 +15,20 @@ XalanDocument * XMLWrapper::parseXMLDoc()
 {
   dumpFileToString(filePath.c_str(), plainText);
   plainText = "<root>" + plainText + "</root>";
-  theLiaison.setDoNamespaces(true); // although it seems to be already set...
-  theLiaison.setBuildWrapperNodes(true);
-  theLiaison.setBuildMaps(true);
+  liaison.setDoNamespaces(true); // although it seems to be already set...
+  liaison.setBuildWrapperNodes(true);
+  liaison.setBuildMaps(true);
 
   const char* const id = "dummy";
   MemBufInputSource theInputSource((const XMLByte*) plainText.c_str(), (unsigned int) plainText.size(), id);
-  return theLiaison.parseXMLStream(theInputSource);
+  return liaison.parseXMLStream(theInputSource);
 }
 
 XMLWrapper::XMLWrapper(std::string path)
 :init(),
  filePath(path),
- theDOMSupport(),
- theLiaison(theDOMSupport),
+ support(),
+ liaison(support),
  XMLDoc(parseXMLDoc()),
  resolver(new XalanDocumentPrefixResolver(XMLDoc))
 {
@@ -40,7 +38,6 @@ XMLWrapper::XMLWrapper(std::string path)
 XMLWrapper::~XMLWrapper()
 {
   delete resolver;
-  result.release();
 }
 
 void XMLWrapper::refresh()
@@ -53,7 +50,8 @@ void XMLWrapper::refresh()
 
 XObjectPtr XMLWrapper::evaluate(XPathEvaluator & eval, XMLCh * xpath)
 {
-  return eval.evaluate(support, XMLDoc, xpath, *resolver);
+  XObjectPtr xop = eval.evaluate(support, XMLDoc, xpath, *resolver);
+  return xop;
 }
 
 XObjectPtr XMLWrapper::evaluate(XPathEvaluator & eval, std::string xpath_s)
@@ -62,20 +60,6 @@ XObjectPtr XMLWrapper::evaluate(XPathEvaluator & eval, std::string xpath_s)
   XObjectPtr xop = evaluate(eval, xpath);
   XMLString::release(&xpath);
   return xop;
-}
-
-XObjectPtr XMLWrapper::evaluate(XMLCh * xpath)
-{
-  result = evaluator.evaluate(support, XMLDoc, xpath, *resolver);
-  return result;
-}
-
-XObjectPtr XMLWrapper::evaluate(std::string xpath_s)
-{
-  XMLCh * xpath(XMLString::transcode(xpath_s.c_str()));
-  evaluate(xpath);
-  XMLString::release(&xpath);
-  return result;
 }
 
 }

@@ -100,7 +100,6 @@ TAMUTestApplication::TAMUTestApplication(xdaq::ApplicationStub * s)
   //------------------------------------------------------
   bindMemberMethod(this, &testResultsManagerModule_, &TestResultsManagerModule::TestResultsManagerPage, "TestResultsManagerPage");
   bindMemberMethod(this, &testResultsManagerModule_, &TestResultsManagerModule::ProcessLogDirectory, "ProcessLogDirectory");
-  bindMemberMethod(this, &testResultsManagerModule_, &TestResultsManagerModule::SetPageMode, "SetPageMode");
 
   //----------------------------
   // initialize variables

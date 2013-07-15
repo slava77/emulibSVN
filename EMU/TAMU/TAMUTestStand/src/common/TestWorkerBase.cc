@@ -227,7 +227,11 @@ void TestWorkerBase::PauseLogging()
 
 void TestWorkerBase::FinishTesting()
 {
-  log_->closeFile();
+  //log_->closeFile();
+  for(unsigned int i=0; i<testLabels_.size(); ++i)
+  {
+    testResults_[testLabels_[i]] = -1;
+  }
 }
 
 void TestWorkerBase::HardReset()

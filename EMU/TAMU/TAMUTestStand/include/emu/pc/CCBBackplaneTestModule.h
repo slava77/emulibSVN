@@ -91,6 +91,8 @@ private:
 
   /// manager of groups of tests
   TMBTestManager tm_;
+
+  void (CCBBackplaneTestModule::*returnPage_)(xgi::Input*,xgi::Output*);
 };
 
 

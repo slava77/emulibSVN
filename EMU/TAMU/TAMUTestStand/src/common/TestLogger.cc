@@ -53,7 +53,7 @@ void TestLogger::startTest(std::string testName)
   currentTest = testName;
   if(logging)
   {
-    log << "<test label=\"" << currentTest << "\">" << std::endl;
+    log << "<test label=\"" << currentTest << "\" time=\"" << time(NULL) <<"\">" << std::endl;
   }
   else
     log << "NOT LOGGING" << std::endl;
@@ -98,6 +98,7 @@ bool TestLogger::isLogging()
 }
 void TestLogger::setBoard(std::string board)
 {
+  if(board == "") return;
   logging = true;
   currentBoard = board;
   if(log.is_open()) closeFile();

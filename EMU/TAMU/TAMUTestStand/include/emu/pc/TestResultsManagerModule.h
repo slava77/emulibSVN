@@ -17,6 +17,10 @@ class TestResultsManagerModule : public virtual toolbox::lang::Class
 {
 public :
 
+  typedef TestResultsManager::TestError TestError;
+
+  enum {BOARD_SUMMARY, LOG_SUMMARY, TEST_SUMMARY, TEST_LIST, LOG_DETAILS, TEST_DETAILS, ERROR_DETAILS};
+
   /// constructor
   /// the pointers to application and ConfigurablePCrates data are managed externally
   TestResultsManagerModule(xdaq::WebApplication * app);
@@ -27,9 +31,6 @@ public :
   /// process logs in a specific directory (XGI bound method)
   void ProcessLogDirectory(xgi::Input * in, xgi::Output * out);
 
-  /// sets the state of the page (XGI bound method)
-  void SetPageMode(xgi::Input * in, xgi::Output * out);
-
 private:
 
   /// keep link to the application which uses this utility (not owned by this class!)
@@ -38,17 +39,29 @@ private:
   /// manager of test results
   TestResultsManager trm_;
 
-  // current mode of the page (allows switching views on a single page)
-  int pageMode_;
+  /// summary of boards
+  void BoardSummary(xgi::Input * in, xgi::Output * out);
 
-  // summary of boards
-  void BoardListTable(xgi::Input * in, xgi::Output * out );
+  /// summary of boards
+  void LogSummary(xgi::Input * in, xgi::Output * out);
 
-  // test summary of individual board
-  void BoardTestSummaryTable(xgi::Input * in, xgi::Output * out);
+  /// test summary of individual board
+  void TestSummary(xgi::Input * in, xgi::Output * out);
 
-  // summary of test instances for a single test type
-  void TestDetailsTable(xgi::Input * in, xgi::Output * out);
+  /// list of all instances of a test type for one board
+  void TestList(xgi::Input * in, xgi::Output * out);
+
+  /// list of tests performed during a log
+  void LogDetails(xgi::Input * in, xgi::Output * out);
+
+  /// errors reported for a test
+  void TestDetails(xgi::Input * in, xgi::Output * out);
+
+  /// details of an error
+  void ErrorDetails(xgi::Input * in, xgi::Output * out);
+
+  /// returns a nicely formatted result
+  static std::pair<std::string,std::string> niceResult(std::string);
 
 };
 

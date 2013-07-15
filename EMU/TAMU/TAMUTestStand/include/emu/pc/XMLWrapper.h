@@ -13,9 +13,10 @@
 #include "emu/utils/Xalan.h"
 #include "emu/pc/BasicTable.h"
 #include "emu/pc/TestUtils.h"
-#include "emu/pc/XMLUtils.h"
 
 #include <string>
+#include <cerrno>
+#include <fstream>
 
 #include "xercesc/dom/DOMXPathResult.hpp"
 #include "xercesc/util/XMLString.hpp"
@@ -88,13 +89,10 @@ private:
   XPathInitializer init;
   std::string plainText;
   std::string filePath;
-  XercesDOMSupport theDOMSupport;
-  XercesParserLiaison theLiaison;
   XercesDOMSupport support;
-  XPathEvaluator evaluator;
+  XercesParserLiaison liaison;
   XalanDocument * XMLDoc;
   XalanDocumentPrefixResolver * resolver;
-  XObjectPtr result;
 
   XalanDocument * parseXMLDoc();
 
@@ -104,8 +102,22 @@ public:
   void refresh();
   XObjectPtr evaluate(XPathEvaluator &, XMLCh *);
   XObjectPtr evaluate(XPathEvaluator &, std::string);
-  XObjectPtr evaluate(XMLCh *);
-  XObjectPtr evaluate(std::string);
+
+  static void dumpFileToString(const char *filename, std::string & out)
+  {
+    std::ifstream in(filename, std::ios::in | std::ios::binary);
+    if (in)
+    {
+      unsigned int init_size = (unsigned int)out.size();
+      in.seekg(0, std::ios::end);
+      out.resize((unsigned int)in.tellg() + init_size);
+      in.seekg(0, std::ios::beg);
+      in.read(&out[init_size], out.size());
+      in.close();
+    }
+    else
+      throw(errno);
+  }
 
 private:
   XMLWrapper();

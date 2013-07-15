@@ -7,7 +7,10 @@
 
 #include "emu/pc/TestResultsManagerModule.h"
 
+#include "boost/lexical_cast.hpp"
+
 // Emu includes
+#include "emu/pc/TestLogger.h"
 #include "emu/utils/Cgi.h"
 
 // XDAQ includes
@@ -33,7 +36,6 @@ using std::set;
 TestResultsManagerModule::TestResultsManagerModule(xdaq::WebApplication *app)
 : app_(app)
 , trm_()
-, pageMode_(0)
 {
 }
 
@@ -44,8 +46,20 @@ void TestResultsManagerModule::TestResultsManagerPage(xgi::Input * in, xgi::Outp
   using cgicc::input;
 
   cgicc::Cgicc cgi(in);
-
   string urn = app_->getApplicationDescriptor()->getURN();
+
+  ///////////////////////////////////////////
+  // Get POST data
+  cgicc::form_iterator name;
+  string s = "";
+
+  int pageMode_ = BOARD_SUMMARY;
+  name = cgi.getElement("mode");
+  if(name != cgi.getElements().end())
+  {
+    s = cgi["mode"]->getValue();
+    pageMode_ = atoi(s.c_str());
+  }
 
   emu::utils::headerXdaq(out, app_,"Test Results Manager");
 
@@ -54,73 +68,78 @@ void TestResultsManagerModule::TestResultsManagerPage(xgi::Input * in, xgi::Outp
   *out << "<tr>" << endl;
   *out << "<td width=\"50%\">" << endl;
 
-  *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;") << endl;
-  *out << cgicc::legend("Results Manager Controls:").set("style", "color:blue") <<endl;
-
   ///////////////////////////////////////////
   // Results Manager Controls:
 
-  *out << form().set("method","GET").set("action", "/" + urn + "/SetPageMode" ) << endl;
+  *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;") << endl;
+  *out << cgicc::legend("Results Manager Controls:").set("style", "color:blue") <<endl;
+
+  *out << form().set("method","GET").set("action", "/" + urn + "/TestResultsManagerPage" ) << endl;
   *out << input().set("type","submit").set("value", "Test Results Home").set("style", "color:blue") << endl;
-  *out << input().set("type", "hidden").set("value", "0").set("name", "mode") << endl;
+  *out << input().set("type", "hidden").set("value", boost::lexical_cast<std::string>((int)BOARD_SUMMARY)).set("name", "mode") << endl;
   *out << form() << endl;
   *out << cgicc::br() << endl;
   *out << form().set("method","GET").set("action", "/" + urn + "/ProcessLogDirectory" ) << endl;
-  *out << input().set("type", "text").set("name", "path").set("size", "100").set("value", trm_.getCurrentPath()) << endl;
+  *out << input().set("type", "text").set("name", "path").set("size", "100").set("value", DEFAULT_LOGGING_DIRECTORY) << endl;
   *out << input().set("type","submit").set("value", "Process Log Directory").set("style", "color:blue") << endl;
   *out << form() << endl;
 
-  //*out << cgicc::table().set("border","1");
   *out << cgicc::fieldset() << endl;
 
 
-  *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;") << endl;
   ///////////////////////////////////////////
   // Results Table:
 
-  if(pageMode_ == 0)
-    BoardListTable(in, out);
-  else if(pageMode_ == 1)
-    BoardTestSummaryTable(in, out);
-  else if(pageMode_ == 2)
-    TestDetailsTable(in, out);
+  *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;") << endl;
+
+  if(pageMode_ == BOARD_SUMMARY)
+    BoardSummary(in, out);
+  else if(pageMode_ == LOG_SUMMARY)
+    LogSummary(in, out);
+  else if(pageMode_ == TEST_SUMMARY)
+    TestSummary(in, out);
+  else if(pageMode_ == TEST_LIST)
+    TestList(in, out);
+  else if(pageMode_ == LOG_DETAILS)
+    LogDetails(in, out);
+  else if(pageMode_ == TEST_DETAILS)
+    TestDetails(in, out);
+  else if(pageMode_ == ERROR_DETAILS)
+    ErrorDetails(in, out);
 
   *out << cgicc::fieldset() << endl;
 
-  *out << "</td>" << endl;
 
+  *out << "</td>" << endl;
   *out << "</tr>" << endl;
   *out << "</tbody>" << endl;
   *out << "</table>" << endl;
 
-
   emu::utils::footer(out);
 }
 
-void TestResultsManagerModule::BoardListTable(xgi::Input * in, xgi::Output * out )
+void TestResultsManagerModule::BoardSummary(xgi::Input * in, xgi::Output * out)
 {
+  using cgicc::a;
   using cgicc::tr;
   using cgicc::td;
   using cgicc::table;
   using cgicc::form;
   using cgicc::input;
 
-  typedef TestResultsManager::row_iterator row_iterator;
-
   string urn = app_->getApplicationDescriptor()->getURN();
 
   // section label
   *out << cgicc::legend("Boards:").set("style", "color:blue") <<endl;
 
-  // results table
+  // table
   *out << table().set("border", "1") << endl;
   *out << tr() << endl;
 
   // column headers
   *out << td() << "Board" << td() << endl;
-  *out << td() << "Last Test Time" << td() << endl;
+  *out << td() << "Last Log Time" << td() << endl;
   *out << td() << "Status" << td() << endl;
-
 
   *out << tr() << endl;
 
@@ -130,47 +149,55 @@ void TestResultsManagerModule::BoardListTable(xgi::Input * in, xgi::Output * out
   // iterate over board labels (each board label corresponds to a single board)
   for(set<string>::iterator i = board_labels.begin(); i != board_labels.end(); ++i)
   {
-    string time = "";
     int fail = false;
-    row_iterator board_begin = trm_.getBegin("BoardLabel", *i, trm_.begin(), trm_.end());
-    row_iterator board_end = trm_.getEnd("BoardLabel", *i, trm_.begin(), trm_.end());
 
-    // iterate over test labels (each test label corresponds to a test type)
-    // to find the last time the board was tested
+    std::string log_time_s = trm_.getLatestBoardLogTime(*i);
+    std::stringstream ss;
+    ss << log_time_s;
+    long int log_time;
+    ss >> log_time;
     for(set<string>::iterator j = test_labels.begin(); j != test_labels.end(); ++j)
     {
-      // gets the iterator of the most recent testingInstance
-      row_iterator k = trm_.getBegin("TestLabel", *j, board_begin, board_end);
-      if(k == trm_.getEnd("TestLabel", *j, board_begin, board_end))
+      // check the result of the latest test time for each test
+      std::string test_time = trm_.getLatestTestTime(*i,*j);
+      std::string result = trm_.getTestResult(*i,test_time);
+      if(result == "0")
+        fail |= 0;
+      else if(result == "")
         fail |= -1;
       else
-      {
-        if(k["TestTime"] > time)
-          time = k["TestTime"];
-        if(k["TestResult"]!="PASS")
-          fail |= true;
-      }
+        fail |= 1;
     }
+
     *out << tr() << endl;
 
-    // button linking to test summary of the board
-    *out << td() << endl;
-    *out << form().set("method","GET").set("action", "/" + urn + "/SetPageMode" ) << endl;
-    *out << input().set("type","submit").set("value", *i).set("style", "color:blue") << endl;
-    *out << input().set("type", "hidden").set("value", "1").set("name", "mode") << endl;
-    *out << input().set("type", "hidden").set("value", *i).set("name", "board_label") << endl;
-    *out << form() << endl;
-    *out << td() << endl;
-    *out << td() << time << td() << endl;
+    *out << td() << *i << td() << endl; // board
+    *out << td() << timeToString(log_time) << td() << endl; // last log time
 
     // board status (based on last instance of each test type)
-    *out << td();
+    *out << "<td style =\"color:";
     if(!fail)
-      *out << "GOOD";
+      *out << "green\">Good";
     else if(fail == 1)
-      *out << "BAD";
+      *out << "red\">Bad";
     else if(fail < 0)
-      *out << "UNTESTED";
+      *out << "blue\">Not fully tested";
+    *out << "</td>" << endl;
+
+    // link to log summary of the board
+    *out << td() << endl;
+    *out << a().set("href", "/" + urn + "/TestResultsManagerPage?mode=" + boost::lexical_cast<std::string>((int)LOG_SUMMARY)
+        + "&board_label=" + *i) << endl;
+    *out << "Log Summary" << endl;
+    *out << a() << endl;
+    *out << td() << endl;
+
+    // link to test summary of the board
+    *out << td() << endl;
+    *out << a().set("href", "/" + urn + "/TestResultsManagerPage?mode=" + boost::lexical_cast<std::string>((int)TEST_SUMMARY)
+        + "&board_label=" + *i) << endl;
+    *out << "Test Summary" << endl;
+    *out << a() << endl;
     *out << td() << endl;
 
     *out << tr() << endl;
@@ -179,22 +206,93 @@ void TestResultsManagerModule::BoardListTable(xgi::Input * in, xgi::Output * out
   *out << table() << endl;
 }
 
-void TestResultsManagerModule::BoardTestSummaryTable(xgi::Input * in, xgi::Output * out)
+void TestResultsManagerModule::LogSummary(xgi::Input * in, xgi::Output * out)
 {
+  using cgicc::a;
   using cgicc::tr;
   using cgicc::td;
   using cgicc::table;
   using cgicc::form;
   using cgicc::input;
 
-  typedef TestResultsManager::row_iterator row_iterator;
-
-  row_iterator board_begin = trm_.getBegin("BoardLabel", trm_.getBoardLabel(), trm_.begin(), trm_.end());
-  row_iterator board_end = trm_.getEnd("BoardLabel", trm_.getBoardLabel(), trm_.begin(), trm_.end());
-
+  cgicc::Cgicc cgi(in);
   string urn = app_->getApplicationDescriptor()->getURN();
+
+  ///////////////////////////////////////////
+  // Get POST data
+  cgicc::form_iterator name;
+
+  std::string board;
+  name = cgi.getElement("board_label");
+  if(name != cgi.getElements().end())
+  {
+    board = cgi["board_label"]->getValue();
+  }
+
   // section label
-  *out << cgicc::legend("Board " + trm_.getBoardLabel() + ": Test Summary:").set("style", "color:blue") <<endl;
+  *out << cgicc::legend("Board_" + board + ": Log Summary").set("style", "color:blue") <<endl;
+
+  // table
+  *out << table().set("border", "1") << endl;
+  *out << tr() << endl;
+
+  // column headers
+  *out << td() << "Log Time" << td() << endl;
+
+  *out << tr() << endl;
+
+  std::vector<std::string> log_times = trm_.getBoardLogTimes(board);
+
+  for(int i=log_times.size()-1; i>=0; --i)
+  {
+    std::stringstream ss;
+    long long log_time;
+    ss << log_times[i];
+    ss >> log_time;
+
+    *out << tr() << endl;
+
+    *out << td() << timeToString(log_time) << td() << endl; // log time
+
+    // button linking to test summary of the board
+    *out << td() << endl;
+    *out << a().set("href", "/" + urn + "/TestResultsManagerPage?mode=" + boost::lexical_cast<std::string>((int)LOG_DETAILS)
+        + "&board_label=" + board + "&log_time=" + log_times[i]) << endl;
+    *out << "Log Details" << endl;
+    *out << a() << endl;
+    *out << td() << endl;
+
+    *out << tr() << endl;
+  }
+
+  *out << table() << endl;
+}
+
+void TestResultsManagerModule::TestSummary(xgi::Input * in, xgi::Output * out)
+{
+  using cgicc::a;
+  using cgicc::tr;
+  using cgicc::td;
+  using cgicc::table;
+  using cgicc::form;
+  using cgicc::input;
+
+  cgicc::Cgicc cgi(in);
+  string urn = app_->getApplicationDescriptor()->getURN();
+
+  ///////////////////////////////////////////
+  // Get POST data
+  cgicc::form_iterator name;
+
+  std::string board;
+  name = cgi.getElement("board_label");
+  if(name != cgi.getElements().end())
+  {
+    board = cgi["board_label"]->getValue();
+  }
+
+  // section label
+  *out << cgicc::legend("Board_" + board + ": Test Summary").set("style", "color:blue") <<endl;
 
   // results table
   *out << table().set("border", "1") << endl;
@@ -202,86 +300,372 @@ void TestResultsManagerModule::BoardTestSummaryTable(xgi::Input * in, xgi::Outpu
 
   // column headers
   *out << td() << "Test" << td() << endl;
-  *out << td() << "Last Test Time" << td() << endl;
-  *out << td() << "Last Test Result" << td() << endl;
-
+  *out << td() << "Last Tested" << td() << endl;
+  *out << td() << "Result" << td() << endl;
 
   *out << tr() << endl;
 
-  set<string> test_labels = trm_.getTestLabels();
-  // iterate over test labels (types)
-  for(set<string>::iterator j = test_labels.begin(); j != test_labels.end(); ++j)
+  std::set<std::string> test_labels = trm_.getTestLabels();
+
+  // iterate over test labels
+  for(set<string>::iterator i = test_labels.begin(); i != test_labels.end(); ++i)
   {
-    row_iterator test_begin = trm_.getBegin("TestLabel", *j, board_begin, board_end);
-    row_iterator test_end = trm_.getEnd("TestLabel", *j, board_begin, board_end);
+    std::string test_time_s = trm_.getLatestTestTime(board, *i);
+    std::string result = trm_.getTestResult(board,test_time_s);
+    *out << tr() << endl;
 
-    if(test_begin!=test_end)
+    std::stringstream ss;
+    long int test_time;
+    ss << test_time_s;
+    ss >> test_time;
+
+    std::pair<std::string,std::string> n_r = niceResult(result);
+
+    *out << td() << *i << td() << endl; // test
+    if(test_time)
     {
-      *out << tr() << endl;
-
-      // Test Label (link to test type page)
-      *out << td() << endl;
-      *out << form().set("method","GET").set("action", "/" + urn + "/SetPageMode" ) << endl;
-      *out << input().set("type","submit").set("value", *j).set("style", "color:blue") << endl;
-      *out << input().set("type", "hidden").set("value", "2").set("name", "mode") << endl;
-      *out << input().set("type", "hidden").set("value", *j).set("name", "test_label") << endl;
-      *out << form() << endl;
-      *out << td() << endl;
-
-      // Test Time
-      *out << td() << test_begin["TestTime"] << td() << endl;
-
-      // Test Result
-        *out << td() << test_begin["TestResult"] << td() << endl;
-
-      *out << tr() << endl;
+      *out << td() << timeToString(test_time) << td() << endl; // time
+      *out << td().set("style", n_r.second) << n_r.first << td() << endl; // result
     }
+    else
+    {
+      *out << td() << "Never" << td() << endl; // time
+      *out << td() << td() << endl; // result
+    }
+
+    // link to test details
+    *out << td() << endl;
+    *out << a().set("href", "/" + urn + "/TestResultsManagerPage?mode=" + boost::lexical_cast<std::string>((int)TEST_DETAILS)
+        + "&board_label=" + board + "&test_time=" + test_time_s) << endl;
+    *out << "Last Test Details" << endl;
+    *out << a() << endl;
+    *out << td() << endl;
+
+    // link to test list
+    *out << td() << endl;
+    *out << a().set("href", "/" + urn + "/TestResultsManagerPage?mode=" + boost::lexical_cast<std::string>((int)TEST_LIST)
+        + "&board_label=" + board + "&test_label=" + *i) << endl;
+    *out << "Test List" << endl;
+    *out << a() << endl;
+    *out << td() << endl;
+
+    *out << tr() << endl;
   }
 
   *out << table() << endl;
 }
 
-void TestResultsManagerModule::TestDetailsTable(xgi::Input * in, xgi::Output * out)
+void TestResultsManagerModule::TestList(xgi::Input * in, xgi::Output * out)
 {
+  using cgicc::a;
   using cgicc::tr;
   using cgicc::td;
   using cgicc::table;
   using cgicc::form;
   using cgicc::input;
 
-  typedef TestResultsManager::row_iterator row_iterator;
-
+  cgicc::Cgicc cgi(in);
   string urn = app_->getApplicationDescriptor()->getURN();
 
-  *out << cgicc::legend("Board " + trm_.getBoardLabel() + ": " + trm_.getTestLabel() + ":").set("style", "color:blue") <<endl;
+  ///////////////////////////////////////////
+  // Get POST data
+  cgicc::form_iterator name;
 
+  std::string board;
+  name = cgi.getElement("board_label");
+  if(name != cgi.getElements().end())
+  {
+    board = cgi["board_label"]->getValue();
+  }
+
+  std::string test;
+  name = cgi.getElement("test_label");
+  if(name != cgi.getElements().end())
+  {
+    test = cgi["test_label"]->getValue();
+  }
+
+  // section label
+  *out << cgicc::legend("Board_" + board + ": Test History: " + test).set("style", "color:blue") <<endl;
+
+  // table
   *out << table().set("border", "1") << endl;
   *out << tr() << endl;
 
-  *out << td() << "Test Time" << td() << endl;
-  *out << td() << "Test Result" << td() << endl;
-
+  // column headers
+  *out << td() << "Time" << td() << endl;
+  *out << td() << "Result" << td() << endl;
 
   *out << tr() << endl;
 
-  row_iterator board_begin = trm_.getBegin("BoardLabel", trm_.getBoardLabel(), trm_.begin(), trm_.end());
-  row_iterator board_end = trm_.getEnd("BoardLabel", trm_.getBoardLabel(), trm_.begin(), trm_.end());
+  std::vector<std::string> test_times = trm_.getTestTimes(board, test);
 
-  row_iterator test_begin = trm_.getBegin("TestLabel", trm_.getTestLabel(), board_begin, board_end);
-  row_iterator test_end = trm_.getEnd("TestLabel", trm_.getTestLabel(), board_begin, board_end);
-
-  for(row_iterator k = test_begin; k != test_end; ++k)
+  for(int i = test_times.size()-1; i>=0; --i)
   {
+    std::string result = trm_.getTestResult(board,test_times[i]);
     *out << tr() << endl;
 
-    // Test Time
-    *out << td() << k["TestTime"] << td() << endl;
+    std::stringstream ss;
+    long int test_time;
+    ss << test_times[i];
+    ss >> test_time;
 
-    // Test Result
-    *out << td() << k["TestResult"] << td() << endl;
+    std::pair<std::string,std::string> n_r = niceResult(result);
+
+    *out << td() << timeToString(test_time) << td() << endl; // time
+    *out << td().set("style", n_r.second) << n_r.first << td() << endl; // result
+
+    // link to test details
+    *out << td() << endl;
+    *out << a().set("href", "/" + urn + "/TestResultsManagerPage?mode=" + boost::lexical_cast<std::string>((int)TEST_DETAILS)
+        + "&board_label=" + board + "&test_time=" + test_times[i]) << endl;
+    *out << "Test Details" << endl;
+    *out << a() << endl;
+    *out << td() << endl;
 
     *out << tr() << endl;
   }
+
+  *out << table() << endl;
+}
+
+void TestResultsManagerModule::LogDetails(xgi::Input * in, xgi::Output * out)
+{
+  using cgicc::a;
+  using cgicc::tr;
+  using cgicc::td;
+  using cgicc::table;
+  using cgicc::form;
+  using cgicc::input;
+
+  cgicc::Cgicc cgi(in);
+
+  ///////////////////////////////////////////
+  // Get POST data
+  cgicc::form_iterator name;
+
+  std::string board;
+  name = cgi.getElement("board_label");
+  if(name != cgi.getElements().end())
+  {
+    board = cgi["board_label"]->getValue();
+  }
+
+  std::string log_time;
+  name = cgi.getElement("log_time");
+  if(name != cgi.getElements().end())
+  {
+    log_time = cgi["log_time"]->getValue();
+  }
+
+  string urn = app_->getApplicationDescriptor()->getURN();
+
+  // section label
+  *out << cgicc::legend("Board_" + board + ": Log " + log_time + ": Log Details").set("style", "color:blue") <<endl;
+
+  // results table
+  *out << table().set("border", "1") << endl;
+  *out << tr() << endl;
+
+  // column headers
+  *out << td() << "Test" << td() << endl;
+  *out << td() << "Test Time" << td() << endl;
+  *out << td() << "Test Result" << td() << endl;
+
+  *out << tr() << endl;
+
+  std::vector<std::string> test_times = trm_.getLogTestTimes(board, log_time);
+
+  // iterate over test times
+  for(int i=test_times.size()-1; i>=0; --i)
+  {
+    std::string test_name  = trm_.getTestName(board, test_times[i]);
+    std::string test_result = trm_.getTestResult(board, test_times[i]);
+    *out << tr() << endl;
+
+    std::pair<std::string,std::string> n_r = niceResult(test_result);
+
+    *out << td() << test_name << td() << endl; // test
+    *out << td() << test_times[i] << td() << endl; // test time
+    *out << td().set("style", n_r.second) << n_r.first << td() << endl; // result
+
+    // button linking to test details
+    *out << td() << endl;
+    *out << a().set("href", "/" + urn + "/TestResultsManagerPage?mode=" + boost::lexical_cast<std::string>((int)TEST_DETAILS)
+        + "&board_label=" + board + "&test_time=" + test_times[i]) << endl;
+    *out << "Test Details" << endl;
+    *out << a() << endl;
+    *out << td() << endl;
+
+    *out << tr() << endl;
+  }
+
+  *out << table() << endl;
+}
+
+void TestResultsManagerModule::TestDetails(xgi::Input * in, xgi::Output * out)
+{
+  using cgicc::a;
+  using cgicc::tr;
+  using cgicc::td;
+  using cgicc::table;
+  using cgicc::form;
+  using cgicc::input;
+  using cgicc::form_urlencode;
+
+  cgicc::Cgicc cgi(in);
+  string urn = app_->getApplicationDescriptor()->getURN();
+
+  ///////////////////////////////////////////
+  // Get POST data
+  cgicc::form_iterator name;
+
+  std::string board;
+  name = cgi.getElement("board_label");
+  if(name != cgi.getElements().end())
+  {
+    board = cgi["board_label"]->getValue();
+  }
+
+  std::string test_time_s;
+  name = cgi.getElement("test_time");
+  if(name != cgi.getElements().end())
+  {
+    test_time_s = cgi["test_time"]->getValue();
+  }
+
+  std::stringstream ss;
+  long int test_time;
+  ss << test_time_s;
+  ss >> test_time;
+
+  std::string test = trm_.getTestName(board, test_time_s);
+
+  // section label
+  *out << cgicc::legend("Board_" + board + ": Test Details: " + test + ": " + timeToString(test_time)).set("style", "color:blue") <<endl;
+
+  // table
+  *out << table().set("border", "1") << endl;
+  *out << tr() << endl;
+
+  // column headers
+  *out << td() << "Error ID" << td() << endl;
+  *out << td() << "Signal ID" << td() << endl;
+
+  *out << tr() << endl;
+
+  std::vector<TestError> test_errors = trm_.getTestErrors(board, test_time_s);
+
+  for(int i=0; i<test_errors.size(); ++i)
+  {
+    *out << tr() << endl;
+
+    *out << td() << test_errors[i].errorID << td() << endl; // errorID
+    *out << td() << test_errors[i].signalID << td() << endl; // signalID
+
+    // button linking to error details
+    *out << td() << endl;
+    *out << a().set("href", "/" + urn + "/TestResultsManagerPage?mode=" + boost::lexical_cast<std::string>((int)ERROR_DETAILS)
+        + "&board_label=" + board + "&test_time=" + test_time_s
+        + "&error_id=" + test_errors[i].errorID + "&error_description=" + form_urlencode(test_errors[i].errorDescription)
+        + "&signal_id=" + test_errors[i].signalID) << endl;
+    *out << "Error Details" << endl;
+    *out << a() << endl;
+    *out << td() << endl;
+
+    *out << tr() << endl;
+  }
+
+  *out << table() << endl;
+}
+
+void TestResultsManagerModule::ErrorDetails(xgi::Input * in, xgi::Output * out)
+{
+  using cgicc::a;
+  using cgicc::tr;
+  using cgicc::td;
+  using cgicc::table;
+  using cgicc::form;
+  using cgicc::input;
+  using cgicc::form_urldecode;
+
+  cgicc::Cgicc cgi(in);
+  string urn = app_->getApplicationDescriptor()->getURN();
+
+  ///////////////////////////////////////////
+  // Get POST data
+  cgicc::form_iterator name;
+
+  std::string board;
+  name = cgi.getElement("board_label");
+  if(name != cgi.getElements().end())
+  {
+    board = cgi["board_label"]->getValue();
+  }
+
+  std::string test_time_s;
+  name = cgi.getElement("test_time");
+  if(name != cgi.getElements().end())
+  {
+    test_time_s = cgi["test_time"]->getValue();
+  }
+
+  std::string error_id;
+  name = cgi.getElement("error_id");
+  if(name != cgi.getElements().end())
+  {
+    error_id = cgi["error_id"]->getValue();
+  }
+
+  std::string error_description;
+  name = cgi.getElement("error_description");
+  if(name != cgi.getElements().end())
+  {
+    error_description = form_urldecode(cgi["error_description"]->getValue());
+  }
+
+  std::string signal_id;
+  name = cgi.getElement("signal_id");
+  if(name != cgi.getElements().end())
+  {
+    signal_id = cgi["signal_id"]->getValue();
+  }
+
+  //std::string signalDetails = getsSignalDetails();
+  std::string signal_details = "";
+
+  std::stringstream ss;
+  long int test_time;
+  ss << test_time_s;
+  ss >> test_time;
+
+  std::string test = trm_.getTestName(board, test_time_s);
+
+  // section label
+  *out << cgicc::legend("Board_" + board + ": " + test + ": " + timeToString(test_time) + ": Error Details").set("style", "color:blue") <<endl;
+
+  // table
+  *out << table().set("border", "1") << endl;
+
+  *out << tr() << endl;
+  *out << td() << "Error ID" << td() << endl;
+  *out << td() << error_id << td() << endl;
+  *out << tr() << endl;
+
+  *out << tr() << endl;
+  *out << td() << "Error Description" << td() << endl;
+  *out << td() << error_description << td() << endl;
+  *out << tr() << endl;
+
+  *out << tr() << endl;
+  *out << td() << "Signal ID" << td() << endl;
+  *out << td() << signal_id << td() << endl;
+  *out << tr() << endl;
+
+  *out << tr() << endl;
+  *out << td() << "Signal Details" << td() << endl;
+  *out << td() << signal_details << td() << endl;
+  *out << tr() << endl;
 
   *out << table() << endl;
 }
@@ -299,50 +683,35 @@ void TestResultsManagerModule::ProcessLogDirectory(xgi::Input * in, xgi::Output 
     cout << __func__ << ":  path " << p.string() << endl;
     trm_.processDirectory(p.string());
   }
-
   this->TestResultsManagerPage(in,out);
 }
 
-void TestResultsManagerModule::SetPageMode(xgi::Input * in, xgi::Output * out)
+std::pair<std::string,std::string> TestResultsManagerModule::niceResult(std::string result_orig)
 {
-  cgicc::Cgicc cgi(in);
-  cgicc::form_iterator name = cgi.getElement("tmb");
+  std::stringstream s1;
+  int result;
+  s1 << result_orig;
+  s1 >> result;
 
-  string s = "";
-  int mode = 0;
+  std::stringstream s2;
+  std::string style = "color:";
 
-  name = cgi.getElement("mode");
-  if(name != cgi.getElements().end())
+  if(result == 0)
   {
-    s = cgi["mode"]->getValue();
-    mode = atoi(s.c_str());
+    s2 << "Pass";
+    style += "green";
   }
-  pageMode_ = mode;
-
-  name = cgi.getElement("board_label");
-  if(name != cgi.getElements().end())
+  else if(result < 1)
   {
-    s = cgi["board_label"]->getValue();
-    trm_.setBoardLabel(s);
+    s2 << "Untested";
+    style += "blue";
   }
-
-  name = cgi.getElement("test_label");
-  if(name != cgi.getElements().end())
+  else
   {
-    s = cgi["test_label"]->getValue();
-    trm_.setTestLabel(s);
+    s2 << "Fail: " << result;
+    style += "red";
   }
-
-  name = cgi.getElement("time");
-  if(name != cgi.getElements().end())
-  {
-    s = cgi["time"]->getValue();
-    trm_.setTime(atoi(s.c_str()));
-  }
-
-
-
-  this->TestResultsManagerPage(in,out);
+  return std::pair<std::string,std::string>(s2.str(),style);
 }
 
 } } //Namespaces

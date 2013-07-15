@@ -267,7 +267,7 @@ int FirmwareTester::CheckStatusConnector(int const * command_array, int const le
         out() << "ON";
       else
       {
-        er.signalID << "FIBER" << stat_index-1;
+        er.signalID << label << stat_index-1;
         er.errorID << er.signalID.str() << "_OFF";
         er.errorDescription << "Fiber" << stat_index-1 << " is not enabled.";
         ReportError(er);
@@ -275,7 +275,7 @@ int FirmwareTester::CheckStatusConnector(int const * command_array, int const le
       }
       if(errorcount)
       {
-        er.signalID << "FIBER" << stat_index-1;
+        er.signalID << label << stat_index-1;
         er.errorID << er.signalID.str() << "_HAS_ERRORS";
         er.errorDescription << "Fiber" << stat_index-1 << " has " << errorcount << " errors.";
         ReportError(er);
@@ -383,6 +383,7 @@ int FirmwareTester::TestFiberConnector()
   }
   if(error)
   {
+    CheckStatusConnector(FIBER_COMMANDS, LENGTH_FIBER_COMMANDS, "Fiber", true);
     errcode = 1;
     return errcode;
   }
@@ -517,6 +518,7 @@ int FirmwareTester::CheckFirmwareTestStatus()
     out() << "ON" << endl;
   else
     out() << "OFF" << endl;
+/*
 
   // Check if cable test is running
   out() << "Cable Firmware Test Status: ";
@@ -526,6 +528,7 @@ int FirmwareTester::CheckFirmwareTestStatus()
     out() << "OFF" << endl;
   // Check for errors in cable test
   ok &= !(CheckStatusConnector(CABLE_COMMANDS, LENGTH_CABLE_COMMANDS, "Cable"));
+*/
 
   // Check if fiber test is running
   out() << "Fiber Firmware Test Status: ";
