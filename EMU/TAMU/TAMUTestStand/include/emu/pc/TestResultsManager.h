@@ -63,7 +63,6 @@ namespace emu { namespace pc {
 
 class TestResultsManager
 {
-  static const bool TestResultsManagerCallTrace = true;
 public:
   struct TestError {
     std::string errorID;
@@ -83,6 +82,7 @@ private:
 
   void refreshBoardLabels();
   void refreshTestLabels();
+  void evaluateToString(std::vector<std::string> &, std::string const &, std::string const &);
 
 public:
 
@@ -99,29 +99,28 @@ public:
     processDirectory(dir_name);
   };
 
-
   /// Process a directory of log files for test results
-  void processDirectory(const std::string dir_name);
+  void processDirectory(std::string const & dir_name);
 
   std::set<std::string> getBoardLabels();
 
   std::set<std::string> getTestLabels();
 
-  std::vector<std::string> getTestTimes(std::string, std::string);
+  std::vector<std::string> getTestTimes(std::string const &, std::string const &);
 
-  std::string getLatestTestTime(std::string, std::string);
+  std::string getLatestTestTime(std::string const &, std::string const &);
 
-  std::vector<std::string> getBoardLogTimes(std::string);
+  std::vector<std::string> getBoardLogTimes(std::string const &);
 
-  std::string getLatestBoardLogTime(std::string);
+  std::string getLatestBoardLogTime(std::string const &);
 
-  std::vector<std::string> getLogTestTimes(std::string, std::string);
+  std::vector<std::string> getLogTestTimes(std::string const &, std::string const &);
 
-  std::string getTestName(std::string, std::string);
+  std::string getTestName(std::string const &, std::string const &);
 
-  std::string getTestResult(std::string, std::string);
+  std::string getTestResult(std::string const &, std::string const &);
 
-  std::vector<TestError> getTestErrors(std::string, std::string);
+  std::vector<TestError> getTestErrors(std::string const &, std::string const &);
 };
 
 } } //namespaces

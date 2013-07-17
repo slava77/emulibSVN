@@ -15,15 +15,29 @@ using std::pair;
 using std::multimap;
 using std::vector;
 
-void TestResultsManager::processDirectory(const std::string dir_name)
+void TestResultsManager::evaluateToString(std::vector<std::string> & out, std::string const & board, std::string const & xpath)
 {
-  if(TestResultsManagerCallTrace) cout << __func__ << " " << dir_name << endl;
+  XALAN_USING_XALAN(NodeRefListBase)
+  XALAN_USING_XALAN(XObjectPtr)
+  XALAN_USING_XALAN(XalanDOMChar)
+  XALAN_USING_XALAN(XPathEvaluator)
+  XPathEvaluator eval;
+  XObjectPtr xptr = xm_.evaluate(board, eval, xpath);
+  if(xptr.null()) return;
+  const NodeRefListBase & nodes = xptr->nodeset();
+  for(size_t i=0, len = nodes.getLength(); i<len; ++i)
+  {
+    out.push_back(XMLString::transcode(nodes.item(i)->getNodeValue().c_str()));
+  }
+}
+
+void TestResultsManager::processDirectory(std::string const & dir_name)
+{
   xm_.loadFiles(dir_name);
 }
 
 void TestResultsManager::refreshBoardLabels()
 {
-  if(TestResultsManagerCallTrace) cout << __func__ << endl;
   xm_.loadFiles(currentPath_);
   boardLabels_ = xm_.getNamesList();
 }
@@ -31,9 +45,9 @@ void TestResultsManager::refreshBoardLabels()
 void TestResultsManager::refreshTestLabels()
 {
   XALAN_USING_XALAN(NodeRefListBase)
-  XALAN_USING_XALAN(XObjectPtr);
-  XALAN_USING_XALAN(XalanDOMChar);
-  XALAN_USING_XALAN(XPathEvaluator);
+  XALAN_USING_XALAN(XObjectPtr)
+  XALAN_USING_XALAN(XalanDOMChar)
+  XALAN_USING_XALAN(XPathEvaluator)
   XPathEvaluator eval;
   std::set<std::string>::iterator it = boardLabels_.begin();
   for(; it!=boardLabels_.end(); ++it)
@@ -59,44 +73,27 @@ std::set<std::string> TestResultsManager::getTestLabels()
   return testLabels_;
 }
 
-std::vector<std::string> TestResultsManager::getTestTimes(std::string board, std::string test)
+std::vector<std::string> TestResultsManager::getTestTimes(std::string const & board, std::string const & test)
 {
-  std::vector<std::string> times;
-  XALAN_USING_XALAN(NodeRefListBase)
-  XALAN_USING_XALAN(XObjectPtr);
-  XALAN_USING_XALAN(XalanDOMChar);
-  XALAN_USING_XALAN(XPathEvaluator);
-  XPathEvaluator eval;
+  std::vector<std::string> values;
   std::stringstream xpath;
   xpath << "/root/log/test[@label='" << test << "']/@time";
-  XObjectPtr xptr = xm_.evaluate(board, eval, xpath.str());
-  if(xptr.null()) return times;
-  const NodeRefListBase & nodes = xptr->nodeset();
-  for(size_t i=0, len = nodes.getLength(); i<len; ++i)
-  {
-    times.push_back(XMLString::transcode(nodes.item(i)->getNodeValue().c_str()));
-  }
-  return times;
+  evaluateToString(values, board, xpath.str());
+  return values;
 }
 
-std::string TestResultsManager::getLatestTestTime(std::string board, std::string test)
+std::string TestResultsManager::getLatestTestTime(std::string const & board, std::string const & test)
 {
-  long long max_time = 0;
-  XALAN_USING_XALAN(NodeRefListBase)
-  XALAN_USING_XALAN(XObjectPtr);
-  XALAN_USING_XALAN(XalanDOMChar);
-  XALAN_USING_XALAN(XPathEvaluator);
-  XPathEvaluator eval;
+  std::vector<std::string> values;
   std::stringstream xpath;
   xpath << "/root/log/test[@label='" << test << "']/@time";
-  XObjectPtr xptr = xm_.evaluate(board, eval, xpath.str());
-  if(xptr.null()) return "";
-  const NodeRefListBase & nodes = xptr->nodeset();
-  for(size_t i=0, len = nodes.getLength(); i<len; ++i)
+  evaluateToString(values, board, xpath.str());
+  long int max_time = 0;
+  for(size_t i=0, len = values.size(); i<len; ++i)
   {
     std::stringstream ss;
-    ss << XMLString::transcode(nodes.item(i)->getNodeValue().c_str());
-    long long time;
+    ss << values[i];
+    long int time;
     ss >> time;
     if(time > max_time || max_time == 0)
     {
@@ -108,44 +105,27 @@ std::string TestResultsManager::getLatestTestTime(std::string board, std::string
   return ss.str();
 }
 
-std::vector<std::string> TestResultsManager::getBoardLogTimes(std::string board)
+std::vector<std::string> TestResultsManager::getBoardLogTimes(std::string const & board)
 {
-  std::vector<std::string> times;
-  XALAN_USING_XALAN(NodeRefListBase)
-  XALAN_USING_XALAN(XObjectPtr);
-  XALAN_USING_XALAN(XalanDOMChar);
-  XALAN_USING_XALAN(XPathEvaluator);
-  XPathEvaluator eval;
+  std::vector<std::string> values;
   std::stringstream xpath;
   xpath << "/root/log/@time";
-  XObjectPtr xptr = xm_.evaluate(board, eval, xpath.str());
-  if(xptr.null()) return times;
-  const NodeRefListBase & nodes = xptr->nodeset();
-  for(size_t i=0, len = nodes.getLength(); i<len; ++i)
-  {
-    times.push_back(XMLString::transcode(nodes.item(i)->getNodeValue().c_str()));
-  }
-  return times;
+  evaluateToString(values, board, xpath.str());
+  return values;
 }
 
-std::string TestResultsManager::getLatestBoardLogTime(std::string board)
+std::string TestResultsManager::getLatestBoardLogTime(std::string const & board)
 {
-  long long max_time = 0;
-  XALAN_USING_XALAN(NodeRefListBase)
-  XALAN_USING_XALAN(XObjectPtr);
-  XALAN_USING_XALAN(XalanDOMChar);
-  XALAN_USING_XALAN(XPathEvaluator);
-  XPathEvaluator eval;
+  std::vector<std::string> values;
   std::stringstream xpath;
   xpath << "/root/log/@time";
-  XObjectPtr xptr = xm_.evaluate(board, eval, xpath.str());
-  if(xptr.null()) return "";
-  const NodeRefListBase & nodes = xptr->nodeset();
-  for(size_t i=0, len = nodes.getLength(); i<len; ++i)
+  evaluateToString(values, board, xpath.str());
+  long int max_time = 0;
+  for(size_t i=0, len = values.size(); i<len; ++i)
   {
     std::stringstream ss;
-    ss << XMLString::transcode(nodes.item(i)->getNodeValue().c_str());
-    long long time;
+    ss << values[i];
+    long int time;
     ss >> time;
     if(time > max_time || max_time == 0)
     {
@@ -157,73 +137,46 @@ std::string TestResultsManager::getLatestBoardLogTime(std::string board)
   return ss.str();
 }
 
-std::vector<std::string> TestResultsManager::getLogTestTimes(std::string board, std::string log_time)
+std::vector<std::string> TestResultsManager::getLogTestTimes(std::string const & board, std::string const & log_time)
 {
-  std::vector<std::string> times;
-  XALAN_USING_XALAN(NodeRefListBase)
-  XALAN_USING_XALAN(XObjectPtr);
-  XALAN_USING_XALAN(XalanDOMChar);
-  XALAN_USING_XALAN(XPathEvaluator);
-  XPathEvaluator eval;
+  std::vector<std::string> values;
   std::stringstream xpath;
   xpath << "/root/log" << "[@time='" << log_time << "']/test/@time";
-  XObjectPtr xptr = xm_.evaluate(board, eval, xpath.str());
-  if(xptr.null()) return times;
-  const NodeRefListBase & nodes = xptr->nodeset();
-  for(size_t i=0, len = nodes.getLength(); i<len; ++i)
-  {
-    times.push_back(XMLString::transcode(nodes.item(i)->getNodeValue().c_str()));
-  }
-  return times;
+  evaluateToString(values, board, xpath.str());
+  return values;
 }
 
-std::string TestResultsManager::getTestName(std::string board, std::string test_time)
+std::string TestResultsManager::getTestName(std::string const & board, std::string const & test_time)
 {
-  XALAN_USING_XALAN(NodeRefListBase)
-  XALAN_USING_XALAN(XObjectPtr);
-  XALAN_USING_XALAN(XalanDOMChar);
-  XALAN_USING_XALAN(XPathEvaluator);
-  XPathEvaluator eval;
+  std::vector<std::string> values;
   std::stringstream xpath;
   xpath << "/root/log/test[@time='" << test_time << "']/@label";
-  XObjectPtr xptr = xm_.evaluate(board, eval, xpath.str());
-  if(xptr.null()) return "";
-  const NodeRefListBase & nodes = xptr->nodeset();
-  if(nodes.getLength() > 0)
-  {
-    return XMLString::transcode(nodes.item(0)->getNodeValue().c_str());
-  }
+  evaluateToString(values, board, xpath.str());
+  if(values.size() > 0)
+    return values[0];
   else
     return "";
 }
 
-std::string TestResultsManager::getTestResult(std::string board, std::string test_time)
+std::string TestResultsManager::getTestResult(std::string const & board, std::string const & test_time)
 {
-  XALAN_USING_XALAN(NodeRefListBase)
-  XALAN_USING_XALAN(XObjectPtr);
-  XALAN_USING_XALAN(XalanDOMChar);
-  XALAN_USING_XALAN(XPathEvaluator);
-  XPathEvaluator eval;
+  std::vector<std::string> values;
   std::stringstream xpath;
   xpath << "/root/log/test[@time='" << test_time << "']/result/@value";
-  XObjectPtr xptr = xm_.evaluate(board, eval, xpath.str());
-  if(xptr.null()) return "";
-  const NodeRefListBase & nodes = xptr->nodeset();
-  if(nodes.getLength() > 0)
-  {
-    return XMLString::transcode(nodes.item(0)->getNodeValue().c_str());
-  }
+  evaluateToString(values, board, xpath.str());
+  if(values.size() > 0)
+    return values[0];
   else
     return "";
 }
 
-std::vector<TestResultsManager::TestError> TestResultsManager::getTestErrors(std::string board, std::string test_time)
+std::vector<TestResultsManager::TestError> TestResultsManager::getTestErrors(std::string const & board, std::string const & test_time)
 {
   std::vector<TestError> errors;
     XALAN_USING_XALAN(NodeRefListBase)
-    XALAN_USING_XALAN(XObjectPtr);
-    XALAN_USING_XALAN(XalanDOMChar);
-    XALAN_USING_XALAN(XPathEvaluator);
+    XALAN_USING_XALAN(XObjectPtr)
+    XALAN_USING_XALAN(XalanDOMChar)
+    XALAN_USING_XALAN(XPathEvaluator)
     XPathEvaluator eval;
     std::stringstream xpath;
     xpath << "/root/log/test[@time='" << test_time << "']/error";
