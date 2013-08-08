@@ -24,9 +24,11 @@ const string HV_PRIMARY_MON_DP_TYPE = \"CscHvPrimaryMon\";
 
 const string LV_DP_TYPE = \"CscLvChamber\";
 const string LV_MON_DP_TYPE = \"CscLvChamberMon\";
+const string LV_ME11_MON_DP_TYPE = \"CscMe11LvChamberMon\";
 
 const string TEMP_DP_TYPE = \"CscTempChamber\";
 const string TEMP_MON_DP_TYPE = \"CscTempChamberMon\";
+const string TEMP_ME11_MON_DP_TYPE = \"CscMe11TempChamberMon\";
 
 const string DDU_DP_TYPE = \"CscFedDdu\";
 const string DDU_MON_DP_TYPE = \"CscFedDduMon\";
@@ -66,10 +68,7 @@ const int DIM_MANAGER_NUM_START = 30;
 dyn_mapping getChambersToCreate() {
   mapping station = getStationToCreate();
   
-  if (station[\"side\"] != \"ISR\") {
-    dyn_mapping ret = emuDev_getAllChambersForStation(station[\"side\"], station[\"station\"]);
-    return ret;
-  } else { // development env
+  if (station[\"side\"] == \"ISR\") { // development area
     dyn_mapping ret;
     ret[1][\"side\"] = \"M\";
     ret[1][\"station\"] = \"1\";
@@ -87,6 +86,37 @@ dyn_mapping getChambersToCreate() {
     ret[3][\"chamberNumber\"] = \"10\";
     
     return ret;
+  } else if (station[\"side\"] == \"SX5_STEP\") { // ME1/1 refurbishment area at SX5, STEP testing side
+    dyn_mapping ret;
+    
+    // STEP testing area (we'll call it minus side, so ME-1/1)    
+    for (int i=1; i <= 2; i++) {
+      ret[i][\"side\"] = \"M\";
+      ret[i][\"station\"] = \"1\";
+      ret[i][\"ring\"] = \"1\";
+      string chamberNumStr;
+      sprintf(chamberNumStr, \"%.2d\", i);      
+      ret[i][\"chamberNumber\"] = chamberNumStr;
+    }
+    
+    return ret;
+  } else if (station[\"side\"] == \"SX5_Long_Term_Test\") { // ME1/1 refurbishment area at SX5
+    dyn_mapping ret;
+
+    // Long term testing area (we'll call it plus side, so ME+1/1)        
+    for (int i=1; i <= 6; i++) {
+      ret[i][\"side\"] = \"P\";
+      ret[i][\"station\"] = \"1\";
+      ret[i][\"ring\"] = \"1\";
+      string chamberNumStr;
+      sprintf(chamberNumStr, \"%.2d\", i);      
+      ret[i][\"chamberNumber\"] = chamberNumStr;
+    }
+    
+    return ret;
+  } else {
+    dyn_mapping ret = emuDev_getAllChambersForStation(station[\"side\"], station[\"station\"]);
+    return ret;
   }
   
 }
@@ -97,8 +127,16 @@ mapping getStationToCreate() {
   mapping ret;
   emu_info(\"Selected station = \" + stationStr);
 
+  // special case for dev area
   if (stationStr == \"ISR\") {
     ret[\"side\"] = \"ISR\";
+    ret[\"station\"] = \"\";
+    return ret;
+  }
+  
+  // special case for ME1/1 refurbishment area at SX5
+  if (strpos(stationStr, \"SX5\") == 0) {
+    ret[\"side\"] = stationStr;
     ret[\"station\"] = \"\";
     return ret;
   }
@@ -304,7 +342,11 @@ void createX2PDevices(dyn_string &ex) {
 
     // create LV Mon
     
-    emu_createDevice(LV_MON_DP_TYPE, \"Mon\", ex, mainLvDevice);
+    string lvMonDpType = LV_MON_DP_TYPE;
+    if ((chamber[\"station\"] == \"1\") && (chamber[\"ring\"] == \"1\")) { // ME1/1
+      lvMonDpType = LV_ME11_MON_DP_TYPE;
+    }
+    emu_createDevice(lvMonDpType, \"Mon\", ex, mainLvDevice);
     if (emu_checkException(ex)) { return; }
 
     // create main Temperature device
@@ -314,7 +356,11 @@ void createX2PDevices(dyn_string &ex) {
 
     // create Temperature Mon
     
-    emu_createDevice(TEMP_MON_DP_TYPE, \"Mon\", ex, mainTempDevice);
+    string tempMonDpType = TEMP_MON_DP_TYPE;
+    if ((chamber[\"station\"] == \"1\") && (chamber[\"ring\"] == \"1\")) { // ME1/1
+      tempMonDpType = TEMP_ME11_MON_DP_TYPE;
+    }
+    emu_createDevice(tempMonDpType, \"Mon\", ex, mainTempDevice);
     if (emu_checkException(ex)) { return; }
 
   }
@@ -709,6 +755,8 @@ LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
   
   // add special values
   comboStation.appendItem(\"ISR\");
+  comboStation.appendItem(\"SX5_STEP\");
+  comboStation.appendItem(\"SX5_Long_Term_Test\");
 }" 0
 
 E
@@ -1280,6 +1328,7 @@ T
 1
 LANG:1 21 Create default alerts
 "const float EMU_ALERT_CFEB_VOLTAGE_DEVIATION_TOLERANCE = 0.2;
+const float EMU_ALERT_DCFEB_VOLTAGE_DEVIATION_TOLERANCE = 0.1;
 const float EMU_ALERT_ALCT_VOLTAGE_DEVIATION_TOLERANCE = 0.2;
 
 main()
@@ -1289,10 +1338,12 @@ main()
   // summary
   
   emu_info(\"creating LV summary alerts...\");
+  setSummaryAlerts(\"CscMe11LvChamberMon\", \"LV OK\", \"LV Error\", ex);
   setSummaryAlerts(\"CscLvChamber\", \"LV OK\", \"LV Error\", ex);
   if (emu_checkException(ex)) { return; }
 
   emu_info(\"creating Temperature summary alerts...\");
+  setSummaryAlerts(\"CscMe11TempChamberMon\", \"Temperature OK\", \"Temperature Error\", ex);
   setSummaryAlerts(\"CscTempChamber\", \"Temperature OK\", \"Temperature Error\", ex);
   if (emu_checkException(ex)) { return; }
 
@@ -1337,9 +1388,13 @@ main()
   emu_info(\"activating all summary alerts\");
   fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscLvChamberMon\"), ex);
   if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscMe11LvChamberMon\"), ex);
+  if (emu_checkException(ex)) { return; }
   fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscLvChamber\"), ex);
   if (emu_checkException(ex)) { return; }
   fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscTempChamberMon\"), ex);
+  if (emu_checkException(ex)) { return; }
+  fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscMe11TempChamberMon\"), ex);
   if (emu_checkException(ex)) { return; }
   fwAlertConfig_activateMultiple(dpNames(\"*.\", \"CscTempChamber\"), ex);
   if (emu_checkException(ex)) { return; }
@@ -1353,17 +1408,21 @@ main()
 
 void setSummaryAlerts(string type, string okText, string badText, dyn_string &ex) {
   
-  dyn_string dps = dpNames(\"*.\", type + \"Mon\");
-  fwAlertConfig_setMultiple(dps,
-                            DPCONFIG_SUM_ALERT,
-                            makeDynString(okText, badText),
-                            makeDynFloat(),
-                            makeDynString(\"_fwErrorNack\"),
-                            makeDynString(),
-                            \"\", makeDynString(), \"\",
-                            ex);
-  if (emu_checkException(ex)) { return; }
-
+  dyn_string dps;
+  
+  if (strpos(type, \"Mon\") < 0) {  
+    dps = dpNames(\"*.\", type + \"Mon\");
+    fwAlertConfig_setMultiple(dps,
+                              DPCONFIG_SUM_ALERT,
+                              makeDynString(okText, badText),
+                              makeDynFloat(),
+                              makeDynString(\"_fwErrorNack\"),
+                              makeDynString(),
+                              \"\", makeDynString(), \"\",
+                              ex);
+    if (emu_checkException(ex)) { return; }
+  }
+  
   dps = dpNames(\"*.\", type);
   fwAlertConfig_setMultiple(dps,
                             DPCONFIG_SUM_ALERT,
@@ -1375,12 +1434,14 @@ void setSummaryAlerts(string type, string okText, string badText, dyn_string &ex
                             ex);
   if (emu_checkException(ex)) { return; }
 
-  for (int i=1; i <= dynlen(dps); i++) {
-    fwAlertConfig_addDpInAlertSummary(dps[i],
-                                      dpSubStr(dps[i], DPSUB_SYS_DP) + \"/Mon.\",
-                                      ex,
-                                      false);
-    if (emu_checkException(ex)) { return; }
+  if (strpos(type, \"Mon\") < 0) {  
+    for (int i=1; i <= dynlen(dps); i++) {
+      fwAlertConfig_addDpInAlertSummary(dps[i],
+                                        dpSubStr(dps[i], DPSUB_SYS_DP) + \"/Mon.\",
+                                        ex,
+                                        false);
+      if (emu_checkException(ex)) { return; }
+    }
   }
 }
 
@@ -1446,6 +1507,66 @@ void setCfebLvAlerts(dyn_string &ex) {
   setDefaultValueAndRange(dps, 3.0, dpsToIgnore);
 }    
 
+// DCFEB LV
+void setCfebLvAlerts(dyn_string &ex) {
+  dyn_string dps, texts, classes;
+  dyn_float limits;
+
+  // 3.0V voltage
+  dps = dpNames(\"*CSC_ME*.dcfeb.v30.*\", \"CscMe11LvChamberMon\");
+  texts = makeDynString(\"DCFEB 3.0V voltage is too low\", \"\", \"DCFEB 3.0V voltage is too high\");
+  limits = _getRange(3.0, EMU_ALERT_DCFEB_VOLTAGE_DEVIATION_TOLERANCE);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 3.0);
+    
+  // 4.0V voltage
+  dps = dpNames(\"*CSC_ME*.dcfeb.v40.*\", \"CscMe11LvChamberMon\");
+  texts = makeDynString(\"DCFEB 4.0V voltage is too low\", \"\", \"DCFEB 4.0V voltage is too high\");
+  limits = _getRange(4.0, EMU_ALERT_DCFEB_VOLTAGE_DEVIATION_TOLERANCE);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 4.0);
+  
+  // 5.5V voltage
+  dps = dpNames(\"*CSC_ME*.dcfeb.v55.*\", \"CscMe11LvChamberMon\");
+  texts = makeDynString(\"DCFEB 5.5V voltage is too low\", \"\", \"DCFEB 5.5V voltage is too high\");
+  limits = _getRange(5.5, EMU_ALERT_DCFEB_VOLTAGE_DEVIATION_TOLERANCE);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 5.5);
+  
+  // 3.0V current
+  dps = dpNames(\"*CSC_ME*.dcfeb.c30.*\", \"CscMe11LvChamberMon\");
+  texts = makeDynString(\"DCFEB 3.0V current is too low\", \"\", \"DCFEB 3.0V current is too high\");
+  limits = makeDynFloat(1.0, 4.5);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 3.5);
+    
+  // 4.0V current
+  dps = dpNames(\"*CSC_ME*.dcfeb.c40.*\", \"CscMe11LvChamberMon\");
+  texts = makeDynString(\"DCFEB 4.0V current is too low\", \"\", \"DCFEB 4.0V current is too high\");
+  limits = makeDynFloat(0.1, 2);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 0.7);
+  
+  // 5.5V current
+  dps = dpNames(\"*CSC_ME*.dcfeb.c55.*\", \"CscMe11LvChamberMon\");
+  texts = makeDynString(\"DCFEB 5.5V current is too low\", \"\", \"DCFEB 5.5V current is too high\");
+  limits = makeDynFloat(0.1, 4);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 2.0);
+}    
+
 // ALCT LV
 void setAlctLvAlerts(dyn_string &ex) {
   dyn_string dps, texts, classes;
@@ -1453,6 +1574,7 @@ void setAlctLvAlerts(dyn_string &ex) {
 
   // 1.8V voltage
   dps = dpNames(\"*CSC_ME*.alct.v18\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.alct.v18\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"ALCT 1.8V voltage is too low\", \"\", \"ALCT 1.8V voltage is too high\");
   limits = _getRange(1.8, EMU_ALERT_ALCT_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1462,6 +1584,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   
   // 3.3V voltage
   dps = dpNames(\"*CSC_ME*.alct.v33\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.alct.v33\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"ALCT 3.3V voltage is too low\", \"\", \"ALCT 3.3V voltage is too high\");
   limits = _getRange(3.3, EMU_ALERT_ALCT_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1471,6 +1594,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   
   // 5.5V voltage
   dps = dpNames(\"*CSC_ME*.alct.v55\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.alct.v55\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"ALCT 5.5V voltage is too low\", \"\", \"ALCT 5.5V voltage is too high\");
   limits = _getRange(5.5, EMU_ALERT_ALCT_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1480,6 +1604,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   
   // 5.6V voltage
   dps = dpNames(\"*CSC_ME*.alct.v56\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.alct.v56\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"ALCT 5.6V voltage is too low\", \"\", \"ALCT 5.6V voltage is too high\");
   limits = _getRange(5.5, EMU_ALERT_ALCT_VOLTAGE_DEVIATION_TOLERANCE);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1489,6 +1614,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   
   // 1.8V current
   dps = dpNames(\"*CSC_ME*.alct.c18\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.alct.c18\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"ALCT 1.8V current is too low\", \"\", \"ALCT 1.8V current is too high\");
   limits = makeDynFloat(0, 4.2);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1498,6 +1624,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   
   // 3.3V current
   dps = dpNames(\"*CSC_ME*.alct.c33\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.alct.c33\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"ALCT 3.3V current is too low\", \"\", \"ALCT 3.3V current is too high\");
   limits = makeDynFloat(0, 5);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1507,6 +1634,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   
   // 5.5V current
   dps = dpNames(\"*CSC_ME*.alct.c55\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.alct.c55\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"ALCT 5.5V current is too low\", \"\", \"ALCT 5.5V current is too high\");
   limits = makeDynFloat(0, 4.2);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1516,6 +1644,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   
   // 5.6V current
   dps = dpNames(\"*CSC_ME*.alct.c56\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.alct.c56\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"ALCT 5.6V current is too low\", \"\", \"ALCT 5.6V current is too high\");
   limits = makeDynFloat(0, 4.2);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1524,7 +1653,7 @@ void setAlctLvAlerts(dyn_string &ex) {
   setDefaultValueAndRange(dps, 2.1);
 }
 
-// TMB LV
+// TMB & OTMB LV
 void setTmbLvAlerts(dyn_string &ex) {
 }
 
@@ -1535,6 +1664,7 @@ void setLvdbLvAlerts(dyn_string &ex) {
 
   // 7.5V analog
   dps = dpNames(\"*CSC_ME*.lvdb.v7Analog\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.lvdb.v7Analog\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"LVDB 7.5V analog voltage is too low\", \"\", \"LVDB 7.5V analog voltage is too high\");
   limits = makeDynFloat(3.5, 10.5);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1544,6 +1674,7 @@ void setLvdbLvAlerts(dyn_string &ex) {
   
   // 7.5V digital
   dps = dpNames(\"*CSC_ME*.lvdb.v7Digital\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.lvdb.v7Digital\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"LVDB 7.5V digital voltage is too low\", \"\", \"LVDB 7.5V digital voltage is too high\");
   limits = makeDynFloat(3.5, 10.5);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1570,6 +1701,7 @@ void setTemperatureAlerts(dyn_string &ex) {
   
   // ALCT
   dps = dpNames(\"*CSC_ME*.alct.v1\", \"CscTempChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.alct.v1\", \"CscMe11TempChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"ALCT temperature is too low\", \"\", \"ALCT temperature is too high\");
   limits = makeDynFloat(10, 31);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
@@ -1585,6 +1717,45 @@ void setTemperatureAlerts(dyn_string &ex) {
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
   if (emu_checkException(ex)) { return; }
   setDefaultValueAndRange(dps, 25);
+
+// ME1/1 new electronics  
+  
+  // ODMB
+  dps = dpNames(\"*CSC_ME*.odmb.v1\", \"CscMe11TempChamberMon\");
+  texts = makeDynString(\"ODMB temperature is too low\", \"\", \"ODMB temperature is too high\");
+  limits = makeDynFloat(10, 60);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 25);
+
+  // OTMB temperature warning
+  dps = dpNames(\"*CSC_ME*.otmb.v1\", \"CscMe11TempChamberMon\");
+  texts = makeDynString(\"OTMB temperature is too low\", \"\", \"OTMB temperature is too high (warning level)\", \"OTMB temperature is too high (critical level)\");
+  limits = makeDynFloat(10, 67, 72);
+  classes = makeDynString(\"_fwWarningNack\", \"\", \"_fwWarningNack\", \"_fwFatalAck\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 25);
+
+  // DCFEB FPGA
+  dps = dpNames(\"*CSC_ME*.dcfeb.fpga.v*\", \"CscMe11TempChamberMon\");
+  texts = makeDynString(\"DCFEB FPGA temperature is too low\", \"\", \"DCFEB FPGA temperature is too high\");
+  limits = makeDynFloat(10, 50);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 25, dpsToIgnore);
+  
+  // LVDB
+  dps = dpNames(\"*CSC_ME*.lvdb.v1\", \"CscMe11TempChamberMon\");
+  texts = makeDynString(\"LVDB temperature is too low\", \"\", \"LVDB temperature is too high\");
+  limits = makeDynFloat(10, 40);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 25, dpsToIgnore);
+  
 }
 
 // FED
@@ -1631,6 +1802,7 @@ void setCcbBitsAlerts(dyn_string &ex) {
   dyn_float limits;
 
   dps = dpNames(\"*CSC_ME*.ccb_bits\", \"CscLvChamberMon\");
+  emu_dynAppend(dps, dpNames(\"*CSC_ME*.ccb_bits\", \"CscMe11LvChamberMon\")); // Add the ME1/1 types as well
   texts = makeDynString(\"\", \"FPGA not configured\", \"CCB not configured\");
   limits = makeDynFloat(1, 128);
   classes = makeDynString(\"\", \"_fwErrorNack\", \"_fwErrorNack_70\");
@@ -1714,8 +1886,10 @@ LANG:1 18 Delete all X2P DPs
 {
   deleteAll(\"*\", \"CscLvChamber\");
   deleteAll(\"*\", \"CscLvChamberMon\");
+  deleteAll(\"*\", \"CscMe11LvChamberMon\");
   deleteAll(\"*\", \"CscTempChamber\");
   deleteAll(\"*\", \"CscTempChamberMon\");
+  deleteAll(\"*\", \"CscMe11TempChamberMon\");
   deleteAll(\"*\", \"CscFedDdu\");
   deleteAll(\"*\", \"CscFedDduMon\");
   
@@ -1766,7 +1940,7 @@ main()
   }
   
   if (chkSaveX2P.state(0)) {
-    emuconfdb_saveHvDevices(editVersion.text, ex, chkJustPrint.state(0), saveOptions);
+    emuconfdb_saveX2pDevices(editVersion.text, ex, chkJustPrint.state(0), saveOptions);
   }
   
   emu_info(\"DONE saving devices to conf DB as version \" + editVersion.text);
