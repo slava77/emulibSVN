@@ -251,11 +251,19 @@ string getHvLvDpName(mapping hvLvPsu) {
 }
 
 string getLvDimServiceName(mapping chamber) {
-  return \"LV_1_\" + emu_getChamberName(chamber, false);
+  if ((chamber[\"station\"] == \"1\") && (chamber[\"ring\"] == \"1\")) { // ME1/1
+    return \"LV_2_\" + emu_getChamberName(chamber, false);
+  } else {
+    return \"LV_1_\" + emu_getChamberName(chamber, false);
+  }
 }
 
 string getTempDimServiceName(mapping chamber) {
-  return \"TEMP_1_\" + emu_getChamberName(chamber, false);
+  if ((chamber[\"station\"] == \"1\") && (chamber[\"ring\"] == \"1\")) { // ME1/1
+    return \"TEMP_2_\" + emu_getChamberName(chamber, false);
+  } else {
+    return \"TEMP_1_\" + emu_getChamberName(chamber, false);
+  }
 }
 
 string getDduDimServiceName(mapping ddu) {
@@ -716,7 +724,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 40 78 56
+E E 0 1 1 2 1 E U  0 E 30 40 71 56
 0 2 2 "0s" 0 0 0 192 0 0  30 40 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
@@ -1961,7 +1969,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 460 78 476
+E E 0 1 1 2 1 E U  0 E 30 460 73 476
 0 2 2 "0s" 0 0 0 192 0 0  30 460 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
