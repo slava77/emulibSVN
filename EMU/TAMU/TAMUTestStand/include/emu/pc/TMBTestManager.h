@@ -55,6 +55,9 @@ public:
   /// Sets the label of the board being tested
   void SetBoardLabel(std::string, int tmb);
 
+  /// Sets the DNA of the current board
+  void SetDNA(std::string dna, int tmb);
+
   /// Gets the label of the board being tested
   std::string GetBoardLabel(int tmb);
 

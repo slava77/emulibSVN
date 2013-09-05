@@ -139,7 +139,8 @@ void TestResultsManagerModule::BoardSummary(xgi::Input * in, xgi::Output * out)
   // column headers
   *out << td() << "Board" << td() << endl;
   *out << td() << "Last Log Time" << td() << endl;
-  *out << td() << "Status" << td() << endl;
+  *out << td() << "Result Status" << td() << endl;
+  *out << td() << "Testing Status" << td() << endl;
 
   *out << tr() << endl;
 
@@ -149,7 +150,8 @@ void TestResultsManagerModule::BoardSummary(xgi::Input * in, xgi::Output * out)
   // iterate over board labels (each board label corresponds to a single board)
   for(set<string>::iterator i = board_labels.begin(); i != board_labels.end(); ++i)
   {
-    int fail = false;
+    bool fail = false;
+    bool tested = true;
 
     std::string log_time_s = trm_.getLatestBoardLogTime(*i);
     std::stringstream ss;
@@ -162,11 +164,16 @@ void TestResultsManagerModule::BoardSummary(xgi::Input * in, xgi::Output * out)
       std::string test_time = trm_.getLatestTestTime(*i,*j);
       std::string result = trm_.getTestResult(*i,test_time);
       if(result == "0")
-        fail |= 0;
+      {
+      }
       else if(result == "")
-        fail |= -1;
+      {
+        tested &= false;
+      }
       else
-        fail |= 1;
+      {
+        fail |= true;
+      }
     }
 
     *out << tr() << endl;
@@ -176,12 +183,17 @@ void TestResultsManagerModule::BoardSummary(xgi::Input * in, xgi::Output * out)
 
     // board status (based on last instance of each test type)
     *out << "<td style =\"color:";
-    if(!fail)
-      *out << "green\">Good";
-    else if(fail == 1)
+    if(fail)
       *out << "red\">Bad";
-    else if(fail < 0)
-      *out << "blue\">Not fully tested";
+    else
+      *out << "green\">Good";
+    *out << "</td>" << endl;
+
+    *out << "<td style =\"color:";
+    if(tested)
+      *out << "green\">Fully tested";
+    else
+      *out << "red\">Not fully tested";
     *out << "</td>" << endl;
 
     // link to log summary of the board

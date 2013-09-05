@@ -104,6 +104,16 @@ void TestLogger::setBoard(std::string board)
   if(log.is_open()) closeFile();
   openFile(board);
 }
+void TestLogger::setDNA(std::string dna)
+{
+  if(logging)
+  {
+    if(log.is_open())
+    {
+      log << "<DNA value=\"" << dna << "\"></DNA>" << std::endl;
+    }
+  }
+}
 std::string TestLogger::getBoard()
 {
   return currentBoard;

@@ -96,6 +96,11 @@ void TMBTestManager::SetBoardLabel(std::string board, int tmb)
   logs_[tmb]->setBoard(board);
 }
 
+void TMBTestManager::SetDNA(std::string dna, int tmb)
+{
+  logs_[tmb]->setDNA(dna);
+}
+
 std::string TMBTestManager::GetBoardLabel(int tmb)
 {
   return logs_[tmb]->getBoard();

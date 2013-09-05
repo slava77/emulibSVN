@@ -7,7 +7,7 @@
          Dflt_Srv_MAC="00-17-9A-73-89-F0"
          Ethernet_CR="0050"
          Ext_FIFO_CR="0002"
-         MAC_addr="02-00-00-00-00-30"
+         MAC_addr="02-00-00-00-00-1D"
          MCAST_1="FF-FF-FF-FF-FF-FE"
          MCAST_2="FF-FF-FF-FF-FF-FD"
          MCAST_3="FF-FF-FF-FF-FF-FC"
@@ -80,6 +80,7 @@
            enableCLCTInputs_reg68="31"
            enable_alct_rx="1"
            enable_alct_tx="1"
+	   hardware_version="2"
            ignore_ccb_startstop="1"
            l1a_allow_alct_only="0"
            l1a_allow_match="1"
@@ -129,7 +130,7 @@
            tmb_bxn_offset="3539"
            tmb_fifo_mode="1"
            tmb_fifo_no_raw_hits="0"
-           tmb_firmware_compile_type="a"
+           tmb_firmware_compile_type="c"
            tmb_firmware_day="12"
            tmb_firmware_month="04"
            tmb_firmware_revcode="7"
@@ -281,8 +282,7 @@
 
     </CSC>
 
-
-    <CSC known_problem="" label="ME+1/1/2" problem_location_mask="00">
+    <CSC known_problem="" label="ME+1/1/1" problem_location_mask="00">
 
       <TMB adjacent_cfeb_distance="5"
            aff_thresh="4"
@@ -343,6 +343,7 @@
            enableCLCTInputs_reg68="31"
            enable_alct_rx="1"
            enable_alct_tx="1"
+	   hardware_version="2"
            ignore_ccb_startstop="1"
            l1a_allow_alct_only="0"
            l1a_allow_match="1"
@@ -392,7 +393,7 @@
            tmb_bxn_offset="3539"
            tmb_fifo_mode="1"
            tmb_fifo_no_raw_hits="0"
-           tmb_firmware_compile_type="a"
+           tmb_firmware_compile_type="c"
            tmb_firmware_day="12"
            tmb_firmware_month="04"
            tmb_firmware_revcode="7"
@@ -543,8 +544,6 @@
 
 
     </CSC>
-
-
 
     <CCB CCBmode="1"
          TTCrxCoarseDelay="10"

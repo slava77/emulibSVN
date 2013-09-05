@@ -261,7 +261,7 @@ void CCBBackplaneTestModule::CCBBackplaneTestsPage(xgi::Input * in, xgi::Output 
   }
   else if (TestLEDFrontPanel_status==1)
   {
-    *out << cgicc::p() << "Please watch LEDs on CCB front panel connected to LVDS OUTPUT 2" << cgicc::br();
+    *out << cgicc::p() << "You will be watching the LEDs on CCB front panel connected to LVDS OUTPUT 2" << cgicc::br();
     *out << "LEDs should turn on one at a time for .5s" << cgicc::br();
     *out << "Make note of LEDs that do not turn on at all or fail to turn on individually" << cgicc::br();
     *out << "Click Next to begin test" << cgicc::p();
@@ -946,6 +946,8 @@ void CCBBackplaneTestModule::SetBoardLabel(xgi::Input * in, xgi::Output * out)
   cgicc::Cgicc cgi(in);
   cgicc::form_iterator name = cgi.getElement("label");
 
+  TMB * tmb = sys_->tmb();
+
   string label;
 
   if(name != cgi.getElements().end())
@@ -953,6 +955,16 @@ void CCBBackplaneTestModule::SetBoardLabel(xgi::Input * in, xgi::Output * out)
     label = cgi["label"]->getValue();
     cout << __func__ << ":  label " << label << endl;
     tm_.SetBoardLabel(label, tmbN_);
+    unsigned char dna[8];
+    if(tmb->virtex6_dna(dna) == 0)
+    {
+      char buf[40];
+      sprintf(buf, "%02X%02X%02X%02X%02X%02X%02X%02X",
+          dna[7],dna[6],dna[5],dna[4],dna[3],dna[2],dna[1],dna[0]);
+      std::stringstream ss;
+      ss << buf;
+      tm_.SetDNA(ss.str(), tmbN_);
+    }
   }
 
   name = cgi.getElement("return");

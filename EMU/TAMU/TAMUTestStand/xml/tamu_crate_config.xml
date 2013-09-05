@@ -80,6 +80,7 @@
            enableCLCTInputs_reg68="31"
            enable_alct_rx="1"
            enable_alct_tx="1"
+	   hardware_version="2"
            ignore_ccb_startstop="1"
            l1a_allow_alct_only="0"
            l1a_allow_match="1"

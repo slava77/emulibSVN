@@ -48,6 +48,7 @@ public:
   void pauseLogging();
   bool isLogging();
   void setBoard(std::string);
+  void setDNA(std::string);
   std::string getBoard();
   void setWorkingDirectory(std::string);
 

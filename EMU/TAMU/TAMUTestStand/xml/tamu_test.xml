@@ -11,7 +11,7 @@
                 <Standalone xsi:type="xsd:string">true</Standalone>
                 <XMLorDB xsi:type="xsd:string">xml</XMLorDB>
                 <EmuConfigurationID xsi:type="xsd:string">1000001</EmuConfigurationID>
-                <xmlFileName xsi:type="xsd:string">$PWD/xml/tamu_crate_config.xml</xmlFileName>
+                <xmlFileName xsi:type="xsd:string">$PWD/xml/tamu_crate_config_2tmbs.xml</xmlFileName>
                 <!--<xmlFileName xsi:type="xsd:string">/home/cscdev/TriDAS/run/ME-1101_from1000126.xml</xmlFileName>-->
             </properties>
         </xc:Application>

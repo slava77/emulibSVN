@@ -1,5 +1,5 @@
 /*
- * LogReader.h
+ * XMLWrapper.h
  *
  *  Created on: Jun 30, 2013
  *      Author: Austin Schneider
