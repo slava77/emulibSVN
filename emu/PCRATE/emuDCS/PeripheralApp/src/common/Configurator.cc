@@ -1173,6 +1173,10 @@ void emu::pc::Configurator::ConfigSelectorPage( xgi::Input * in, xgi::Output * o
   *out << "<select name=\"xmlfile\" size=\"10\">" << endl;
   for ( vector<string>::const_iterator f = xmlFiles.begin(); f != xmlFiles.end(); ++f ){
     *out << "<option value=\"" << *f << "\"";
+    // Highlight the file specified in the app's config XML if no other file has been selected yet:
+    if ( selectedSource_ != emu::pc::Configuration::fileSource && 
+	 *f == xmlFile_.toString()                                ) *out << " selected=\"selected\"";
+    // Highlight the previously selected file, if any:
     if ( selectedSource_ == emu::pc::Configuration::fileSource &&
 	 find( selectedConfigIds_.begin(), 
 	       selectedConfigIds_.end()  ,
@@ -1183,14 +1187,18 @@ void emu::pc::Configurator::ConfigSelectorPage( xgi::Input * in, xgi::Output * o
   *out << "<button type=\"submit\" name=\"configFromFile\">Configure from file</button>" << endl;
 
   //
-  // Get and and present the list of DB ids to choose from
+  // Get and present the list of DB ids to choose from
   //
   try{
     vector<string> plusSideDBIds = configuration_.getAvailableDBIds( emu::pc::Configuration::plusSide );
     *out << "<select name=\"plusids\" size=\"10\">" << endl;
     for ( vector<string>::const_iterator k = plusSideDBIds.begin(); k != plusSideDBIds.end(); ++k ){
       *out << "<option value=\"" << *k << "\"";
-      if ( selectedSource_ == emu::pc::Configuration::fileSource &&
+      // Highlight the id specified in the app's config XML if no other id has been selected yet:
+      if ( selectedSource_ != emu::pc::Configuration::dbSource && 
+	 *k == EMU_config_ID_.toString()                          ) *out << " selected=\"selected\"";
+      // Highlight the previously selected id, if any:
+      if ( selectedSource_ == emu::pc::Configuration::dbSource &&
 	 find( selectedConfigIds_.begin(), 
 	       selectedConfigIds_.end()  ,
 	       *k                          ) != selectedConfigIds_.end() ) *out << " selected=\"selected\"";
@@ -1203,7 +1211,11 @@ void emu::pc::Configurator::ConfigSelectorPage( xgi::Input * in, xgi::Output * o
     *out << "<select name=\"minusids\" size=\"10\">" << endl;
     for ( vector<string>::const_iterator k = minusSideDBIds.begin(); k != minusSideDBIds.end(); ++k ){
       *out << "<option value=\"" << *k << "\"";
-      if ( selectedSource_ == emu::pc::Configuration::fileSource && 
+      // Highlight the id specified in the app's config XML if no other id has been selected yet:
+      if ( selectedSource_ != emu::pc::Configuration::dbSource && 
+	 *k == EMU_config_ID_.toString()                          ) *out << " selected=\"selected\"";
+      // Highlight the previously selected id, if any:
+      if ( selectedSource_ == emu::pc::Configuration::dbSource && 
 	 find( selectedConfigIds_.begin(), 
 	       selectedConfigIds_.end()  ,
 	       *k                          ) != selectedConfigIds_.end() ) *out << " selected=\"selected\"";
