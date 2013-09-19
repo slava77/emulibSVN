@@ -1358,11 +1358,15 @@ main()
   emu_info(\"creating DDU summary alerts...\");
   setSummaryAlerts(\"CscFedDdu\", \"DDU OK\", \"DDU Error\", ex);
   if (emu_checkException(ex)) { return; }
-  
+
   // LV
   
   emu_info(\"creating CFEB LV alerts...\");
   setCfebLvAlerts(ex);
+  if (emu_checkException(ex)) { return; }
+  
+  emu_info(\"creating DCFEB LV alerts...\");
+  setDcfebLvAlerts(ex);
   if (emu_checkException(ex)) { return; }
   
   emu_info(\"creating ALCT LV alerts...\");
@@ -1516,14 +1520,15 @@ void setCfebLvAlerts(dyn_string &ex) {
 }    
 
 // DCFEB LV
-void setCfebLvAlerts(dyn_string &ex) {
+void setDcfebLvAlerts(dyn_string &ex) {
   dyn_string dps, texts, classes;
   dyn_float limits;
 
   // 3.0V voltage
   dps = dpNames(\"*CSC_ME*.dcfeb.v30.*\", \"CscMe11LvChamberMon\");
   texts = makeDynString(\"DCFEB 3.0V voltage is too low\", \"\", \"DCFEB 3.0V voltage is too high\");
-  limits = _getRange(3.0, EMU_ALERT_DCFEB_VOLTAGE_DEVIATION_TOLERANCE);
+  //limits = _getRange(3.0, EMU_ALERT_DCFEB_VOLTAGE_DEVIATION_TOLERANCE);
+  limits = makeDynFloat(0, 3.3);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
@@ -1532,7 +1537,8 @@ void setCfebLvAlerts(dyn_string &ex) {
   // 4.0V voltage
   dps = dpNames(\"*CSC_ME*.dcfeb.v40.*\", \"CscMe11LvChamberMon\");
   texts = makeDynString(\"DCFEB 4.0V voltage is too low\", \"\", \"DCFEB 4.0V voltage is too high\");
-  limits = _getRange(4.0, EMU_ALERT_DCFEB_VOLTAGE_DEVIATION_TOLERANCE);
+  //limits = _getRange(4.0, EMU_ALERT_DCFEB_VOLTAGE_DEVIATION_TOLERANCE);
+  limits = makeDynFloat(0, 4.4);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
@@ -1541,7 +1547,8 @@ void setCfebLvAlerts(dyn_string &ex) {
   // 5.5V voltage
   dps = dpNames(\"*CSC_ME*.dcfeb.v55.*\", \"CscMe11LvChamberMon\");
   texts = makeDynString(\"DCFEB 5.5V voltage is too low\", \"\", \"DCFEB 5.5V voltage is too high\");
-  limits = _getRange(5.5, EMU_ALERT_DCFEB_VOLTAGE_DEVIATION_TOLERANCE);
+  //limits = _getRange(5.5, EMU_ALERT_DCFEB_VOLTAGE_DEVIATION_TOLERANCE);
+  limits = makeDynFloat(0, 6.0);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
@@ -1550,7 +1557,8 @@ void setCfebLvAlerts(dyn_string &ex) {
   // 3.0V current
   dps = dpNames(\"*CSC_ME*.dcfeb.c30.*\", \"CscMe11LvChamberMon\");
   texts = makeDynString(\"DCFEB 3.0V current is too low\", \"\", \"DCFEB 3.0V current is too high\");
-  limits = makeDynFloat(1.0, 4.5);
+//  limits = makeDynFloat(0.5, 10);
+  limits = makeDynFloat(0, 10);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
@@ -1559,7 +1567,8 @@ void setCfebLvAlerts(dyn_string &ex) {
   // 4.0V current
   dps = dpNames(\"*CSC_ME*.dcfeb.c40.*\", \"CscMe11LvChamberMon\");
   texts = makeDynString(\"DCFEB 4.0V current is too low\", \"\", \"DCFEB 4.0V current is too high\");
-  limits = makeDynFloat(0.1, 2);
+//  limits = makeDynFloat(0.1, 5);
+  limits = makeDynFloat(0, 5);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
@@ -1568,11 +1577,32 @@ void setCfebLvAlerts(dyn_string &ex) {
   // 5.5V current
   dps = dpNames(\"*CSC_ME*.dcfeb.c55.*\", \"CscMe11LvChamberMon\");
   texts = makeDynString(\"DCFEB 5.5V current is too low\", \"\", \"DCFEB 5.5V current is too high\");
-  limits = makeDynFloat(0.1, 4);
+//  limits = makeDynFloat(0.1, 10);
+  limits = makeDynFloat(0, 10);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
   if (emu_checkException(ex)) { return; }
   setDefaultValueAndRange(dps, 2.0);
+  
+  // Vcore (1V) voltage
+  dps = dpNames(\"*CSC_ME*.dcfeb_sysmon.vcore.*\", \"CscMe11LvChamberMon\");
+  texts = makeDynString(\"DCFEB Vcore (1V) voltage is too low\", \"\", \"DCFEB Vcore (1V) voltage is too high\");
+//  limits = makeDynFloat(0.8, 1.2);
+  limits = makeDynFloat(0, 1.2);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 1.0, makeDynString(), -1, 2.99);
+
+  // Vaux1 (2.5V) voltage
+  dps = dpNames(\"*CSC_ME*.dcfeb_sysmon.vaux1.*\", \"CscMe11LvChamberMon\");
+  texts = makeDynString(\"DCFEB Vaux1 (2.5V) voltage is too low\", \"\", \"DCFEB Vaux1 (2.5V) voltage is too high\");
+//  limits = makeDynFloat(2.2, 2.7);
+  limits = makeDynFloat(0, 2.7);
+  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex);
+  if (emu_checkException(ex)) { return; }
+  setDefaultValueAndRange(dps, 2.5, makeDynString(), -1, 2.99);  
 }    
 
 // ALCT LV
@@ -1731,11 +1761,11 @@ void setTemperatureAlerts(dyn_string &ex) {
   // ODMB
   dps = dpNames(\"*CSC_ME*.odmb.v1\", \"CscMe11TempChamberMon\");
   texts = makeDynString(\"ODMB temperature is too low\", \"\", \"ODMB temperature is too high\");
-  limits = makeDynFloat(10, 60);
+  limits = makeDynFloat(0, 60);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
   if (emu_checkException(ex)) { return; }
-  setDefaultValueAndRange(dps, 25);
+  setDefaultValueAndRange(dps, 25, dpsToIgnore, -1, 200);
 
   // OTMB temperature warning
   dps = dpNames(\"*CSC_ME*.otmb.v1\", \"CscMe11TempChamberMon\");
@@ -1748,17 +1778,17 @@ void setTemperatureAlerts(dyn_string &ex) {
 
   // DCFEB FPGA
   dps = dpNames(\"*CSC_ME*.dcfeb.fpga.v*\", \"CscMe11TempChamberMon\");
-  texts = makeDynString(\"DCFEB FPGA temperature is too low\", \"\", \"DCFEB FPGA temperature is too high\");
-  limits = makeDynFloat(10, 50);
-  classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
+  texts = makeDynString(\"DCFEB FPGA temperature is too low\", \"\", \"DCFEB FPGA temperature is too high (warning level)\", \"DCFEB FPGA temperature is too high (critical level)\");
+  limits = makeDynFloat(0, 70, 72);
+  classes = makeDynString(\"_fwWarningNack\", \"\", \"_fwWarningNack\", \"_fwFatalNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
   if (emu_checkException(ex)) { return; }
-  setDefaultValueAndRange(dps, 25, dpsToIgnore);
+  setDefaultValueAndRange(dps, 25, dpsToIgnore, -1, 200);
   
   // LVDB
   dps = dpNames(\"*CSC_ME*.lvdb.v1\", \"CscMe11TempChamberMon\");
   texts = makeDynString(\"LVDB temperature is too low\", \"\", \"LVDB temperature is too high\");
-  limits = makeDynFloat(10, 40);
+  limits = makeDynFloat(10, 60);
   classes = makeDynString(\"_fwErrorNack\", \"\", \"_fwErrorNack\");
   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
   if (emu_checkException(ex)) { return; }

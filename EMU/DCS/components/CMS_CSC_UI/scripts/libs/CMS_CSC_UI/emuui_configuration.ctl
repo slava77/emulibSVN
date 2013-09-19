@@ -293,6 +293,18 @@ dyn_string emuui_getArray(string name, dyn_string &exceptionInfo) {
   return data;
 }
 
+/** returns true if at least one Low Voltage system is reachable. */
+synchronized bool emuui_lvSystemExists() {
+  if (dynlen(emuui_g_lvSystemNames) > 0) {
+    return true;
+  }
+
+  // get list of systems with CRB component installed and check if it has some Maraton DPs in it
+  dyn_string sysNames;
+  fwInstallation_getApplicationSystem("CMS_CSCfw_LV_CRB", sysNames);
+  return dynlen(sysNames) > 0;
+}
+
 /** returns names of the Low Voltage systems that are now reachable. */
 synchronized dyn_string emuui_getLvSystemNames(dyn_string &exceptionInfo) {
   if (dynlen(emuui_g_lvSystemNames) > 0) {

@@ -1,7 +1,7 @@
 V 11
 1
 LANG:1 0 
-PANEL,-1 -1 399 366 N "_3DFace" 1
+PANEL,-1 -1 821 366 N "_3DFace" 1
 "$deviceParams"
 "main()
 {
@@ -9,6 +9,8 @@ PANEL,-1 -1 399 366 N "_3DFace" 1
   deviceParams = emuui_parseParameterString($deviceParams, ex);
   if (emu_checkException(ex)) { return; }
 
+  isMe11 = ((deviceParams[\"station\"] == 1) && (deviceParams[\"ring\"] == 1));
+  
   getValue(\"refPoint\", \"position\", posX, posY);
   // ----------========== FSM NODE ==========----------
   fsmNode = emuui_getFsmNode(\"chamber_temperature\", deviceParams, ex);
@@ -25,7 +27,7 @@ PANEL,-1 -1 399 366 N "_3DFace" 1
   if (duMode == \"Disabled\") {
     allGrayMode = true;
   }
-  
+
   // data status
   initStatusBitMap();
   string dataStatusDp = emuui_getDpName(\"chamber_temperature_data_status\", deviceParams, ex);
@@ -34,9 +36,17 @@ PANEL,-1 -1 399 366 N "_3DFace" 1
   // connect to the temperature    
   dyn_string alctTempDps = emuui_getDpNames(\"chamber_alct_temperature\", deviceParams, ex);
   dyn_string cfebTempDps = emuui_getDpNames(\"chamber_cfeb_temperature\", deviceParams, ex);
+  dyn_string dcfebFpgaTempDps = emuui_getDpNames(\"chamber_dcfeb_fpga_temperature\", deviceParams, ex);
+  dyn_string odmbTempDps = emuui_getDpNames(\"chamber_odmb_temperature\", deviceParams, ex);
+  dyn_string otmbTempDps = emuui_getDpNames(\"chamber_otmb_temperature\", deviceParams, ex);
+  dyn_string lvdbTempDps = emuui_getDpNames(\"chamber_lvdb_temperature\", deviceParams, ex);
   dyn_string dps;
   dynAppend(dps, alctTempDps);
   dynAppend(dps, cfebTempDps);
+  dynAppend(dps, dcfebFpgaTempDps);
+  dynAppend(dps, odmbTempDps);
+  dynAppend(dps, otmbTempDps);
+  dynAppend(dps, lvdbTempDps);
   if (emu_checkException(ex)) { return; }
   
   initGui(dps);
@@ -72,9 +82,31 @@ PANEL,-1 -1 399 366 N "_3DFace" 1
 }
 
 void initGui(dyn_string dps) {
+  if (isMe11) {
+    int columnIdx = tableTemp.columnCount();
+    tableTemp.insertColumn(columnIdx);
+    tableTemp.columnName(columnIdx, \"odmb.v1\");
+    tableTemp.columnHeader(columnIdx, \"ODMB\");
+    columnIdx++;
+    tableTemp.insertColumn(columnIdx);
+    tableTemp.columnName(columnIdx, \"otmb.v1\");
+    tableTemp.columnHeader(columnIdx, \"OTMB\");
+    columnIdx++;
+    tableTemp.insertColumn(columnIdx);
+    tableTemp.columnName(columnIdx, \"lvdb.v1\");
+    tableTemp.columnHeader(columnIdx, \"LVDB\");
+    columnIdx++;
+    for (int i=1; i <= 7; i++) {
+      tableTemp.insertColumn(columnIdx);
+      tableTemp.columnName(columnIdx, \"dcfeb.fpga.v\" + i);
+      tableTemp.columnHeader(columnIdx, \"DCFEB\" + i);
+      columnIdx++;
+    }
+  }
+
   // mapping of [disabled channel numbers (array index)] to [column names in the table]
   disabledChNumToColumn = makeDynString(\"cfeb.v1\", \"cfeb.v2\", \"cfeb.v3\", \"cfeb.v4\", \"cfeb.v5\", \"alct.v1\", \"dmb.v1\");
-  
+
   //special case for ME1/3 - they don't have CFEB5 but it is in DCS for some reason - remove it here
   if ((deviceParams[\"station\"] == 1) && (deviceParams[\"ring\"] == 3)) {
     int index = dynPartiallyContains(dps, \"cfeb.v5\");
@@ -139,6 +171,7 @@ void initStatusBitMap() {
 E "#uses \"CMS_CSC_MiddleLayer/emu_x2p.ctl\"
 
 //some panel-wide constants and variables
+bool isMe11;
 int cfebCount;
 mapping deviceParams;
 dyn_string columnNames;
@@ -317,7 +350,7 @@ LANG:1 11 Temperature
 25 2
 "tableTemp"
 ""
-1 10 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 9.999999999999998 30 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 3 0 0 0 0 0
 E E E

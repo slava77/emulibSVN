@@ -66,7 +66,9 @@ public const string EMU_X2P_DEVICE_PREFIX_TEMP = "CscTemperature/";
 public const string EMU_X2P_DEVICE_PREFIX_FED = "CscFed/";
 
 public const string EMU_X2P_DEVICE_MON_DPT_LV = "CscLvChamberMon";
+public const string EMU_X2P_DEVICE_MON_DPT_LV_ME11 = "CscMe11LvChamberMon";
 public const string EMU_X2P_DEVICE_MON_DPT_TEMP = "CscTempChamberMon";
+public const string EMU_X2P_DEVICE_MON_DPT_TEMP_ME11 = "CscMe11TempChamberMon";
 public const string EMU_X2P_DEVICE_MON_DPT_FED = "CscFedDduMon";
 
 public const string EMU_X2P_DEVICE_FSM_DPT_LV = "CscLvChamber";
@@ -95,14 +97,20 @@ public dyn_string emux2p_getAllDataDps() {
   * @return LV data DPs (DPT: CscLvChamberMon)
   */
 public dyn_string emux2p_getLvDataDps() {
-  return dpNames("*CSC_ME*", EMU_X2P_DEVICE_MON_DPT_LV);
+  dyn_string dps = makeDynString();
+  emu_dynAppend(dps, dpNames("*CSC_ME*", EMU_X2P_DEVICE_MON_DPT_LV));
+  emu_dynAppend(dps, dpNames("*CSC_ME*", EMU_X2P_DEVICE_MON_DPT_LV_ME11));
+  return dps;
 }
 
 /**
   * @return On-Chamber electronics temperature data DPs (DPT: CscTempChamberMon)
   */
 public dyn_string emux2p_getTemperatureDataDps() {
-  return dpNames("*CSC_ME*", EMU_X2P_DEVICE_MON_DPT_TEMP);
+  dyn_string dps = makeDynString();
+  emu_dynAppend(dps, dpNames("*CSC_ME*", EMU_X2P_DEVICE_MON_DPT_TEMP));
+  emu_dynAppend(dps, dpNames("*CSC_ME*", EMU_X2P_DEVICE_MON_DPT_TEMP_ME11));
+  return dps;
 }
 
 /**
@@ -163,7 +171,7 @@ string emux2p_getDduDpName(mapping ddu, dyn_string &exceptionInfo) {
   */
 public void emux2p_enableDisableChannel(string dp, bool isEnable, dyn_string &exceptionInfo) {
   if (!dpExists(dp)) {
-    emu_addError("Not existing DP passed to emux2p_enableDisableChannel()", exceptionInfo);
+    emu_addError("Not existing DP passed to emux2p_enableDisableChannel(): " + dp, exceptionInfo);
   }
 
   string fsmDp = emux2p_getFsmDpFromDataDp(dp, exceptionInfo);
@@ -184,5 +192,46 @@ public void emux2p_enableDisableChannel(string dp, bool isEnable, dyn_string &ex
     if (emu_checkException(exceptionInfo)) { return; }
     dynAppend(disabledDps, dpSubStr(dp, DPSUB_SYS_DP_EL));
     dpSet(fsmDp + ".disabled_channels", disabledDps);
+  }
+}
+
+public void emux2p_enableDisableChamber(mapping chamber, bool isEnable, dyn_string &ex) {
+  string lvDp = emux2p_getLvDpName(chamber, ex);
+  if (emu_checkException(ex)) { return; }
+  string tempDp = emux2p_getTempDpName(chamber, ex);
+  if (emu_checkException(ex)) { return; }
+  
+  if (!isEnable) {  
+    bool configExists;
+    dyn_string alertTexts;
+    dyn_string dpeList;
+    string alertPanel;
+    dyn_string alertPanelParameters;
+    string alertHelp;
+    bool isActive;
+    fwAlertConfig_getSummary(lvDp + "/Mon.", configExists, alertTexts, dpeList, alertPanel, alertPanelParameters, alertHelp, isActive, ex);
+    if (emu_checkException(ex)) { return; }
+    for (int i=1; i <= dynlen(dpeList); i++) {
+      emux2p_enableDisableChannel(dpeList[i], false, ex);
+      if (emu_checkException(ex)) { return; }
+    }
+    fwAlertConfig_getSummary(tempDp + "/Mon.", configExists, alertTexts, dpeList, alertPanel, alertPanelParameters, alertHelp, isActive, ex);
+    if (emu_checkException(ex)) { return; }
+    for (int i=1; i <= dynlen(dpeList); i++) {
+      emux2p_enableDisableChannel(dpeList[i], false, ex);
+      if (emu_checkException(ex)) { return; }
+    }
+  } else {
+    dyn_string disabledChannels;
+    dpGet(lvDp + ".disabled_channels", disabledChannels);
+    for (int i=1; i <= dynlen(disabledChannels); i++) {
+      emux2p_enableDisableChannel(disabledChannels[i], true, ex);
+      if (emu_checkException(ex)) { return; }
+    }
+    dpGet(tempDp + ".disabled_channels", disabledChannels);
+    for (int i=1; i <= dynlen(disabledChannels); i++) {
+      emux2p_enableDisableChannel(disabledChannels[i], true, ex);
+      if (emu_checkException(ex)) { return; }
+    }
   }
 }

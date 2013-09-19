@@ -31,8 +31,10 @@ void emuui_initSession() {
     return;
   }
   
-  string user;
-  fwAccessControl_getUserName(user);
+  string user = "anyuser";
+  if (isFunctionDefined("fwAccessControl_getUserName")) {
+    fwAccessControl_getUserName(user);
+  }
   string hostname = getHostname();
   string sessionId = emuui_makeSessionIdString(hostname, user);
   if (dynlen(dpNames(sessionId, "CSC_UI_sessionState")) == 0) {
@@ -128,7 +130,9 @@ void emuui_tooltipClosed(string refName) {
 
 void emuui_highlightThisShapeOnly(string shapeName) synchronized (emuui_g_highlightedShapes) {
   for (int i=1; i <= dynlen(emuui_g_highlightedShapes); i++) {
-    setValue(emuui_g_highlightedShapes[i], "foreCol", "");
+    if (strpos(emuui_g_highlightedShapes[i], "line") < 0) {
+      setValue(emuui_g_highlightedShapes[i], "foreCol", ""); // don't do it for lines since they use foreCol to indicate their state
+    }
   }
   dynClear(emuui_g_highlightedShapes);
   dynAppend(emuui_g_highlightedShapes, shapeName);

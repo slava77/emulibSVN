@@ -1,0 +1,2029 @@
+V 11
+1
+LANG:1 0 
+PANEL,-1 -1 1280 1000 N "_3DFace" 0
+"main()
+{
+  emuui_init();
+  initAlerts();
+  alertConnect(\"updateAlertsCB\", false, \":_alert_hdl.._alert_color\");
+
+  // avoid the alert table area with tooltips  
+  emuui_g_topFsmNodesRightX = 700;
+  emuui_g_topFsmNodesHeight = 400;
+  
+  dyn_string timestampDps = dpNames(\"*/Mon.timestamp\");
+  dpConnect(\"timestampUpdatedCB\", true, timestampDps);
+}" 0
+ E E E E 1 -1 -1 0  600 20
+""0  1
+E "// Common libs
+#uses \"CMS_CSC_common/emu_common.ctl\"
+#uses \"CMS_CSC_common/emu_math.ctl\"
+
+// UI libs
+#uses \"CMS_CSC_UI/emuui_main.ctl\"
+#uses \"CMS_CSC_UI/emuui_configuration.ctl\"
+#uses \"CMS_CSC_UI/emuui_sessionManager.ctl\"
+#uses \"CMS_CSC_UI/emuui_gradient.ctl\"
+#uses \"CMS_CSC_UI/emuui_utils.ctl\"
+#uses \"CMS_CSC_UI/emuui_contextMenu.ctl\"
+#uses \"CMS_CSC_UI/emuui_deviceInfo.ctl\"
+#uses \"CMS_CSC_UI/emuui_graphics.ctl\"
+#uses \"CMS_CSC_UI/background_checks/emuui_backgroundChecksMain.ctl\"
+
+// Majority library
+#uses \"majority_treeCache/majorityLib.ctl\"
+
+const int CHAMBER_OUTER_WIDTH = 120;
+const int CHAMBER_INNER_WIDTH = 60;
+const int CHAMBER_HEIGHT = 320;
+
+dyn_string references;
+dyn_string activeAlerts;
+
+void waitForEmuUiInitialize() {
+  while(!emuui_isInitialized()) { // wait for the emuui initialization
+    delay(0, 200);
+  }
+}
+
+void initAlerts() {
+  // this basically returns all DPEs in the system since everybody actually appear to have a default alert handler
+  dyn_string allAlertTypeDpes = dpNames(\"*.**:_alert_hdl.._type\");
+  dyn_int alertTypes;
+  dpGet(allAlertTypeDpes, alertTypes);
+  dyn_string realAlertDpes;
+  for (int i=1; i <= dynlen(allAlertTypeDpes); i++) {
+    if (alertTypes[i] != 0) { // only those which have _alert_hdl.._type != 0 are real alert handlers - filter only those
+      dynAppend(realAlertDpes, allAlertTypeDpes[i]);
+    }
+  }
+  
+  // send the alert state facts for all of the real alerts
+  for (int i=1; i <= dynlen(realAlertDpes); i++) {
+    handleAlert(realAlertDpes[i]);
+  }
+}
+
+void updateAlertsCB(time t, int count, string alert) {
+  startThread(\"handleAlert\", alert);
+}
+
+void handleAlert(string alert) {
+  string alertConf = dpSubStr(alert, DPSUB_SYS_DP_EL_CONF);
+  string alertDp = dpSubStr(alert, DPSUB_DP_EL);
+
+  // determine state and text  
+  int actState;
+  string actText;
+  anytype value;
+  dpGet(alertConf + \".._act_state\", actState,
+        alertConf + \".._act_text\", actText);
+  
+  if (actState == 0) {
+    alertTable.deleteLine(1, \"dp\", alertDp);
+  } else {
+    alertTable.deleteLine(1, \"dp\", alertDp);
+    alertTable.appendLine(\"dp\", alertDp, \"text\", actText);
+  }
+  
+  if (alertTable.lineCount > 0) {
+    alertTable.backCol = \"red\";
+    alertIndicator.visible = true;
+  } else {
+    alertTable.backCol = \"\";
+    alertIndicator.visible = false;
+  }
+}
+
+void timestampUpdatedCB(dyn_string dps, dyn_time timestamps) {
+  time lastTime = timestamps[1];
+  for (int i=1; i <= dynlen(timestamps); i++) {
+    if (timestamps[i] > lastTime) {
+      lastTime = timestamps[i];
+    }
+  }
+  txtTimeLastRead.text = formatTime(\"%Y.%m.%d %H:%M:%S\", lastTime);
+}" 0
+ 2
+"CBRef" "1"
+"EClose" E
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:1 0 
+6 67
+"alertIndicator"
+""
+1 0 0 E E E 1 E 0 E N {0,0,0} E N "S7_ASWentUnq" E E
+ E E
+48 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1.049180327868853 0 1.176470588235294 0 0 1 E 0 0 1220 850
+6 27
+"RECTANGLE2"
+""
+1 490 220 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+22 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 0.9130434782608696 0 1 52.60869565217387 0 1 E 490 220 720 350
+2 0
+"PRIMITIVE_TEXT1"
+""
+1 520 10 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+0 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 520 10 668 51
+0 2 2 "0s" 0 0 0 192 0 0  520 10 1
+1
+LANG:1 31 Sans Serif,26,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 7 SX5 DCS
+30 7
+"FRAME1"
+""
+1 540 272 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+2 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  waitForEmuUiInitialize();
+  drawMaratons();
+  drawLines();
+}
+
+void drawMaratons() {
+  int maratonWidth = 100;
+  int maratonHeight = 50;
+  
+  int posX, posY;
+  getValue(\"\", \"position\", posX, posY);   // get the position of the frame
+  posX += 20;
+  posY += 20;
+  
+  for (int id = 1; id <= 2; id++) {
+    string sideStr = (id == 1) ? \"M\" : \"P\";
+    
+    string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + sideStr +
+                                                   \";station=1\" +
+                                                   \";disk=1\" +
+                                                   \";crateNum=1\" +
+                                                   \";id=\" + id;
+    string shapeParamsDollar = \"$shapeParams:\" + \"type=rectangle\" +
+                                                 \";width=\" + maratonWidth +
+                                                 \";height=\" + maratonHeight;
+    
+    //import the chamber panel (no changes in the panel orientation; position - [0,0])
+    string refName = \"refMaraton_STEP_ID1\";  //reference name
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
+              refName,
+              makeDynString(\"$caption:VALUE\", \"$deviceType:maraton\",
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + emuui_getSessionDp(\"maratonView\"),
+                            \"$refName:\" + refName),
+              posX, posY, 0, 1, 1);
+
+    posX += maratonWidth;
+  }
+}
+
+void drawLines() {
+  int posX, posY;
+  getValue(\"\", \"position\", posX, posY);   // get the position of the frame
+  
+  // 1st chamber lines in STEP area (channels 0 and 3)
+  drawLine(posX + 20, posY + 60, 100, 90, 0, 1, 0);
+  drawLine(posX + 20, posY + 140, 89, 0, 0, 1, 0);
+  drawLine(posX - 50, posY + 79, 77, 90, 0, 1, 0);
+  drawLine(posX - 50, posY + 80, 79, 0, 0, 1, 0);
+  drawJunctionBoxTerminal(posX + 30, posY + 130, 0, 1, 0);
+
+  // 2nd chamber lines in STEP area (channels 4 and 7)
+  drawLine(posX + 40, posY + 60, 140, 90, 0, 1, 7);
+  drawLine(posX + 40, posY + 170, 114, 0, 0, 1, 7);
+  drawLine(posX - 50, posY + 169, 66, 90, 0, 1, 7);
+  drawLine(posX - 50, posY + 220, 79, 0, 0, 1, 7);
+  drawJunctionBoxTerminal(posX + 50, posY + 160, 0, 1, 7);
+
+  // PCrate lines in STEP area (channels 1 and 5)
+  drawLine(posX + 60, posY + 60, 349, 90, 0, 1, 1);
+  drawJunctionBoxTerminal(posX + 70, posY + 190, 0, 1, 1);
+
+  // 1st chamber lines in LTT area (channels 0 and 3)
+  drawLine(posX + 190, posY + 60, 100, 90, 0, 2, 0);
+  drawLine(posX + 270, posY + 140, 100, 0, 0, 2, 0);
+  drawLine(posX + 270, posY + 89, 354, 90, 0, 2, 0);
+  drawLine(posX + 330, posY + 90, 75, 0, 0, 2, 0);
+  drawLine(posX + 330, posY + 230, 75, 0, 0, 2, 0);
+  drawLine(posX + 330, posY + 370, 75, 0, 0, 2, 0);
+  drawJunctionBoxTerminal(posX + 200, posY + 130, 0, 2, 0);
+
+  // 2st chamber lines in LTT area (channels 4 and 7)
+  drawLine(posX + 170, posY + 60, 140, 90, 0, 2, 4);
+  drawLine(posX + 250, posY + 170, 100, 0, 0, 2, 4);
+  drawLine(posX + 250, posY + 169, 778, 90, 0, 2, 4);
+  drawLine(posX + 330, posY + 510, 100, 0, 0, 2, 4);
+  drawLine(posX + 330, posY + 650, 100, 0, 0, 2, 4);
+  drawLine(posX + 330, posY + 790, 100, 0, 0, 2, 4);
+  drawJunctionBoxTerminal(posX + 180, posY + 160, 0, 2, 4);
+
+  // PCrate lines in STEP area (channels 1 and 5)
+  drawLine(posX + 150, posY + 60, 349, 90, 0, 2, 1);
+  drawJunctionBoxTerminal(posX + 160, posY + 190, 0, 2, 1);
+}
+
+void drawLine(int posX, int posY, int length, int rotation, int busNum, int crateNum, int channelNum) {
+  string deviceParamsDollar = \"$deviceParams:\" + \"busNum=\" + busNum +
+                                                 \";crateNum=\" + crateNum +
+                                                 \";channelNum=\" + channelNum;
+  string shapeParamsDollar = \"$shapeParams:\" + \"type=line\" +
+                                               \";length=\" + length +
+                                               \";rotation=\" + rotation;
+    
+  //import the chamber panel (no changes in the panel orientation; position - [0,0])
+  string refName = \"refMaratonChannel_CAN\" + busNum + \"_crate\" + crateNum + \"_ch\" + channelNum;  //reference name
+  if (shapeExists(refName)) { refName += \"_1\"; }
+  dynAppend(references, refName);
+  addSymbol(myModuleName(), myPanelName(),
+            EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
+            refName,
+            makeDynString(\"$caption:VALUE\", \"$deviceType:maratonChannel\",
+                          deviceParamsDollar, shapeParamsDollar, \"$group:\" + emuui_getSessionDp(\"maratonView\"),
+                          \"$refName:\" + refName),
+            posX, posY, 0, 1, 1);
+    
+    
+}
+
+void drawJunctionBoxTerminal(int posX, int posY, int busNum, int crateNum, int channelNum) {
+  string deviceParamsDollar = \"$deviceParams:\" + \"busNum=\" + busNum +
+                                                 \";crateNum=\" + crateNum +
+                                                 \";channelNum=\" + channelNum;
+  string shapeParamsDollar = \"$shapeParams:\" + \"type=elipse\" +
+                                               \";width=\" + 20 +
+                                               \";height=\" + 20;
+    
+  //import the chamber panel (no changes in the panel orientation; position - [0,0])
+  string refName = \"refMaratonChannelInJB_CAN\" + busNum + \"_crate\" + crateNum + \"_ch\" + channelNum;  //reference name
+  if (shapeExists(refName)) { refName += \"_1\"; }
+  dynAppend(references, refName);
+  addSymbol(myModuleName(), myPanelName(),
+            EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
+            refName,
+            makeDynString(\"$caption:VALUE\", \"$deviceType:maratonChannel\",
+                          deviceParamsDollar, shapeParamsDollar, \"$group:\" + emuui_getSessionDp(\"maratonView\"),
+                          \"$refName:\" + refName),
+            posX, posY, 0, 1, 1);
+    
+    
+}" 0
+ E 0 0 1 0 1 E 1.333333333333333 0 0.5797101449275363 -239.9999999999999 -67.68115942028986 0 E 540 272 721 411
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Maratons
+30 8
+"FRAME2"
+""
+1 30 102 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+3 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  waitForEmuUiInitialize();
+
+  int posX, posY;
+  getValue(\"\", \"position\", posX, posY);   // get the position of the frame
+  posX += 40 + CHAMBER_HEIGHT;
+  posY += 30 + CHAMBER_OUTER_WIDTH / 2;
+  
+  string side = \"M\";
+  int station = 1;
+  int ring = 1;
+  
+  for (int i=0; i < 2; i++) {
+    //construct a chamber name
+    string chamberName;
+    string strChamberNumber;
+    sprintf(strChamberNumber, \"%02d\", i + 1); // 1-based indexing
+    chamberName = strChamberNumber;
+    //full name could be used (e.g. ME+1/1/1)
+    //string sideSign = \"+\";
+    //if (side == \"M\") { sideSign = \"-\"; }
+    //chamberName = \"ME\" + sideSign + station + \"/\" + ring + \"/\" + (i + 1);
+
+    // setup various parameters (information about device) for refDevice.pnl
+    string refName = \"refChamber_\" + side + station + ring + \"_\" + strChamberNumber;  //reference name
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    
+    string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
+                                                   \";station=\" + station +
+                                                   \";ring=\" + ring +
+                                                   \";chamberNumber=\" + strChamberNumber;
+    string shapeParamsDollar = \"$shapeParams:\" + \"type=chamber\" +
+                                                 \";outerWidth=\" + CHAMBER_OUTER_WIDTH +
+                                                 \";innerWidth=\" + CHAMBER_INNER_WIDTH +
+                                                 \";height=\" + CHAMBER_HEIGHT;
+    
+    //import the chamber panel (no changes in the panel orientation; position - [0,0])
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
+              refName,
+              makeDynString(\"$caption:\" + chamberName, \"$deviceType:chamber\",
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + emuui_getSessionDp(\"mainChamberView\"),
+                            \"$refName:\" + refName),
+              0, 0, 0, 1, 1);
+
+    //position the chamber
+    setValue(refName + \".chamber\", \"position\", posX, posY);
+    setValue(refName + \".chamber\", \"rotation\", -180);
+
+    //position the caption and other gadgets
+    setValue(refName + \".caption\", \"position\", posX - CHAMBER_HEIGHT - 20, posY);
+    setValue(refName + \".imgDeviceIncomplete\", \"position\", posX, posY);
+    setValue(refName + \".imgNoCommunication\", \"position\", posX, posY);
+    
+    posY += CHAMBER_OUTER_WIDTH + 20;
+  }
+}
+" 0
+ E 0 0 1 0 1 E 1.114285714285714 0 0.6623931623931624 -3.428571428571429 22.43589743589742 0 E 30 102 381 571
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 4 STEP
+30 9
+"FRAME3"
+""
+1 30 102 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+4 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+"main()
+{
+  waitForEmuUiInitialize();
+
+  dyn_string ex;
+  
+  int posX, posY;
+  getValue(\"\", \"position\", posX, posY);   // get the position of the frame
+  posX += 40;
+  posY += 30 + CHAMBER_OUTER_WIDTH / 2;
+  
+  string side = \"P\";
+  int station = 1;
+  int ring = 1;
+  
+  for (int i=0; i < 6; i++) {
+    //construct a chamber name
+    string chamberName;
+    string strChamberNumber;
+    sprintf(strChamberNumber, \"%02d\", i + 1); // 1-based indexing
+    chamberName = strChamberNumber;
+    //full name could be used (e.g. ME+1/1/1)
+    //string sideSign = \"+\";
+    //if (side == \"M\") { sideSign = \"-\"; }
+    //chamberName = \"ME\" + sideSign + station + \"/\" + ring + \"/\" + (i + 1);
+
+    // setup various parameters (information about device) for refDevice.pnl
+    string refName = \"refChamber_\" + side + station + ring + \"_\" + strChamberNumber;  //reference name
+    if (shapeExists(refName)) { refName += \"_1\"; }
+    
+    string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
+                                                   \";station=\" + station +
+                                                   \";ring=\" + ring +
+                                                   \";chamberNumber=\" + strChamberNumber;
+    string shapeParamsDollar = \"$shapeParams:\" + \"type=chamber\" +
+                                                 \";outerWidth=\" + CHAMBER_OUTER_WIDTH +
+                                                 \";innerWidth=\" + CHAMBER_INNER_WIDTH +
+                                                 \";height=\" + CHAMBER_HEIGHT;
+    
+    //import the chamber panel (no changes in the panel orientation; position - [0,0])
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(),
+              EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
+              refName,
+              makeDynString(\"$caption:\" + chamberName, \"$deviceType:chamber\",
+                            deviceParamsDollar, shapeParamsDollar, \"$group:\" + emuui_getSessionDp(\"mainChamberView\"),
+                            \"$refName:\" + refName),
+              0, 0, 0, 1, 1);
+
+    //position the chamber
+    setValue(refName + \".chamber\", \"position\", posX, posY);
+
+    //position the caption and other gadgets
+    setValue(refName + \".caption\", \"position\", posX - 20, posY);
+    setValue(refName + \".imgDeviceIncomplete\", \"position\", posX, posY);
+    setValue(refName + \".imgNoCommunication\", \"position\", posX, posY);
+    
+    drawSensors(posX + 50, posY - 50, side, station, ring, strChamberNumber);
+    
+    posY += CHAMBER_OUTER_WIDTH + 20;
+  }
+}
+
+void drawSensors(int posX, int posY, string side, int station, int ring, string strChamberNumber) {
+  string chamberName = \"ME_\" + side + station + ring + \"_C\" + strChamberNumber;
+  //LVDB
+  drawLabel(posX - 43, posY + 3, \"LVDB:\", \"label_temperature_\" + chamberName + \"_LVDB\");
+  drawTempSensor(posX, posY, side, station, ring, strChamberNumber, \"lvdb\", 1);
+  //ALCT
+  drawLabel(posX - 43, posY + 23, \"ALCT:\", \"label_temperature_\" + chamberName + \"_ALCT\");
+  drawTempSensor(posX, posY + 20, side, station, ring, strChamberNumber, \"alct\", 1);
+  // DCFEBs
+  drawLabel(posX - 43, posY + 43, \"DCFEBs:\", \"label_temperature_\" + chamberName + \"_DCFEB\");
+  for (int i=1; i <= 7; i++) {
+    drawTempSensor(posX + 20 * (i-1), posY + 40, side, station, ring, strChamberNumber, \"dcfeb_fpga\", i);
+  }
+  //ODMB
+  drawLabel(posX - 43, posY + 63, \"ODMB:\", \"label_temperature_\" + chamberName + \"_ODMB\");
+  drawTempSensor(posX, posY + 60, side, station, ring, strChamberNumber, \"odmb\", 1);
+  //OTMB
+  drawLabel(posX - 43, posY + 83, \"OTMB:\", \"label_temperature_\" + chamberName + \"_OTMB\");
+  drawTempSensor(posX, posY + 80, side, station, ring, strChamberNumber, \"otmb\", 1);
+
+  // Input voltage
+  drawLabel(posX + 150, posY + 33, \"7V digital:\", \"label_temperature_\" + chamberName + \"_OTMB\");
+  drawVoltageSensor(posX + 200, posY + 30, side, station, ring, strChamberNumber, \"lvdb_digital\", 1);
+  drawLabel(posX + 150, posY + 53, \"7V analog:\", \"label_temperature_\" + chamberName + \"_OTMB\");
+  drawVoltageSensor(posX + 200, posY + 50, side, station, ring, strChamberNumber, \"lvdb_analog\", 1);
+}
+
+void drawTempSensor(int posX, int posY, string side, int station, int ring, string strChamberNumber, string boardType, int boardNumber) {
+  string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
+                                                 \";station=\" + station +
+                                                 \";ring=\" + ring +
+                                                 \";chamberNumber=\" + strChamberNumber +
+                                                 \";boardType=\" + boardType +
+                                                 \";boardNumber=\" + boardNumber;
+
+  string shapeParamsDollar = \"$shapeParams:\" + \"type=rectangle\" +
+                                             \";width=\" + 20 +
+                                             \";height=\" + 20;
+    
+  //reference name
+  string refName = \"refTempSensor_temp_ME_\" + side + station + ring + \"_C\" + strChamberNumber + \"_\" + boardType + \"_\" + boardNumber;
+  if (shapeExists(refName)) { refName += \"_1\"; }
+  dynAppend(references, refName);
+  addSymbol(myModuleName(), myPanelName(),
+            EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
+            refName,
+            makeDynString(\"$caption:VALUE\", \"$deviceType:chamber_\" + boardType,
+                          deviceParamsDollar, shapeParamsDollar, \"$group:\" + emuui_getSessionDp(\"valueMonitor\"),
+                          \"$refName:\" + refName),
+            posX, posY, 0, 1, 1);  
+}
+
+void drawVoltageSensor(int posX, int posY, string side, int station, int ring, string strChamberNumber, string boardType, int boardNumber) {
+  string deviceParamsDollar = \"$deviceParams:\" + \"side=\" + side +
+                                                 \";station=\" + station +
+                                                 \";ring=\" + ring +
+                                                 \";chamberNumber=\" + strChamberNumber +
+                                                 \";boardType=\" + boardType +
+                                                 \";boardNumber=\" + boardNumber;
+
+  string shapeParamsDollar = \"$shapeParams:\" + \"type=rectangle\" +
+                                             \";width=\" + 40 +
+                                             \";height=\" + 20;
+    
+  //reference name
+  string refName = \"refTempSensor_voltage_ME_\" + side + station + ring + \"_C\" + strChamberNumber + \"_\" + boardType + \"_\" + boardNumber;
+  if (shapeExists(refName)) { refName += \"_1\"; }
+  dynAppend(references, refName);
+  addSymbol(myModuleName(), myPanelName(),
+            EMUUI_OBJECTS_DIR + \"/refDevice.pnl\",
+            refName,
+            makeDynString(\"$caption:VALUE_FLOAT\", \"$deviceType:chamber_\" + boardType,
+                          deviceParamsDollar, shapeParamsDollar, \"$group:\" + emuui_getSessionDp(\"communicationMonitor\"),
+                          \"$refName:\" + refName),
+            posX, posY, 0, 1, 1);  
+}
+
+
+void drawLabel(int posX, int posY, string text, string refName) {
+    dynAppend(references, refName);
+    addSymbol(myModuleName(), myPanelName(), 
+              EMUUI_OBJECTS_DIR + \"/refLabel.pnl\", refName,
+              makeDynString(\"$text:\" + text),
+              posX, posY, 0, 0.8, 0.8);
+}
+" 0
+ E 0 0 1 0 1 E 1.114285714285714 0 1.880341880341881 756.5714285714286 -101.7948717948718 0 E 30 102 381 571
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 17 Long Term Testing
+4 11
+"LINE1"
+""
+1 520 160 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+6 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  520 160 520 240
+4 12
+"LINE2"
+""
+1 540 160 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+7 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  540 160 540 280
+4 14
+"LINE4"
+""
+1 520 240 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+9 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  520 240 450 240
+4 15
+"LINE5"
+""
+1 390 180 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+10 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  390 180 450 180
+4 16
+"LINE6"
+""
+1 450 180 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+11 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  450 180 450 240
+4 18
+"LINE8"
+""
+1 380 320 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+13 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  380 320 450 320
+4 20
+"LINE10"
+""
+1 690 160 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+15 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  690 160 690 240
+2 23
+"PRIMITIVE_TEXT2"
+""
+1 490 440 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+18 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 490 440 585 535
+1 2 2 "0s" 0 0 0 65 0 0  490 440 5
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 VME 1
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+2 24
+"PRIMITIVE_TEXT3"
+""
+1 630 440 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+19 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 630 440 725 535
+1 2 2 "0s" 0 0 0 65 0 0  630 440 5
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 5 VME 2
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 0 
+4 25
+"LINE12"
+""
+1 560 160 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+20 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  560 160 560 439
+4 26
+"LINE13"
+""
+1 650 160 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+21 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  650 160 650 439
+2 28
+"PRIMITIVE_TEXT4"
+""
+1 605 270 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+23 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 582 270 628 304
+0 2 2 "0s" 0 0 0 193 0 0  605 270 2
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 8 Junction
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 3 Box
+7 29
+"ELLIPSE1"
+""
+1 520 240 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+24 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  1 E 520 240 10 10
+7 31
+"ELLIPSE3"
+""
+1 520 240 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+26 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 40 60 1 E 520 240 10 10
+7 32
+"ELLIPSE4"
+""
+1 520 240 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+27 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 130 60 1 E 520 240 10 10
+4 35
+"LINE14"
+""
+1 670 160 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+30 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  670 160 670 270
+4 36
+"LINE15"
+""
+1 840 190 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+31 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  840 190 770 190
+4 37
+"LINE16"
+""
+1 690 240 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+32 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  690 240 770 240
+4 38
+"LINE17"
+""
+1 770 190 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+33 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  770 190 770 470
+4 39
+"LINE18"
+""
+1 840 330 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+34 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  840 330 770 330
+4 40
+"LINE19"
+""
+1 450 270 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+35 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  450 270 450 320
+4 41
+"LINE20"
+""
+1 540 270 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+36 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  540 270 450 270
+7 30
+"ELLIPSE2"
+""
+1 520 240 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+25 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 20 30 1 E 520 240 10 10
+7 33
+"ELLIPSE5"
+""
+1 520 240 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+28 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 170 0 1 E 520 240 10 10
+4 42
+"LINE21"
+""
+1 840 470 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+37 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  840 470 770 470
+4 43
+"LINE22"
+""
+1 840 610 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+38 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  840 610 750 610
+4 44
+"LINE23"
+""
+1 840 750 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+39 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  840 750 750 750
+4 45
+"LINE24"
+""
+1 840 890 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+40 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  840 890 750 890
+4 46
+"LINE25"
+""
+1 670 270 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+41 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  670 270 750 270
+4 47
+"LINE26"
+""
+1 750 270.0000000000001 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+42 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  750 270 750 890
+7 34
+"ELLIPSE6"
+""
+1 520 240 E E E 1 E 1 E N {0,0,0} E N {255,255,255} E E
+ E E
+29 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 150 30 1 E 520 240 10 10
+25 49
+"alertTable"
+""
+1 30 680.0000000000001 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+44 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 678 682 912
+EE 1 0 1 2 0 "dp" 32 1 0 "s" 1
+LANG:1 9 Datapoint
+E
+1
+LANG:1 0 
+
+300 "text" 37 1 0 "s" 1
+LANG:1 10 Alert Text
+E
+1
+LANG:1 0 
+
+345 
+16 16 10 10
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 0 1 1 1 7
+1 0
+13 50
+"PUSH_BUTTON1"
+""
+1 29.99999999999996 920 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+45 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0  28 918 682 952
+
+T 
+1
+LANG:1 17 Open alert screen
+"main()
+{
+  ChildPanelOnCentral(\"fwAlarmHandling/fwAlarmHandlingScreen.pnl\", \"Alarms\", makeDynString());
+}" 0
+ E E E
+30 66
+"FRAME4"
+""
+1 10 732 E E E 1 E 1 E N "_WindowText" E N {0,0,0} E E
+ E E
+47 0 0 0 0 0
+E E E
+1
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 0 1 0 1 E 1 0 2.025316455696202 0 -832.5316455696201 0 E 10 732 701 891
+1
+LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 6 Alerts
+13 68
+"PUSH_BUTTON2"
+""
+1 1160 174 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+49 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 172 1222 199
+
+T 
+1
+LANG:1 7 Disable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"01\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, false, ex);
+  if (emu_checkException(ex)) { return; }
+  //disable in FSM
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 0);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+2 69
+"PRIMITIVE_TEXT5"
+""
+1 1030 20 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+50 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 1030 20 1128 34
+0 2 2 "0s" 0 0 0 192 0 0  1030 20 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 21 Time of last reading:
+2 70
+"txtTimeLastRead"
+""
+1 1130 20 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+51 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E U  0 E 1130 20 1182 34
+0 2 2 "0s" 0 0 0 192 0 0  1130 20 1
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0 1
+LANG:1 11 long ago :)
+13 71
+"PUSH_BUTTON3"
+""
+1 1160 150 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+52 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 148 1222 175
+
+T 
+1
+LANG:1 6 Enable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"01\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, true, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 1);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 72
+"PUSH_BUTTON4"
+""
+1 1160 314 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+53 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 312 1222 339
+
+T 
+1
+LANG:1 7 Disable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"02\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, false, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 0);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 73
+"PUSH_BUTTON5"
+""
+1 1160 290 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+54 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 288 1222 315
+
+T 
+1
+LANG:1 6 Enable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"02\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, true, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 1);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 77
+"PUSH_BUTTON9"
+""
+1 1160 454 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+58 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 452 1222 479
+
+T 
+1
+LANG:1 7 Disable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"03\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, false, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 0);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 78
+"PUSH_BUTTON10"
+""
+1 1160 430 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+59 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 428 1222 455
+
+T 
+1
+LANG:1 6 Enable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"03\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, true, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 1);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 79
+"PUSH_BUTTON11"
+""
+1 1160 594 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+60 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 592 1222 619
+
+T 
+1
+LANG:1 7 Disable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"04\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, false, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 0);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 80
+"PUSH_BUTTON12"
+""
+1 1160 570 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+61 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 568 1222 595
+
+T 
+1
+LANG:1 6 Enable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"04\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, true, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 1);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 81
+"PUSH_BUTTON13"
+""
+1 1160 734 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+62 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 732 1222 759
+
+T 
+1
+LANG:1 7 Disable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"05\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, false, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 0);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 82
+"PUSH_BUTTON14"
+""
+1 1160 710 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+63 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 708 1222 735
+
+T 
+1
+LANG:1 6 Enable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"05\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, true, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 1);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 83
+"PUSH_BUTTON15"
+""
+1 1160 874 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+64 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 872 1222 899
+
+T 
+1
+LANG:1 7 Disable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"06\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, false, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 0);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 84
+"PUSH_BUTTON16"
+""
+1 1160 850 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+65 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  1158 848 1222 875
+
+T 
+1
+LANG:1 6 Enable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"P\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"06\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, true, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 1);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 85
+"PUSH_BUTTON17"
+""
+1 10 174 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+66 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  8 172 72 199
+
+T 
+1
+LANG:1 7 Disable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"M\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"01\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, false, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 0);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 86
+"PUSH_BUTTON18"
+""
+1 10 150 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+67 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  8 148 72 175
+
+T 
+1
+LANG:1 6 Enable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"M\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"01\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, true, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 1);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 87
+"PUSH_BUTTON19"
+""
+1 10 314 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+68 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  8 312 72 339
+
+T 
+1
+LANG:1 7 Disable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"M\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"02\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, false, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 0);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 88
+"PUSH_BUTTON20"
+""
+1 10 290 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+69 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  8 288 72 315
+
+T 
+1
+LANG:1 6 Enable
+"main()
+{
+  mapping chamber;
+  chamber[\"side\"] = \"M\";
+  chamber[\"station\"] = 1;
+  chamber[\"ring\"] = 1;
+  chamber[\"chamberNumber\"] = \"02\";
+
+  dyn_string ex;  
+  emux2p_enableDisableChamber(chamber, true, ex);
+  if (emu_checkException(ex)) { return; }
+  dpSet(\"CSC_ME_\" + chamber[\"side\"] + chamber[\"station\"] + \"|\" + emu_chamberDeviceParamsToFsmName(chamber, ex) + \".mode.enabled\", 1);
+  if (emu_checkException(ex)) { return; }
+}" 0
+ E E E
+13 89
+"PUSH_BUTTON21"
+""
+1 420 130 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+70 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  418 128 452 152
+
+T 
+1
+LANG:1 2 On
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate1/Channel0.Settings.Voltage\", 8);
+  dpSet(\"Wiener/CAN0/Crate1/Channel3.Settings.Voltage\", 8);
+}" 0
+ E E E
+13 91
+"PUSH_BUTTON23"
+""
+1 420 150 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+72 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  418 148 452 172
+
+T 
+1
+LANG:1 3 Off
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate1/Channel0.Settings.Voltage\", 0);
+  dpSet(\"Wiener/CAN0/Crate1/Channel3.Settings.Voltage\", 0);
+}" 0
+ E E E
+13 92
+"PUSH_BUTTON24"
+""
+1 420 350 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+73 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  418 348 452 372
+
+T 
+1
+LANG:1 3 Off
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate1/Channel4.Settings.Voltage\", 0);
+  dpSet(\"Wiener/CAN0/Crate1/Channel7.Settings.Voltage\", 0);
+}" 0
+ E E E
+13 93
+"PUSH_BUTTON25"
+""
+1 420 330 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+74 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  418 328 452 352
+
+T 
+1
+LANG:1 2 On
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate1/Channel4.Settings.Voltage\", 8);
+  dpSet(\"Wiener/CAN0/Crate1/Channel7.Settings.Voltage\", 8);
+}" 0
+ E E E
+13 94
+"PUSH_BUTTON26"
+""
+1 520 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+75 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  518 108 552 132
+
+T 
+1
+LANG:1 2 On
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate1.Settings.OnOffCrate\", true);
+}" 0
+ E E E
+13 96
+"PUSH_BUTTON28"
+""
+1 550 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+77 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  548 108 582 132
+
+T 
+1
+LANG:1 3 Off
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate1.Settings.OnOffCrate\", false);
+}" 0
+ E E E
+13 97
+"PUSH_BUTTON29"
+""
+1 620 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+78 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  618 108 652 132
+
+T 
+1
+LANG:1 2 On
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate2.Settings.OnOffCrate\", true);
+}" 0
+ E E E
+13 98
+"PUSH_BUTTON30"
+""
+1 650 110 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+79 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  648 108 682 132
+
+T 
+1
+LANG:1 3 Off
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate2.Settings.OnOffCrate\", false);
+}" 0
+ E E E
+13 99
+"PUSH_BUTTON31"
+""
+1 713 195 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+80 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  711 193 745 217
+
+T 
+1
+LANG:1 2 On
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate2/Channel0.Settings.Voltage\", 8);
+  dpSet(\"Wiener/CAN0/Crate2/Channel3.Settings.Voltage\", 8);
+}" 0
+ E E E
+13 100
+"PUSH_BUTTON32"
+""
+1 713 216 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+81 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  711 214 745 238
+
+T 
+1
+LANG:1 3 Off
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate2/Channel0.Settings.Voltage\", 0);
+  dpSet(\"Wiener/CAN0/Crate2/Channel3.Settings.Voltage\", 0);
+}" 0
+ E E E
+13 101
+"PUSH_BUTTON33"
+""
+1 713 294 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+82 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  711 292 745 316
+
+T 
+1
+LANG:1 3 Off
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate2/Channel4.Settings.Voltage\", 0);
+  dpSet(\"Wiener/CAN0/Crate2/Channel7.Settings.Voltage\", 0);
+}" 0
+ E E E
+13 102
+"PUSH_BUTTON34"
+""
+1 713 274 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+83 0 0 0 0 0
+E E E
+0
+1
+LANG:1 0 
+
+0
+1
+LANG:1 37 MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0
+0  711 272 745 296
+
+T 
+1
+LANG:1 2 On
+"main()
+{
+  dpSet(\"Wiener/CAN0/Crate2/Channel4.Settings.Voltage\", 8);
+  dpSet(\"Wiener/CAN0/Crate2/Channel7.Settings.Voltage\", 8);
+}" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:1 0 
+0
+LAYER, 2 
+1
+LANG:1 0 
+0
+LAYER, 3 
+1
+LANG:1 0 
+0
+LAYER, 4 
+1
+LANG:1 0 
+0
+LAYER, 5 
+1
+LANG:1 0 
+0
+LAYER, 6 
+1
+LANG:1 0 
+0
+LAYER, 7 
+1
+LANG:1 0 
+0
+0

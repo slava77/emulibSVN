@@ -37,8 +37,15 @@ main() {
   if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
   emu_info("CMS_CSC_MiddleLayer PostInstall: Finished creating CTRL managers from the installation DB");  
   
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Configuring alert classes");
+  emuAlert_updateAllAlertClassesForType("CscHvChamber");
+  emuAlert_updateAllAlertClassesForType("CscHvPrimary");
+  emuAlert_updateAllAlertClassesForType("CscLvChamber");
+  emuAlert_updateAllAlertClassesForType("CscTempChamber");
+  emuAlert_updateAllAlertClassesForType("CscFedDdu");
+  emu_info("CMS_CSC_MiddleLayer PostInstall: Finished configuring alert classes");
+  
   emu_info("CMS_CSC_MiddleLayer PostInstall: DONE");
-
 }
 
 void createAllDimManagers(dyn_string &ex) {

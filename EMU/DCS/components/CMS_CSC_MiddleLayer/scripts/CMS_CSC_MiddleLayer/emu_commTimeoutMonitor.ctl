@@ -39,6 +39,9 @@ public void emu_commMonitorInit() {
   emu_info("EMU communication monitor: Initializing communication monitoring for timeouts...");
 
   dpSetWait("COMM_TIMEOUTS.value", "");
+  if (dpExists("sx5_no_communication")) {
+    dpSet("sx5_no_communication.", 0);
+  }
 
   // X2P
   dyn_string x2pTimestampDps = emux2p_getAllDataDps();
@@ -162,6 +165,10 @@ private void _emu_commMonitorThread(dyn_string timestampDpList, int interval, in
         dpSetWait("COMM_TIMEOUTS.value", timedOutDevicesString);
       }
     }
+    
+    if (dpExists("sx5_no_communication")) {
+      handleSx5GlobalAlert();
+    }
 
     // sleep the "interval"
     if (firstRound) { firstRound = false; }
@@ -176,4 +183,35 @@ private void _emu_commMonitorThread(dyn_string timestampDpList, int interval, in
 private void emu_commTimeoutDetectedForHvPrimary(string timeoutDp, string fsmDp, time lastTimestamp) {
   string statusDp = dpSubStr(timeoutDp, DPSUB_SYS_DP) + ".status";
   dpSet(statusDp, -1);
+}
+
+void handleSx5GlobalAlert() {
+  dyn_string lvDps = dpNames("CscLowVoltage/*", "CscLvChamber");
+  int alertOn = 0;
+  for (int i=1; i <= dynlen(lvDps); i++) {
+    string fsmState;
+    dpGet(lvDps[i] + ".fsm_state", fsmState);
+    if (fsmState == EMUHV_FSM_STATE_NO_COMM) {
+      dyn_string disabledChannels;
+      dpGet(lvDps[i] + ".disabled_channels", disabledChannels);
+      if (dynlen(disabledChannels) < 59) { // not all channels disabled
+        alertOn = 1;
+      }
+    }
+  }
+  if (alertOn) { // only raise the alert if maraton is on and has been on for at least some time
+    bool mrtnStatus;
+    dpGet("Wiener/CAN0/Crate2.Status.On", mrtnStatus);
+    int mrtnUpTime = getCurrentTime() - emu_getLastUpdateTimeAsTime("Wiener/CAN0/Crate2.Status.On");
+    emu_info("Maraton uptime: " + mrtnUpTime);
+    emu_info("Maraton status: " + mrtnStatus);
+    if (mrtnStatus && (mrtnUpTime > EMU_COMM_X2P_TIMEOUT)) {
+      dpSet("sx5_no_communication.", 1);
+      delay(5);
+      dpSet("sx5_no_communication.", 0); // to allow to switch back on
+    }
+  } else {
+    dpSet("sx5_no_communication.", 0);
+  }
+  
 }

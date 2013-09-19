@@ -21,12 +21,18 @@ PANEL,-1 -1 663 506 N "_3DFace" 2
   deviceParams = emu_fsmNodeToDeviceParams($2, ex);
   if (emu_checkException(ex)) { return; }
   
+  isMe11 = ((deviceParams[\"station\"] == 1) && (deviceParams[\"ring\"] == 1));
+  initChannelsCombo();
+  
+  int posX = 20;
+  int posY = isMe11 ? 250 : 100; // just to avoid overlap, because the first and dirty version of the tooltip has a very long table.. :)
+  
   string deviceParamsDollar = \"$deviceParams:\" + emuui_deviceParamsToString(deviceParams);
   addSymbol(myModuleName(), myPanelName(),
             EMUUI_OBJECTS_DIR + \"/tooltip_objects/refTooltipObj_chamber_temperature.pnl\",
             \"refMon\",
             makeDynString(deviceParamsDollar),
-            20, 100, 0, 1, 1);  
+            posX, posY, 0, 1, 1);  
 
   tempDp = dpSubStr(emuui_getDpName(\"chamber_temperature_disabled_channels\", deviceParams, ex), DPSUB_SYS_DP);
   if (emu_checkException(ex)) { return; }
@@ -37,6 +43,19 @@ PANEL,-1 -1 663 506 N "_3DFace" 2
 void initAcConstants() {
   controlButtons = makeDynString(\"btnEnableDisable\");
   expertControlButtons = makeDynString();
+}
+
+void initChannelsCombo() {
+  if (isMe11) {
+    comboChannel.deleteAllItems();
+    for (int i=1; i <= 7; i++) {
+      comboChannel.appendItem(\"DCFEB.FPGA \" + i);
+    }
+    comboChannel.appendItem(\"ALCT\");
+    comboChannel.appendItem(\"LVDB\");
+    comboChannel.appendItem(\"ODMB\");
+    comboChannel.appendItem(\"OTMB\");
+  }
 }" 0
  "main()
 {
@@ -57,6 +76,8 @@ bool isSelectedChannelEnabled;
 /** for access control - arrays of control and expert control buttons which should be under access control */
 dyn_string controlButtons;
 dyn_string expertControlButtons;
+
+bool isMe11;
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
@@ -81,7 +102,7 @@ void channelSelectionUpdated() {
     dyn_string split = strsplit(name, \" \");
     string board = strtolower(split[1]);
     int boardNum = 1;
-    if (board == \"cfeb\") {
+    if ((board == \"cfeb\") || (board == \"dcfeb\")) {
       boardNum = split[2];
     }
     

@@ -86,6 +86,12 @@ PANEL,-1 -1 404 367 N "_3DFace" 1
   dpConnect(\"updateTemperatureCB\", true, temperatureDps);
   
   //Show which crates are supplied by this Maraton
+  if (!emuui_lvSystemExists()) { 
+    lblPCrates.visible = false;
+    lblForPCrates.visible = false;
+    return;
+  }
+  
   mapping maratonToPCrates = emuui_getMaratonToPcmbsMap(ex);
   if (emu_checkException(ex)) { return; }
   if (mappingHasKey(maratonToPCrates, deviceParams[\"id\"])) {
@@ -331,7 +337,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 280 10 339 26
+E E 0 1 1 2 1 E U  1 E 280 10 338 25
 0 2 2 "0s" 0 0 0 192 0 0  280 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -350,7 +356,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 210 10 278 26
+E E 0 1 1 2 1 E U  1 E 210 10 279 25
 0 2 2 "0s" 0 0 0 192 0 0  210 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -383,7 +389,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 10 64 26
+E E 0 1 1 2 1 E U  1 E 10 10 65 25
 0 2 2 "0s" 0 0 0 192 0 0  10 10 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -577,7 +583,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 130 269 146
+E E 0 1 1 2 1 E U  1 E 10 130 267 145
 0 2 2 "0s" 0 0 0 192 0 0  10 130 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -596,7 +602,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 10 150 60 166
+E E 0 1 1 2 1 E U  1 E 10 150 62 165
 0 2 2 "0s" 0 0 0 192 0 0  10 150 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -615,7 +621,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 220 150 292 166
+E E 0 1 1 2 1 E U  1 E 220 150 295 165
 0 2 2 "0s" 0 0 0 192 0 0  220 150 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -634,7 +640,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 300 150 319 166
+E E 0 1 1 2 1 E U  1 E 300 150 322 165
 0 2 2 "0s" 0 0 0 192 0 0  300 150 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0

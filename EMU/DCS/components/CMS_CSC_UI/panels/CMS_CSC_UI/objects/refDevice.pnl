@@ -39,8 +39,13 @@ PANEL,-1 -1 120 51 N "_3DFace" 6
   if ($caption == \"VALUE\") {
     caption.text = \"\";
     showValueOnCaption = true;
+    valueOnCaptionPrecision = 0;
 //  } else if (strpos($caption, \"DP=\") == 0) { 
-  }else {
+  } else if ($caption == \"VALUE_FLOAT\") {
+    caption.text = \"\";
+    showValueOnCaption = true;
+    valueOnCaptionPrecision = 1;
+  } else {
     caption.text = $caption;
     showValueOnCaption = false;
   }
@@ -68,6 +73,12 @@ void initShape(dyn_string ex) {
       break;
     case \"rectangle_middle_ref_point\":
       confRectShape(shapeParams);
+      break;
+    case \"elipse\":
+      confElipseShape(shapeParams);
+      break;
+    case \"line\":
+      confLineShape(shapeParams);
       break;
     default:
       break;
@@ -132,6 +143,50 @@ void confRectShape(mapping shapeParams) {
     caption.visible = false;
   }
 }
+
+void confElipseShape(mapping shapeParams) {
+  //check if relevant parameters are present, if not - leave default shape and return
+  int posX, posY;
+  getValue(shapeParams[\"type\"], \"position\", posX, posY);
+  setValue(\"imgNoCommunication\", \"position\", posX + 10, posY + 10);
+  if (!mappingHasKey(shapeParams, \"width\") || 
+      !mappingHasKey(shapeParams, \"height\")) {
+    
+    setValue(\"caption\", \"position\", posX + 10, posY + 7);
+    return;
+  }
+  
+  posY += ((int)shapeParams[\"height\"]) / 2;
+  posX += ((int)shapeParams[\"width\"]) / 2;
+  posX -= 10;
+  setValue(shapeParams[\"type\"], \"position\", posX, posY);
+  setValue(\"caption\", \"position\", posX, posY);
+  
+  int width = shapeParams[\"width\"];
+  int height = shapeParams[\"height\"];
+  setValue(shapeParams[\"type\"], \"size\", width, height); // for some reason a single setSize doesn't set quite the size that you request!!!??? nonsence but it's true - the second setSize does it correctly (discovered when setting size 90px)
+  setValue(shapeParams[\"type\"], \"size\", width, height);
+  if ((width <= 20) || (height <= 20)) { 
+    caption.visible = false;
+  }
+}
+
+void confLineShape(mapping shapeParams) {
+  //check if relevant parameters are present, if not - leave default shape and return
+  int posX, posY;
+  getValue(shapeParams[\"type\"], \"position\", posX, posY);
+  setValue(\"imgNoCommunication\", \"position\", posX + 10, posY + 10);
+
+  caption.visible = false; // disabled for now
+
+  int sizeX, sizeY;
+  getValue(shapeParams[\"type\"], \"size\", sizeX, sizeY);
+  setValue(shapeParams[\"type\"], \"size\", shapeParams[\"length\"], sizeY);
+  if (mappingHasKey(shapeParams, \"rotation\")) {
+    setValue(shapeParams[\"type\"], \"rotation\", shapeParams[\"rotation\"]);
+  }
+  return;  
+}
 " 0
  E E E E 1 -1 -1 0  0 0
 ""0  1
@@ -184,6 +239,8 @@ float currentDpValueRangeMax;
 string currentDomain, currentObject;
 /** If true, then value of the connection (e.g. FSM state for FSM node connection) is displayed on the caption label. */
 bool showValueOnCaption;
+/** Tells how many digits after the decimal point should be displayed */
+int valueOnCaptionPrecision;
 /** Some special treatment is needed for ME1/1 chambers...... this flag tells if this is an ME1/1 chamber. */
 bool me11;
 /** Last FSM state that we got (used only in FSM node connection type). */
@@ -201,6 +258,9 @@ bool greyOut;
 
 /** local tooltip semaphore to synchronize showTooltip and hideTooltip functions */
 int tooltipSemaphore = 0;
+
+/** This color is used when resetting from highlighted to normal mode (after mouse over). Normally it's \"\" for most shapes because they use backCol to indicate their state and foreCol is normally black. But if line shape is used then state is indicated by foreCol, so it's not black but depends on the state of the object. */
+string defaultForeCol = \"\";
 
 void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string connectionType) {
   dyn_string ex;
@@ -255,7 +315,7 @@ void modeChangedCB(string modeDp, string mode, string connectionTypeDp, string c
         if (dynlen(ex) == 0) {
           string me11HvDomain = me11HvFsmNode;
           string me11HvObject = _fwCU_getNodeObj(me11HvDomain);
-          fwUi_connectDUModeBits(\"updateME11hvFSMModeBitsCB\", me11HvDomain, me11HvObject);
+          fwUi_connectDUModeBits(\"updateME11hvFSMModeBitsCB\", me11HvDomain, me11HvObject, 0);
         } else {
           emu_errorHandled(ex);
         }
@@ -498,7 +558,11 @@ void updateDPStateCB(string dp, float value) {
   
   if (showValueOnCaption) {
     string captionStr;
-    sprintf(captionStr, \"%d\", value);
+    if (valueOnCaptionPrecision == 0) {
+      sprintf(captionStr, \"%d\", value);
+    } else {
+      sprintf(captionStr, \"%.\" + valueOnCaptionPrecision + \"f\", value);
+    }
     caption.text = captionStr;
   }
 }
@@ -634,6 +698,10 @@ void disconnect() {
 
 void setColor(string color) {
   setValue(shapeName, \"backCol\", color);
+  if (shapeName == \"line\") {
+    defaultForeCol = color;
+    setValue(shapeName, \"foreCol\", color);
+  }
 }
 
 void showTooltip() {//synchronized (tooltipSemaphore) {
@@ -682,7 +750,7 @@ bool isMouseOver() {
     }
   }
   
-  setValue(shapeName, \"foreCol\", \"\");
+  setValue(shapeName, \"foreCol\", defaultForeCol);
   return false;
 }
 
@@ -745,6 +813,40 @@ DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
 LAYER, 0 
 1
 LANG:1 0 
+7 12
+"elipse"
+""
+1 100 30 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  openFsmPanel();
+}" 0
+
+15 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
+    //setValue(shapeName, \"foreCol\", \"black_yellow\");
+    showTooltip();
+  } else {
+    setValue(shapeName, \"foreCol\", \"\");
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 1 1 2 1 E 1 0 1 -90 -20 1 E 100 30 10 10
 10 0
 "chamber"
 ""
@@ -916,7 +1018,7 @@ E E "main(bool enter)
     //setValue(shapeName, \"foreCol\", \"black_yellow\");
     showTooltip();
   } else {
-    setValue(shapeName, \"foreCol\", \"\");
+    setValue(shapeName, \"foreCol\", defaultForeCol);
     hideTooltip();
   }
 }" 0
@@ -955,7 +1057,7 @@ E E "main(bool enter)
     //setValue(shapeName, \"foreCol\", \"black_yellow\");
     showTooltip();
   } else {
-    setValue(shapeName, \"foreCol\", \"\");
+    setValue(shapeName, \"foreCol\", defaultForeCol);
     hideTooltip();
   }
 }" 0
@@ -967,6 +1069,40 @@ LANG:1 0
 1
 "dashclr"N "_Transparent"
 E E 0 1 1 2 1 E 0.666666666666667 0 0.666666666666667 23.3333333333333 -123.3333333333334 2  1 0  "pictures/CMS_CSC_UI/noCommunication.png" 4294967295 E 85 215 15 15
+4 13
+"line"
+""
+1 20 10 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+ "main()
+{
+  showPopupMenu();
+}" 0
+ "main()
+{
+  openFsmPanel();
+}" 0
+
+16 0 0 0 0 0
+E E "main(bool enter)
+{
+  mouseOverObjects[this.name] = enter;
+  if (enter) {
+    emuui_highlightThisShapeOnly($refName + \".\" + shapeName);
+    //setValue(shapeName, \"foreCol\", \"black_yellow\");
+    showTooltip();
+  } else {
+    setValue(shapeName, \"foreCol\", defaultForeCol);
+    hideTooltip();
+  }
+}" 0
+
+0
+1
+LANG:1 0 
+
+1
+"dashclr"N "_Transparent"
+E E 0 3 1 2 1 E  20 10 0 10
 0
 LAYER, 1 
 1

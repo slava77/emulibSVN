@@ -21,6 +21,9 @@ PANEL,-1 -1 810 506 N "_3DFace" 2
   deviceParams = emu_fsmNodeToDeviceParams($2, ex);
   if (emu_checkException(ex)) { return; }
   
+  isMe11 = ((deviceParams[\"station\"] == 1) && (deviceParams[\"ring\"] == 1));
+  initChannelsCombo();
+
   string deviceParamsDollar = \"$deviceParams:\" + emuui_deviceParamsToString(deviceParams);
   addSymbol(myModuleName(), myPanelName(),
             EMUUI_OBJECTS_DIR + \"/tooltip_objects/refTooltipObj_chamber_low_voltage.pnl\",
@@ -41,6 +44,26 @@ PANEL,-1 -1 810 506 N "_3DFace" 2
 void initAcConstants() {
   controlButtons = makeDynString(\"btnEnableDisable\");
   expertControlButtons = makeDynString();
+}
+
+void initChannelsCombo() {
+  if (isMe11) {
+    comboChannel.deleteAllItems();
+    for (int i=1; i <= 7; i++) {
+      comboChannel.appendItem(\"DCFEB \" + i + \" 3.0V\");
+      comboChannel.appendItem(\"DCFEB \" + i + \" 4.0V\");
+      comboChannel.appendItem(\"DCFEB \" + i + \" 5.5V\");
+      comboChannel.appendItem(\"DCFEB_SYSMON \" + i + \" vcore\");
+      comboChannel.appendItem(\"DCFEB_SYSMON \" + i + \" vaux1\");
+    }
+    comboChannel.appendItem(\"ALCT 1.8V\");
+    comboChannel.appendItem(\"ALCT 3.3V\");
+    comboChannel.appendItem(\"ALCT 5.5V\");
+    comboChannel.appendItem(\"ALCT 5.6V\");
+    
+    comboChannel.appendItem(\"LVDB 7vAnalog\");
+    comboChannel.appendItem(\"LVDB 7vDigital\");
+  }
 }" 0
  "main()
 {
@@ -63,6 +86,8 @@ string ccbBitsDp;
 /** for access control - arrays of control and expert control buttons which should be under access control */
 dyn_string controlButtons;
 dyn_string expertControlButtons;
+
+bool isMe11;
 
 /** This function is called whenever the user privileges change and just passes that to emu_enableDisableControl() which takes care of enabling/disabling buttons. */
 void accessPrivilegesChangedCB(string dummy1, string dummy2) {
@@ -95,7 +120,7 @@ void channelSelectionUpdated() {
     string board = strtolower(split[1]);
     int boardNum;
     string ch;
-    if (board == \"cfeb\") {
+    if ((board == \"cfeb\") || (board == \"dcfeb\")) {
       boardNum = split[2];
       ch = split[3]; //e.g. 3.3V
     } else if (board == \"alct\") {
@@ -105,7 +130,7 @@ void channelSelectionUpdated() {
     strreplace(ch, \"V\", \"\");
     
     dyn_string chDps;
-    if (board == \"cfeb\") {
+    if ((board == \"cfeb\") || (board == \"dcfeb\")) {
       chDps = dpNames(lvDp + \"/Mon.\" + board + \".*\" + ch + \".v\" + boardNum);
     } else if (board == \"alct\") {
       chDps = dpNames(lvDp + \"/Mon.\" + board + \".*\" + ch);

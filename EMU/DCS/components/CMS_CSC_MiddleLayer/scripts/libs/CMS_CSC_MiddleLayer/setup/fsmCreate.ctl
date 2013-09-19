@@ -12,6 +12,10 @@ This package contains functions responsible for creating the FSM tree.
 #uses "CMS_CSC_MiddleLayer/emu_hv.ctl"
 #uses "CMS_CSC_MiddleLayer/emu_x2p.ctl"
 
+// these are some debug parameters (should be FALSE for production deployment!), mostly used to create FSMs in non-standard environments like SX5
+const bool EMU_FSM_DEBUG__IGNORE_MISSING_REF_NODES = false;
+const bool EMU_FSM_DEBUG__IGNORE_HV = false;
+
 // ************* FSM constants ****************************************
 const string EMU_FSM_TYPE_SYSTEM = "EMUGrouping";
 const string EMU_FSM_TYPE_TOP = "EMUGrouping";
@@ -132,9 +136,9 @@ void emuFsm_createStationsFsm(string systemNode, dyn_mapping chambers, dyn_strin
     }
 
     emuFsm_createRefNode(maratonNode, stationNode, EMU_FSM_DOMAIN_LV_MRTN, false, ex);
-    if (emu_checkException(ex)) { return; }
+    if (emu_checkException(ex)) { if (!EMU_FSM_DEBUG__IGNORE_MISSING_REF_NODES) {return;} else {dynClear(ex);} }
     emuFsm_createRefNode(crbNode, stationNode, EMU_FSM_DOMAIN_LV_CRB, false, ex);
-    if (emu_checkException(ex)) { return; }
+    if (emu_checkException(ex)) { if (!EMU_FSM_DEBUG__IGNORE_MISSING_REF_NODES) {return;} else {dynClear(ex);} }
     
     // create trigger sector
     bool isSmallRing = ((chamber["station"] > 1) && (chamber["ring"] == 1));
@@ -161,22 +165,24 @@ void emuFsm_createStationsFsm(string systemNode, dyn_mapping chambers, dyn_strin
     fwFsmTree_setNodeLabel(chamberNode, chamberName);
     
     // create chamber HV DU
-    if (!emuDev_isMe11Chamber(chamber)) { // UF/PNPI HV system
-      string hvDp = emuhv_getDp(chamber, "", ex);
-      if (emu_checkException(ex)) { return; }
-      emuFsm_createFsmNode(chamberNode, hvDp, EMUHV_DPT_HV_FSM, false);
-      fwFsmTree_setNodeLabel(hvDp, chamberName + " HV");
-      fwFsmTree_setNodePanel(hvDp, EMU_FSM_PANEL_HV);
-    } else {  // CAEN HV system
-      string me11HvNode = "CSC_ME_" +
-                          ((chamber["side"] == "M") ? "N" : "P") + // translate M (minus) to ME1/1 notation i.e. N (negative)
-                          chamber["station"] +
-                          chamber["ring"] +
-                          "_C" + chamber["chamberNumber"] +
-                          "_HV";
+    if (!EMU_FSM_DEBUG__IGNORE_HV) {
+      if (!emuDev_isMe11Chamber(chamber)) { // UF/PNPI HV system
+        string hvDp = emuhv_getDp(chamber, "", ex);
+        if (emu_checkException(ex)) { return; }
+        emuFsm_createFsmNode(chamberNode, hvDp, EMUHV_DPT_HV_FSM, false);
+        fwFsmTree_setNodeLabel(hvDp, chamberName + " HV");
+        fwFsmTree_setNodePanel(hvDp, EMU_FSM_PANEL_HV);
+      } else {  // CAEN HV system
+        string me11HvNode = "CSC_ME_" +
+                            ((chamber["side"] == "M") ? "N" : "P") + // translate M (minus) to ME1/1 notation i.e. N (negative)
+                            chamber["station"] +
+                            chamber["ring"] +
+                            "_C" + chamber["chamberNumber"] +
+                            "_HV";
       
-      emuFsm_createRefNode(me11HvNode, chamberNode, EMU_FSM_DOMAIN_ME11_HV, false, ex);
-      if (emu_checkException(ex)) { return; }
+        emuFsm_createRefNode(me11HvNode, chamberNode, EMU_FSM_DOMAIN_ME11_HV, false, ex);
+        if (emu_checkException(ex)) { if (!EMU_FSM_DEBUG__IGNORE_MISSING_REF_NODES) {return;} else {dynClear(ex);} }
+      }
     }
     
     // create chamber LV DU
@@ -266,7 +272,7 @@ void emuFsm_createHvFsm(string systemNode, string side, dyn_string primaryDps, d
   string me11HvNode = (side == "M") ? EMU_FSM_NODE_ME11_HV_MINUS : EMU_FSM_NODE_ME11_HV_PLUS;
         
   emuFsm_createRefNode(me11HvNode, hvNode, EMU_FSM_DOMAIN_ME11_HV, false, ex);
-  if (emu_checkException(ex)) { return; }
+  if (emu_checkException(ex)) { if (!EMU_FSM_DEBUG__IGNORE_MISSING_REF_NODES) {return;} else {dynClear(ex);} }
 }
 
 /**
