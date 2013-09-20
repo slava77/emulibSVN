@@ -2562,7 +2562,7 @@ void emu::pc::Configurator::DMBStatus(xgi::Input * in, xgi::Output * out )
   {
      int fwv=thisDMB->odmb_firmware_version();
      int fw_xml=thisDMB->GetExpectedControlFirmwareTag();
-     sprintf(buf,"ODMB firmware version : V%02X_%02X (tag %02X%02X)",(fwv>>4)&0xF, fwv&0xF,(fwv>>4)&0xF, fwv&0xF);
+     sprintf(buf,"ODMB firmware version : V%02X_%02X (tag %02X%02X)",(fwv>>8)&0xFF, fwv&0xFF,(fwv>>8)&0xFF, fwv&0xFF);
      if ( (fwv&0xFFFF)==(fw_xml&0xFFFF) ) 
      {
         *out << cgicc::span().set("style","color:green");
@@ -2573,8 +2573,8 @@ void emu::pc::Configurator::DMBStatus(xgi::Input * in, xgi::Output * out )
         *out << cgicc::span().set("style","color:red");
         *out << buf;
         *out << "--->> BAD <<--- should be ";
-        sprintf(buf,"V%02X_%02X (tag %02X%02X)",(fw_xml>>4)&0xF, fw_xml&0xF,(fw_xml>>4)&0xF, fw_xml&0xF);
-        *out << cgicc::span();
+        sprintf(buf,"V%02X_%02X (tag %02X%02X)",(fw_xml>>8)&0xFF, fw_xml&0xFF,(fw_xml>>8)&0xFF, fw_xml&0xF);
+        *out << buf << cgicc::span();
     }
      *out << cgicc::br();
      int idcode=thisDMB->mbfpgaid();
@@ -2627,13 +2627,40 @@ void emu::pc::Configurator::DMBStatus(xgi::Input * in, xgi::Output * out )
      *out << cgicc::td() << cgicc::td() << cgicc::tr() << std::endl;
      *out << cgicc::table();
      *out << cgicc::fieldset() << cgicc::br() << std::endl;
+  
+     std::vector<float> adcs=thisDMB->odmb_fpga_adc();
+     *out << std::setprecision(3);
+     *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;");
+     *out << std::endl ;
+     *out << cgicc::legend("ODMB Temperatures and Voltages").set("style","color:blue") 
+          << std::endl ;
+     *out << cgicc::table().set("border","1").set("cellpadding","4");
+     *out << cgicc::tr();
+     *out << cgicc::td() << " FPGA  temperature = " << adcs[0] << "C " << cgicc::td();      
+     *out << cgicc::td() << " PCB temperature 1 = " << adcs[6] << "C " << cgicc::td();      
+     *out << cgicc::td() << " PCB temperature 2 = " << adcs[3] << "C " << cgicc::td();      
+     *out << cgicc::table() << cgicc::br() << std::endl;
+
+     *out << cgicc::table().set("border","1").set("cellpadding","4");
+     *out << cgicc::tr();
+     *out << cgicc::td() << " FPGA 3.3V = " << adcs[1] << "V " << cgicc::td();      
+     *out << cgicc::td() << " FPGA 2.5V = " << adcs[5] << "V " << cgicc::td();      
+     *out << cgicc::td() << " FPGA 1.0V = " << adcs[7] << "V " << cgicc::td();      
+     *out << cgicc::tr() << std::endl;
+     *out << cgicc::tr();
+     *out << cgicc::td() << " LVMB 5.0V = " << adcs[8] << "V " << cgicc::td();      
+     *out << cgicc::td() << " PPIB 5.0V = " << adcs[2] << "V " << cgicc::td();      
+     *out << cgicc::td() << " PPIB 3.3V = " << adcs[4] << "V " << cgicc::td();      
+     *out << cgicc::tr() << std::endl;
+     *out << cgicc::table();
+     *out << cgicc::fieldset() << cgicc::br() << std::endl;
   }
 
   //
   *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;");
   *out << std::endl ;
   //
-  *out << cgicc::legend("Voltages, Temperatures, & Currents").set("style","color:blue") 
+  *out << cgicc::legend("Chamber Voltages, Temperatures, & Currents").set("style","color:blue") 
        << std::endl ;
   //
   int n=thisDMB->DCSreadAll(buf);
