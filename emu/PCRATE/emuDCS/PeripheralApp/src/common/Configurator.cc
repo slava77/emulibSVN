@@ -1183,8 +1183,9 @@ void emu::pc::Configurator::ConfigSelectorPage( xgi::Input * in, xgi::Output * o
 	       *f                          ) != selectedConfigIds_.end() ) *out << " selected=\"selected\"";
     *out << ">" << *f << "</option>";
   }
-  *out << "</select>" << endl;
-  *out << "<button type=\"submit\" name=\"configFromFile\">Configure from file</button>" << endl;
+  *out << "</select>\n";
+  *out << "<button type=\"submit\" name=\"configFromFile\">Configure the application from file</button>\n";
+  *out << "<br/><br/>\n";
 
   //
   // Get and present the list of DB ids to choose from
@@ -1195,8 +1196,9 @@ void emu::pc::Configurator::ConfigSelectorPage( xgi::Input * in, xgi::Output * o
     for ( vector<string>::const_iterator k = plusSideDBIds.begin(); k != plusSideDBIds.end(); ++k ){
       *out << "<option value=\"" << *k << "\"";
       // Highlight the id specified in the app's config XML if no other id has been selected yet:
+      const set<string> configIds_ = emu::utils::csvTo<set<string> >( EMU_config_ID_.toString() );
       if ( selectedSource_ != emu::pc::Configuration::dbSource && 
-	 *k == EMU_config_ID_.toString()                          ) *out << " selected=\"selected\"";
+	   find( configIds_.begin(), configIds_.end(), *k ) != configIds_.end() ) *out << " selected=\"selected\"";
       // Highlight the previously selected id, if any:
       if ( selectedSource_ == emu::pc::Configuration::dbSource &&
 	 find( selectedConfigIds_.begin(), 
@@ -1204,16 +1206,17 @@ void emu::pc::Configurator::ConfigSelectorPage( xgi::Input * in, xgi::Output * o
 	       *k                          ) != selectedConfigIds_.end() ) *out << " selected=\"selected\"";
       *out << ">" << *k << "</option>";
     }
-    *out << "</select>" << endl;
-    *out << "<button type=\"submit\" name=\"configPlusSideFromDB\">Configure plus side from DB</button>" << endl;
+    *out << "</select>\n";
+    *out << "<button type=\"submit\" name=\"configPlusSideFromDB\">Configure the application for plus side from DB</button>\n";
     
     vector<string> minusSideDBIds = configuration_.getAvailableDBIds( emu::pc::Configuration::minusSide );
     *out << "<select name=\"minusids\" size=\"10\">" << endl;
     for ( vector<string>::const_iterator k = minusSideDBIds.begin(); k != minusSideDBIds.end(); ++k ){
       *out << "<option value=\"" << *k << "\"";
       // Highlight the id specified in the app's config XML if no other id has been selected yet:
+      const set<string> configIds_ = emu::utils::csvTo<set<string> >( EMU_config_ID_.toString() );
       if ( selectedSource_ != emu::pc::Configuration::dbSource && 
-	 *k == EMU_config_ID_.toString()                          ) *out << " selected=\"selected\"";
+	   find( configIds_.begin(), configIds_.end(), *k ) != configIds_.end() ) *out << " selected=\"selected\"";
       // Highlight the previously selected id, if any:
       if ( selectedSource_ == emu::pc::Configuration::dbSource && 
 	 find( selectedConfigIds_.begin(), 
@@ -1221,10 +1224,11 @@ void emu::pc::Configurator::ConfigSelectorPage( xgi::Input * in, xgi::Output * o
 	       *k                          ) != selectedConfigIds_.end() ) *out << " selected=\"selected\"";
       *out << ">" << *k << "</option>";
     }
-    *out << "</select>" << endl;
-    *out << "<button type=\"submit\" name=\"configPlusSideFromDB\">Configure minus side from DB</button>" << endl;
+    *out << "</select>\n";
+    *out << "<button type=\"submit\" name=\"configMinusSideFromDB\">Configure the application for minus side from DB</button>\n";
+    *out << "<br/><br/>\n";
 
-    *out << "<button type=\"submit\" name=\"configBothSidesFromDB\">Configure both sides from DB</button>" << endl;
+    *out << "<button type=\"submit\" name=\"configBothSidesFromDB\">Configure the application for both sides from DB</button>\n";
   }
   catch( xcept::Exception& e ){
     stringstream ss;
