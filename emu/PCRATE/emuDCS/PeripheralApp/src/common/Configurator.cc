@@ -504,6 +504,7 @@ void emu::pc::Configurator::initializeParameters(){
   nTrigger_ = 100;
   MenuMonitor_ = 2;
   //
+  CCBTestLoops_ = 1;
   tmb_vme_ready = -1;
   crate_controller_status = -1;
   //
@@ -645,6 +646,7 @@ void emu::pc::Configurator::bindWebInterface(){
   xgi::bind(this,&emu::pc::Configurator::DMBTests, "DMBTests");
   xgi::bind(this,&emu::pc::Configurator::DMBUtils, "DMBUtils");
   xgi::bind(this,&emu::pc::Configurator::CCBStatus, "CCBStatus");
+  xgi::bind(this,&emu::pc::Configurator::CCBTests, "CCBTests");
   xgi::bind(this,&emu::pc::Configurator::CCBUtils, "CCBUtils");
   xgi::bind(this,&emu::pc::Configurator::MPCStatus, "MPCStatus");
   xgi::bind(this,&emu::pc::Configurator::MPCUtils, "MPCUtils");
@@ -736,6 +738,9 @@ void emu::pc::Configurator::bindWebInterface(){
   xgi::bind(this,&emu::pc::Configurator::MPCConfig, "MPCConfig");
   xgi::bind(this,&emu::pc::Configurator::CCBReadFirmware, "CCBReadFirmware");
   xgi::bind(this,&emu::pc::Configurator::MPCReadFirmware, "MPCReadFirmware");
+  xgi::bind(this,&emu::pc::Configurator::CCBTestAll, "CCBTestAll");
+  xgi::bind(this,&emu::pc::Configurator::CCBSetTestLoops, "CCBSetTestLoops");
+ 
   //
   //-----------------------------------------------
   // VME Controller routines
@@ -866,6 +871,7 @@ void emu::pc::Configurator::bindWebInterface(){
   xgi::bind(this,&emu::pc::Configurator::LogTestSummary, "LogTestSummary");
   xgi::bind(this,&emu::pc::Configurator::LogDMBTestsOutput, "LogDMBTestsOutput");
   xgi::bind(this,&emu::pc::Configurator::LogTMBTestsOutput, "LogTMBTestsOutput");
+  xgi::bind(this,&emu::pc::Configurator::LogCCBTestsOutput, "LogCCBTestsOutput");
   //
   //----------------------------------------------
   // Bind BC0 methods
@@ -2083,6 +2089,11 @@ void emu::pc::Configurator::CrateConfiguration(xgi::Input * in, xgi::Output * ou
       *out << cgicc::td();
       std::string CCBStatus = toolbox::toString("/%s/CCBStatus?ccb=%d",getApplicationDescriptor()->getURN().c_str(),ii);
       *out << cgicc::a("CCB Status").set("href",CCBStatus) << std::endl;
+      *out << cgicc::td();
+      //
+      *out << cgicc::td();
+      std::string CCBTests = toolbox::toString("/%s/CCBTests?ccb=%d",getApplicationDescriptor()->getURN().c_str(),ii);
+      *out << cgicc::a("CCB Tests").set("href",CCBTests) << std::endl;
       *out << cgicc::td();
       //
       *out << cgicc::td();
@@ -4978,11 +4989,11 @@ void emu::pc::Configurator::SetTTCDelays(xgi::Input * in, xgi::Output * out )
 
 	// check TTCrx registers
 	int rx;
-	rx=(int) (thisCCB->ReadTTCrxReg(2).to_ulong());
+	rx=thisCCB->ReadTTCrxReg(2);
 	if(((rx&0xf) != (TTCrxCoarseDelay_&0xf)) || ((rx&0xf0)>>4 != (TTCrxCoarseDelay_&0xf)))  
 	  std::cout << "ERROR: TTCrx Coarse Delay register readback " << std::hex << (rx&0xff) << std::dec << std::endl; 
 	//
-	rx=(int)(thisCCB->ReadTTCrxReg(3).to_ulong());
+	rx=thisCCB->ReadTTCrxReg(3);
 	if((rx&0xff) != 0xB3) 
 	  std::cout << "ERROR: TTCrx Control register readback " << std::hex << (rx&0xff) << std::dec << std::endl; 
 	//
@@ -8687,9 +8698,11 @@ void emu::pc::Configurator::TMBStatus(xgi::Input * in, xgi::Output * out )
   *out << cgicc::pre();  
   //
   const int TMB_MAX_TEMP = 40;
+  const int OTMB_MAX_TEMP = 65;
+
   //
   int TMBtempFPGA = thisTMB->ReadTMBtempFPGA();  
-  if ( TMBtempFPGA > TMB_MAX_TEMP) {  
+  if ( TMBtempFPGA > ((thisTMB->GetHardwareVersion()<=1)?TMB_MAX_TEMP:OTMB_MAX_TEMP)) {  
     *out << cgicc::span().set("style","color:red");
   } else {
     *out << cgicc::span().set("style","color:green");
@@ -10773,59 +10786,6 @@ void emu::pc::Configurator::SaveTestSummary() {
   return;
 }
   //
-  void emu::pc::Configurator::LogDMBTestsOutput(xgi::Input * in, xgi::Output * out ) 
-    throw (xgi::exception::Exception)
-  {
-    //
-    std::cout << "LogDMBTestsOutput" << std::endl;
-    //
-    cgicc::Cgicc cgi(in);
-    //
-    //
-    cgicc::form_iterator name = cgi.getElement("dmb");
-    //
-    //
-    int dmb=0;
-    if(name != cgi.getElements().end()) {
-      dmb = cgi["dmb"]->getIntegerValue();
-      std::cout << "DMB " << dmb << std::endl;
-      DMB_ = dmb;
-    } else {
-      std::cout << "Not dmb" << std::endl ;
-      dmb = DMB_;
-    }
-    //
-    cgicc::form_iterator name2 = cgi.getElement("ClearDMBTestsOutput");
-    //
-    if(name2 != cgi.getElements().end()) {
-      std::cout << "Clear..." << std::endl;
-      std::cout << cgi["ClearDMBTestsOutput"]->getValue() << std::endl ;
-      OutputDMBTests[dmb][current_crate_].str("");
-      OutputDMBTests[dmb][current_crate_] << "DMB-CFEB Tests " 
-					  << thisCrate->GetChamber(dmbVector[dmb]->slot())->GetLabel().c_str() 
-					  << " output:" << std::endl;
-
-      //
-    this->DMBTests(in,out);
-    return;
-    }
-    //
-    DAQMB * thisDMB = dmbVector[dmb];
-    //
-    char buf[20];
-    sprintf(buf,"/tmp/DMBTestsLogFile_%d.log",thisDMB->slot());
-    //
-    std::ofstream DMBTestsLogFile;
-    DMBTestsLogFile.open(buf);
-    DMBTestsLogFile << OutputDMBTests[dmb][current_crate_].str() ;
-    DMBTestsLogFile.close();
-    //
-    OutputDMBTests[dmb][current_crate_].str("");
-    //
-    this->DMBTests(in,out);
-    //
-  }
-  //
   void emu::pc::Configurator::LogTMBTestsOutput(xgi::Input * in, xgi::Output * out ) 
     throw (xgi::exception::Exception)
   {
@@ -10975,7 +10935,7 @@ void emu::pc::Configurator::SaveTestSummary() {
     //
     TMB * thisTMB = tmbVector[tmb];
     //
-    char buf[20];
+    char buf[100];
     sprintf(buf,"/tmp/ALCT_TMB_communicationLogFile_%d.log",thisTMB->slot());
     //
     std::ofstream ALCT_TMB_communicationLogFile;

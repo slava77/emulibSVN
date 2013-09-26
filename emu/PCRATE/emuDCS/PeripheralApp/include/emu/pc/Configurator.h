@@ -171,6 +171,7 @@ namespace emu {
   std::ostringstream OutputStringTMBStatus[10];
   std::ostringstream OutputDMBTests[10][30];
   std::ostringstream OutputTMBTests[10][30];
+  std::ostringstream OutputCCBTests[30];
   std::ostringstream OutputCheckConfiguration;
   std::ostringstream OutputCheckFirmware;
   std::vector <float> ChartData[100];
@@ -183,7 +184,7 @@ namespace emu {
   int crate_controller_status;
   //
   long CFEBDataIn_, CFEBDataOut_;
-  int CCBRegisterRead_, CCBRegisterValue_, CCBRegisterWrite_, CCBWriteValue_;
+  int CCBRegisterRead_, CCBRegisterValue_, CCBRegisterWrite_, CCBWriteValue_, CCBTestLoops_;
   int MPCRegisterRead_, MPCRegisterValue_, MPCRegisterWrite_, MPCWriteValue_;
   std::vector<TMB*>   tmbVector;
   std::vector<TMBTester>   tmbTestVector;
@@ -411,6 +412,11 @@ namespace emu {
   void MPCSafeWindowScan(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void PowerUp(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   //
+  // CCB tests
+  void CCBTests(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
+  void CCBTestAll(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
+  void CCBSetTestLoops(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
+  //
   // TMB tests
   void TMBTests(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
   void testTMB(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
@@ -597,6 +603,7 @@ namespace emu {
   void Settmb_bxn_offset(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   //
   // Output logging
+  void LogCCBTestsOutput(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void LogDMBTestsOutput(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void LogTestSummary(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void LogOutput(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
