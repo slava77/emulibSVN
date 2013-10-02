@@ -1,3 +1,5 @@
+#uses "CMS_CSC_common/emu_common.ctl"
+
 //#uses "fwRDBArchiving/fwRDBConfig.ctl"
 
 /**@file
