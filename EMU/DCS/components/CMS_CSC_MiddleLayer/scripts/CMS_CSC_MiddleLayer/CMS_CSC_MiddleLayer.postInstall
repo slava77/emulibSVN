@@ -15,9 +15,14 @@ main() {
 //   fwInstallationUtils_switchSimDriver(FALSE, "PVSS00opc", 14);
 
   emu_info("CMS_CSC_MiddleLayer PostInstall: Loading configurations...");
-  fwInstallationUtils_loadConfigurations(COMPONENT_NAME, ex);
+  int numConfsChanged = fwInstallationUtils_loadConfigurations(COMPONENT_NAME, ex);
   if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
   emu_info("CMS_CSC_MiddleLayer PostInstall: Finished loading configurations");
+  
+  if (numConfsChanged == 0) {
+    emu_info("CMS_CSC_MiddleLayer PostInstall: no configurations have changed so they were not reloaded. Returning, because there's nothing else to do..");
+    return;
+  }
 
 //   emu_info("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener real driver");
 //   fwInstallationUtils_switchSimDriver(TRUE, "PVSS00opc", 14);

@@ -16,9 +16,9 @@ const string EMUCONFDB_PREFIX = "MiddleLayer/";
   * Saves all HV devices that are on local system to conf DB.
   * @param version configuration version number (currently using 2 number format that looks like 1.0, 2.0, 11.5, etc.)
   * @param justPrint (optional, default = FALSE) if true then all this procedure does is print what it would be saving to DB if this parameter was = false.
-  * @param saveOptions (optional, default = 0) if provided can be used to save specific device properties only (e.g. use fwConfigurationDB_deviceConfig_VALUE to save only the values). By default saves all device properties.
+  * @param saveOptions (optional, default = fwConfigurationDB_deviceConfig_ALLDEVPROPS) if provided can be used to save specific device properties only (e.g. use fwConfigurationDB_deviceConfig_VALUE to save only the values). By default saves all device properties.
   */
-void emuconfdb_saveHvDevices(string version, dyn_string &ex, bool justPrint = FALSE, int saveOptions = 0) {
+void emuconfdb_saveHvDevices(string version, dyn_string &ex, bool justPrint = FALSE, int saveOptions = fwConfigurationDB_deviceConfig_ALLDEVPROPS) {
   fwConfigurationDB_checkInit(ex);
   if (emu_checkException(ex)) { return; }
   
@@ -48,9 +48,9 @@ void emuconfdb_saveHvDevices(string version, dyn_string &ex, bool justPrint = FA
   * Saves all X2P devices that are on local system to conf DB.
   * @param version configuration version number (currently using 2 number format that looks like 1.0, 2.0, 11.5, etc.)
   * @param justPrint (optional, default = FALSE) if true then all this procedure does is print what it would be saving to DB if this parameter was = false.
-  * @param saveOptions (optional, default = 0) if provided can be used to save specific device properties only (e.g. use fwConfigurationDB_deviceConfig_VALUE to save only the values). By default saves all device properties.
+  * @param saveOptions (optional, default = fwConfigurationDB_deviceConfig_ALLDEVPROPS) if provided can be used to save specific device properties only (e.g. use fwConfigurationDB_deviceConfig_VALUE to save only the values). By default saves all device properties.
   */
-void emuconfdb_saveX2pDevices(string version, dyn_string &ex, bool justPrint = FALSE, int saveOptions = 0) {
+void emuconfdb_saveX2pDevices(string version, dyn_string &ex, bool justPrint = FALSE, int saveOptions = fwConfigurationDB_deviceConfig_ALLDEVPROPS) {
   fwConfigurationDB_checkInit(ex);
   if (emu_checkException(ex)) { return; }
   
@@ -68,8 +68,10 @@ void emuconfdb_saveX2pDevices(string version, dyn_string &ex, bool justPrint = F
   if (emu_checkException(ex)) { return; }
   emu_dynAppend(devices, emuconfdb_getDevicesFromHardwareHierarchy(getSystemName() + "DimConfig", ex, "*X2P_REPLY_[PM]*"));
   if (emu_checkException(ex)) { return; }
-  emu_dynAppend(devices, dpNames("*X2P*", "CscDimCommand"));
-  emu_dynAppend(devices, dpNames("X2P_REPLY_*", "CscCommonString"));
+  emu_dynAppend(devices, dpNames("*X2P_P*", "CscDimCommand"));
+  emu_dynAppend(devices, dpNames("*X2P_M*", "CscDimCommand"));
+  emu_dynAppend(devices, dpNames("X2P_REPLY_P*", "CscCommonString"));
+  emu_dynAppend(devices, dpNames("X2P_REPLY_M*", "CscCommonString"));
   
   emuconfdb_saveConfiguration(devices, "X2P", version, ex, justPrint, saveOptions);
   if (emu_checkException(ex)) { return; }
@@ -88,7 +90,7 @@ void emuconfdb_saveX2pDevices(string version, dyn_string &ex, bool justPrint = F
 /**
   * Saves given devices to configuration DB (if justPrint=true, it won't actually save the devices, but just print the list instead)
   */
-void emuconfdb_saveConfiguration(dyn_string devices, string name, string version, dyn_string &exceptionInfo, bool justPrint = FALSE, int saveOptions = 0) {
+void emuconfdb_saveConfiguration(dyn_string devices, string name, string version, dyn_string &exceptionInfo, bool justPrint = FALSE, int saveOptions = fwConfigurationDB_deviceConfig_ALLDEVPROPS) {
   fwConfigurationDB_checkInit(exceptionInfo);
   if (emu_checkException(exceptionInfo)) { return; }
 
