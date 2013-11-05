@@ -539,6 +539,9 @@ public void emuhv_reconfigure(dyn_string &exceptionInfo) {
     if (emu_checkException(exceptionInfo)) { return; }
 
     // look at the first channel and set all to this value, then run through the rest and if we find a different setting - set it separately, if not, just skip
+    if (dynlen(channels) == 0) {
+      continue;
+    }
     mapping firstChannel = channels[1];
     string firstChSettingsDp = emuhv_getDp(firstChannel, EMUHV_DP_POSTFIX_SETTINGS, exceptionInfo);
     if (emu_checkException(exceptionInfo)) { return; }
