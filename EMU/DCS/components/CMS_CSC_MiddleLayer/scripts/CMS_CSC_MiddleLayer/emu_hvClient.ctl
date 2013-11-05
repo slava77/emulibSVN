@@ -26,6 +26,8 @@ main() {
   emuhv_checkIntegrity(ex);
   if (!emu_checkException(ex)) {
     emu_info("HV Client: no critical integrity errors found");
+  } else {
+    emu_errorHandled(ex);
   }
   
   // hook up to server status DP
