@@ -23,10 +23,15 @@ main() {
   dyn_string ex;
 
   emu_info(COMPONENT_NAME + " PostInstall: Loading configurations...");
-  fwInstallationUtils_loadConfigurations(COMPONENT_NAME, ex);
+  int numConfsChanged = fwInstallationUtils_loadConfigurations(COMPONENT_NAME, ex);
   if (emu_checkException(ex)) { emu_info(COMPONENT_NAME + " PostInstall: aborted"); return; }
   emu_info(COMPONENT_NAME + " PostInstall: Finished loading configurations");
 
+  if (numConfsChanged == 0) {
+    emu_info(" PostInstall: no configurations have changed so they were not reloaded. Returning, because there's nothing else to do..");
+    return;
+  }  
+  
   emu_info(COMPONENT_NAME + " PostInstall: Creating FSM...");
   emugas_createFsm(ex);
   if (emu_checkException(ex)) { emu_info(COMPONENT_NAME + " PostInstall: aborted"); return; }
