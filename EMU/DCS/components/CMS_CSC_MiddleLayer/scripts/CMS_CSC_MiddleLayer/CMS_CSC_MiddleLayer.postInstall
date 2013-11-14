@@ -8,49 +8,49 @@ const string COMPONENT_NAME = "CMS_CSC_MiddleLayer";
 
 main() {
 
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Starting");
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Starting");
   
   dyn_string ex;
-//   emu_info("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener simulation driver");
+//   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener simulation driver");
 //   fwInstallationUtils_switchSimDriver(FALSE, "PVSS00opc", 14);
 
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Loading configurations...");
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Loading configurations...");
   int numConfsChanged = fwInstallationUtils_loadConfigurations(COMPONENT_NAME, ex);
-  if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Finished loading configurations");
+  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Finished loading configurations");
   
   if (numConfsChanged == 0) {
-    emu_info("CMS_CSC_MiddleLayer PostInstall: no configurations have changed so they were not reloaded. Returning, because there's nothing else to do..");
+    emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: no configurations have changed so they were not reloaded. Returning, because there's nothing else to do..");
     return;
   }
 
-//   emu_info("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener real driver");
+//   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Switching to Wiener real driver");
 //   fwInstallationUtils_switchSimDriver(TRUE, "PVSS00opc", 14);
   
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Creating FSM...");
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Creating FSM...");
   emuFsm_createMiddleLayerFsm(ex);
-  if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Finished creating FSM");
+  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Finished creating FSM");
   
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Creating DIM managers");
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Creating DIM managers");
   createAllDimManagers(ex);
-  if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Finished creating DIM managers");
+  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Finished creating DIM managers");
   
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Creating CTRL managers from the installation DB");
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Creating CTRL managers from the installation DB");
   fwInstallationUtils_appendManagers(COMPONENT_NAME, ex);
-  if (emu_checkException(ex)) { emu_info("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Finished creating CTRL managers from the installation DB");  
+  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Finished creating CTRL managers from the installation DB");  
   
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Configuring alert classes");
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Configuring alert classes");
   emuAlert_updateAllAlertClassesForType("CscHvChamber");
   emuAlert_updateAllAlertClassesForType("CscHvPrimary");
   emuAlert_updateAllAlertClassesForType("CscLvChamber");
   emuAlert_updateAllAlertClassesForType("CscTempChamber");
   emuAlert_updateAllAlertClassesForType("CscFedDdu");
-  emu_info("CMS_CSC_MiddleLayer PostInstall: Finished configuring alert classes");
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Finished configuring alert classes");
   
-  emu_info("CMS_CSC_MiddleLayer PostInstall: DONE");
+  emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: DONE");
 }
 
 void createAllDimManagers(dyn_string &ex) {
@@ -68,7 +68,7 @@ void createAllDimManagers(dyn_string &ex) {
       return;
     }
     
-    emu_info("CMS_CSC_MiddleLayer PostInstall: creating DIM manager for " + name + " with num=" + num);
+    emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: creating DIM manager for " + name + " with num=" + num);
     fwInstallation_appendManager(TRUE, name, "PVSS00dim", 
                                  "always", 90, 2, 2,
                                  "-num " + num + " -dim_dp_config " + dpSubStr(configDp, DPSUB_DP) + 
