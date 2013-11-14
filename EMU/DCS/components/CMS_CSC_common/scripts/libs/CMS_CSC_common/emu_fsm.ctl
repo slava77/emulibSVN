@@ -12,24 +12,30 @@ This package contains helper functions related to FSM.
   * Creates a reference to remote FSM node. Checks if the node exists remotely and doesn't exist locally.
   */
 void emuFsm_createRefNode(string nodeName, string parentNode, string remoteDomain, int cuFlag, dyn_string &ex) {
-  if (fwFsmTree_isNode(nodeName)) { // is the node reachable?
-    if (!fwFsmTree_isNode(parentNode + "::" + nodeName)) { // if already exists locally - skip
-      string type;
-      fwCU_getType(nodeName, type);  // get the type
-      if (strlen(type) == 0) {
-        emu_addError("ERROR: Cannot determine type of node " + nodeName + ". Node is not created.", ex);
-        return;
-      }
-      
-      if (remoteDomain != "") {
-        nodeName = remoteDomain + "::" + nodeName;
-      }
-      emuFsm_createFsmNode(parentNode, nodeName, type, cuFlag); // create the node
-    }
-  } else {
-    emu_addError("Remote FSM node could not be found: " + nodeName, ex);
+  // if already exists locally - skip
+  if (fwFsmTree_isNode(parentNode + "::" + nodeName)) {
     return;
   }
+
+  // is the node reachable? if not, wait for it  
+  while (!fwFsmTree_isNode(nodeName)) {
+    delay(5);
+    emu_info("Waiting for remote FSM node: " + nodeName);
+  }
+  
+  // check the type
+  string type;
+  fwCU_getType(nodeName, type);  // get the type
+  if (strlen(type) == 0) {
+    emu_addError("ERROR: Cannot determine type of node " + nodeName + ". Node is not created.", ex);
+    return;
+  }
+      
+  // get to work
+  if (remoteDomain != "") {
+    nodeName = remoteDomain + "::" + nodeName;
+  }
+  emuFsm_createFsmNode(parentNode, nodeName, type, cuFlag); // create the node
 }
 
 /**
