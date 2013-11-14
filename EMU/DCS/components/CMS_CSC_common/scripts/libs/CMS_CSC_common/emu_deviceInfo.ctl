@@ -154,13 +154,6 @@ dyn_mapping emuDev_getAllChambersForStation(string side, int station) {
     // determine the number of chambers in this ring
     if ((station != 1) && (ring == 1)) { // inner, non ME1/1 rings - 18 chambers
       chamberEndIdx = 18;
-    } else if ((station == 4) && (ring == 2)) { // ME4/2
-      if (side == "P") {      // ME+4/2 <-- chambers 9 through 13
-        chamberStartIdx = 9;
-        chamberEndIdx = 13;
-      } else {                // ME-4/2 <-- no chambers here
-        chamberEndIdx = 0;
-      }
     }
     
     for (int chamberNum=chamberStartIdx; chamberNum <= chamberEndIdx; chamberNum++) {
