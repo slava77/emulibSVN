@@ -7,6 +7,7 @@ This package contains general purpose utility functions.
 */
 
 #uses "majority_treeCache/treeCache.ctl" //used in emu_dpGetMany(..)
+#uses "fwInstallationUtils.ctl" // optional -- used emu_info_postInstall()
 
 const int emu_ERROR_REPORT_DELAY = 300; //ms
 
@@ -185,6 +186,16 @@ void emu_errorHandled(dyn_string &exceptionInfo, string funcName = "") {
       }
       g_emu_debugBacktrace = tmpBacktrace;
     }
+  }
+}
+
+/** Log an info message during postInstall script. Same as emu_info(), but also calls fwInstallationUtils_debugInfo() if it exists.
+  @param msg           Info message.
+*/
+void emu_info_postInstall(anytype msg) {
+  _emu_printWithPrefix(msg, "EMU POST-INSTALL: ");
+  if (isFunctionDefined("fwInstallationUtils_debugInfo")) {
+    fwInstallationUtils_debugInfo(msg);
   }
 }
 
