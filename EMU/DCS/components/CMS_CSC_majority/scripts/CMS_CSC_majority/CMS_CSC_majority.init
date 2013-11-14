@@ -34,7 +34,11 @@ main()
                                       "cms_csc_dcs_07",
                                       "cms_csc_dcs_08",
                                       "cms_csc_dcs_01",
-                                      "cms_csc_dcs_10");
+                                      "cms_csc_dcs_10",
+                                      "cms_csc_dcs_1",
+                                      "cms_csc_dcs_2",
+                                      "cms_csc_dcs_3",
+                                      "cms_csc_dcs_4");
   
   // stop FSM if it's going to be modified
   if (EMUMAJ_CREATE_MAJORITY_DUS || EMUMAJ_DELETE_MAJORITY_DUS || EMUMAJ_UPDATE_FSM_TYPES || EMUMAJ_RESTORE_FSM_TYPES) {
