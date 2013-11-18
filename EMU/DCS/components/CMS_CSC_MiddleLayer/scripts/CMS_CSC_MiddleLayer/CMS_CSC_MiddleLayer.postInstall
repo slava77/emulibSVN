@@ -16,7 +16,7 @@ main() {
 
   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Loading configurations...");
   int numConfsChanged = fwInstallationUtils_loadConfigurations(COMPONENT_NAME, ex);
-  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
+  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); emu_info(ex); return; }
   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Finished loading configurations");
   
   if (numConfsChanged == 0) {
@@ -29,17 +29,17 @@ main() {
   
   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Creating FSM...");
   emuFsm_createMiddleLayerFsm(ex);
-  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
+  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); emu_info(ex); return; }
   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Finished creating FSM");
   
   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Creating DIM managers");
   createAllDimManagers(ex);
-  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
+  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); emu_info(ex); return; }
   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Finished creating DIM managers");
   
   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Creating CTRL managers from the installation DB");
   fwInstallationUtils_appendManagers(COMPONENT_NAME, ex);
-  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); return; }
+  if (emu_checkException(ex)) { emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: aborted"); emu_info(ex); return; }
   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Finished creating CTRL managers from the installation DB");  
   
   emu_info_postInstall("CMS_CSC_MiddleLayer PostInstall: Configuring alert classes");
