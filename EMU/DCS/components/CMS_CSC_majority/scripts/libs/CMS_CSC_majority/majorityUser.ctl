@@ -257,8 +257,8 @@ int majorityUser_getDeviceWeight(string node, string device) {
     }
     int numChannels;
     dpGet(dpSubStr(node, DPSUB_SYS_DP) + EMUHV_DP_POSTFIX_SLOW_MON + ".num_chans", numChannels);
-    if (numChannels == 0) {
-      numChannels = 1; // special case (when HV distribution board is not connected or something): just to be able to report error
+    if (numChannels == 0) { // special case (when HV distribution board is not connected or something): set it to default number just to be able to report error
+      numChannels = ((deviceParams["station"] > 1) && (deviceParams["ring"] == 2)) ? 30 : 18;
     }
     return numChannels;
   } else if (device == "LV") {                                         // *********** Low Voltage ************
