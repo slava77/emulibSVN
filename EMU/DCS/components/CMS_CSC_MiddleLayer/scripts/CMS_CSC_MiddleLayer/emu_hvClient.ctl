@@ -139,6 +139,10 @@ void emuhv_updateChamberState(string hvDp) {
     dynAppend(channelStates, states);
   }
   
+  if (numChannels == 0) {
+    dynAppend(channelStates, EMUHV_FSM_STATE_ERROR);
+  }
+  
   // compare with previous states
   dyn_string prevChannelStates = emu_dpGetCached(hvDp + ".channel_states");
   string prevFsmState = emu_dpGetCached(hvDp + ".fsm_state");
