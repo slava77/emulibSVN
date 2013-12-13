@@ -144,5 +144,6 @@ string emuui_makeSessionIdString(string hostname, string user) {
   sessionId = strtolower(sessionId);
   strreplace(sessionId, " ", "_");
   strreplace(sessionId, "-", "_");
+  strreplace(sessionId, ".", "_");
   return emuui_getSystem() + sessionId;
 }
