@@ -40,7 +40,16 @@ void emuui_init() {
            
   emuui_initSession();
   emu_info("Session ID: " + emuui_getSessionId());
-  fwFsmUi_init("CMS_CSC", "CMS_CSC");
+
+  //  fwFsmUi_init("CMS_CSC", "CMS_CSC");
+  // ----- the 5 lines below replace the call to fwFsmUi_init() but without the unwanted panel resizing ------
+    fwFsm_initialize(0);
+    fwUi_getAccess("CMS_CSC");
+    fwUi_getDisplayInfo(makeDynString("CMS_CSC"));
+    if(!globalExists("FwFSMUi_ModePanelBusy"))
+    addGlobal("FwFSMUi_ModePanelBusy", INT_VAR);    
+  //--------------------------
+  
   //fwCU_takeTree("CMS_CSC");
   
   emuui_g_initialized = true;
