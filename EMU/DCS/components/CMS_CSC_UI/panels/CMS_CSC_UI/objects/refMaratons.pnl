@@ -37,6 +37,11 @@ void drawMaratons() {
     int crateNum = keySplit[2];
     
     // draw the Maratons
+    int size = EMUUI_MARATONS_HEIGHT;
+    if ((side == \"P\") && (station == 1)) {
+      size = EMUUI_MARATONS_HEIGHT_ME11;
+    }
+    
     int x = getVerticalLinePosX(side + disk);
     int y = topY + ((EMUUI_MARATONS_HEIGHT - 1) * (crateNum - 1));
     
@@ -89,6 +94,7 @@ string paramGroup;
 
 // some panel-wide constants and variables
 const int EMUUI_MARATONS_HEIGHT = 20;
+const int EMUUI_MARATONS_HEIGHT_ME11 = 14;
 dyn_string references;
 bool runningLocal; // if true then panel is running localy, if false then panel is a reference
 
@@ -125,7 +131,7 @@ LANG:1 0
 4 5
 "lineHorizontal0"
 ""
-1 1.4210854715202e-014 30 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
+1 1.4210854715202e-14 30 E E E 1 E 0 E N {0,0,0} E N {255,255,255} E E
  E E
 6 0 0 0 0 0
 E E E
@@ -205,7 +211,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 7 8 33 24
+E E 0 1 1 2 1 E U  1 E 7 8 36 23
 0 2 2 "0s" 0 0 0 192 0 0  7 8 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -252,7 +258,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 47 8 73 24
+E E 0 1 1 2 1 E U  1 E 47 8 76 23
 0 2 2 "0s" 0 0 0 192 0 0  47 8 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -285,7 +291,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 87 8 113 24
+E E 0 1 1 2 1 E U  1 E 87 8 116 23
 0 2 2 "0s" 0 0 0 192 0 0  87 8 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -388,7 +394,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 127 8 156 24
+E E 0 1 1 2 1 E U  1 E 127 8 159 23
 0 2 2 "0s" 0 0 0 192 0 0  127 8 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -407,7 +413,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 167 8 196 24
+E E 0 1 1 2 1 E U  1 E 167 8 199 23
 0 2 2 "0s" 0 0 0 192 0 0  167 8 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
@@ -426,7 +432,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  1 E 207 8 236 24
+E E 0 1 1 2 1 E U  1 E 207 8 239 23
 0 2 2 "0s" 0 0 0 192 0 0  207 8 1
 1
 LANG:1 25 Arial,9,-1,5,50,0,0,0,0,0
