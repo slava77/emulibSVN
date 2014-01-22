@@ -44,7 +44,7 @@ void emuLvCRB_initalizeParam()
   }
   // fall back to default if none is found
   if (gSystemNameCRB == "") {
-    gSystemNameCRB = "cms_csc_dcs_10";
+    gSystemNameCRB = "cms_csc_dcs_4";
   }
 }
 /**
