@@ -7,6 +7,8 @@
 
 main()
 {
+  dyn_string ex;  
+  
   // ***** Setup RDB Archive *****
   emudcsME11_createDbConfig();
   DebugN("RDB configured");
@@ -29,9 +31,12 @@ main()
    // ***** Setup OPC config *****
   CMSfwCAENOPCConfiguration_setConfigurationForSystem(makeDynString("HVME11N","HVME11P"),
                                                       makeDynString("10.176.62.126","10.176.11.54"));
-  dyn_string exc;
-  int res  = CMSfwCAENOPCConfiguration_applyConfigurationForSystem(exc);
+  int res  = CMSfwCAENOPCConfiguration_applyConfigurationForSystem(ex);
+  emu_checkException(ex);
   DebugN("OPC configured if res = 1 or 2, res = "+res);
+
+  CMSfw_CAENOPCConfigurator_configureFromFwCaenDps(ex);
+  emu_checkException(ex);
   
 // **** set FSM archiving ****
   emudcsME11_setFsmArchiving();
@@ -42,7 +47,6 @@ main()
   emuAlert_updateAllAlertClasses();
   emu_info("Done updating alert classes");
   emu_info("Activating all alerts");
-  dyn_string ex;
   emuAlert_activateDeactivateSummaryAlertsWithDescriptors(true, ex, makeDynString("actual.OvV", "actual.UnV"));
   emu_checkException(ex);
   emuAlert_activateDeactivateSummaryAlertsForType(false, "FwCaenBoardSY1527", ex, makeDynString("channel"));
