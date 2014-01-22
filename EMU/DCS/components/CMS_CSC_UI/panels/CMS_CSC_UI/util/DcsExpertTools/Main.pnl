@@ -388,11 +388,11 @@ LANG:1 24 Share all necessary FSMs
                                           \"CMS_CSC_LV_CAN2\");
   
   for (int i=1; i <= dynlen(nodesToShare); i++) {
-    fwCU_takeTree(nodesToShare[i], \"emu\");
+    fwCU_takeTree(nodesToShare[i], \"evka\");
   }
   delay(10);
   for (int i=1; i <= dynlen(nodesToShare); i++) {
-    fwCU_shareTree(nodesToShare[i], \"emu\");
+    fwCU_shareTree(nodesToShare[i], \"evka\");
   }
   
   emuui_openInfoDialog(\"DONE - all necessary FSM nodes have been shared, have a good day ;)\");
