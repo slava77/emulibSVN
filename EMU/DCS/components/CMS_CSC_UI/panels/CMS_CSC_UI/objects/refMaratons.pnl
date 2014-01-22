@@ -52,7 +52,7 @@ void drawMaratons() {
                                                    \";id=\" + id;
     string shapeParamsDollar = \"$shapeParams:\" + \"type=rectangle\" +
                                                  \";width=\" + width +
-                                                 \";height=\" + EMUUI_MARATONS_HEIGHT;
+                                                 \";height=\" + size;
     
     //import the chamber panel (no changes in the panel orientation; position - [0,0])
     string refName = \"refMaraton_YE_\" + side + disk + \"_CR\" + crateNum + \"_ID\" + id ;  //reference name
