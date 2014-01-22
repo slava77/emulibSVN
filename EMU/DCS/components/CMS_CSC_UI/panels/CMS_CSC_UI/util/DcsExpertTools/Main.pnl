@@ -12,12 +12,9 @@ PANEL,-1 -1 400 664 N "_3DFace" 0
   }
   
   cscSystemToHostname[\"09 - Top Node\"] = topNodeHostname;
-  cscSystemToHostname[\"08 - ME+1\"] = \"cms-csc-dcs-08\";
-  cscSystemToHostname[\"07 - ME+2+3+4\"] = \"cms-csc-dcs-07\";
-  cscSystemToHostname[\"00 - ME-1\"] = \"cms-csc-dcs-00\";
-  cscSystemToHostname[\"02 - ME-2-3-4\"] = \"cms-csc-dcs-02\";
-  cscSystemToHostname[\"01 - ME1/1\"] = \"cms-csc-dcs-01\";
-  cscSystemToHostname[\"10 - LV\"] = \"cms-csc-dcs-10\";
+  cscSystemToHostname[\"08 - ME+\"] = \"DCS-S2F16-22-09\";
+  cscSystemToHostname[\"00 - ME-\"] = \"DCS-S2F16-22-08\";
+  cscSystemToHostname[\"10 - LV and CAEN\"] = \"DCS-S2F16-22-10\";
 
   comboSys.items = mappingKeys(cscSystemToHostname);
   comboSys.selectedPos = 1;
@@ -26,7 +23,7 @@ PANEL,-1 -1 400 664 N "_3DFace" 0
 ""0  1
 E "#uses \"majority_treeCache/majorityLib.ctl\"
 
-const string topNodeHostname = \"cms-csc-dcs-09\";
+const string topNodeHostname = \"DCS-S2F16-22-07\";
 mapping cscSystemToHostname;
 
 void exec(string command) {
@@ -474,7 +471,7 @@ LANG:1 26 Clean power-up-init buffer
     return;
   }
   
-  dpSetWait(\"cms_csc_dcs_10:PREPARE_POWER_UP_BUFFER.\", makeDynString());
+  dpSetWait(\"cms_csc_dcs_4:PREPARE_POWER_UP_BUFFER.\", makeDynString());
   
   emuui_openInfoDialog(\"DONE\");
 }" 0
