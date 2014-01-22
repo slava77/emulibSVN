@@ -96,7 +96,7 @@ string paramGroup;
 
 // some panel-wide constants and variables
 const int EMUUI_MARATONS_HEIGHT = 20;
-const int EMUUI_MARATONS_HEIGHT_ME11 = 14;
+const int EMUUI_MARATONS_HEIGHT_ME11 = 15;
 dyn_string references;
 bool runningLocal; // if true then panel is running localy, if false then panel is a reference
 
