@@ -1,0 +1,344 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+fwOT_FwCaenChannel	_FwFsmObjectType	102993
+fwOT_FwCaenCrateSY1527	_FwFsmObjectType	115405
+fwOT_CMS_CSC_ME11_HV_Type	_FwFsmObjectType	175179
+
+# DpValue
+ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+fwOT_FwCaenChannel.panel	_FwFsmObjectType	"CMS_CSCfw_ME11HV/ME11_HV_Channel.pnl"	0x101	23.01.2014 16:49:43.426
+fwOT_FwCaenChannel.components	_FwFsmObjectType	"", "", "FwCaenChannel_initialize(string domain, string device)
+{
+    
+         
+          dyn_string dpNames;
+     
+        dpNames[1] = device + \".actual.status:_online.._value\";  
+        dpNames[2] = device + \".actual.slotStatus:_online.._value\";               
+             
+   fwDU_setState(domain, device, \"ERROR\"); // initial state -- will be changed as soon as the Check_Status() callback is triggered
+   
+  	dpConnect(\"Check_Status\", TRUE, dpNames);  
+  
+}
+Check_Status(dyn_string dp, dyn_int qval)
+{  
+ //============================================================== 
+  
+   dyn_string split;
+    string LogName, domain, device;
+    string sdp;
+    sdp = dp;
+    int colon, dot, slash;
+    colon = strpos(sdp, \":\");
+    dot = strpos(sdp, \".\");
+    device = substr(sdp, colon + 1, dot - colon - 1);
+    LogName = fwDU_getLogicalName( device);
+    split=strsplit(LogName,\"/\");
+    domain=split[1];
+    //slash = strpos(LogName, \"/\");
+   // domain = substr(LogName, 0, slash);
+ 
+ 
+ //===============================================================    
+ bool onOff;
+ int vset,status_qual;
+ float vmon;
+ int actual_dot_status=qval[1];
+        dpGet(device+\".readBackSettings.onOff\",onOff);
+        dpGet(device+\".readBackSettings.v0\",vset);
+        dpGet(device+\".actual.vMon\",vmon);
+        dpGet(device+\".actual.vMon:_online.._invalid\",status_qual);
+
+int on_voltage;
+dpGet(\"on_voltage.\",on_voltage);        
+                
+	if ((actual_dot_status & 0xFFF8)!=0 || status_qual)
+	{
+                if (actual_dot_status == 33) { // to avoid flickering undervoltage state when using hardware signal (v0 -> v1)
+                  delay(60);
+                  int newStatus;
+                  dpGet(dp[1], newStatus);
+                  if (newStatus != actual_dot_status) {
+                    return;
+                  }
+                }
+		fwDU_setState(domain, device, \"ERROR\");//fwState = \"ERROR\";
+	}        
+	else if((actual_dot_status == 1 || actual_dot_status == 3)&& vset > (on_voltage-100) && vmon > (on_voltage-50))
+	{
+		fwDU_setState(domain, device, \"ON\");//fwState = \"ON\";
+	}
+	else if((actual_dot_status == 1 || actual_dot_status == 5 || actual_dot_status == 3)
+                 && onOff && vset > 2290 /*&& vset < 2610*/ && vmon > 2250)
+	{// this state is reached when switching ON->STANDBY 
+		fwDU_setState(domain, device, \"STANDBY\");//fwState = \"STANDBY\";
+	}
+ 	else if(actual_dot_status == 3 && vset > (on_voltage-100) && vmon > 2250)
+	{// this state is reached when switching STANDBY->ON
+		fwDU_setState(domain, device, \"STANDBY\");//fwState = \"STANDBY\";
+	}       
+	else
+	{
+		fwDU_setState(domain, device, \"OFF\");//fwState = \"OFF\";
+	}  
+    
+    
+  //===============================================================
+ 
+}
+", "FwCaenChannel_valueChanged( string domain, string device, string &fwState)
+{
+}
+", "const int CRATE_COMMAND_READ_RETRY_NUM = 9;
+
+FwCaenChannel_doCommand(string domain, string device, string command)
+{
+  
+  // ============ excluded and turned off CAEN crate interlock ============
+  string crateDp = substr(device, 0, strpos(device, \"/board\"));
+  string crateState = \"OFF\";
+  fwDU_getState(domain, crateDp, crateState);
+  
+  // if we've got a command other than OFF (i.e. on or standby) but the crate is still off, check that a few more times (could be FSM lag) and then give up if it's still the case (crate is then considered excluded).
+  bool cancelCommand = true;
+  for (int i=0; i < CRATE_COMMAND_READ_RETRY_NUM; i++) {
+    if ((crateState != \"OFF\") || (command == \"OFF\")) {
+      cancelCommand = false;
+      break;
+    }
+    delay(0, 300);
+    fwDU_getState(domain, crateDp, crateState);
+  }
+  if (cancelCommand) {
+    dpSetWait(device + \".userDefined\", \"\");
+    DebugTN(\"WARNING: Giving up command \" + command + \" for device \" + device + \", because the CAEN crate that this channel belongs has registered OFF as it's last command\");
+    // apparently need to tackle the DU state, otherwise the FSM freezes in \"executing action\" state
+    string currentState;
+    fwDU_getState(domain, device, currentState);
+    fwDU_setState(domain, device, currentState);
+    return;
+  }
+  // =======================================================================
+  
+   int Time=60;
+//-----  
+  int status, status_new;
+  int vset;
+  bool isOn;
+//-----
+
+  int i;
+  time set_time;
+  int time_diff;
+  while(1){
+   dpGet(device+\".settings.v0:_online.._stime\",set_time); // important to do in the loop!
+   time_diff=getCurrentTime()-set_time;   
+   if(time_diff<15)delay(0,200);
+   else break;
+  } // while
+
+  int on_voltage;
+  dpGet(\"on_voltage.\",on_voltage);
+  
+//-----
+	if (command == \"ON\")
+	{
+                delay(0, 550);
+                dpGet(device+\".readBackSettings.v0\",vset);          
+                dpGet(device+\".actual.status\",status);          
+                dpGet(device+\".actual.isOn\",isOn);          
+        //-----------------------------------------  
+                if (vset != on_voltage) {
+                  dpSetWait(device+\".settings.v0\",on_voltage);
+                }
+                //if(vset > (on_voltage-50) && status==1)dpSetWait(device+\".actual.status\",status);  
+                //if(status==3)dpSetWait(device+\".actual.slotStatus\",false);  //\\\\
+                dpSetWait(device+\".actual.slotStatus\",false); // refresh state
+                if (!isOn) {
+                  dpSetWait(device+\".settings.onOff\",TRUE);
+                }
+        //-----------------------------------------  
+////                if(vset > 2950 && status==1)dpSetWait(device+\".actual.status\",status);                   
+	}
+	if (command == \"STANDBY\")
+	{
+                delay(0, 550);
+                dpGet(device+\".readBackSettings.v1\",vset);          
+                dpGet(device+\".actual.status\",status);          
+                dpGet(device+\".actual.isOn\",isOn);          
+        //-----------------------------------------                                  
+       //-----------------------------------------      
+                if (vset != 2300) {
+                  dpSetWait(device+\".settings.v1\",2300);
+                }
+                //if(status==1)dpSetWait(device+\".actual.status\",status);
+                //if(status==3)dpSetWait(device+\".actual.slotStatus\",false);//\\\\
+                dpSetWait(device+\".actual.slotStatus\",false); // refresh state
+                if (!isOn) {                
+                  dpSetWait(device+\".settings.onOff\",TRUE);
+                }
+/////                if(status==1)dpSetWait(device+\".actual.status\",status);
+        //-----------------------------------------                
+                                                           
+	}
+        if (command == \"OFF\")
+	{          
+                delay(0, 550);
+//                 dpGet(device+\".settings.v0\",vset);
+//                 dpSetWait(device+\".settings.v0\",vset); 
+                                            
+                dpGet(device+\".actual.status\",status); 
+                //if(status==0)dpSetWait(device+\".actual.status\",status);  
+                dpSetWait(device+\".actual.slotStatus\",false); // refresh state
+                
+                if((status & 0xFFF8)!=0){
+                 dpSetWait(device+\".settings.onOff\",TRUE);
+                 for(i=1;i<=15;i++){
+                  delay(1);
+                  dpGet(device+\".actual.status\",status_new);
+                  if((status_new & 0xFFF8)==0){
+                    dpSetWait(device+\".settings.onOff\",FALSE);
+                    break;
+                  }
+                 } 
+                } // if((status & 0xFFF8)!=0)
+		else dpSetWait(device+\".settings.onOff\",FALSE);
+              
+	}   
+  
+}
+
+
+
+// untouched backup
+// FwCaenChannel_doCommand(string domain, string device, string command)
+// {
+//    int Time=60;
+//-----  
+//   int status, status_new;
+//   int vset;
+//-----
+// 
+//   int i;
+//   time set_time;
+//   int time_diff;
+//   while(1){
+//    dpGet(device+\".settings.v0:_online.._stime\",set_time); // important to do in the loop!
+//    time_diff=getCurrentTime()-set_time;   
+//    if(time_diff<15)delay(0,200);
+//    else break;
+//   } // while
+// 
+//   int on_voltage;
+//   dpGet(\"on_voltage.\",on_voltage);
+//   
+//-----
+// 	if (command == \"ON\")
+// 	{
+//                 dpGet(device+\".settings.v0\",vset);          
+//                 dpGet(device+\".actual.status\",status);          
+        //-----------------------------------------  
+//                 dpSetWait(device+\".settings.v0\",on_voltage);
+//                 if(vset > (on_voltage-50) && status==1)dpSetWait(device+\".actual.status\",status);  
+//                 if(status==3)dpSetWait(device+\".actual.slotStatus\",false);  //\\\\
+// 		dpSetWait(device+\".settings.onOff\",TRUE);
+        //-----------------------------------------  
+////                if(vset > 2950 && status==1)dpSetWait(device+\".actual.status\",status);                   
+// 	}
+// 	if (command == \"STANDBY\")
+// 	{
+//                 dpGet(device+\".settings.v0\",vset);          
+//                 dpGet(device+\".actual.status\",status);          
+        //-----------------------------------------                                  
+       //-----------------------------------------                       
+//                 dpSetWait(device+\".settings.v0\",2600);
+//                 if(status==1)dpSetWait(device+\".actual.status\",status);
+//                 if(status==3)dpSetWait(device+\".actual.slotStatus\",false);//\\\\
+// 		dpSetWait(device+\".settings.onOff\",TRUE);
+/////                if(status==1)dpSetWait(device+\".actual.status\",status);
+        //-----------------------------------------                
+//                                                            
+// 	}
+//         if (command == \"OFF\")
+// 	{
+//                 dpGet(device+\".settings.v0\",vset);
+//                 dpSetWait(device+\".settings.v0\",vset); 
+//                                             
+//                 dpGet(device+\".actual.status\",status); 
+//                 if(status==0)dpSetWait(device+\".actual.status\",status);  
+//                 
+//                 if((status & 0xFFF8)!=0){
+//                  dpSetWait(device+\".settings.onOff\",TRUE);
+//                  for(i=1;i<=15;i++){
+//                   delay(1);
+//                   dpGet(device+\".actual.status\",status_new);
+//                   if((status_new & 0xFFF8)==0){
+//                     dpSetWait(device+\".settings.onOff\",FALSE);
+//                     break;
+//                   }
+//                  } 
+//                 } // if((status & 0xFFF8)!=0)
+// 		else dpSetWait(device+\".settings.onOff\",FALSE);
+//               
+// 	}   
+//   
+// }
+
+"	0x101	23.01.2014 16:49:43.460
+fwOT_FwCaenChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateAttention1", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	23.01.2014 16:49:43.456
+fwOT_FwCaenChannel.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "STANDBY/OFF", "", "1", "", "0", "STANDBY/STANDBY", "", "1", "", "0", "STANDBY/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0"	0x101	23.01.2014 16:49:43.455
+fwOT_FwCaenCrateSY1527.panel	_FwFsmObjectType	"FwCaenCrateSY1527.pnl"	0x101	23.01.2014 16:45:13.371
+fwOT_FwCaenCrateSY1527.components	_FwFsmObjectType	"", "", "FwCaenCrateSY1527_initialize(string domain, string device)
+{
+  fwDU_setState(domain, device, \"ON\");
+}
+", "FwCaenCrateSY1527_valueChanged( string domain, string device, string &fwState )
+{
+}
+
+", "FwCaenCrateSY1527_doCommand(string domain, string device, string command)
+{
+	if (command == \"ON\")
+	{
+          DebugTN(\"Setting gen to false, device: \" + device);
+          setGenSignalStatus(device, false);
+          fwDU_setState(domain, device, \"ON\");
+	}
+	if (command == \"STANDBY\")
+	{
+          DebugTN(\"Setting gen to true, device: \" + device);
+          setGenSignalStatus(device, true);
+          fwDU_setState(domain, device, \"STANDBY\");
+	}
+	if (command == \"OFF\")
+	{
+          DebugTN(\"Setting gen to false, device: \" + device);
+          setGenSignalStatus(device, false);
+          fwDU_setState(domain, device, \"OFF\");
+	}
+	if (command == \"RESET\")
+	{
+	}
+}
+
+void setGenSignalStatus(string crateDp, bool onOff) {
+  if (onOff) {
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 769);
+    delay(0, 500);
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 771);
+  } else {
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 769);
+    delay(0, 500);
+    dpSetWait(crateDp + \".Information.GenSignCfg\", 1);
+  }      
+}"	0x101	23.01.2014 16:45:13.372
+fwOT_FwCaenCrateSY1527.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	23.01.2014 16:45:13.372
+fwOT_FwCaenCrateSY1527.actions	_FwFsmObjectType	"ON/ON", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "ON/OFF", "", "1", "", "0", "ON/RESET", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/RESET", "", "1", "", "0", "STANDBY/ON", "", "1", "", "0", "STANDBY/STANDBY", "", "1", "", "0", "STANDBY/OFF", "", "1", "", "0", "STANDBY/RESET", "", "1", "", "0", "ERROR/ON", "", "1", "", "0", "ERROR/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/RESET", "", "1", "", "0"	0x101	23.01.2014 16:45:13.373
+fwOT_CMS_CSC_ME11_HV_Type.panel	_FwFsmObjectType	"CMS_CSCfw_ME11HV/ME11PN.pnl"	0x101	23.01.2014 16:45:13.374
+fwOT_CMS_CSC_ME11_HV_Type.components	_FwFsmObjectType		0x141	23.01.2014 16:45:13.375
+fwOT_CMS_CSC_ME11_HV_Type.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to OFF|", "", "", "STANDBY", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	23.01.2014 16:45:13.376
+fwOT_CMS_CSC_ME11_HV_Type.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	23.01.2014 16:45:13.376
+fwOT_CMS_CSC_ME11_HV_Type.parameters	_FwFsmObjectType		0x141	23.01.2014 16:45:13.377
