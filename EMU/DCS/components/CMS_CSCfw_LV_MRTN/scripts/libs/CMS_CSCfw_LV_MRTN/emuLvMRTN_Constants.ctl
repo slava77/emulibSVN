@@ -130,6 +130,11 @@ dyn_string emuLvMRTN_getDynString(string sConstantName)
     dsConstant = makeDynString("FailureMaxTemperature",        "FailureMaxCurrent",
                                "FailureMaxSenseVoltage","FailureMaxTerminalVoltage");                                
   } 
+  if(sConstantName == "MRTN_Crate_Status_Alerts")
+  {
+    dsConstant = makeDynString("OutputFailure", "InputFailure",
+                               "SystemFailure", "SensorFailure");                                
+  } 
   if(sConstantName == "MRTN_Channel_Archiving_Status")
   {
     dsConstant = makeDynString("On","FailureMaxTemperature","FailureMaxCurrent",

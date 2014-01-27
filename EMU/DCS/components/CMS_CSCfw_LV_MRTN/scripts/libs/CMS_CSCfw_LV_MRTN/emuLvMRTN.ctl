@@ -366,45 +366,32 @@ void emuLvMRTN_createFsmTree()
  */
 void emuLvMRTN_setAlertConfig()
 {
-  DebugTN("set alert config for Lv MRTN, waiting...");  
+  DebugTN("Activating Maraton alerts...");  
   dyn_string dsItemLists,dsExceptionInfo;
   dyn_string dsStatusAlertItems  = emuLvMRTN_getDynString("MRTN_Channel_Alert_Status");
-  dyn_string dsChannelAlertTexts = emuLvMRTN_getDynString("MRTN_Channel_Alert_Texts");
-  dyn_string dsCrateAlertTexts   = emuLvMRTN_getDynString("MRTN_Crate_Alert_Texts");
-  dyn_string dsChannelNumbers    = emuLvMRTN_getDynString("MRTN_Channels");
+  dyn_string dsCrateStatusAlerts = emuLvMRTN_getDynString("MRTN_Crate_Status_Alerts");
   dyn_string dsCrates   = dpNames(gSystemNameMRTN+"*Crate*","FwWienerMarathon");
   dyn_string dsChannels = dpNames(gSystemNameMRTN+"*Channel*","FwWienerMarathonChannel");
-  //---change alert text0 and text1--------------------------
+  //---enable channel alerts--------------------------
   for(int i=1;i<=dynlen(dsChannels);i++)    
-     {
+  {
        for(int j=1;j<=dynlen(dsStatusAlertItems);j++)
-         {            
-            dpSetWait(dsChannels[i]+".Status."+dsStatusAlertItems[j]+":_alert_hdl.._active",false);
-            delay(0,10);               
-            dpSetWait(dsChannels[i]+".Status."+dsStatusAlertItems[j]+":_alert_hdl.._text0",dsChannelAlertTexts[1],
-                      dsChannels[i]+".Status."+dsStatusAlertItems[j]+":_alert_hdl.._text1",dsChannelAlertTexts[2]);
+       {            
             dpSetWait(dsChannels[i]+".Status."+dsStatusAlertItems[j]+":_alert_hdl.._active",true);
-         }
-     }      
-  //---get alert dplists for crate from channel--------------
-  for(int k=1;k<=dynlen(dsCrates);k++)
-     { 
-       dynClear(dsItemLists);
-       for(int l=1;l<=dynlen(dsChannelNumbers);l++)
-         {
-           for(int m=1;m<=dynlen(dsStatusAlertItems);m++)
-            {
-             dynAppend(dsItemLists,dsCrates[k]+"/Channel"+dsChannelNumbers[l]+".Status."+dsStatusAlertItems[m]);
-            }
-         }             
-  //----set summary alert for crate--------------------------------        
-       dpSetWait(dsCrates[k]+".:_alert_hdl.._active",false);
-       delay(0,10);           
-       fwAlertConfig_createSummary(dsCrates[k]+".",makeDynString(dsCrateAlertTexts[1],dsCrateAlertTexts[2]),
-                                   dsItemLists,"", makeDynString(),"",dsExceptionInfo);
-       dpSetWait(dsCrates[k]+".:_alert_hdl.._active",true);   
-     } 
-  DebugTN("done for Lv MRTN alert config"); 
+       }
+       dpSetWait(dsChannels[i] + ".:_alert_hdl.._active", true);
+  }
+  //---enable crate alerts--------------------------
+  for(int i=1;i<=dynlen(dsCrates);i++)    
+  {
+       for(int j=1;j<=dynlen(dsCrateStatusAlerts);j++)
+       {            
+            dpSetWait(dsCrates[i]+".Status."+dsCrateStatusAlerts[j]+":_alert_hdl.._active",true);
+       }
+       dpSetWait(dsCrates[i] + ".:_alert_hdl.._active", true);
+  }
+  
+  DebugTN("Maraton alerts activated"); 
 }
 /**
  * set label/panel for MRTN FSM with ui.label/panels in _FwFsmDevice/_FwFsmObject
