@@ -8,90 +8,79 @@ fwOT_CMS_CSC_ME11_HV_Type	_FwFsmObjectType	175179
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
-fwOT_FwCaenChannel.panel	_FwFsmObjectType	"CMS_CSCfw_ME11HV/ME11_HV_Channel.pnl"	0x101	23.01.2014 16:49:43.426
-fwOT_FwCaenChannel.components	_FwFsmObjectType	"", "", "FwCaenChannel_initialize(string domain, string device)
+fwOT_FwCaenChannel.panel	_FwFsmObjectType	"CMS_CSCfw_ME11HV/ME11_HV_Channel.pnl"	0x101	28.01.2014 22:42:38.953
+fwOT_FwCaenChannel.components	_FwFsmObjectType	"int actual.status
+bool actual.slotStatus
+", "", "FwCaenChannel_initialize(string domain, string device)
 {
-    
-         
-          dyn_string dpNames;
-     
-        dpNames[1] = device + \".actual.status:_online.._value\";  
-        dpNames[2] = device + \".actual.slotStatus:_online.._value\";               
-             
-   fwDU_setState(domain, device, \"ERROR\"); // initial state -- will be changed as soon as the Check_Status() callback is triggered
-   
-  	dpConnect(\"Check_Status\", TRUE, dpNames);  
-  
 }
-Check_Status(dyn_string dp, dyn_int qval)
-{  
- //============================================================== 
+", "FwCaenChannel_valueChanged( string domain, string device,
+      int actual_dot_status,
+      bool actual_dot_slotStatus, string &fwState )
+{
   
-   dyn_string split;
-    string LogName, domain, device;
-    string sdp;
-    sdp = dp;
-    int colon, dot, slash;
-    colon = strpos(sdp, \":\");
-    dot = strpos(sdp, \".\");
-    device = substr(sdp, colon + 1, dot - colon - 1);
-    LogName = fwDU_getLogicalName( device);
-    split=strsplit(LogName,\"/\");
-    domain=split[1];
-    //slash = strpos(LogName, \"/\");
-   // domain = substr(LogName, 0, slash);
- 
- 
- //===============================================================    
- bool onOff;
- int vset,status_qual;
- float vmon;
- int actual_dot_status=qval[1];
-        dpGet(device+\".readBackSettings.onOff\",onOff);
-        dpGet(device+\".readBackSettings.v0\",vset);
-        dpGet(device+\".actual.vMon\",vmon);
-        dpGet(device+\".actual.vMon:_online.._invalid\",status_qual);
+  bool onOff;
+  int vset;
+  int invalid;
+  float vmon;
+  int on_voltage;
+  int alert = 0;
+  
+  dpGet(device + \".:_alert_hdl.._act_state\", alert);
+  dpGet(device+\".readBackSettings.onOff\", onOff);
+  dpGet(device+\".readBackSettings.v0\", vset);
+  dpGet(device+\".actual.vMon\", vmon);
+  dpGet(device+\".actual.vMon:_online.._invalid\", invalid);
+  dpGet(\"on_voltage.\", on_voltage);
 
-int on_voltage;
-dpGet(\"on_voltage.\",on_voltage);        
-                
-	if ((actual_dot_status & 0xFFF8)!=0 || status_qual)
+	if ((actual_dot_status & 0xFFF8)!=0 || invalid || alert) // ERROR
 	{
-                if (actual_dot_status == 33) { // to avoid flickering undervoltage state when using hardware signal (v0 -> v1)
-                  delay(60);
-                  int newStatus;
-                  dpGet(dp[1], newStatus);
-                  if (newStatus != actual_dot_status) {
-                    return;
-                  }
-                }
-		fwDU_setState(domain, device, \"ERROR\");//fwState = \"ERROR\";
-	}        
-	else if((actual_dot_status == 1 || actual_dot_status == 3)&& vset > (on_voltage-100) && vmon > (on_voltage-50))
+    //in case of undervoltage (status = 33) or invalid flag, we wait for up to 30s to see if it goes away
+    if ((actual_dot_status == 33) || invalid) {
+      int timeout = 30;
+      emu_info(\"Undervoltage and/or invalid flag detected on CAEN channel \" + device + \"... Starting a \" + timeout + \"s timeout. Actual.Status = \" + actual_dot_status + \", invalid = \" + invalid);
+      for (int i=0; i < timeout; i++) { // wait up to 1min and check every 1s if the invalid flag and undervoltage are gone
+        dpGet(device+\".actual.vMon:_online.._invalid\", invalid);
+        dpGet(device+\".actual.status\", actual_dot_status);
+        dpGet(device + \".:_alert_hdl.._act_state\", alert);
+        if (((actual_dot_status & 0xFFF8) == 0) && (invalid == 0) && (alert == 0)) {
+          emu_info(\"Undervoltage and/or invalid flag was cleared on CAEN channel \" + device + \" after \" + i + \" seconds. Ignoring.\");
+          break;
+        }
+        delay(1);
+      }
+      if ((actual_dot_status & 0xFFF8)!=0 || invalid || alert) {  // ERROR hasn't cleared
+        emu_info(\"Undervoltage and/or invalid flag was set on CAEN channel \" + device + \" for more than \" + timeout + \" seconds, setting state to ERROR\");
+        fwState = \"ERROR\";
+        return;      
+      }
+    } else {
+      emu_info(\"Error on CAEN channel \" + device + \". Actual.Status = \" + actual_dot_status + \", invalid = \" + invalid + \", alert = \" + alert);
+      fwState = \"ERROR\";
+      return;      
+    }    
+  }
+  
+	if((actual_dot_status == 1 || actual_dot_status == 3) && vset > (on_voltage-100) && vmon > (on_voltage-50))
 	{
-		fwDU_setState(domain, device, \"ON\");//fwState = \"ON\";
+		fwState = \"ON\";
 	}
 	else if((actual_dot_status == 1 || actual_dot_status == 5 || actual_dot_status == 3)
                  && onOff && vset > 2290 /*&& vset < 2610*/ && vmon > 2250)
 	{// this state is reached when switching ON->STANDBY 
-		fwDU_setState(domain, device, \"STANDBY\");//fwState = \"STANDBY\";
+		fwState = \"STANDBY\";
 	}
  	else if(actual_dot_status == 3 && vset > (on_voltage-100) && vmon > 2250)
 	{// this state is reached when switching STANDBY->ON
-		fwDU_setState(domain, device, \"STANDBY\");//fwState = \"STANDBY\";
+		fwState = \"STANDBY\";
 	}       
 	else
 	{
-		fwDU_setState(domain, device, \"OFF\");//fwState = \"OFF\";
-	}  
-    
-    
-  //===============================================================
- 
+		fwState = \"OFF\";
+	}
+  
 }
-", "FwCaenChannel_valueChanged( string domain, string device, string &fwState)
-{
-}
+
 ", "const int CRATE_COMMAND_READ_RETRY_NUM = 9;
 
 FwCaenChannel_doCommand(string domain, string device, string command)
@@ -287,9 +276,9 @@ FwCaenChannel_doCommand(string domain, string device, string command)
 //   
 // }
 
-"	0x101	23.01.2014 16:49:43.460
-fwOT_FwCaenChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateAttention1", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	23.01.2014 16:49:43.456
-fwOT_FwCaenChannel.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "STANDBY/OFF", "", "1", "", "0", "STANDBY/STANDBY", "", "1", "", "0", "STANDBY/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0"	0x101	23.01.2014 16:49:43.455
+"	0x101	28.01.2014 22:44:35.060
+fwOT_FwCaenChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateAttention1", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	28.01.2014 22:44:35.056
+fwOT_FwCaenChannel.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "STANDBY/OFF", "", "1", "", "0", "STANDBY/STANDBY", "", "1", "", "0", "STANDBY/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0"	0x101	28.01.2014 22:44:35.055
 fwOT_FwCaenCrateSY1527.panel	_FwFsmObjectType	"FwCaenCrateSY1527.pnl"	0x101	23.01.2014 16:45:13.371
 fwOT_FwCaenCrateSY1527.components	_FwFsmObjectType	"", "", "FwCaenCrateSY1527_initialize(string domain, string device)
 {
@@ -334,11 +323,11 @@ void setGenSignalStatus(string crateDp, bool onOff) {
     delay(0, 500);
     dpSetWait(crateDp + \".Information.GenSignCfg\", 1);
   }      
-}"	0x101	23.01.2014 16:45:13.372
-fwOT_FwCaenCrateSY1527.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	23.01.2014 16:45:13.372
-fwOT_FwCaenCrateSY1527.actions	_FwFsmObjectType	"ON/ON", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "ON/OFF", "", "1", "", "0", "ON/RESET", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/RESET", "", "1", "", "0", "STANDBY/ON", "", "1", "", "0", "STANDBY/STANDBY", "", "1", "", "0", "STANDBY/OFF", "", "1", "", "0", "STANDBY/RESET", "", "1", "", "0", "ERROR/ON", "", "1", "", "0", "ERROR/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/RESET", "", "1", "", "0"	0x101	23.01.2014 16:45:13.373
+}"	0x101	28.01.2014 22:44:35.353
+fwOT_FwCaenCrateSY1527.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "STANDBY", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	28.01.2014 22:44:35.349
+fwOT_FwCaenCrateSY1527.actions	_FwFsmObjectType	"ON/ON", "", "1", "", "0", "ON/STANDBY", "", "1", "", "0", "ON/OFF", "", "1", "", "0", "ON/RESET", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "OFF/STANDBY", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/RESET", "", "1", "", "0", "STANDBY/ON", "", "1", "", "0", "STANDBY/STANDBY", "", "1", "", "0", "STANDBY/OFF", "", "1", "", "0", "STANDBY/RESET", "", "1", "", "0", "ERROR/ON", "", "1", "", "0", "ERROR/STANDBY", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/RESET", "", "1", "", "0"	0x101	28.01.2014 22:44:35.348
 fwOT_CMS_CSC_ME11_HV_Type.panel	_FwFsmObjectType	"CMS_CSCfw_ME11HV/ME11PN.pnl"	0x101	23.01.2014 16:45:13.374
 fwOT_CMS_CSC_ME11_HV_Type.components	_FwFsmObjectType		0x141	23.01.2014 16:45:13.375
-fwOT_CMS_CSC_ME11_HV_Type.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to OFF|", "", "", "STANDBY", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	23.01.2014 16:45:13.376
-fwOT_CMS_CSC_ME11_HV_Type.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	23.01.2014 16:45:13.376
+fwOT_CMS_CSC_ME11_HV_Type.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|when ( $ANY$FwCHILDREN in_state STANDBY )  move_to STANDBY|", "", "", "ERROR", "FwStateAttention3", "when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ALL$FwCHILDREN in_state {ON,STANDBY} )  move_to STANDBY|when ( $ALL$FwCHILDREN in_state {ON,OFF,STANDBY} )  move_to OFF|", "", "", "STANDBY", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|when ( $ALL$FwCHILDREN in_state ON )  move_to ON|when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	28.01.2014 22:44:37.584
+fwOT_CMS_CSC_ME11_HV_Type.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "ON/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do STANDBY $ALL$FwCHILDREN", "0"	0x101	28.01.2014 22:44:37.583
 fwOT_CMS_CSC_ME11_HV_Type.parameters	_FwFsmObjectType		0x141	23.01.2014 16:45:13.377
