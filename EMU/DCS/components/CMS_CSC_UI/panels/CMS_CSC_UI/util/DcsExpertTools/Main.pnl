@@ -69,7 +69,7 @@ T
 LANG:1 9 Open PARA
 "main()
 {
-  exec(\"PVSS00ui -m para -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user \\\"\\\"\");
+  exec(\"WCCOAui -m para -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user \\\"\\\"\");
 //  exec(\"PVSS00ui -m para -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user \\\"\\\"\");
 }" 0
  E E E
@@ -138,7 +138,7 @@ T
 LANG:1 22 Open Device Editor Nav
 "main()
 {
-  exec(\"PVSS00ui -p fwDeviceEditorNavigator/fwDeviceEditorNavigator.pnl -iconBar -menuBar -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user \\\"\\\"\");
+  exec(\"WCCOAui -p fwDeviceEditorNavigator/fwDeviceEditorNavigator.pnl -iconBar -menuBar -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user \\\"\\\"\");
 //  exec(\"PVSS00ui -p fwDeviceEditorNavigator/fwDeviceEditorNavigator.pnl -iconBar -menuBar -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user \\\"\\\"\");
 }" 0
  E E E
@@ -163,7 +163,7 @@ T
 LANG:1 17 Open alert screen
 "main()
 {
-  exec(\"PVSS00ui -p fwAlarmHandling/fwAlarmHandlingScreen.pnl -menuBar -iconBar -data \" + topNodeHostname + \" -event \" + topNodeHostname + \" -user \\\"\\\"\");
+  exec(\"WCCOAui -p fwAlarmHandling/fwAlarmHandlingScreen.pnl -menuBar -iconBar -data \" + topNodeHostname + \" -event \" + topNodeHostname + \" -user \\\"\\\"\");
 //  exec(\"PVSS00ui -p fwAlarmHandling/fwAlarmHandlingScreen.pnl -menuBar -iconBar -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user \\\"\\\"\");
 }" 0
  E E E
@@ -225,7 +225,7 @@ LANG:1 36 Open hacked PARA (no access control)
 "main()
 {
   emuui_openInfoDialog(\"Please please please use it very carefully - it has no access control so you CAN change values of DPs, which is generally not a good idea (when in production env)\");
-  exec(\"PVSS00ui -p CMS_CSC_UI/util/DcsExpertTools/simplePara.pnl -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user \\\"\\\"\");
+  exec(\"WCCOAui -p CMS_CSC_UI/util/DcsExpertTools/simplePara.pnl -data \" + getSelectedSysHost() + \" -event \" + getSelectedSysHost() + \" -user \\\"\\\"\");
 //  exec(\"PVSS00ui -p CMS_CSC_UI/util/DcsExpertTools/simplePara.pnl -data emu-dcs-dev2:61543 -event emu-dcs-dev2:61542 -user=\\\"\\\"\");
 }" 0
  E E E
