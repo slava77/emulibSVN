@@ -99,7 +99,7 @@ float UpTime
 "	0x101	28.01.2014 22:44:36.044
 fwOT_FwWienerMarathon.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	28.01.2014 22:44:36.040
 fwOT_FwWienerMarathon.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0"	0x101	28.01.2014 22:44:36.039
-fwOT_FwWienerMarathonChannel.panel	_FwFsmObjectType	"FwWienerMarathonChannel.pnl"	0x101	28.01.2014 21:08:34.727
+fwOT_FwWienerMarathonChannel.panel	_FwFsmObjectType	"FwWienerMarathonChannel.pnl"	0x101	28.01.2014 23:23:43.859
 fwOT_FwWienerMarathonChannel.components	_FwFsmObjectType	"float MeasurementSenseVoltage
 bool Status.On
 ", "", "FwWienerMarathonChannel_initialize(string domain, string device)
@@ -142,6 +142,15 @@ bool Status.On
   string channelDpEnding = \"/Channel0\";
   string crateDp = substr(device, 0, strlen(device) - strlen(channelDpEnding));
   dpGet(crateDp + \".Status.On\", crateStatus);
+
+  // if the actual voltage is 0, but the crate says it's ON, lets give it 30 seconds for the crate to change the state (this is to avoid getting stuck in ON state when crate changed it's state to OFF slightly later than the vMon was set to 0 on the channel)
+  int timeout = 30;
+  int elapsed = 0;
+  while ((MeasurementSenseVoltage == 0.0) && (crateStatus == true) && (elapsed < timeout)) {
+    dpGet(crateDp + \".Status.On\", crateStatus);
+    delay(1);
+    elapsed++;
+  }
   
  	if (crateStatus == true)
 	{
@@ -163,6 +172,6 @@ bool Status.On
   dpSet(device+\".Status.On\",status);
 }
 
-"	0x101	28.01.2014 22:44:36.288
-fwOT_FwWienerMarathonChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	28.01.2014 22:44:36.285
-fwOT_FwWienerMarathonChannel.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0"	0x101	28.01.2014 22:44:36.284
+"	0x101	28.01.2014 23:23:43.886
+fwOT_FwWienerMarathonChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	28.01.2014 23:23:43.882
+fwOT_FwWienerMarathonChannel.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0"	0x101	28.01.2014 23:23:43.882
