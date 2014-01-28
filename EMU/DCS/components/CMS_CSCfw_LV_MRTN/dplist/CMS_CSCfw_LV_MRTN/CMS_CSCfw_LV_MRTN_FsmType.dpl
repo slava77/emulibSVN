@@ -10,30 +10,52 @@ fwOT_FwWienerMarathonChannel	_FwFsmObjectType	583469
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
 fwOT_CSC_LV_NODES.panel	_FwFsmObjectType	"CSC_LV_NODES.pnl"	0x101	27.01.2014 13:41:31.570
-fwOT_CSC_LV_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|   when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|  when ( $ALL$FwCHILDREN in_state ON )  move_to ON| when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	27.01.2014 13:41:31.603
-fwOT_CSC_LV_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0"	0x101	27.01.2014 13:41:31.603
+fwOT_CSC_LV_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|   when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|  when ( $ALL$FwCHILDREN in_state ON )  move_to ON| when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	28.01.2014 21:10:15.870
+fwOT_CSC_LV_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0"	0x101	28.01.2014 21:10:15.870
 fwOT_CSC_LV_NODES.parameters	_FwFsmObjectType		0x141	27.01.2014 13:39:27.438
 fwOT_CSC_LV_TREE_NODES.panel	_FwFsmObjectType	"CSC_LV_TREE_NODES.pnl"	0x101	27.01.2014 13:42:38.349
-fwOT_CSC_LV_TREE_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|   when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	27.01.2014 13:42:38.375
-fwOT_CSC_LV_TREE_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0"	0x101	27.01.2014 13:42:38.375
+fwOT_CSC_LV_TREE_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|   when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	28.01.2014 21:10:16.390
+fwOT_CSC_LV_TREE_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0"	0x101	28.01.2014 21:10:16.389
 fwOT_CSC_LV_TREE_NODES.parameters	_FwFsmObjectType		0x141	27.01.2014 13:39:27.442
-fwOT_FwWienerMarathon.panel	_FwFsmObjectType	"FwWienerMarathon.pnl"	0x101	27.01.2014 16:04:11.251
+fwOT_FwWienerMarathon.panel	_FwFsmObjectType	"FwWienerMarathon.pnl"	0x101	28.01.2014 21:09:43.871
 fwOT_FwWienerMarathon.components	_FwFsmObjectType	"bool Status.On
+float UpTime
 ", "", "FwWienerMarathon_initialize(string domain, string device)
 {
 }
 ", "FwWienerMarathon_valueChanged( string domain, string device,
-      bool Status_dot_On, string &fwState )
+      bool Status_dot_On,
+      float UpTime, string &fwState )
 {
-  
   int alert = 0;
-  int invalid = 0;
   dpGet(device + \".:_alert_hdl.._act_state\", alert);
-  dpGet(device + \".UpTime:_online.._invalid\", invalid);
-  if ((alert != 0) || (invalid != 0)) {
+  if (alert != 0) {
+    emu_info(\"Alert detected on Maraton Crate \" + device + \", setting state to ERROR\");
     fwState = \"ERROR\";
     return;
-  }
+  }  
+
+  int invalid = 0;
+  dpGet(device + \".UpTime:_online.._invalid\", invalid);
+  if (invalid != 0) {
+    //check if the invalid flag stays up to 1min, if yes, then set the state to error, otherwise ignore it
+    int timeout = 30;
+    emu_info(\"Invalid flag detected on Maraton Crate \" + device + \"... Starting a \" + timeout + \"s timeout.\");
+    for (int i=0; i < timeout; i++) { // wait up to 1min and check every 1s if the invalid flag has cleared
+      dpGet(device + \".UpTime:_online.._invalid\", invalid);
+      if (invalid == 0) {
+        emu_info(\"Invalid flag was cleared on Maraton Crate \" + device + \" after \" + i + \" seconds. Ignoring.\");
+        break;
+      }
+      delay(1);
+    }
+    
+    if (invalid != 0) {
+      emu_info(\"Invalid flag was set on Maraton Crate \" + device + \" for more than \" + timeout + \" seconds, setting state to ERROR\");
+      fwState = \"ERROR\";
+      return;
+    }
+  }  
   
 	if (Status_dot_On == true)
 	{
@@ -43,7 +65,6 @@ fwOT_FwWienerMarathon.components	_FwFsmObjectType	"bool Status.On
 	{
 		fwState = \"OFF\";
 	}
-
 }
 
 ", "FwWienerMarathon_doCommand(string domain, string device, string command)
@@ -75,31 +96,58 @@ fwOT_FwWienerMarathon.components	_FwFsmObjectType	"bool Status.On
   }  
 }
 
-"	0x101	27.01.2014 16:04:11.263
-fwOT_FwWienerMarathon.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	27.01.2014 16:04:11.260
-fwOT_FwWienerMarathon.actions	_FwFsmObjectType		0x101	27.01.2014 16:04:11.259
-fwOT_FwWienerMarathonChannel.panel	_FwFsmObjectType	"FwWienerMarathonChannel.pnl"	0x101	27.01.2014 16:03:52.803
-fwOT_FwWienerMarathonChannel.components	_FwFsmObjectType	"bool Status.On
+"	0x101	28.01.2014 21:10:12.984
+fwOT_FwWienerMarathon.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	28.01.2014 21:10:12.981
+fwOT_FwWienerMarathon.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0"	0x101	28.01.2014 21:10:12.980
+fwOT_FwWienerMarathonChannel.panel	_FwFsmObjectType	"FwWienerMarathonChannel.pnl"	0x101	28.01.2014 21:08:34.727
+fwOT_FwWienerMarathonChannel.components	_FwFsmObjectType	"float MeasurementSenseVoltage
+bool Status.On
 ", "", "FwWienerMarathonChannel_initialize(string domain, string device)
 {
 }
 ", "FwWienerMarathonChannel_valueChanged( string domain, string device,
+      float MeasurementSenseVoltage,
       bool Status_dot_On, string &fwState )
 {
   int alert = 0;
-  int invalid = 0;
   dpGet(device + \".:_alert_hdl.._act_state\", alert);
-  dpGet(device + \".Status.FailureMaxCurrent:_online.._invalid\", invalid);
-  if ((alert != 0) || (invalid != 0)) {
+  if (alert != 0) {
     fwState = \"ERROR\";
     return;
-  }
+  }  
+
+  int invalid = 0;
+  dpGet(device + \".MeasurementSenseVoltage:_online.._invalid\", invalid);
+  if (invalid != 0) {
+    //check if the invalid flag stays up to 1min, if yes, then set the state to error, otherwise ignore it
+    int timeout = 30;
+    emu_info(\"Invalid flag detected on Maraton channel \" + device + \"... Starting a \" + timeout + \"s timeout.\");
+    for (int i=0; i < timeout; i++) { // wait up to 1min and check every 1s if the invalid flag has cleared
+      dpGet(device + \".MeasurementSenseVoltage:_online.._invalid\", invalid);
+      if (invalid == 0) {
+        emu_info(\"Invalid flag was cleared on Maraton channel \" + device + \" after \" + i + \" seconds. Ignoring.\");
+        break;
+      }
+      delay(1);
+    }
+    
+    if (invalid != 0) {
+      emu_info(\"Invalid flag was set on Maraton channel \" + device + \" for more than \" + timeout + \" seconds, setting state to ERROR\");
+      fwState = \"ERROR\";
+      return;
+    }
+  }  
+
+  bool crateStatus = false;
+  string channelDpEnding = \"/Channel0\";
+  string crateDp = substr(device, 0, strlen(device) - strlen(channelDpEnding));
+  dpGet(crateDp + \".Status.On\", crateStatus);
   
- 	if (Status_dot_On == true)
+ 	if (crateStatus == true)
 	{
 		fwState = \"ON\";
 	}
-	else if (Status_dot_On == false)
+	else if (crateStatus == false)
 	{
 		fwState = \"OFF\";
 	}
@@ -115,6 +163,6 @@ fwOT_FwWienerMarathonChannel.components	_FwFsmObjectType	"bool Status.On
   dpSet(device+\".Status.On\",status);
 }
 
-"	0x101	27.01.2014 16:03:52.815
-fwOT_FwWienerMarathonChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	27.01.2014 16:03:52.812
-fwOT_FwWienerMarathonChannel.actions	_FwFsmObjectType		0x101	27.01.2014 16:03:52.812
+"	0x101	28.01.2014 21:10:13.228
+fwOT_FwWienerMarathonChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	28.01.2014 21:10:13.225
+fwOT_FwWienerMarathonChannel.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0"	0x101	28.01.2014 21:10:13.224
