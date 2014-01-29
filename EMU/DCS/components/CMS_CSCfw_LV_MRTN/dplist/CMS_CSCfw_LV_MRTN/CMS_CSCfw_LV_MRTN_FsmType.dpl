@@ -10,20 +10,22 @@ fwOT_FwWienerMarathonChannel	_FwFsmObjectType	583469
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
 fwOT_CSC_LV_NODES.panel	_FwFsmObjectType	"CSC_LV_NODES.pnl"	0x101	27.01.2014 13:41:31.570
-fwOT_CSC_LV_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|   when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|  when ( $ALL$FwCHILDREN in_state ON )  move_to ON| when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	29.01.2014 00:05:23.482
-fwOT_CSC_LV_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0"	0x101	29.01.2014 00:05:23.481
+fwOT_CSC_LV_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "   when ( $ANY$FwCHILDREN in_state ERROR )  move_to ERROR|   when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "STANDBY", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state ERROR ) move_to ERROR|  when ( $ALL$FwCHILDREN in_state ON )  move_to ON| when ( $ANY$FwCHILDREN in_state OFF )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	29.01.2014 12:14:43.832
+fwOT_CSC_LV_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "STANDBY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "STANDBY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0"	0x101	29.01.2014 12:14:43.832
 fwOT_CSC_LV_NODES.parameters	_FwFsmObjectType		0x141	27.01.2014 13:39:27.438
 fwOT_CSC_LV_TREE_NODES.panel	_FwFsmObjectType	"CSC_LV_TREE_NODES.pnl"	0x101	27.01.2014 13:42:38.349
-fwOT_CSC_LV_TREE_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|   when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	29.01.2014 00:05:24.006
-fwOT_CSC_LV_TREE_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0"	0x101	29.01.2014 00:05:24.005
+fwOT_CSC_LV_TREE_NODES.states	_FwFsmObjectType	"OFF", "FwStateOKNotPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|", "", "", "ERROR", "FwStateAttention3", "        when ( $ALL$FwCHILDREN in_state ON )  move_to ON|        when ( $ALL$FwCHILDREN in_state {ON,OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "ON", "FwStateOKPhysics", "when ( $ANY$FwCHILDREN in_state {ERROR,DEAD} ) move_to ERROR|   when ( $ANY$FwCHILDREN in_state {OFF,RAMP,STANDBY} )  move_to OFF|", "", "", "NOT-READY", "FwStateAttention1", "", "", ""	0x101	29.01.2014 12:14:44.346
+fwOT_CSC_LV_TREE_NODES.actions	_FwFsmObjectType	"OFF/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "OFF/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ERROR/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "ERROR/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "ON/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0", "ON/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/ON", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/STANDBY", "", "1", "do ON $ALL$FwCHILDREN", "0", "NOT-READY/OFF", "", "1", "do OFF $ALL$FwCHILDREN", "0"	0x101	29.01.2014 12:14:44.346
 fwOT_CSC_LV_TREE_NODES.parameters	_FwFsmObjectType		0x141	27.01.2014 13:39:27.442
-fwOT_FwWienerMarathon.panel	_FwFsmObjectType	"FwWienerMarathon.pnl"	0x101	29.01.2014 00:05:11.526
+fwOT_FwWienerMarathon.panel	_FwFsmObjectType	"FwWienerMarathon.pnl"	0x101	29.01.2014 12:14:11.521
 fwOT_FwWienerMarathon.components	_FwFsmObjectType	"bool Status.On
 float UpTime
 ", "", "FwWienerMarathon_initialize(string domain, string device)
 {
 }
-", "FwWienerMarathon_valueChanged( string domain, string device,
+", "#uses \"CMS_CSC_common/emu_common.ctl\"
+
+FwWienerMarathon_valueChanged( string domain, string device,
       bool Status_dot_On,
       float UpTime, string &fwState )
 {
@@ -104,16 +106,18 @@ float UpTime
   }  
 }
 
-"	0x101	29.01.2014 00:05:20.553
-fwOT_FwWienerMarathon.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.01.2014 00:05:20.551
-fwOT_FwWienerMarathon.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0"	0x101	29.01.2014 00:05:20.550
-fwOT_FwWienerMarathonChannel.panel	_FwFsmObjectType	"FwWienerMarathonChannel.pnl"	0x101	28.01.2014 23:23:43.859
+"	0x101	29.01.2014 12:14:40.927
+fwOT_FwWienerMarathon.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.01.2014 12:14:40.924
+fwOT_FwWienerMarathon.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0"	0x101	29.01.2014 12:14:40.923
+fwOT_FwWienerMarathonChannel.panel	_FwFsmObjectType	"FwWienerMarathonChannel.pnl"	0x101	29.01.2014 12:14:22.609
 fwOT_FwWienerMarathonChannel.components	_FwFsmObjectType	"float MeasurementSenseVoltage
 bool Status.On
 ", "", "FwWienerMarathonChannel_initialize(string domain, string device)
 {
 }
-", "FwWienerMarathonChannel_valueChanged( string domain, string device,
+", "#uses \"CMS_CSC_common/emu_common.ctl\"
+
+FwWienerMarathonChannel_valueChanged( string domain, string device,
       float MeasurementSenseVoltage,
       bool Status_dot_On, string &fwState )
 {
@@ -180,6 +184,6 @@ bool Status.On
   dpSet(device+\".Status.On\",status);
 }
 
-"	0x101	29.01.2014 00:05:20.799
-fwOT_FwWienerMarathonChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.01.2014 00:05:20.796
-fwOT_FwWienerMarathonChannel.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0"	0x101	29.01.2014 00:05:20.795
+"	0x101	29.01.2014 12:14:41.170
+fwOT_FwWienerMarathonChannel.states	_FwFsmObjectType	"ON", "FwStateOKPhysics", "", "", "", "OFF", "FwStateOKNotPhysics", "", "", "", "ERROR", "FwStateAttention3", "", "", ""	0x101	29.01.2014 12:14:41.166
+fwOT_FwWienerMarathonChannel.actions	_FwFsmObjectType	"ON/OFF", "", "1", "", "0", "ON/ON", "", "1", "", "0", "OFF/OFF", "", "1", "", "0", "OFF/ON", "", "1", "", "0", "ERROR/OFF", "", "1", "", "0", "ERROR/ON", "", "1", "", "0"	0x101	29.01.2014 12:14:41.166
