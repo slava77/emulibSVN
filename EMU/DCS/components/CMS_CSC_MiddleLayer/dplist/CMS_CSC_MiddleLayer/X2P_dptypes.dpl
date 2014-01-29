@@ -81,7 +81,7 @@ CscTempChamberMon.CscTempChamberMon	1#1
 		v3	22#9
 		v4	22#10
 		v5	22#11
-	timestamp	26#12
+	timestamp	21#14
 	status	21#13
 CscTempChamber.CscTempChamber	1#1
 	fsm_state	25#2
@@ -98,7 +98,7 @@ CscFedDduMon.CscFedDduMon	1#1
 		v2	22#9
 		v3	22#10
 		v4	22#11
-	timestamp	26#12
+	timestamp	21#14
 	status	21#13
 CscFedDdu.CscFedDdu	1#1
 	fsm_state	25#2
@@ -138,7 +138,7 @@ CscMe11TempChamberMon.CscMe11TempChamberMon	1#1
 			v5	22#32
 			v6	22#33
 			v7	22#34
-	timestamp	26#35
+	timestamp	21#37
 	status	21#36
 CscLvDcfeb_Template.CscLvDcfeb_Template	1#1
 	v30	1#2
@@ -214,7 +214,7 @@ CscMe11LvChamberMon.CscMe11LvChamberMon	1#1
 	lvdb	41#105:CscLvLvdb_Template
 	ccb_bits	21#106
 	fpga_bits	21#107
-	timestamp	26#108
+	timestamp	21#113
 	status	21#109
 CscLvChamberMon.CscLvChamberMon	1#1
 	cfeb	41#2:CscLvCfeb_Template
@@ -223,5 +223,5 @@ CscLvChamberMon.CscLvChamberMon	1#1
 	lvdb	41#92:CscLvLvdb_Template
 	ccb_bits	21#93
 	fpga_bits	21#94
-	timestamp	26#138
+	timestamp	21#139
 	status	21#137
