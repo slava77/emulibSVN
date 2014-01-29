@@ -82,7 +82,9 @@ string majorityUser_calcFsmState(mapping majStates,mapping mapPercentages,string
                                   "MrtnChannel:on",
                                   "MrtnChannel:error",
                                   "MrtnCrate:on",
-                                  "MrtnCrate:error"),
+                                  "MrtnCrate:error",
+                                  "LV:error",
+                                  "TEMP:alert"),
                     true) || // at least one of those must exist (but don't care about the devices listed below), if none of those exist - see below.
       (!emumaj_anyExist(majStates,
                     makeDynString("HV_OUTER:on",
