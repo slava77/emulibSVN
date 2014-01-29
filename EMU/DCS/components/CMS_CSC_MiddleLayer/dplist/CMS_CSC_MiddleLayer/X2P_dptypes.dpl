@@ -214,7 +214,7 @@ CscMe11LvChamberMon.CscMe11LvChamberMon	1#1
 	lvdb	41#105:CscLvLvdb_Template
 	ccb_bits	21#106
 	fpga_bits	21#107
-	timestamp	21#113
+	timestamp	21#213
 	status	21#109
 CscLvChamberMon.CscLvChamberMon	1#1
 	cfeb	41#2:CscLvCfeb_Template
@@ -223,5 +223,5 @@ CscLvChamberMon.CscLvChamberMon	1#1
 	lvdb	41#92:CscLvLvdb_Template
 	ccb_bits	21#93
 	fpga_bits	21#94
-	timestamp	21#139
+	timestamp	21#239
 	status	21#137
