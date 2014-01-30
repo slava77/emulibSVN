@@ -22,6 +22,12 @@ CscAlertClass_CscHvPrimary	CscConf_alertClassDescriptors	640349
 CscAlertClass_CscLvChamber	CscConf_alertClassDescriptors	640350
 CscAlertClass_CscTempChamber	CscConf_alertClassDescriptors	640351
 CscAlertClass_CscCooling	CscConf_alertClassDescriptors	650498
+CscAlertClass_CscLvChamberMon	CscConf_alertClassDescriptors	750467
+CscAlertClass_CscTempChamberMon	CscConf_alertClassDescriptors	750468
+CscAlertClass_CscMe11LvChamberMon	CscConf_alertClassDescriptors	750937
+CscAlertClass_CscMe11TempChamberMon	CscConf_alertClassDescriptors	750938
+CscAlertClass_CscHvChamberFastMon	CscConf_alertClassDescriptors	751155
+CscAlertClass_CscHvChamberSlowMon	CscConf_alertClassDescriptors	751156
 
 # DpValue
 ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
@@ -51,3 +57,15 @@ CscAlertClass_CscLvChamber.alertTexts	CscConf_alertClassDescriptors	"On-Chamber 
 CscAlertClass_CscTempChamber.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	20.02.2012 13:44:09.976
 CscAlertClass_CscTempChamber.alertTexts	CscConf_alertClassDescriptors	"Temperature OK", "Temperature Alert"	0x101	20.02.2012 13:44:19.525
 CscAlertClass_CscCooling.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	16.03.2012 10:33:19.562
+CscAlertClass_CscLvChamberMon.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	30.01.2014 11:59:51.273
+CscAlertClass_CscLvChamberMon.alertTexts	CscConf_alertClassDescriptors	"On-Chamber el. LV OK", "On-Chamber el. LV ERROR"	0x101	30.01.2014 12:00:02.308
+CscAlertClass_CscTempChamberMon.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	30.01.2014 12:02:32.298
+CscAlertClass_CscTempChamberMon.alertTexts	CscConf_alertClassDescriptors	"Temperature OK", "Temperature Alert"	0x101	30.01.2014 12:04:26.517
+CscAlertClass_CscMe11LvChamberMon.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	30.01.2014 12:06:21.157
+CscAlertClass_CscMe11LvChamberMon.alertTexts	CscConf_alertClassDescriptors	"On-Chamber el. LV OK", "On-Chamber el. LV ERROR"	0x101	30.01.2014 12:06:30.560
+CscAlertClass_CscMe11TempChamberMon.class	CscConf_alertClassDescriptors	_fwWarningNack_41.	0x101	30.01.2014 12:06:52.791
+CscAlertClass_CscMe11TempChamberMon.alertTexts	CscConf_alertClassDescriptors	"Temperature OK", "Temperature Alert"	0x101	30.01.2014 12:07:01.550
+CscAlertClass_CscHvChamberFastMon.class	CscConf_alertClassDescriptors	_fwErrorNack_61.	0x101	30.01.2014 12:10:28.848
+CscAlertClass_CscHvChamberFastMon.alertTexts	CscConf_alertClassDescriptors	"HV OK", "HV ERROR"	0x101	30.01.2014 12:10:20.810
+CscAlertClass_CscHvChamberSlowMon.class	CscConf_alertClassDescriptors	_fwErrorNack_61.	0x101	30.01.2014 12:10:54.306
+CscAlertClass_CscHvChamberSlowMon.alertTexts	CscConf_alertClassDescriptors	"HV OK", "HV ERROR"	0x101	30.01.2014 12:11:02.848
