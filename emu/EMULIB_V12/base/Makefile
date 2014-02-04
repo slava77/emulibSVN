@@ -67,13 +67,12 @@ ExternalObjects =
 DynamicLibrary = emubase
 StaticLibrary =
 
-TestLibraries = xerces-c xdaq xdata log4cplus toolbox xoap cgicc xcept xgi peer \
-	mimetic logxmlappender logudpappender asyncresolv config \
-	uuid xalan-c xalanMsg xoapfilter emubase
+TestLibraries = xerces-c xalan-c xdaq xdata mimetic log4cplus logxmlappender logudpappender toolbox xoap cgicc xcept xgi peer asyncresolv config uuid emubase numa
 
 TestExecutables= \
 	testSystem.cc \
-	testException.cc
+	testException.cc \
+	testDOM.cc
 
 include $(XDAQ_ROOT)/config/Makefile.rules
 include $(XDAQ_ROOT)/config/mfRPM.rules
