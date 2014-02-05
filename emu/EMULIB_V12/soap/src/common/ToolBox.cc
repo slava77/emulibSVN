@@ -485,9 +485,9 @@ std::string
 emu::soap::toStringWithoutAttachments( xoap::MessageReference message ){
   std::string result;
   try{
-    if ( message->getEnvelope() != NULL ){
+    if ( message->getSOAPPart().getEnvelope().getDOM() != NULL ){
       xoap::SOAPSerializer s( result );
-      s.serialize( message->getEnvelope() );
+      s.serialize( message->getSOAPPart().getEnvelope().getDOM() );
     }
   }
   catch( xcept::Exception &e ){
