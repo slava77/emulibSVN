@@ -64,7 +64,8 @@ TestLibraries = xerces-c xdaq xdata log4cplus toolbox xoap cgicc xcept xgi peer 
                 mimetic logxmlappender logudpappender asyncresolv config \
                 uuid xalan-c xalanMsg xoapfilter tstoreutils tstoreclient tstore \
                 b2innub executive pthttp ptfifo xrelay hyperdaq occi nnz11 clntsh ociei \
-                emubase emusoap EmuOnlineDB EmuPeripheralCore EmuPeripheralApps
+                emubase emusoap EmuOnlineDB EmuPeripheralCore EmuPeripheralApps \
+		numa
 
 #
 # Compile the source files and create a shared library
