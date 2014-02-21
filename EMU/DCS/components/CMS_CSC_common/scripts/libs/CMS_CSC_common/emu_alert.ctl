@@ -14,6 +14,7 @@ This package contains general purpose functions for handling alerts.
  */
 string emuAlert_getAlertClassDescriptorDp(string dpType) {
   strreplace(dpType, ".", "_dot_");
+  strreplace(dpType, "*", "_a_");
   string alertClassDp = "CscAlertClass_" + dpType;
   if (!dpExists(alertClassDp)) {
     return "";
@@ -129,6 +130,7 @@ void emuAlert_updateAllAlertClasses(bool onlyInLocalSystem = true) {
     alertClassConfigs[i] = dpSubStr(alertClassConfigs[i], DPSUB_DP);
     strreplace(alertClassConfigs[i], "CscAlertClass_", "");
     strreplace(alertClassConfigs[i], "_dot_", ".");
+    strreplace(alertClassConfigs[i], "_a_", "*");
     emuAlert_updateAllAlertClassesForType(alertClassConfigs[i], onlyInLocalSystem);
   }
 }
