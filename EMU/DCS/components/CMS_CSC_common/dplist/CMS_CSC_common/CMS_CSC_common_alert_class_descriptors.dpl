@@ -35,7 +35,7 @@ CscAlertClass_fwLvCr_CSC_TEMP.class	CscConf_alertClassDescriptors	_fwErrorNack_6
 CscAlertClass_fwLvCr_CSC_TEMP.alertTexts	CscConf_alertClassDescriptors	"PCrate Temperature OK", "PCrate Temperature Alert"	0x101	07.10.2010 14:32:24.063
 CscAlertClass_FwElmbPSUBranch.class	CscConf_alertClassDescriptors	_fwErrorNack_70.	0x101	07.10.2010 14:32:24.068
 CscAlertClass_FwElmbPSUBranch.alertTexts	CscConf_alertClassDescriptors	"ELMB Power Supply OK", "ELMB Power Supply ERROR"	0x101	07.10.2010 14:32:24.069
-CscAlertClass_FwWienerMarathon.class	CscConf_alertClassDescriptors	_fwFatalAck_90.	0x101	07.10.2010 14:32:24.070
+CscAlertClass_FwWienerMarathon.class	CscConf_alertClassDescriptors	_fwFatalNack_90.	0x101	21.02.2014 09:44:53.048
 CscAlertClass_FwWienerMarathon.alertTexts	CscConf_alertClassDescriptors	"Maraton PSU OK", "Maraton PSU ERROR"	0x101	07.10.2010 14:32:24.071
 CscAlertClass_fwCrb_CSC_LV.class	CscConf_alertClassDescriptors	_fwErrorAck_70.	0x101	07.10.2010 14:32:24.071
 CscAlertClass_fwCrb_CSC_LV.alertTexts	CscConf_alertClassDescriptors	"PCrate OK", "PCrate ERROR"	0x101	07.10.2010 14:32:24.072
