@@ -624,6 +624,10 @@ void emudcsArchive_createTempAlctDmbDps(string sCscChamber)
     emudcsArchive_createDp(sDpNameTEMP_Odmb,"TEMP");
     emudcsArchive_setDpSmoothing(sDpNameTEMP_Odmb,fTolTEMP,iTimeTEMP);
 
+    string sDpNameTEMP_Otmb  = sCscChamber+"_TEMP_Otmb__T1"; 
+    emudcsArchive_createDp(sDpNameTEMP_Otmb,"TEMP");
+    emudcsArchive_setDpSmoothing(sDpNameTEMP_Otmb,fTolTEMP,iTimeTEMP);
+    
     string sDpNameTEMP_Lvdb = sCscChamber+"_TEMP_Lvdb__T1"; 
     emudcsArchive_createDp(sDpNameTEMP_Lvdb,"TEMP");
     emudcsArchive_setDpSmoothing(sDpNameTEMP_Lvdb,fTolTEMP,iTimeTEMP);    
@@ -941,11 +945,15 @@ void emudcsArchive_setTempAlctDmbDpFunction(string sDpName,string sCscChamber)
   emudcsArchive_setDpFunction(sDpNameAlct,sDpNameLink);  //dpfct for alct      
 
   if ((strpos(sCscChamber, "_M11_") >= 0) || (strpos(sCscChamber, "_P11_") >= 0)) { // ME1/1
-    string sDpNameOdmb, sDpNameLvdb, sDpNameLink;  
+    string sDpNameOdmb, sDpNameOtmb, sDpNameLvdb, sDpNameLink;  
     sDpNameLink = sDpName+".odmb.v1:_original.._value";
     sDpNameOdmb = sCscChamber+"_TEMP_Odmb__T1";
-    emudcsArchive_setDpFunction(sDpNameOdmb,sDpNameLink);  //dpfct for dmb        
+    emudcsArchive_setDpFunction(sDpNameOdmb,sDpNameLink);  //dpfct for odmb        
     
+    sDpNameLink = sDpName+".otmb.v1:_original.._value";
+    sDpNameOtmb = sCscChamber+"_TEMP_Otmb__T1";
+    emudcsArchive_setDpFunction(sDpNameOtmb,sDpNameLink);  //dpfct for otmb        
+
     sDpNameLink = sDpName+".lvdb.v1:_original.._value";
     sDpNameLvdb = sCscChamber+"_TEMP_Lvdb__T1";
     emudcsArchive_setDpFunction(sDpNameLvdb,sDpNameLink);  //dpfct for LVDB        
