@@ -67,10 +67,10 @@
 #define BUILD 2
 #define DRV_VERSION __stringify(MAJ) "." __stringify(MIN) "." __stringify(BUILD) VERSION_SUFFIX DRV_DEBUG DRV_HW_PERF
 
-char igb_driver_name[] = "igb";
+char igb_driver_name[] = "igb_emu";
 char igb_driver_version[] = DRV_VERSION;
 static const char igb_driver_string[] =
-                                "Intel(R) Gigabit Ethernet Network Driver";
+                                "Intel(R) Gigabit Ethernet Network Driver with hooks for Emu DDU spy readout and PCrate control";
 static const char igb_copyright[] =
 				"Copyright (c) 2007-2013 Intel Corporation.";
 
@@ -8028,12 +8028,23 @@ static bool igb_clean_rx_irq(struct igb_q_vector *q_vector, int budget)
 			igb_lro_receive(q_vector, skb);
 		else
 #endif
+		  {
+		    if      (strcmp(netdev_ring(rx_ring)->name,"eth2")==0){
+		      netif_rx_hook_2(skb);
+		    }else if(strcmp(netdev_ring(rx_ring)->name,"eth3")==0){
+		      netif_rx_hook_3(skb);
+		    }else if(strcmp(netdev_ring(rx_ring)->name,"eth4")==0){
+		      netif_rx_hook_4(skb);
+		    }else if(strcmp(netdev_ring(rx_ring)->name,"eth5")==0){
+		      netif_rx_hook_5(skb);
+		    }else{
 #ifdef HAVE_VLAN_RX_REGISTER
 			igb_receive_skb(q_vector, skb);
 #else
 			napi_gro_receive(&q_vector->napi, skb);
 #endif
-
+		    }
+		  }
 #ifndef NETIF_F_GRO
 		netdev_ring(rx_ring)->last_rx = jiffies;
 
