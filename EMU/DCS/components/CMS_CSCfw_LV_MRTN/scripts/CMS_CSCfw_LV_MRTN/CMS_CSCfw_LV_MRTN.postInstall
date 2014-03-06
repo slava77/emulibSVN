@@ -1,6 +1,8 @@
 #uses "fwInstallation.ctl"
 #uses "CMSfwInstallUtils/CMSfwInstallUtils.ctl"
 #uses "CMS_CSCfw_LV_MRTN/emuLvMRTN.ctl"
+#uses "CMS_CSC_common/emu_common.ctl"
+#uses "CMS_CSC_common/emu_alert.ctl"
 
 main()
 { 
@@ -26,6 +28,7 @@ main()
 
   //start scripts to crate all dps for LV MRTN compnent
   emuLvMRTN_createLvMRTNAll(); 
+  emuAlert_updateAllAlertClasses(true);
   
   //delay 15 second
   delay(15);

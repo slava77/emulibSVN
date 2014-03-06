@@ -36,12 +36,20 @@ dyn_string emuLvMRTN_getDynString(string sConstantName)
   }
   if(sConstantName == "Db_MRTN_P5")
   { 
-       dsConstant = makeDynString("M4_CR1;37","M4_CR2;38",  "M4_CR3;",  "M4_CR4;",
-                                    "M4_CR5;",  "M4_CR6;",  "M4_CR7;",  "M4_CR8;",
-                                  "M2_CR1;29","M2_CR2;30","M2_CR3;32","M2_CR4;31",
-                                  "M2_CR5;34","M2_CR6;33","M2_CR7;35","M2_CR8;36",
-                                  "M1_CR1;21","M1_CR2;22","M1_CR3;24","M1_CR4;23",
-                                  "M1_CR5;26","M1_CR6;25","M1_CR7;27","M1_CR8;28",
+       dsConstant = makeDynString("M1_CR1;31",  "M1_CR2;32",  "M1_CR3;33",   //X4 near
+                                  "M1_CR4;34",  "M1_CR5;35",  "M1_CR6;36",   //X4 far
+                                  "M1_CR7;37",  "M1_CR8;38",  "M1_CR9;39",   //X2 far
+                                  "M1_CR10;40", "M1_CR11;41", "M1_CR12;42", //X2 near
+                                  "M2_CR1;43",  "M2_CR2;44",  //X4 near
+                                  "M2_CR3;45",  "M2_CR4;46",  //X4 far
+                                  "M2_CR5;47",  "M2_CR6;48",  //X2 far
+                                  "M2_CR7;49",  "M2_CR8;50",  //X2 near
+                                  "M4_CR1;51",   //X4 near
+                                  "M4_CR2;52",   //X4 far
+                                  "M4_CR3;53",   //X2 far
+                                  "M4_CR4;54",   //X2 near
+                                  "M4_CR5;",  "M4_CR6;",  "M4_CR7;",  "M4_CR8;",
+                                    
                                   "P1_CR1;1",   "P1_CR2;2",   "P1_CR3;3",   //X4 near
                                   "P1_CR4;4",   "P1_CR5;5",   "P1_CR6;6",   //X4 far
                                   "P1_CR7;7",   "P1_CR8;8",   "P1_CR9;9",   //X2 far
@@ -54,13 +62,23 @@ dyn_string emuLvMRTN_getDynString(string sConstantName)
                                   "P4_CR2;22",   //X4 far
                                   "P4_CR3;23",   //X2 far
                                   "P4_CR4;24",   //X2 near
-                                    "P4_CR5;",  "P4_CR6;",  "P4_CR7;",  "P4_CR8;");
+                                  "P4_CR5;",  "P4_CR6;",  "P4_CR7;",  "P4_CR8;");
   }
   if(sConstantName == "Db_MRTN_Geog_P5")
-  { 
-    dsConstant = makeDynString("X4S51","X2V52","","","","","","",
-                               "X4V41_L","X4V41_U","X4S41_L","X4S41_U","X2S41_L","X2S41_U","X2V42_L","X2V42_U",
-                               "X4V31_L","X4V31_U","X4S31_L","X4S31_U","X2S33_L","X2S33_U","X2V31_L","X2V31_U",
+  {                               // !!! MINUS SIDE RACKS ARE NOT CORRECT (just a copy of plus side for now)
+    dsConstant = makeDynString("X4J31_L","X4J31_M","X4J31_U",  //X4 near
+                               "X4A31_U","X4A31_M","X4A31_L",  //X4 far
+                               "X2A33_U","X2A33_M","X2A33_L",  //X2 far
+                               "X2J31_L","X2J31_M","X2J31_U",  //X2 near
+                               "X4J41_L","X4J41_U",  //X4 near
+                               "X4A41_U","X4A41_L",  //X4 far
+                               "X2A41_U","X2A41_L",  //X2 far
+                               "X2J42_L","X2J42_U",  //X2 near
+                               "X4J51",  //X4 near
+                               "X4A51",  //X4 far
+                               "X2A52",  //X2 far
+                               "X2J52",  //X2 near
+                               "","","","",
                                "X4J31_L","X4J31_M","X4J31_U",  //X4 near
                                "X4A31_U","X4A31_M","X4A31_L",  //X4 far
                                "X2A33_U","X2A33_M","X2A33_L",  //X2 far
@@ -89,8 +107,10 @@ dyn_string emuLvMRTN_getDynString(string sConstantName)
   }
   if(sConstantName == "CSC_ME_M1_LV_MRTN")
   {
-    dsConstant = makeDynString("CSC_ME_M1_CR1_LV_MRTN","CSC_ME_M1_CR2_LV_MRTN","CSC_ME_M1_CR3_LV_MRTN","CSC_ME_M1_CR4_LV_MRTN",
-                               "CSC_ME_M1_CR5_LV_MRTN","CSC_ME_M1_CR6_LV_MRTN","CSC_ME_M1_CR7_LV_MRTN","CSC_ME_M1_CR8_LV_MRTN");
+    dsConstant = makeDynString("CSC_ME_M1_CR1_LV_MRTN", "CSC_ME_M1_CR2_LV_MRTN", "CSC_ME_M1_CR3_LV_MRTN",
+                               "CSC_ME_M1_CR4_LV_MRTN", "CSC_ME_M1_CR5_LV_MRTN", "CSC_ME_M1_CR6_LV_MRTN",
+                               "CSC_ME_M1_CR7_LV_MRTN", "CSC_ME_M1_CR8_LV_MRTN", "CSC_ME_M1_CR9_LV_MRTN",
+                               "CSC_ME_M1_CR10_LV_MRTN","CSC_ME_M1_CR11_LV_MRTN","CSC_ME_M1_CR12_LV_MRTN");
   } 
   if(sConstantName == "CSC_ME_M2_LV_MRTN")
   {
@@ -103,7 +123,7 @@ dyn_string emuLvMRTN_getDynString(string sConstantName)
   }
   if(sConstantName == "CSC_ME_M4_LV_MRTN")
   {
-    dsConstant = makeDynString("CSC_ME_M4_CR1_LV_MRTN","CSC_ME_M4_CR2_LV_MRTN");                                  
+    dsConstant = makeDynString("CSC_ME_M4_CR1_LV_MRTN","CSC_ME_M4_CR2_LV_MRTN", "CSC_ME_M4_CR3_LV_MRTN","CSC_ME_M4_CR4_LV_MRTN");                                  
   } 
   if(sConstantName == "CSC_ME_P1_LV_MRTN")
   {
@@ -175,8 +195,8 @@ dyn_dyn_int emuLvMRTN_getDynDynInt(string sConstantName)
   { 
        ddiConstant[1] = makeDynInt(1, 2, 3, 10, 11, 12, 13, 14, 19, 20, 21, 24); // MRTN at CAN4
        ddiConstant[2] = makeDynInt(4, 5, 6, 7,  8,  9,  15, 16, 17, 18, 22, 23); // MRTN at CAN5
-       ddiConstant[3] = makeDynInt(21,22,27,28,29,30,35,36,38);    // MRTN at CAN6
-       ddiConstant[4] = makeDynInt(23,24,25,26,31,32,33,34,37);    // MRTN at CAN7
+       ddiConstant[3] = makeDynInt(31, 32, 33, 40, 41, 42, 43, 44, 49, 50, 51, 54);    // MRTN at CAN6
+       ddiConstant[4] = makeDynInt(34, 35, 36, 37, 38, 39, 45, 46, 47, 48, 52, 53);    // MRTN at CAN7
   } 
  if(sConstantName == "MRTN_CrateID_B904") 
   { 
@@ -189,26 +209,33 @@ mapping emuLvMRTN_getMapping(string sConstantName)
   mapping mConstant;
   if(sConstantName == "MRTN_Crate_Node_Label_P5")
   {
-              mConstant["CSC_ME_M4_CR1_LV_MRTN"] = "ME_M4_CR1_LV_MRTN/Id 37";
-              mConstant["CSC_ME_M4_CR2_LV_MRTN"] = "ME_M4_CR2_LV_MRTN/Id 38";              
+              mConstant["CSC_ME_M4_CR1_LV_MRTN"] = "ME_M4_CR1_LV_MRTN/Id 51";
+              mConstant["CSC_ME_M4_CR2_LV_MRTN"] = "ME_M4_CR2_LV_MRTN/Id 52";
+              mConstant["CSC_ME_M4_CR3_LV_MRTN"] = "ME_M4_CR3_LV_MRTN/Id 53";       
+              mConstant["CSC_ME_M4_CR4_LV_MRTN"] = "ME_M4_CR4_LV_MRTN/Id 54";       
               
-              mConstant["CSC_ME_M2_CR1_LV_MRTN"] = "ME_M2_CR1_LV_MRTN/Id 29";
-              mConstant["CSC_ME_M2_CR2_LV_MRTN"] = "ME_M2_CR2_LV_MRTN/Id 30";
-              mConstant["CSC_ME_M2_CR3_LV_MRTN"] = "ME_M2_CR3_LV_MRTN/Id 32";
-              mConstant["CSC_ME_M2_CR4_LV_MRTN"] = "ME_M2_CR4_LV_MRTN/Id 31";
-              mConstant["CSC_ME_M2_CR5_LV_MRTN"] = "ME_M2_CR5_LV_MRTN/Id 34";
-              mConstant["CSC_ME_M2_CR6_LV_MRTN"] = "ME_M2_CR6_LV_MRTN/Id 33";
-              mConstant["CSC_ME_M2_CR7_LV_MRTN"] = "ME_M2_CR7_LV_MRTN/Id 35";
-              mConstant["CSC_ME_M2_CR8_LV_MRTN"] = "ME_M2_CR8_LV_MRTN/Id 36";
-                            
-              mConstant["CSC_ME_M1_CR1_LV_MRTN"] = "ME_M1_CR1_LV_MRTN/Id 21";
-              mConstant["CSC_ME_M1_CR2_LV_MRTN"] = "ME_M1_CR2_LV_MRTN/Id 22";
-              mConstant["CSC_ME_M1_CR3_LV_MRTN"] = "ME_M1_CR3_LV_MRTN/Id 24";
-              mConstant["CSC_ME_M1_CR4_LV_MRTN"] = "ME_M1_CR4_LV_MRTN/Id 23";
-              mConstant["CSC_ME_M1_CR5_LV_MRTN"] = "ME_M1_CR5_LV_MRTN/Id 26";
-              mConstant["CSC_ME_M1_CR6_LV_MRTN"] = "ME_M1_CR6_LV_MRTN/Id 25";
-              mConstant["CSC_ME_M1_CR7_LV_MRTN"] = "ME_M1_CR7_LV_MRTN/Id 27";
-              mConstant["CSC_ME_M1_CR8_LV_MRTN"] = "ME_M1_CR8_LV_MRTN/Id 28";
+              mConstant["CSC_ME_M2_CR1_LV_MRTN"] = "ME_M2_CR1_LV_MRTN/Id 43";
+              mConstant["CSC_ME_M2_CR2_LV_MRTN"] = "ME_M2_CR2_LV_MRTN/Id 44";
+              mConstant["CSC_ME_M2_CR3_LV_MRTN"] = "ME_M2_CR3_LV_MRTN/Id 45";
+              mConstant["CSC_ME_M2_CR4_LV_MRTN"] = "ME_M2_CR4_LV_MRTN/Id 46";
+              mConstant["CSC_ME_M2_CR5_LV_MRTN"] = "ME_M2_CR5_LV_MRTN/Id 47";
+              mConstant["CSC_ME_M2_CR6_LV_MRTN"] = "ME_M2_CR6_LV_MRTN/Id 48";
+              mConstant["CSC_ME_M2_CR7_LV_MRTN"] = "ME_M2_CR7_LV_MRTN/Id 49";
+              mConstant["CSC_ME_M2_CR8_LV_MRTN"] = "ME_M2_CR8_LV_MRTN/Id 50";
+              
+              mConstant["CSC_ME_M1_CR1_LV_MRTN"] = "ME_M1_CR1_LV_MRTN/Id 31";
+              mConstant["CSC_ME_M1_CR2_LV_MRTN"] = "ME_M1_CR2_LV_MRTN/Id 32";
+              mConstant["CSC_ME_M1_CR3_LV_MRTN"] = "ME_M1_CR3_LV_MRTN/Id 33";
+              mConstant["CSC_ME_M1_CR4_LV_MRTN"] = "ME_M1_CR4_LV_MRTN/Id 34";
+              mConstant["CSC_ME_M1_CR5_LV_MRTN"] = "ME_M1_CR5_LV_MRTN/Id 35";
+              mConstant["CSC_ME_M1_CR6_LV_MRTN"] = "ME_M1_CR6_LV_MRTN/Id 36";
+              mConstant["CSC_ME_M1_CR7_LV_MRTN"] = "ME_M1_CR7_LV_MRTN/Id 37";
+              mConstant["CSC_ME_M1_CR8_LV_MRTN"] = "ME_M1_CR8_LV_MRTN/Id 38";              
+              mConstant["CSC_ME_M1_CR9_LV_MRTN"] = "ME_M1_CR9_LV_MRTN/Id 39";              
+              mConstant["CSC_ME_M1_CR10_LV_MRTN"] = "ME_M1_CR10_LV_MRTN/Id 40";              
+              mConstant["CSC_ME_M1_CR11_LV_MRTN"] = "ME_M1_CR11_LV_MRTN/Id 41";              
+              mConstant["CSC_ME_M1_CR12_LV_MRTN"] = "ME_M1_CR12_LV_MRTN/Id 42";                 
+              
               
               mConstant["CSC_ME_P4_CR1_LV_MRTN"] = "ME_P4_CR1_LV_MRTN/Id 21";
               mConstant["CSC_ME_P4_CR2_LV_MRTN"] = "ME_P4_CR2_LV_MRTN/Id 22";
@@ -239,26 +266,33 @@ mapping emuLvMRTN_getMapping(string sConstantName)
   }
   if(sConstantName == "MRTN_Crate_Node_Name_P5")
   {
-              mConstant["CSC_ME_M4_CR1_LV_MRTN"] = "Wiener/CAN7/Crate37";
-              mConstant["CSC_ME_M4_CR2_LV_MRTN"] = "Wiener/CAN6/Crate38";              
+              mConstant["CSC_ME_M4_CR1_LV_MRTN"] = "Wiener/CAN6/Crate51";
+              mConstant["CSC_ME_M4_CR2_LV_MRTN"] = "Wiener/CAN7/Crate52";
+              mConstant["CSC_ME_M4_CR3_LV_MRTN"] = "Wiener/CAN7/Crate53";       
+              mConstant["CSC_ME_M4_CR4_LV_MRTN"] = "Wiener/CAN6/Crate54";
               
-              mConstant["CSC_ME_M2_CR1_LV_MRTN"] = "Wiener/CAN6/Crate29";
-              mConstant["CSC_ME_M2_CR2_LV_MRTN"] = "Wiener/CAN6/Crate30";
-              mConstant["CSC_ME_M2_CR3_LV_MRTN"] = "Wiener/CAN7/Crate32";
-              mConstant["CSC_ME_M2_CR4_LV_MRTN"] = "Wiener/CAN7/Crate31";
-              mConstant["CSC_ME_M2_CR5_LV_MRTN"] = "Wiener/CAN7/Crate34";
-              mConstant["CSC_ME_M2_CR6_LV_MRTN"] = "Wiener/CAN7/Crate33";
-              mConstant["CSC_ME_M2_CR7_LV_MRTN"] = "Wiener/CAN6/Crate35";
-              mConstant["CSC_ME_M2_CR8_LV_MRTN"] = "Wiener/CAN6/Crate36";
-                            
-              mConstant["CSC_ME_M1_CR1_LV_MRTN"] = "Wiener/CAN6/Crate21";
-              mConstant["CSC_ME_M1_CR2_LV_MRTN"] = "Wiener/CAN6/Crate22";
-              mConstant["CSC_ME_M1_CR3_LV_MRTN"] = "Wiener/CAN7/Crate24";
-              mConstant["CSC_ME_M1_CR4_LV_MRTN"] = "Wiener/CAN7/Crate23";
-              mConstant["CSC_ME_M1_CR5_LV_MRTN"] = "Wiener/CAN7/Crate26";
-              mConstant["CSC_ME_M1_CR6_LV_MRTN"] = "Wiener/CAN7/Crate25";
-              mConstant["CSC_ME_M1_CR7_LV_MRTN"] = "Wiener/CAN6/Crate27";
-              mConstant["CSC_ME_M1_CR8_LV_MRTN"] = "Wiener/CAN6/Crate28";
+              mConstant["CSC_ME_M2_CR1_LV_MRTN"] = "Wiener/CAN6/Crate43";
+              mConstant["CSC_ME_M2_CR2_LV_MRTN"] = "Wiener/CAN6/Crate44";
+              mConstant["CSC_ME_M2_CR3_LV_MRTN"] = "Wiener/CAN7/Crate45";
+              mConstant["CSC_ME_M2_CR4_LV_MRTN"] = "Wiener/CAN7/Crate46";
+              mConstant["CSC_ME_M2_CR5_LV_MRTN"] = "Wiener/CAN7/Crate47";
+              mConstant["CSC_ME_M2_CR6_LV_MRTN"] = "Wiener/CAN7/Crate48";
+              mConstant["CSC_ME_M2_CR7_LV_MRTN"] = "Wiener/CAN6/Crate49";
+              mConstant["CSC_ME_M2_CR8_LV_MRTN"] = "Wiener/CAN6/Crate50";
+              
+              mConstant["CSC_ME_M1_CR1_LV_MRTN"] = "Wiener/CAN6/Crate31";
+              mConstant["CSC_ME_M1_CR2_LV_MRTN"] = "Wiener/CAN6/Crate32";
+              mConstant["CSC_ME_M1_CR3_LV_MRTN"] = "Wiener/CAN6/Crate33";
+              mConstant["CSC_ME_M1_CR4_LV_MRTN"] = "Wiener/CAN7/Crate34";
+              mConstant["CSC_ME_M1_CR5_LV_MRTN"] = "Wiener/CAN7/Crate35";
+              mConstant["CSC_ME_M1_CR6_LV_MRTN"] = "Wiener/CAN7/Crate36";
+              mConstant["CSC_ME_M1_CR7_LV_MRTN"] = "Wiener/CAN7/Crate37";
+              mConstant["CSC_ME_M1_CR8_LV_MRTN"] = "Wiener/CAN7/Crate38";              
+              mConstant["CSC_ME_M1_CR9_LV_MRTN"] = "Wiener/CAN7/Crate39";              
+              mConstant["CSC_ME_M1_CR10_LV_MRTN"] = "Wiener/CAN6/Crate40";              
+              mConstant["CSC_ME_M1_CR11_LV_MRTN"] = "Wiener/CAN6/Crate41";              
+              mConstant["CSC_ME_M1_CR12_LV_MRTN"] = "Wiener/CAN6/Crate42";              
+
               
               mConstant["CSC_ME_P4_CR1_LV_MRTN"] = "Wiener/CAN4/Crate21";
               mConstant["CSC_ME_P4_CR2_LV_MRTN"] = "Wiener/CAN5/Crate22";
@@ -299,8 +333,8 @@ dyn_dyn_string emuLvMRTN_getDynDynString(string sConstantName)
   { 
     ddsConstant[1] = makeDynString("Crate1", "Crate2", "Crate3", "Crate10", "Crate11", "Crate12", "Crate13", "Crate14", "Crate19", "Crate20", "Crate21", "Crate24"); // MRTN at CAN4
     ddsConstant[2] = makeDynString("Crate4", "Crate5", "Crate6", "Crate7",  "Crate8",  "Crate9",  "Crate15", "Crate16", "Crate17", "Crate18", "Crate22", "Crate23"); // MRTN at CAN5
-    ddsConstant[3] = makeDynString("Crate21","Crate22","Crate27","Crate28","Crate29","Crate30","Crate35","Crate36","Crate38");           // MRTN at CAN6
-    ddsConstant[4] = makeDynString("Crate23","Crate24","Crate25","Crate26","Crate31","Crate32","Crate33","Crate34","Crate37");           // MRTN at CAN7
+    ddsConstant[3] = makeDynString("Crate31", "Crate32", "Crate33", "Crate40", "Crate41", "Crate42", "Crate43", "Crate44", "Crate49", "Crate50", "Crate51", "Crate54"); // MRTN at CAN6
+    ddsConstant[4] = makeDynString("Crate34", "Crate35", "Crate36", "Crate37",  "Crate38",  "Crate39",  "Crate45", "Crate46", "Crate47", "Crate48", "Crate52", "Crate53"); // MRTN at CAN7
   } 
  if(sConstantName == "MRTN_Crate_B904") 
   { 
