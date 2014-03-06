@@ -41,7 +41,7 @@ void drawMaratons() {
     int x = getVerticalLinePosX(side + disk);
     int y = topY + ((EMUUI_MARATONS_HEIGHT - 1) * (crateNum - 1));
 
-    if ((side == \"P\") && (station == 1)) {
+    if (station == 1) {
       size = EMUUI_MARATONS_HEIGHT_ME11;
       y = topY + ((EMUUI_MARATONS_HEIGHT_ME11 - 1) * (crateNum - 1));
     }
