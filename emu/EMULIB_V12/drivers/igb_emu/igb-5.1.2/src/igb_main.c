@@ -8029,13 +8029,13 @@ static bool igb_clean_rx_irq(struct igb_q_vector *q_vector, int budget)
 		else
 #endif
 		  {
-		    if      (strcmp(netdev_ring(rx_ring)->name,"eth2")==0){
+		    if      (strcmp(netdev_ring(rx_ring)->name,"p1p1")==0){
 		      netif_rx_hook_2(skb);
-		    }else if(strcmp(netdev_ring(rx_ring)->name,"eth3")==0){
+		    }else if(strcmp(netdev_ring(rx_ring)->name,"p1p2")==0){
 		      netif_rx_hook_3(skb);
-		    }else if(strcmp(netdev_ring(rx_ring)->name,"eth4")==0){
+		    }else if(strcmp(netdev_ring(rx_ring)->name,"p2p1")==0){
 		      netif_rx_hook_4(skb);
-		    }else if(strcmp(netdev_ring(rx_ring)->name,"eth5")==0){
+		    }else if(strcmp(netdev_ring(rx_ring)->name,"p2p2")==0){
 		      netif_rx_hook_5(skb);
 		    }else{
 #ifdef HAVE_VLAN_RX_REGISTER
