@@ -707,8 +707,78 @@ void EmuPeripheralCrateConfig::CFEBStatus(xgi::Input * in, xgi::Output * out )
   // section for DCFEB only
   if(ndcfebs>0)
   {
+     unsigned short dcfeb_par[7][6];
+     std::string color[7][6];
+     std::vector<std::string> parname;
+     parname.clear();
+     parname.push_back("comp mode");
+     parname.push_back("comp timing");
+     parname.push_back("comp clock phase");
+     parname.push_back("sample clock phase");
+     parname.push_back("pipeline depth");
+     parname.push_back("number of samples");
+
+     *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;");
+     *out << std::endl;
+     //
+     *out << cgicc::legend("DCFEB Virtex-6 Parameters").set("style","color:blue") << std::endl ;
+     *out << cgicc::table().set("border","1");
+     *out <<cgicc::td() << "Channel" << cgicc::td();
+     for(CFEBItr cfebItr = cfebs.begin(); cfebItr != cfebs.end(); ++cfebItr)
+     {
+       unsigned i = cfebItr - cfebs.begin();
+       char wrd[2];
+       *out << cgicc::td() << "CFEB " << (cfebItr - cfebs.begin() + 1) << cgicc::td();
+       thisDMB->write_cfeb_selector(cfebItr->SelectorBit());
+
+       thisDMB->autoload_select_readback_wrd(*cfebItr,2);
+       thisDMB->autoload_readback_wrd(*cfebItr,wrd);
+       dcfeb_par[i][0] = wrd[0] & 0x3;
+       dcfeb_par[i][1] = (wrd[0] & 0xc) >> 2;
+
+       thisDMB->autoload_select_readback_wrd(*cfebItr,10);
+       thisDMB->autoload_readback_wrd(*cfebItr,wrd);
+       dcfeb_par[i][2] = wrd[0];
+
+       thisDMB->autoload_select_readback_wrd(*cfebItr,11);
+       thisDMB->autoload_readback_wrd(*cfebItr,wrd);
+       dcfeb_par[i][3] = wrd[0];
+
+       thisDMB->autoload_select_readback_wrd(*cfebItr,6);
+       thisDMB->autoload_readback_wrd(*cfebItr,wrd);
+       dcfeb_par[i][4] = wrd[0];
+
+       thisDMB->autoload_select_readback_wrd(*cfebItr,8);
+       thisDMB->autoload_readback_wrd(*cfebItr,wrd);
+       dcfeb_par[i][5] = wrd[0];
+
+       color[i][0] = dcfeb_par[i][0] == thisDMB->GetCompModeCfeb(i) ? "green" : "red";
+       color[i][1] = dcfeb_par[i][1] == thisDMB->GetCompTimingCfeb(i) ? "green" : "red";
+       color[i][2] = dcfeb_par[i][2] == thisDMB->GetCompClockPhaseCfeb(i) ? "green" : "red";
+       color[i][3] = dcfeb_par[i][3] == thisDMB->GetADCSampleClockPhaseCfeb(i) ? "green" : "red";
+       color[i][4] = dcfeb_par[i][4] == cfebItr->GetPipelineDepth() ? "green" : "red";
+       color[i][5] = dcfeb_par[i][5] == thisDMB->GetNSamplesCfeb(i) ? "green" : "red";
+     }
+     *out << cgicc::tr() << cgicc::tr() << std::endl;
+     for (unsigned par=0; par<6; par++)
+     {
+       *out << cgicc::td() << parname[par] << cgicc::td();
+       for(CFEBItr cfebItr = cfebs.begin(); cfebItr != cfebs.end(); ++cfebItr)
+       {
+         unsigned i = cfebItr - cfebs.begin ();
+         *out << cgicc::td() << cgicc::span().set("style","color:"+color[i][par]);
+         *out << ((int) dcfeb_par[i][par]);
+         *out << cgicc::span() << cgicc::td();
+       }
+       *out << cgicc::tr() << cgicc::tr() << std::endl;
+     }
+     *out << cgicc::table() << cgicc::fieldset() << std::endl;
+     //
      double monitor_dcfebs[200];
      for(unsigned c=0; c<200; c++) monitor_dcfebs[c] = -1.0;
+     int monitor_dcfebs_alert[200];
+     for(unsigned c=0; c<200; c++) monitor_dcfebs_alert[c] = -1;
+     
      std::vector<std::string> chname;
      chname.clear();
      chname.push_back("Temp(FPGA) (C)");
@@ -733,6 +803,7 @@ void EmuPeripheralCrateConfig::CFEBStatus(xgi::Input * in, xgi::Output * out )
      chname.push_back("Temp(PCB 1) (C)");
      chname.push_back("Temp(PCB 2) (C)");
      chname.push_back("Comparator DAC");
+     chname.push_back("QPLL lock lost count");
 
      *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;");
      *out << std::endl;
@@ -746,16 +817,19 @@ void EmuPeripheralCrateConfig::CFEBStatus(xgi::Input * in, xgi::Output * out )
         {
            std::vector<float> mon=thisDMB->dcfeb_fpga_monitor(*cfebItr);
            std::vector<float> dadc=thisDMB->dcfeb_adc(*cfebItr);
-           for (unsigned c=0; c<mon.size() && c<19; c++) monitor_dcfebs[cfeb_index*22+c]=mon[c];
-           monitor_dcfebs[cfeb_index*22+19]=dadc[3];
-           monitor_dcfebs[cfeb_index*22+20]=dadc[4];
-           monitor_dcfebs[cfeb_index*22+21]=dadc[0];
+           unsigned qpllLostCount = thisDMB->dcfeb_qpll_lost_count(*cfebItr);
+           for (unsigned c=0; c<mon.size() && c<19; c++) monitor_dcfebs[cfeb_index*23+c]=mon[c];
+           monitor_dcfebs[cfeb_index*23+19]=dadc[3];
+           monitor_dcfebs[cfeb_index*23+20]=dadc[4];
+           monitor_dcfebs[cfeb_index*23+21]=dadc[0];
+           monitor_dcfebs[cfeb_index*23+22]=qpllLostCount;
+           monitor_dcfebs_alert[cfeb_index*23+22] = (qpllLostCount > 0) ? 1 : 0;
         }
      }
      *out << cgicc::table().set("border","1");
      //
      *out <<cgicc::td() << "Channel" << std::setprecision(3)<< cgicc::td();
-     for(int ch=0; ch<23; ch++)
+     for(int ch=0; ch<24; ch++)
      {
        if(ch) *out << cgicc::td() << chname[ch-1] << cgicc::td();
        for(int feb=0; feb<7; feb++)
@@ -763,7 +837,11 @@ void EmuPeripheralCrateConfig::CFEBStatus(xgi::Input * in, xgi::Output * out )
           if(ch==0) *out << cgicc::td() << "CFEB " << feb+1 << cgicc::td();
           else
           {   *out << cgicc::td();
-              if( monitor_dcfebs[feb*22+ch-1]>=0.) *out << monitor_dcfebs[feb*22+ch-1];
+              std::string color = "";
+              if( monitor_dcfebs_alert[feb*23+ch-1] >= 0) color = monitor_dcfebs_alert[feb*23+ch-1] ? "red" : "green";
+              if (!color.empty()) *out << cgicc::span().set("style", "color:" + color);
+              if( monitor_dcfebs[feb*23+ch-1]>=0.) *out << monitor_dcfebs[feb*23+ch-1];
+              if (!color.empty()) *out << cgicc::span();
               *out << cgicc::td();
           }
        }
@@ -919,6 +997,17 @@ void EmuPeripheralCrateConfig::CFEBUtils(xgi::Input * in, xgi::Output * out )
   *out << cgicc::fieldset()<< cgicc::br() << std::endl;
   //
   *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;") << std::endl;
+  *out << cgicc::legend("DCFEB Configuration").set("style","color:blue") << std::endl ;
+
+        std::string ConfigDCFEBs = toolbox::toString("/%s/ConfigDCFEBs",getApplicationDescriptor()->getURN().c_str());
+        *out << cgicc::form().set("method","GET").set("action",ConfigDCFEBs) << std::endl ;
+        *out << cgicc::input().set("type","hidden").set("name","dmb").set("value",dmbstring) << std::endl ;          
+        *out << cgicc::input().set("type","submit").set("value","Configure All DCFEBs") << std::endl ;
+        *out << cgicc::form() << std::endl ; 
+
+  *out << cgicc::fieldset()<< cgicc::br() << std::endl;
+
+  *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;") << std::endl;
   *out << cgicc::legend("DCFEB Firmware").set("style","color:blue") << std::endl ;
   //
   std::string CFEBreadfirm =
@@ -973,7 +1062,7 @@ void EmuPeripheralCrateConfig::CFEBUtils(xgi::Input * in, xgi::Output * out )
   *out << cgicc::input().set("type","hidden").set("name","dmb").set("value",dmbstring) << std::endl ;          
   *out << cgicc::input().set("type", "submit")
     .set("name", "command")
-    .set("value", "Program EPROM") << std::endl;
+    .set("value", "Program DCFEB EPROM") << std::endl;
   *out << cgicc::form() << FirmwareDir_+"cfeb/me11_dcfeb.mcs" << cgicc::br() << cgicc::hr() << std::endl;
   
   std::string CFEBwritefirmall =
@@ -983,7 +1072,7 @@ void EmuPeripheralCrateConfig::CFEBUtils(xgi::Input * in, xgi::Output * out )
   *out << cgicc::input().set("type","hidden").set("name","dmb").set("value",dmbstring) << std::endl ;          
   *out << cgicc::input().set("type", "submit")
     .set("name", "command")
-    .set("value", "Broadcast Program EPROM - All CFEBs") << std::endl;
+    .set("value", "Broadcast Program EPROM - All DCFEBs") << std::endl;
   *out << cgicc::form() << FirmwareDir_+"cfeb/me11_dcfeb.mcs" << cgicc::br() << cgicc::hr() << std::endl;
   
   std::string CFEBprogfpga =
@@ -1011,9 +1100,19 @@ void EmuPeripheralCrateConfig::CFEBUtils(xgi::Input * in, xgi::Output * out )
   *out << cgicc::input().set("type","hidden").set("name","dmb").set("value",dmbstring) << std::endl ;          
   *out << cgicc::input().set("type", "submit")
     .set("name", "command")
-    .set("value", "Program FPGA") << std::endl;
-  *out << cgicc::form() << FirmwareDir_+"cfeb/me11_dcfeb.mcs"  << cgicc::br() << std::endl;
+    .set("value", "Program DCFEB FPGA") << std::endl;
+  *out << cgicc::form() << FirmwareDir_+"cfeb/me11_dcfeb.mcs"  << cgicc::br() << cgicc::hr() << std::endl;
     //
+  std::string CFEBprogfpgaall =
+      toolbox::toString("/%s/DCFEBProgramFpgaAll",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("action", CFEBprogfpgaall) << std::endl;
+  
+  *out << cgicc::input().set("type","hidden").set("name","dmb").set("value",dmbstring) << std::endl ;          
+  *out << cgicc::input().set("type", "submit")
+    .set("name", "command")
+    .set("value", "Program FPGA on all DCFEBs (broadcast)") << std::endl;
+  *out << cgicc::form() << FirmwareDir_+"cfeb/me11_dcfeb.mcs" << cgicc::br() << cgicc::hr() << std::endl;
+  //
   *out << cgicc::fieldset()<< cgicc::br() << std::endl;
   //
 
@@ -1146,6 +1245,39 @@ void EmuPeripheralCrateConfig::DCFEBReadFirmware(xgi::Input * in, xgi::Output * 
                     
 }
   
+void EmuPeripheralCrateConfig::DCFEBProgramFpgaAll(xgi::Input * in, xgi::Output * out )
+  throw (xgi::exception::Exception)
+{
+    cgicc::Cgicc cgi(in);
+    
+    cgicc::form_iterator name = cgi.getElement("dmb");
+    int dmb=0;
+    if(name != cgi.getElements().end()) {
+        dmb = cgi["dmb"]->getIntegerValue();
+        std::cout << "DMB " << dmb << std::endl;
+        DMB_ = dmb;
+    } else {
+        std::cout << "Not dmb" << std::endl ;
+        dmb = DMB_;
+    }
+
+    std::string mcsfile= FirmwareDir_+ "cfeb/me11_dcfeb.mcs";
+    std::cout << getLocalDateTime() << " Programming FPGA on all DCFEBs via broadcast on DMB " << dmb << std::endl;
+    std::cout << "Using mcs file: " << mcsfile << std::endl;
+    
+    DAQMB * thisDMB = dmbVector[dmb];
+    std::vector<CFEB> cfebs = thisDMB->cfebs();
+/*
+    for(std::vector<CFEB>::iterator cfeb = cfebs.begin(); cfeb != cfebs.end(); cfeb++) {
+        std::cout << getLocalDateTime() << " Programming DCFEB FPGA on DMB " << dmb << " DCFEB " << cfeb->number()+1 << std::endl;
+        thisDMB->dcfeb_program_virtex6(*cfeb, mcsfile.c_str());
+        sleep(1);
+    }
+*/
+    thisDMB->dcfeb_program_virtex6(cfebs[0], mcsfile.c_str(), 1); // broadcast
+    std::cout << getLocalDateTime() << " Finished programming all DCFEB FPGAs." << std::endl;
+    this->CFEBUtils(in,out);
+}
 
 void EmuPeripheralCrateConfig::DCFEBProgramFpga(xgi::Input * in, xgi::Output * out )
   throw (xgi::exception::Exception)
@@ -1781,6 +1913,15 @@ else if(D_hversion==2)
      *out << cgicc::input().set("type","hidden").set("value",buf).set("name","dmb");
      *out << FirmwareDir_+"odmb/me11_odmb.mcs";
      *out << cgicc::form() << std::endl ;
+     *out << cgicc::br();
+     //
+     std::string ODMBLoadFirmwarePoll = toolbox::toString("/%s/ODMBLoadFirmwarePoll",getApplicationDescriptor()->getURN().c_str());
+     *out << cgicc::form().set("method","GET").set("action",ODMBLoadFirmwarePoll) << std::endl ;
+     *out << cgicc::input().set("type","submit").set("value","ODMB Program EPROM by Polling BPI") << std::endl ;
+     sprintf(buf,"%d",dmb);
+     *out << cgicc::input().set("type","hidden").set("value",buf).set("name","dmb");
+     *out << FirmwareDir_+"odmb/me11_odmb.mcs";
+     *out << cgicc::form() << std::endl ;
      //
      *out << cgicc::br() <<cgicc::hr() << std::endl;
      *out << "Use this one ONLY if power-cycle failed to recover the FPGA:" << cgicc::br()<< std::endl;
@@ -1933,6 +2074,46 @@ void EmuPeripheralCrateConfig::DMBLoadFirmware(xgi::Input * in, xgi::Output * ou
      
        std::cout << getLocalDateTime() << " ODMB program EPROM finished." << std::endl;
 
+    }
+  }
+  //
+  this->DMBUtils(in,out);
+  //
+}
+//
+//
+void EmuPeripheralCrateConfig::ODMBLoadFirmwarePoll(xgi::Input * in, xgi::Output * out ) 
+  throw (xgi::exception::Exception) {
+  //
+  cgicc::Cgicc cgi(in);
+  //
+  cgicc::form_iterator name = cgi.getElement("dmb");
+  //
+  int dmb=0;
+  if(name != cgi.getElements().end()) {
+    dmb = cgi["dmb"]->getIntegerValue();
+    std::cout << "ODMBLoadFirmwarePoll:  DMB " << dmb << std::endl;
+    DMB_ = dmb;
+  }
+  //
+  DAQMB * thisDMB = dmbVector[dmb];
+  //
+  if (thisDMB) 
+  {
+   
+    int hversion=thisDMB->GetHardwareVersion();
+    if(hversion==2)
+    {
+       std::string mcsfile= FirmwareDir_+ "odmb/me11_odmb.mcs";
+                
+       std::cout << getLocalDateTime() << " ODMB program EPROM by Polling BPI status in slot " << thisDMB->slot() << std::endl;
+       std::cout << "Use mcs file: " << mcsfile << std::endl;
+
+       bool success=thisDMB->odmb_program_eprom_poll(mcsfile.c_str());
+       if(success)     
+          std::cout << getLocalDateTime() << " ODMB program EPROM finished successfully." << std::endl;
+       else
+           std::cout << getLocalDateTime() << " ODMB program EPROM failed." << std::endl;
     }
   }
   //
@@ -2722,6 +2903,21 @@ void EmuPeripheralCrateConfig::DMBStatus(xgi::Input * in, xgi::Output * out )
         *out << buf << cgicc::span();
     }
      *out << cgicc::br();
+     int qpll_state=thisDMB->read_qpll_state();
+     sprintf(buf,"ODMB QPLL lock state  : %04X ",qpll_state);
+     if ( qpll_state ) 
+     {
+        *out << cgicc::span().set("style","color:green");
+        *out << buf << " ...OK...";
+        *out << cgicc::span();
+     } else 
+     {
+        *out << cgicc::span().set("style","color:red");
+        *out << buf;
+        *out << "--->> BAD <<--- should be 1";
+        *out << cgicc::span();
+    }
+    *out  << std::endl;
      int idcode=thisDMB->mbfpgaid();
      sprintf(buf,"ODMB fpga ID Code     : %08X ",idcode);
      if ( (idcode&0xFFFFFFF)==(0x8424A093&0xFFFFFFF) ) 
@@ -2738,6 +2934,9 @@ void EmuPeripheralCrateConfig::DMBStatus(xgi::Input * in, xgi::Output * out )
     }
      *out << cgicc::br();
      sprintf(buf,"ODMB fpga User Code   : %08X ", (int)thisDMB->mbfpgauser());
+     *out << buf << std::endl;
+     int unique_id=thisDMB->read_odmb_id();     
+     sprintf(buf,"ODMB unique id        : %04X ", unique_id);
      *out << buf << std::endl;
      // ODMB Control
      // DCFEB Control
@@ -3429,6 +3628,43 @@ xoap::MessageReference EmuPeripheralCrateConfig::LoadAllCfebPromUserid (xoap::Me
 
   return createReply(message);
 }
+
+void EmuPeripheralCrateConfig::ConfigDCFEBs(xgi::Input * in, xgi::Output * out ) 
+    throw (xgi::exception::Exception)
+{
+  std::cout << "Button: ConfigDCFEBs" << std::endl;
+
+  cgicc::Cgicc cgi(in);
+
+  cgicc::form_iterator name = cgi.getElement("dmb");
+  int dmb=0;
+  if(name != cgi.getElements().end()) {
+    dmb = cgi["dmb"]->getIntegerValue();
+    std::cout << "DMB " << dmb << std::endl;
+    DMB_ = dmb;
+  } else {
+    std::cout << "Not dmb" << std::endl ;
+    dmb = DMB_;
+  }
+  //
+  DAQMB * thisDMB = dmbVector[dmb];
+
+     std::vector<CFEB> cfebs = thisDMB->cfebs() ;
+
+     unsigned short int bufload[34];
+     for(std::vector<CFEB>::iterator cfeb = cfebs.begin(); cfeb != cfebs.end(); cfeb++)
+     {
+         if(cfeb->GetHardwareVersion() == 2)
+         {
+              std::cout << "writing parameters to DCFEB " << (cfeb - cfebs.begin () + 1) << "..." << std::endl;
+              thisDMB->set_dcfeb_parambuffer(*cfeb, bufload);
+              thisDMB->write_cfeb_selector(cfeb->SelectorBit());
+              thisDMB->dcfeb_loadparam(3, 34, bufload);
+         }
+     }
+     this->CFEBUtils(in,out);
+}
+
 
  }  // namespace emu::pc
 }  // namespace emu

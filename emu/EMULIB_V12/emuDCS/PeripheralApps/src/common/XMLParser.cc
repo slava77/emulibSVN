@@ -281,6 +281,10 @@ void XMLParser::MPCParser(xercesc::DOMNode * pNode, Crate * theCrate)
     mpc_->SetTMBDelays(value);
   }
 
+  if ( fillInt("mpc_tmb_mask",value) ) {
+    mpc_->SetMPCTMBMask(value);
+  }
+
   if ( fillInt("mpc_firmware_year",value) ) {
     mpc_->SetExpectedFirmwareYear(value);
   }
@@ -757,18 +761,18 @@ void XMLParser::DAQMBParser(xercesc::DOMNode * pNode, Crate * theCrate, Chamber 
 //     if ( fillInt("feb_dav_delay", delay)){
 //       daqmb_->SetFebDavDelay(delay);
 //     }
-//     if ( fillInt("tmb_dav_delay", delay) ){
-//       daqmb_->SetTmbDavDelay(delay);
-//     }
-//     if (fillInt("push_dav_delay", delay)){
-//       daqmb_->SetPushDavDelay(delay);
-//     }
-//     if(fillInt("l1acc_dav_delay", delay)){
-//       daqmb_->SetL1aDavDelay(delay);
-//     }
-//     if(fillInt("ALCT_dav_delay", delay)){
-//       daqmb_->SetAlctDavDelay(delay);
-//     }
+     if ( fillInt("tmb_dav_delay", delay) ){
+       daqmb_->SetTmbDavDelay(delay);
+     }
+     if (fillInt("push_dav_delay", delay)){
+       daqmb_->SetPushDavDelay(delay);
+     }
+     if(fillInt("l1acc_dav_delay", delay)){
+       daqmb_->SetL1aDavDelay(delay);
+     }
+     if(fillInt("alct_dav_delay", delay)){
+       daqmb_->SetAlctDavDelay(delay);
+     }
     if(fillInt("lvdb7_mapping", ivalue)){
       daqmb_->SetLVDBMapping(ivalue);
     }
@@ -796,20 +800,20 @@ void XMLParser::DAQMBParser(xercesc::DOMNode * pNode, Crate * theCrate, Chamber 
     }
     if(fillFloat("set_comp_thresh", value)){
       daqmb_->SetCompThresh(value);
-      for(int cfeb=0; cfeb<5; cfeb++) daqmb_->SetCompThresholdsCfeb(cfeb,value);
+      for(int cfeb=0; cfeb<7; cfeb++) daqmb_->SetCompThresholdsCfeb(cfeb,value);
     }
     int mode;
     if(fillInt("comp_mode", mode)){
       daqmb_->SetCompMode(mode);
-      for(int cfeb=0; cfeb<5; cfeb++) daqmb_->SetCompModeCfeb(cfeb,mode);
+      for(int cfeb=0; cfeb<7; cfeb++) daqmb_->SetCompModeCfeb(cfeb,mode);
     }
     if(fillInt("comp_timing", delay)){
       daqmb_->SetCompTiming(delay);
-      for(int cfeb=0; cfeb<5; cfeb++) daqmb_->SetCompTimingCfeb(cfeb,delay);
+      for(int cfeb=0; cfeb<7; cfeb++) daqmb_->SetCompTimingCfeb(cfeb,delay);
     }
     if(fillInt("pre_block_end", delay)){
       daqmb_->SetPreBlockEnd(delay);
-      for(int cfeb=0; cfeb<5; cfeb++) daqmb_->SetPreBlockEndCfeb(cfeb,delay);
+      for(int cfeb=0; cfeb<7; cfeb++) daqmb_->SetPreBlockEndCfeb(cfeb,delay);
     }
     if (fillInt("cfeb_cable_delay", delay)) {
       daqmb_->SetCfebCableDelay(delay); }
@@ -830,7 +834,7 @@ void XMLParser::DAQMBParser(xercesc::DOMNode * pNode, Crate * theCrate, Chamber 
     }
     if ( fillInt("xLatency",delay)){
       daqmb_->SetxLatency(delay);
-      for (int cfeb=0; cfeb<5; cfeb++) daqmb_->SetL1aExtraCfeb(cfeb,delay);
+      for (int cfeb=0; cfeb<7; cfeb++) daqmb_->SetL1aExtraCfeb(cfeb,delay);
     }
     if (fillInt("xFineLatency",delay)) {
       daqmb_->SetxFineLatency(delay);
@@ -851,6 +855,10 @@ void XMLParser::DAQMBParser(xercesc::DOMNode * pNode, Crate * theCrate, Chamber 
     if (fillInt("dmb_vme_firmware_tag", delay) ) 
       daqmb_->SetExpectedVMEFirmwareTag(delay);
     //
+    if (fillInt("odmb_kill_mask", delay) ) 
+      daqmb_->SetKillInputMask(delay);
+    //
+
     int number=0;   
     int kill_chip[6]={0x0000,0x0000,0x0000,0x0000,0x0000,0x0000};
     
@@ -885,6 +893,18 @@ void XMLParser::DAQMBParser(xercesc::DOMNode * pNode, Crate * theCrate, Chamber 
 //fg
               if(fillInt("hardware_version", ivalue)){
                  cfeb.SetHardwareVersion(ivalue);   
+              }
+
+              if(fillInt("comp_clk_phase", ivalue)){
+                 daqmb_->SetCompClockPhaseCfeb(number,ivalue);
+              }
+
+              if(fillInt("adcsamp_clk_phase", ivalue)){
+                 daqmb_->SetADCSampleClockPhaseCfeb(number,ivalue);
+              }
+
+              if(fillInt("nsample", ivalue)){
+                 daqmb_->SetNSamplesCfeb(number,ivalue);
               }
 
               if(fillInt("pipeline_depth", ivalue)){

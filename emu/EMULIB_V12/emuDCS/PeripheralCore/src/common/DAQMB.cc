@@ -828,12 +828,6 @@ void DAQMB::configure() {
    }
 
    set_and_initalize_pipelines_and_fine_delays();
-   
-   if(hardware_version_==2)
-   {
-   // set delays
-
-   }
 
   // ***  This part is related to the SFM (Serial Flash Memory) ****
    //
@@ -869,7 +863,36 @@ void DAQMB::configure() {
      // Load FLASH memory
      WriteSFM();
    }
+   
+   if(hardware_version_==2)
+   {
+      // set delays
+      odmb_set_LCT_L1A_delay(l1acc_dav_delay_);
+      odmb_set_TMB_delay(tmb_dav_delay_);
+      odmb_set_Push_delay(push_dav_delay_);
+      odmb_set_ALCT_delay(ALCT_dav_delay_);
+      odmb_set_Inj_delay(inject_delay_);
+      odmb_set_Ext_delay(pulse_delay_);
+      odmb_set_Cal_delay(calibration_LCT_delay_);
+      odmb_set_kill_mask(kill_input_mask_);
+      // save configuration to EPROM
+      odmb_save_config();
+   }
 
+// Write DCFEB cofiguration parameters into EPROM
+// ToDo: should readback EPROM first and compare, 
+//       and then write to EPROM only if they are different
+   unsigned short int bufload[34];
+   for(unsigned lfeb=0; lfeb<cfebs_.size();lfeb++)
+   {
+      if(cfebs_[lfeb].GetHardwareVersion() == 2)
+      {
+         set_dcfeb_parambuffer(cfebs_[lfeb], bufload);   
+         write_cfeb_selector(cfebs_[lfeb].SelectorBit());
+         dcfeb_loadparam(3, 34, bufload);
+      }
+   }
+    
 }
 //
 bool DAQMB::checkDAQMBXMLValues() { 
@@ -1101,7 +1124,7 @@ void DAQMB::setcrateid(int dword)
   }
   else if(hardware_version_==2)
   {
-     WriteRegister(ODMB_CRATEID, CRATE_ID);
+     WriteRegister(ODMB_CRATEID, dword);
   }
 }
 //
@@ -7096,7 +7119,7 @@ int DAQMB::DCSreadAll(char *data)
         vme_delay(10);
         n=(j<<4) + 0xFF89;
         write_later(0x8000, n);
-        vme_delay(10);
+        vme_delay(20);
         if( i==7 && j==7) retn=read_now(0x8004, data);
         else read_later(0x8004);
      }
@@ -7636,7 +7659,7 @@ void DAQMB::dcfeb_hub(CFEB & cfeb, int jfunc, int nbit, void *inbuf, char *outbu
 void DAQMB::dcfeb_sys_reset(CFEB & cfeb)
 {
   char buf[4];
-  dcfeb_hub(cfeb, 1, 0, buf, buf, NOW);
+  dcfeb_hub(cfeb, RESET_MODE, 0, buf, buf, NOW);
   return;
 }
 
@@ -7644,7 +7667,7 @@ unsigned DAQMB::dcfeb_read_status(CFEB & cfeb)
 {
   unsigned temp;
   char buf[4]={0,0,0,0};
-  dcfeb_hub(cfeb, 3, 32, buf, (char *)&temp, NOW|READ_YES);
+  dcfeb_hub(cfeb, STATUS_S, 32, buf, (char *)&temp, NOW|READ_YES);
   return temp;
 }
 
@@ -7833,7 +7856,7 @@ void DAQMB::dcfebprom_multi(int cnt, unsigned short *manbuf)
     comd=VTX6_BYPASS;
     tmp=0;
     cfeb_do(10, &comd, 0, &tmp, rcvbuf, NOW);
-    udelay(10);                             
+    udelay(30);                             
     return;
 }
 
@@ -7873,7 +7896,7 @@ void DAQMB::dcfebprom_bufferprogram(unsigned nwords,unsigned short *prm_dat)
     comd=VTX6_BYPASS;
     tmp=0;
     cfeb_do(10, &comd, 0, &tmp, rcvbuf, NOW);
-    udelay(10);
+    udelay(40);
     return;
 }
 
@@ -7987,6 +8010,7 @@ void DAQMB::dcfeb_loadparam(int paramblock, int nwords, unsigned short int  *val
   dcfebprom_loadaddress(uaddr,laddr);
   // lock last block
   dcfebprom_lock();
+  udelay(500000);
   dcfeb_bpi_disable();
   udelay(10);
 }
@@ -8212,8 +8236,8 @@ void DAQMB::dcfeb_program_eprom(CFEB & cfeb, const char *mcsfile, int broadcast)
    // each eprom block has 0x10000 words
    const int BLOCK_SIZE=0x10000; // in words
 
-   // each write call takes 0x800 words
-   const int WRITE_SIZE=0x800;  // in words
+   // each write call takes 0x400 words
+   const int WRITE_SIZE=0x400;  // in words
 
 // 1. read mcs file
    char *bufin;
@@ -8235,6 +8259,19 @@ void DAQMB::dcfeb_program_eprom(CFEB & cfeb, const char *mcsfile, int broadcast)
        std::cout << "ERROR: Wrong MCS file. Quit..." << std::endl;
        free(bufin);
        return;
+   }
+   int tag=0;
+   memcpy(&tag, bufin+0x600000, 4);
+   if( (tag & 0x00F0FFFF)==0x00B0FEDC) 
+   {
+       std::cout << "Firmware tag (DCFEB) verified!" << std::endl;
+   }
+   else
+   {
+       std::cout << "ERROR: Firmware tag (DCFEB) not found in MCS file. Quit..." << std::endl; 
+       free(bufin);
+       return;
+                  
    }
 
    if(broadcast)
@@ -8261,7 +8298,7 @@ void DAQMB::dcfeb_program_eprom(CFEB & cfeb, const char *mcsfile, int broadcast)
       // unlock and erase the block
       dcfebprom_unlockerase();
 
-      udelay(1000000);
+      udelay(2000000);
    }
 
 // 3. write eprom
@@ -8284,7 +8321,7 @@ void DAQMB::dcfeb_program_eprom(CFEB & cfeb, const char *mcsfile, int broadcast)
       // program with new data from the beginning of the block
       dcfebprom_bufferprogram(nwords,bufw+i*WRITE_SIZE);
       udelay(120000);
-      fulladdr += 0x800;
+      fulladdr += WRITE_SIZE;
        j++;
        if(j==p1pct)
        {  pcnts++;
@@ -8298,11 +8335,12 @@ void DAQMB::dcfeb_program_eprom(CFEB & cfeb, const char *mcsfile, int broadcast)
    // printf(" lock address %04x%04x \n",(uaddr&0xFFFF),(laddr&0xFFFF));
    dcfebprom_loadaddress(uaddr,laddr);
    dcfebprom_lock();
+   udelay(100000);
    dcfeb_bpi_disable();
    free(bufin);
 }
 
-void DAQMB::dcfeb_program_virtex6(CFEB & cfeb, const char *mcsfile)
+void DAQMB::dcfeb_program_virtex6(CFEB & cfeb, const char *mcsfile, int broadcast)
 {
    const int FIRMWARE_SIZE=5464972; // in bytes
    char *bufin, c;
@@ -8323,6 +8361,20 @@ void DAQMB::dcfeb_program_virtex6(CFEB & cfeb, const char *mcsfile)
        std::cout << "ERROR: Wrong MCS file. Quit..." << std::endl;
        free(bufin);
        return;
+    
+   }
+   int tag=0;
+   memcpy(&tag, bufin+0x600000, 4);
+   if( (tag & 0x00F0FFFF)==0x00B0FEDC) 
+   {
+       std::cout << "Firmware tag (DCFEB) verified!" << std::endl;
+   }
+   else
+   {
+       std::cout << "ERROR: Firmware tag (DCFEB) not found in MCS file. Quit..." << std::endl; 
+       free(bufin);
+       return;
+                  
    }
 // byte swap
    for(int i=0; i<FIRMWARE_SIZE/2; i++)
@@ -8330,7 +8382,13 @@ void DAQMB::dcfeb_program_virtex6(CFEB & cfeb, const char *mcsfile)
       bufin[i*2]=bufin[i*2+1];
       bufin[i*2+1]=c;
    }
-     write_cfeb_selector(cfeb.SelectorBit());
+
+
+   if(broadcast)
+      write_cfeb_selector(0x7F);   // broadcast to all DCFEBs
+   else
+      write_cfeb_selector(cfeb.SelectorBit());
+
      int blocks=FIRMWARE_SIZE/4;  // firmware size must be in units of 32-bit words
      int p1pct=blocks/100;
      int j=0, pcnts=0;
@@ -8520,6 +8578,38 @@ void DAQMB::dcfeb_adc_finedelay(CFEB & cfeb, unsigned short finedelay)
   unsigned short temp;
   dcfeb_hub(cfeb, ADC_Fine_Delay, 3, &finedelay, (char *)&temp, NOW|READ_YES|NOOP_YES);
   return;
+}
+
+unsigned DAQMB::dcfeb_startup_status(CFEB & cfeb)
+{
+  /*
+         variable        bits
+         --------        ----
+         por_state        0-2
+         eos              3
+         al_status        4-6
+         run              7
+         adc_rdy          8
+         daq_mmcm_lock    9
+         trg_mmcm_lock   10
+         0               11
+         0               12
+         qpll_cnt_ovrflw 13
+         qpll_error      14
+         qpll_lock       15
+   */
+  unsigned temp=0;
+  char buf[4]={0,0,0,0};
+  dcfeb_hub(cfeb, STARTUP_STATUS, 16, buf, (char *)&temp, NOW|READ_YES);
+  return temp&0xFFFF;
+}
+
+unsigned DAQMB::dcfeb_qpll_lost_count(CFEB & cfeb)
+{
+  unsigned temp=0;
+  char buf[4]={0,0,0,0};
+  dcfeb_hub(cfeb, QPLL_LK_LOST_CNT, 8, buf, (char *)&temp, NOW|READ_YES);
+  return temp&0xFF;
 }
 
 int DAQMB::LVDB_map(int chn)
@@ -8812,10 +8902,39 @@ void DAQMB::odmbeprom_multi(int cnt, unsigned short *manbuf)
     for(int i=0; i<cnt; i++)
     {
       WriteRegister(BPI_Write, manbuf[i]);
-      udelay(10);                             
+      udelay(30);                             
     }
     return;
 }
+
+    bool DAQMB::odmbeprom_cmd_fifo_empty(unsigned int poll_interval /*us*/)
+    {
+      const unsigned int max_cnt = 40000000/poll_interval;
+      unsigned int cnt = 0;
+      while ((odmb_bpi_status() & 0x0F00) != 0x0800) {	
+	udelay(poll_interval);
+	cnt++;
+	// if (odmb_eprom_debug) printf("line %d: BPI status (cnt = %d) = %x\n",__LINE__, cnt, status);
+	if (cnt >= max_cnt) return false;
+      }
+
+      return true;
+    }
+
+    bool DAQMB::odmbeprom_pec_ready(unsigned int poll_interval /*us*/)
+    {
+      const unsigned int max_cnt = 40000000/poll_interval;
+      udelay (poll_interval);
+      unsigned int cnt = 0;
+      while ((odmb_bpi_status() & 0xFFF0) != 0x8880) {	
+	udelay(poll_interval);
+	cnt++;
+	// if (odmb_eprom_debug) printf("line %d: BPI status (cnt = %d) = %x\n",__LINE__, cnt, status);
+	if (cnt >= max_cnt) return false;
+      }
+
+      return true;
+    }
 
 void DAQMB::odmbeprom_unlockerase() 
 { 
@@ -8839,6 +8958,7 @@ void DAQMB::odmbeprom_bufferprogram(unsigned nwords,unsigned short *prm_dat)
     unsigned short tmp;
     tmp= (((nwords-1)<<5)&0xffe0)|XPROM_Buffer_Program;
     odmb_XPROM_do(tmp);
+    udelay(40);
 
     // send data
     odmbeprom_multi(nwords, prm_dat);
@@ -9020,8 +9140,8 @@ void DAQMB::odmb_program_eprom(const char *mcsfile)
    // each eprom block has 0x10000 words
    const int BLOCK_SIZE=0x10000; // in words
 
-   // each write call takes 0x800 words
-   const int WRITE_SIZE=0x800;  // in words
+   // each write call takes 0x400 words
+   const int WRITE_SIZE=0x400;  // in words
 
 // 1. read mcs file
    char *bufin;
@@ -9064,7 +9184,7 @@ void DAQMB::odmb_program_eprom(const char *mcsfile)
       // unlock and erase the block
       odmbeprom_unlockerase();
 
-      udelay(1000000);
+      udelay(2000000);
    }
 
 // 3. write eprom
@@ -9087,7 +9207,7 @@ void DAQMB::odmb_program_eprom(const char *mcsfile)
       // program with new data from the beginning of the block
       odmbeprom_bufferprogram(nwords,bufw+i*WRITE_SIZE);
       udelay(120000);
-      fulladdr += 0x800;
+      fulladdr += WRITE_SIZE;
        j++;
        if(j==p1pct)
        {  pcnts++;
@@ -9101,9 +9221,204 @@ void DAQMB::odmb_program_eprom(const char *mcsfile)
    // printf(" lock address %04x%04x \n",(uaddr&0xFFFF),(laddr&0xFFFF));
    odmbeprom_loadaddress(uaddr,laddr);
    odmbeprom_lock();
+   udelay(100000);
    odmb_bpi_disable();
    free(bufin);
 }
+
+    bool DAQMB::odmb_program_eprom_poll(const char *mcsfile)
+    {
+      bool odmb_eprom_debug=false;
+
+      unsigned int fulladdr;
+      unsigned int uaddr,laddr;
+      unsigned int i, blocks, lastblock;
+
+      const int FIRMWARE_SIZE=5464972/2; // in words
+
+      // each eprom block has 0x10000 words
+      const int BLOCK_SIZE=0x10000; // in words
+
+      // each write call takes 0x800 words
+      const int WRITE_SIZE=0x400;  // in words, was 0x800
+
+      // 1. read mcs file
+      char *bufin;
+      bufin=(char *)malloc(16*1024*1024);
+      if(bufin==NULL) {
+	std::cout << "Nothing in bufin." << std::endl;
+	free(bufin);
+	return false;
+      }
+      unsigned short *bufw= (unsigned short *)bufin;
+      FILE *fin=fopen(mcsfile,"r");
+      if(fin==NULL ) 
+	{ 
+	  free(bufin);  
+	  std::cout << "ERROR: Unable to open MCS file :" << mcsfile << std::endl;
+	  return false;
+	}
+      int mcssize=read_mcs(bufin, fin);
+      fclose(fin);
+      std::cout << "Read MCS size: " << mcssize << " bytes" << std::endl;
+      if(mcssize<FIRMWARE_SIZE)
+	{
+	  free(bufin);
+	  std::cout << "ERROR: Wrong MCS file. Quit..." << std::endl;
+	  return false;
+	}
+
+      odmb_bpi_reset();
+      odmbeprom_timerstop();
+      odmbeprom_timerreset();
+      odmbeprom_timerstart();
+      odmb_bpi_enable();
+      udelay(1000);
+      odmb_bpi_disable();
+
+      // 2. erase eprom
+      blocks=FIRMWARE_SIZE/BLOCK_SIZE;
+      if((FIRMWARE_SIZE%BLOCK_SIZE)>0) blocks++;
+      std::cout << "Erasing EPROM..." << std::endl;
+      for(i=0; i<blocks; i++)
+	{
+	  uaddr=i;
+	  laddr=0;
+
+	  odmbeprom_clearstatus();
+	  // printf(" eprom_load fulladdr %04x%04x \n",(uaddr&0xFFFF),(laddr&0xFFFF));
+	  odmbeprom_loadaddress(uaddr,laddr);
+	  // unlock and erase the block
+	  odmbeprom_unlockerase();
+	  udelay(40);
+
+	  odmb_bpi_enable();
+	  udelay(4000);
+
+	  // This is the erase polling that we're trying to implement.  When BPI_STATUS = 8880, 
+	  // we are good to go.
+
+	  unsigned int interval = 500000;
+	  unsigned int max_count = 4000000/interval;
+	  unsigned int cnt = 0;
+	  // unsigned int status = odmb_bpi_status();
+	  while ((odmb_bpi_status() & 0xFFFF) != 0x8880) {
+	    udelay(interval);
+	    ++cnt;
+	    // status = odmb_bpi_status();
+	    if (cnt >= max_count)
+	      {
+		printf("erase time out for block %d, address %04x%04x with status %04x\n", i, uaddr, laddr, odmb_bpi_status());
+		//		throw "took more than 4 seconds to erase a block!";
+		free(bufin);
+		odmb_bpi_disable();
+		return false;
+	      }
+	  }
+
+	  udelay(100);
+	  odmb_bpi_disable();
+
+	}       
+
+      printf("Erase complete.\n");
+
+      // 3. write eprom      
+      int global_write_delay = 2000;
+      blocks=FIRMWARE_SIZE/WRITE_SIZE;
+      lastblock=FIRMWARE_SIZE%WRITE_SIZE;
+      int p1pct=blocks/10;
+      int j=0, pcnts=0;
+      if(lastblock>0) blocks++;
+      else lastblock=WRITE_SIZE;
+      std::cout << "Start programming EPROM..." << std::endl;
+      fulladdr=0;
+      if (odmb_eprom_debug) {
+	udelay(global_write_delay);
+	printf("status before disable %04x\n", odmb_bpi_status());
+      }
+      odmb_bpi_disable();      
+      if (odmb_eprom_debug) {
+	udelay(global_write_delay);
+	printf("status after disable %04x\n", odmb_bpi_status());
+      }
+      int nwords=WRITE_SIZE;
+      for(i=0; i<blocks; i++)  
+	{
+	  if(i==blocks-1) nwords=lastblock;
+	  uaddr = (fulladdr >> 16);
+	  laddr = fulladdr &0xffff;
+	  
+	  if (odmb_eprom_debug) {
+	    printf("beginning write block %i at address %08x\n", i, fulladdr);
+	    printf("status before loadaddress %04x\n", odmb_bpi_status());
+	    udelay(global_write_delay);
+	  }
+	  odmbeprom_loadaddress(uaddr,laddr);
+
+	  if (odmb_eprom_debug) {
+	    udelay(global_write_delay);
+	    printf("status before buffer program %04x\n", odmb_bpi_status());
+	    udelay(global_write_delay);
+	  }
+	  
+	  odmbeprom_bufferprogram(nwords, bufw+i*WRITE_SIZE);
+	  odmb_bpi_enable();
+	  udelay(global_write_delay);
+	  // make sure the status goes back to 8880 => FIFOs empty, ready for next chunk.
+	  if (!odmbeprom_pec_ready(global_write_delay)) {
+	    printf("P/E.C. controller did not return to normal status during program. Exiting with status %04x\n", odmb_bpi_status());
+	    //	    throw "BPI parser failed to empty CMD FIFO";
+	    free(bufin);
+	    odmb_bpi_disable();
+	    return false;
+	  }
+	  udelay(global_write_delay);
+	  odmb_bpi_disable();
+	  udelay(global_write_delay);
+	  unsigned int nwords_rbk = ReadRegister(BPI_Read_n);
+	  
+	  if (odmb_eprom_debug) {
+	    udelay(global_write_delay);
+	    printf("\t%d words remaining in RBK FIFO\n", nwords_rbk);	  
+	    while(nwords_rbk-- > 0) {
+	      udelay(global_write_delay);
+	      printf("\t\trbk %d: %04x\n", nwords_rbk, ReadRegister(BPI_Read));
+	    }
+	  }
+	  
+	  udelay(global_write_delay);
+	  if (odmb_eprom_debug) printf("controller ready status: %04x\n\n", odmb_bpi_status());
+	  
+	  fulladdr += WRITE_SIZE;
+	  
+	  j++;
+	  if(j==p1pct)
+	    {  pcnts++;
+	      if(pcnts<100) std::cout << "Sending " << std::dec << pcnts*10 <<"%..." << std::endl;
+	      j=0;
+	    }   
+	}
+      std::cout << "Sending 100%..." << std::endl;
+      uaddr = (fulladdr >> 16);
+      laddr = fulladdr &0xffff;
+      if (odmb_eprom_debug) printf("line %d: lock address %04x%04x \n", __LINE__, (uaddr&0xFFFF),(laddr&0xFFFF));
+      odmbeprom_loadaddress(uaddr,laddr);
+      odmbeprom_lock();      
+      udelay(global_write_delay);
+      odmb_bpi_enable();
+      if (!odmbeprom_pec_ready(global_write_delay))
+	{
+	  printf("P/E.C. controller did not return to normal status on final lock. Exiting with status %04x\n", odmb_bpi_status());
+	  //	  throw "crashing now";
+	  odmb_bpi_disable();
+	  free(bufin);
+	  return false;
+	}
+      odmb_bpi_disable();
+      free(bufin);
+      return true;
+    }
 
 void DAQMB::odmb_program_virtex6(const char *mcsfile)
 {
@@ -9196,6 +9511,161 @@ int DAQMB::read_cfeb_done()
        sig=ReadRegister(DCFEB_DONE) & 0x7F;
     }
     return sig;
+}
+
+int DAQMB::read_qpll_state()
+{
+    int sig=0;
+    if(hardware_version_==2)
+    {
+       sig=ReadRegister(ODMB_QPLL) & 0xFFFF;
+    }
+    return sig;
+}
+
+int DAQMB::read_odmb_id()
+{
+    int sig=0;
+    if(hardware_version_==2)
+    {
+       sig=ReadRegister(read_ODMB_ID) & 0xFFFF;
+    }
+    return sig;
+}
+
+void DAQMB::odmb_save_config()
+{
+    if(hardware_version_==2)
+    {
+       WriteRegister(ODMB_Save_Config, 0);
+       ::sleep(2);
+    }
+    return;
+}
+
+void DAQMB::odmb_retrieve_config()
+{
+    if(hardware_version_==2)
+    {
+       WriteRegister(ODMB_Retrieve_Config, 0);
+       ::sleep(1);
+    }
+    return;
+}
+
+void DAQMB::chan2shift(int chan[16],unsigned int shft_bits[3]){
+    shft_bits[0]=((chan[10]<<15)|(chan[11]<<12)|(chan[12]<<9)|(chan[13]<<6)|(chan[14]<<3)|chan[15])&0XFFFF;
+    shft_bits[1]=((chan[5]<<14)|(chan[6]<<11)|(chan[7]<<8)|(chan[8]<<5)|(chan[9]<<2)|(chan[10]>>1))&0XFFFF;
+    shft_bits[2]=((chan[0]<<13)|(chan[1]<<10)|(chan[2]<<7)|(chan[3]<<4)|(chan[4]<<1)|(chan[5]>>2))&0XFFFF;
+}
+
+void DAQMB::set_dcfeb_parambuffer(CFEB &cfeb, unsigned short int bufload[34]){
+    unsigned number = cfeb.number();
+    bufload[0]=0x4321;                         //ready (not 0xffff)
+    float dthresh=0.05;
+    int comp_thresh=int(4095*((3.5-dthresh)/3.5));
+    int pipeline_depth = cfeb.GetPipelineDepth();
+
+    bufload[1]=comp_thresh&0x0fff;               // comp. thresh. 12 bits
+    bufload[2]=comp_mode_cfeb_[number]&0x0003;             // comp. mode 2 bits
+    bufload[3]=comp_timing_cfeb_[number]&0x0007;           // comp. timing 3 bits
+    bufload[4]=comp_clk_phase_cfeb_[number]&0x000f;        // comp. CLK phase 4 bits
+    bufload[5]=adcsamp_clk_phase_cfeb_[number]&0x0007;     // adc samp. CLK phase 3 bits
+    bufload[6]=nsample_cfeb_[number]&0x007f;               // # of samples 7 bits
+    bufload[7]=pipeline_depth&0x01ff;         // pipeline depth 9 bits
+    for(int i=8;i<16;i++)bufload[i]=0xffff;  // reserved
+
+    unsigned int shft_bits[3];
+    int chan[16];
+    set_all_chan_norm(chan);
+    for(int ichan=0;ichan<16;ichan++){
+      unsigned short int mask=(1<<ichan);
+      if((mask&kill_chip_[number][0])!=0x0000)set_chan_kill(ichan,chan);
+    }
+    chan2shift(chan,shft_bits);
+    bufload[16]=shft_bits[0];//bgb order flipped                       // buckshift pln 1
+    bufload[17]=shft_bits[1];
+    bufload[18]=shft_bits[2];
+    set_all_chan_norm(chan);
+    for(int ichan=0;ichan<16;ichan++){
+      unsigned short int mask=(1<<ichan);
+      if((mask&kill_chip_[number][1])!=0x0000)set_chan_kill(ichan,chan);
+    }
+    chan2shift(chan,shft_bits);
+    bufload[19]=shft_bits[0];                       // buckshift pln 3
+    bufload[20]=shft_bits[1];
+    bufload[21]=shft_bits[2];
+    set_all_chan_norm(chan);
+    for(int ichan=0;ichan<16;ichan++){
+      unsigned short int mask=(1<<ichan);
+      if((mask&kill_chip_[number][2])!=0x0000)set_chan_kill(ichan,chan);
+    }
+    chan2shift(chan,shft_bits);
+    bufload[22]=shft_bits[0];                       // buckshift pln 5
+    bufload[23]=shft_bits[1];
+    bufload[24]=shft_bits[2];
+    set_all_chan_norm(chan);
+    for(int ichan=0;ichan<16;ichan++){
+      unsigned short int mask=(1<<ichan);
+      if((mask&kill_chip_[number][3])!=0x0000)set_chan_kill(ichan,chan);
+    }
+    chan2shift(chan,shft_bits);
+    bufload[25]=shft_bits[0];                       // buckshift pln 4
+    bufload[26]=shft_bits[1];
+    bufload[27]=shft_bits[2];
+    set_all_chan_norm(chan);
+    for(int ichan=0;ichan<16;ichan++){
+      unsigned short int mask=(1<<ichan);
+      if((mask&kill_chip_[number][4])!=0x0000)set_chan_kill(ichan,chan);
+    }
+    chan2shift(chan,shft_bits);
+    bufload[28]=shft_bits[0];                       // buckshift pln 0
+    bufload[29]=shft_bits[1];
+    bufload[30]=shft_bits[2];
+    set_all_chan_norm(chan);
+    for(int ichan=0;ichan<16;ichan++){
+      unsigned short int mask=(1<<ichan);
+      if((mask&kill_chip_[number][5])!=0x0000)set_chan_kill(ichan,chan);
+    }
+    chan2shift(chan,shft_bits);
+    bufload[31]=shft_bits[0];                       // buckshift pln 2
+    bufload[32]=shft_bits[1];
+    bufload[33]=shft_bits[2];
+}
+
+void DAQMB::autoload_select_readback_wrd(CFEB &cfeb, int ival){
+  /*
+      0 - xtra l1a w 2 bits
+      1 - pre block end 4 bits
+      2 - comp time[2:0] comp mode [1:0] 5 bits
+      3 - buckeye mask  6 bits
+      4 - adc mask 12 bits
+      5 - adc cnfg mem wrd 26 bits
+      6 - pipeline depth 9 bits
+      7 - ttc source 2 bits
+      8 # samples 7 bits
+      9 bpi write fifo 16 bits
+     10 comp clock phase 4 bits
+     11 samp clock phase 3 bits
+     12 tmb transmit mode 3 bits
+     13 hs settings 30 bits
+     14 tmb layer mask 6 bits
+     15 prbs test mode 3 bits
+     16 sem cmd 3 bits
+     17 reg sel wrd 8 bits
+  */
+    unsigned tmp;
+    dcfeb_hub(cfeb, REG_SEL_WRD, 8, &ival, (char *)&tmp, NOW);
+    return;
+}
+
+void DAQMB::autoload_readback_wrd(CFEB &cfeb, char wrd[2])
+{
+    unsigned tmp=0xFFFF;
+    char buf[4];   
+    dcfeb_hub(cfeb, REG_RD_WRD, 16, &tmp, buf, READ_YES|NOW);
+    memcpy(wrd, buf, 2);
+    return;
 }
 
 } // namespace emu::pc

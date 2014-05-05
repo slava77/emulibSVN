@@ -554,8 +554,18 @@ public:
   inline void SetCompModeCfeb(int cfeb, int value){comp_mode_cfeb_[cfeb]=value;}
   inline void SetCompTimingCfeb(int cfeb, int value){comp_timing_cfeb_[cfeb]=value;}
   inline void SetCompThresholdsCfeb(int cfeb, float value){comp_thresh_cfeb_[cfeb]=value;}
+  inline void SetCompClockPhaseCfeb(int cfeb, int value){comp_clk_phase_cfeb_[cfeb]=value;}
+  inline void SetADCSampleClockPhaseCfeb(int cfeb, int value){adcsamp_clk_phase_cfeb_[cfeb]=value;}
+  inline void SetNSamplesCfeb(int cfeb, int value){nsample_cfeb_[cfeb]=value;}
   inline void SetPreBlockEndCfeb(int cfeb, int value){pre_block_end_cfeb_[cfeb]=value;}
   inline void SetL1aExtraCfeb(int cfeb, int value){L1A_extra_cfeb_[cfeb]=value;}
+  //
+  inline int GetCompModeCfeb(int cfeb){return comp_mode_cfeb_[cfeb];}
+  inline int GetCompTimingCfeb(int cfeb){return comp_timing_cfeb_[cfeb];}
+  inline float GetCompThresholdsCfeb(int cfeb){return comp_thresh_cfeb_[cfeb];}
+  inline int GetCompClockPhaseCfeb(int cfeb){return comp_clk_phase_cfeb_[cfeb];}
+  inline int GetADCSampleClockPhaseCfeb(int cfeb){return adcsamp_clk_phase_cfeb_[cfeb];}
+  inline int GetNSamplesCfeb(int cfeb){return nsample_cfeb_[cfeb];}
   //
   void LctL1aDelay(int);
   void LctL1aDelay(int,unsigned);
@@ -752,7 +762,7 @@ public:
   void dcfeb_loadparam(int paramblock,int nval,unsigned short int  *val);
   void dcfeb_readparam(int paramblock,int nval,unsigned short int  *val);         
   void dcfeb_readfirmware_mcs(CFEB & cfeb, const char *filename);
-  void dcfeb_program_virtex6(CFEB & cfeb, const char *mcsfile);
+  void dcfeb_program_virtex6(CFEB & cfeb, const char *mcsfile, int broadcast=0);
   void dcfeb_program_eprom(CFEB & cfeb, const char *mcsfile, int broadcast=0);
   void dcfeb_configure(CFEB & cfeb);
   void dcfeb_test_dummy(CFEB & cfeb, int test);
@@ -773,6 +783,8 @@ public:
   int dcfeb_dna(CFEB & cfeb, void *dna);
   std::vector<float> dcfeb_adc(CFEB & cfeb);
   void dcfeb_adc_finedelay(CFEB & cfeb, unsigned short finedelay);
+  unsigned dcfeb_startup_status(CFEB & cfeb);
+  unsigned dcfeb_qpll_lost_count(CFEB & cfeb);  
 
   int lvmb_power_state();
   // code for ODMB
@@ -781,22 +793,33 @@ public:
   void odmb_fpga_call(int inst, unsigned data, char *outbuf);
   int DCSread2(char *data);
   int read_cfeb_done();
+  int read_qpll_state();
+  int read_odmb_id();
+  void odmb_save_config();
+  void odmb_retrieve_config();
+
+  inline void set_all_chan_norm(int chan[16]) { for(int i=0;i<16;i++)chan[i]=NORM_RUN; }
+  inline void set_chan_kill(int ichan,int chan[16]) { chan[ichan]=KILL_CHAN; }
+  void chan2shift(int chan[16],unsigned int shft_bits[3]);
+  void set_dcfeb_parambuffer(CFEB &cfeb, unsigned short int bufload[34]);
+  void autoload_select_readback_wrd(CFEB &cfeb, int ival);
+  void autoload_readback_wrd(CFEB &cfeb, char wrd[2]);
   
   // various delays in ODMB
   inline void odmb_set_LCT_L1A_delay(int delay) { WriteRegister(LCT_L1A_DLY, delay&0x3F); }  // 6 bits
-  inline void odmb_set_TMB_delay(int delay) { WriteRegister(TMB_DLY, delay&0x1F); }  // 5 bits
-  inline void odmb_set_Push_delay(int delay) { WriteRegister(PUSH_DLY, delay&0x1F); }  // 5 bits
-  inline void odmb_set_ALCT_delay(int delay) { WriteRegister(ALCT_DLY, delay&0x1F); }  // 5 bits
+  inline void odmb_set_TMB_delay(int delay) { WriteRegister(TMB_DLY, delay&0x3F); }  // 6 bits
+  inline void odmb_set_Push_delay(int delay) { WriteRegister(PUSH_DLY, delay&0x3F); }  // 6 bits
+  inline void odmb_set_ALCT_delay(int delay) { WriteRegister(ALCT_DLY, delay&0x3F); }  // 6 bits
   inline void odmb_set_Inj_delay(int delay) { WriteRegister(INJ_DLY, delay&0x1F); }  // 5 bits
   inline void odmb_set_Ext_delay(int delay) { WriteRegister(EXT_DLY, delay&0x1F); }  // 5 bits
-  inline void odmb_set_Cal_delay(int delay) { WriteRegister(CAL_DLY, delay&0x1F); }  // 5 bits
+  inline void odmb_set_Cal_delay(int delay) { WriteRegister(CAL_DLY, delay&0xF); }   // 4 bits
   inline int odmb_read_LCT_L1A_delay() { return ReadRegister(LCT_L1A_DLY) & 0x3F; }  // 6 bits
-  inline int odmb_read_TMB_delay() { return ReadRegister(TMB_DLY) & 0x1F; }  // 5 bits
-  inline int odmb_read_Push_delay() { return ReadRegister(PUSH_DLY) & 0x1F; }  // 5 bits
-  inline int odmb_read_ALCT_delay() { return ReadRegister(ALCT_DLY) & 0x1F; }  // 5 bits
+  inline int odmb_read_TMB_delay() { return ReadRegister(TMB_DLY) & 0x3F; }  // 6 bits
+  inline int odmb_read_Push_delay() { return ReadRegister(PUSH_DLY) & 0x3F; }  // 6 bits
+  inline int odmb_read_ALCT_delay() { return ReadRegister(ALCT_DLY) & 0x3F; }  // 6 bits
   inline int odmb_read_Inj_delay() { return ReadRegister(INJ_DLY) & 0x1F; }  // 5 bits
   inline int odmb_read_Ext_delay() { return ReadRegister(EXT_DLY) & 0x1F; }  // 5 bits
-  inline int odmb_read_Cal_delay() { return ReadRegister(CAL_DLY) & 0x1F; }  // 5 bits
+  inline int odmb_read_Cal_delay() { return ReadRegister(CAL_DLY) & 0xF; }   // 4 bits
 
   // kill input from boards (CFEBs, TMB, ALCT) mask; multiple boards can be killed
   inline void odmb_set_kill_mask(int kill) { WriteRegister(ODMB_KILL, kill); }
@@ -816,6 +839,8 @@ public:
   void odmb_readfirmware_mcs(const char *filename);
   void odmb_program_eprom(const char *mcsfile);
   void odmb_program_virtex6(const char *mcsfile);
+  bool odmb_program_eprom_poll(const char *mcsfile);
+  
 
  private:
 
@@ -860,7 +885,9 @@ public:
   void odmbeprom_loadaddress(unsigned short uaddress, unsigned short laddress);
   void odmbeprom_bufferprogram(unsigned nwords, unsigned short *prm_dat);
   void odmbeprom_read(unsigned nwords, unsigned short *pdata);
-
+  bool odmbeprom_cmd_fifo_empty(unsigned int poll_interval = 100 /*us*/);
+  bool odmbeprom_pec_ready(unsigned int poll_interval = 500 /*us*/);
+            
   //
   int shift_array_[7][6][16];
   static const int nchips[7];
@@ -918,6 +945,9 @@ public:
   int pre_block_end_cfeb_[7];
   int L1A_extra_cfeb_[7];
   float comp_thresh_cfeb_[7];
+  int comp_clk_phase_cfeb_[7];
+  int adcsamp_clk_phase_cfeb_[7];
+  int nsample_cfeb_[7];
   //
   int shift_out[7][36];
   int l1a_lct_counter_, cfeb_dav_counter_, tmb_dav_counter_, alct_dav_counter_ ;
@@ -949,8 +979,8 @@ public:
   static const unsigned ODMB_CTRL = 0x3000;
   static const unsigned DCFEB_CTRL = 0x3010;
   static const unsigned DCFEB_DONE = 0x3120;
+  static const unsigned ODMB_QPLL = 0x3124;
   
-
   static const unsigned LCT_L1A_DLY = 0x4000;
   static const unsigned TMB_DLY = 0x4004;
   static const unsigned PUSH_DLY = 0x4008;
@@ -960,8 +990,13 @@ public:
   static const unsigned CAL_DLY = 0x4018;
   static const unsigned ODMB_KILL = 0x401C;
   static const unsigned ODMB_CRATEID = 0x4020;
-  static const unsigned read_FW_VERSION = 0x4024;
 
+  static const unsigned read_ODMB_ID = 0x4100;
+  static const unsigned read_FW_VERSION = 0x4200;
+  static const unsigned read_FW_BUILD = 0x4300;
+
+  static const unsigned ODMB_Save_Config = 0x6000;
+  static const unsigned ODMB_Retrieve_Config = 0x6004;
   static const unsigned BPI_Reset = 0x6020;
   static const unsigned BPI_Disable = 0x6024;
   static const unsigned BPI_Enable = 0x6028;

@@ -173,6 +173,23 @@ enum DEVTYPE{ALLMUX=-3,ALLSCAM=-2,ALL=-1,NONE,F1PROM,F2PROM,F3PROM,F4PROM,F5PROM
 #define CLEAR_ANYL1AFLAG 40
 #define SET_ANYL1AFLAG 41
 #define ADC_Fine_Delay 44
+#define PRBS_Test_Mode  45
+#define PRBS_Inject_Error 46
+#define SEM_Control 47
+#define SEM_RST_DED 48
+#define SEM_CMD 49
+#define SEM_SEU_ADD_LINEAR 50
+#define SEM_SEU_ADD_PHYSICAL 51
+#define REG_SEL_WRD 52
+#define REG_RD_WRD 53
+#define QPLL_RST 54
+#define QPLL_LK_LOST_CNT 55
+#define STARTUP_STATUS 56
+#define READ_L1A_COUNT 57
+#define READ_L1A_MATCH 58
+#define READ_INJPLS 59
+#define READ_EXTPLS 60
+#define READ_BC0 61
 
 /* VIRTEX6 fpga scan instructions */
 #define VTX6_EXTEST 0x3C0
@@ -307,4 +324,27 @@ enum DEVTYPE{ALLMUX=-3,ALLSCAM=-2,ALL=-1,NONE,F1PROM,F2PROM,F3PROM,F4PROM,F5PROM
 #define VME_PROM 4
 #define CFEB_PROM 5
 #define CFEB_FPGA 6
+
+#define Bit_Slip_Odd 17
+#define Bit_Slip_Even 18
+#define Chip_Sel 19
+#define EPROM_mcs 21
+#define EPROM_read_mcs 22
+#define EPROM_status_mcs 23
+#define EPROM_timer_mcs 24
+#define EPROM_reset_mcs 25
+#define EPROM_disablefifo_mcs 26
+#define EPROM_enablefifo_mcs 27
+#define COMP_Fine_Delay  28
+#define TMB_TX_MODE 29
+#define TMB_TX_SHIFTLAYERS 30
+#define TMB_TX_LAYER_MASK 31
+#define DAQRate_1p00GB 32
+#define DAQRate_2p56GB 33
+#define SEM_STATUS 37
+#define SEM_Reset_Error_Counters 38
+#define SEM_ERRCNT_READ 39
+#define L1AHEAD_DISABLE 42
+#define L1AHEAD_ENABLE 43
+
 #endif
