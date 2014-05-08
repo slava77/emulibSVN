@@ -51,7 +51,7 @@ void emuLvMRTN_showDebug(bool bDebug, anytype aMessage)
 void emuLvMRTN_setDbConfig() 
 {
   fwRDBConfig_setUser("cms_csc_pvss_cond");
-  fwRDBConfig_setHost("cms_pvss_cond");  
+  fwRDBConfig_setHost("cms_pvss_rdb");  
 }
 
 /**
