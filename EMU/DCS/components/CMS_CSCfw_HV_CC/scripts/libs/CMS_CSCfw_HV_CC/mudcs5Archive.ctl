@@ -8,7 +8,7 @@ void setupArchiving (dyn_int projectStations, bool deleteFirst = true) {
   
   string accountName, databaseName;
   accountName = "cms_csc_pvss_cond";
-  databaseName = "cms_pvss_cond";
+  databaseName = "cms_pvss_rdb";
 
   fwRDBConfig_setUser(accountName);
   fwRDBConfig_setHost(databaseName);
