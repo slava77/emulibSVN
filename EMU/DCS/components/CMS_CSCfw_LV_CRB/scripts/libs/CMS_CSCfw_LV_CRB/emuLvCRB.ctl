@@ -66,7 +66,7 @@ void emuLvCRB_showDebug(bool bDebug, anytype aMessage)
 void emuLvCRB_setDbConfig() 
 {
   fwRDBConfig_setUser("cms_csc_pvss_cond");
-  fwRDBConfig_setHost("cms_pvss_cond");  
+  fwRDBConfig_setHost("cms_pvss_rdb");  
 }
 /**
  * delete all dps,node,FSM tree,FSM scripts for CRB
