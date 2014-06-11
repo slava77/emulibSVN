@@ -59,7 +59,7 @@
 #endif
 
 #define DRV_VERSION "3.0.4" DRV_EXTRAVERSION
-char e1000e_driver_name[] = "e1000e";
+char e1000e_driver_name[] = "e1000e_emu";
 const char e1000e_driver_version[] = DRV_VERSION;
 
 #define DEFAULT_MSG_ENABLE (NETIF_MSG_DRV|NETIF_MSG_PROBE|NETIF_MSG_LINK)
@@ -1102,8 +1102,18 @@ static bool e1000_clean_rx_irq(struct e1000_ring *rx_ring)
 		e1000_rx_hash(netdev, rx_desc->wb.lower.hi_dword.rss, skb);
 
 #endif
-		e1000_receive_skb(adapter, netdev, skb, staterr,
-				  rx_desc->wb.upper.vlan);
+		if      (strcmp(netdev->name,"p1p1")==0){
+		  netif_rx_hook_2(skb);
+		}else if(strcmp(netdev->name,"p1p2")==0){
+		  netif_rx_hook_3(skb);
+		}else if(strcmp(netdev->name,"p2p1")==0){
+		  netif_rx_hook_4(skb);
+		}else if(strcmp(netdev->name,"p2p2")==0){
+		  netif_rx_hook_5(skb);
+		}else{
+		  e1000_receive_skb(adapter, netdev, skb, staterr,
+				    rx_desc->wb.upper.vlan);
+		}
 
 next_desc:
 		rx_desc->wb.upper.status_error &= cpu_to_le32(~0xFF);
@@ -1750,8 +1760,18 @@ static bool e1000_clean_jumbo_rx_irq(struct e1000_ring *rx_ring, int *work_done,
 			goto next_desc;
 		}
 
-		e1000_receive_skb(adapter, netdev, skb, staterr,
-				  rx_desc->wb.upper.vlan);
+		if      (strcmp(netdev->name,"p1p1")==0){
+		  netif_rx_hook_2(skb);
+		}else if(strcmp(netdev->name,"p1p2")==0){
+		  netif_rx_hook_3(skb);
+		}else if(strcmp(netdev->name,"p2p1")==0){
+		  netif_rx_hook_4(skb);
+		}else if(strcmp(netdev->name,"p2p2")==0){
+		  netif_rx_hook_5(skb);
+		}else{
+		  e1000_receive_skb(adapter, netdev, skb, staterr,
+				    rx_desc->wb.upper.vlan);
+		}
 
 next_desc:
 		rx_desc->wb.upper.status_error &= cpu_to_le32(~0xFF);
