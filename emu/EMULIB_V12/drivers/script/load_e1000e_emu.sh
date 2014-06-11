@@ -79,8 +79,8 @@ function load_e1000e_emu(){
 
     # Load new modules
     echo "Loading e1000e_emu"
-    echo "/sbin/modprobe e1000e_emu InterruptThrottleRate=$(module_parameters $NPORTS 0) QueuePairs=$(module_parameters $NPORTS 0) EEE=$(module_parameters $NPORTS 0) MDD=$(module_parameters $NPORTS 0)"
-    /sbin/modprobe e1000e_emu InterruptThrottleRate=$(module_parameters $NPORTS 0) QueuePairs=$(module_parameters $NPORTS 0) EEE=$(module_parameters $NPORTS 0) MDD=$(module_parameters $NPORTS 0)
+    echo "/sbin/modprobe e1000e_emu InterruptThrottleRate=$(module_parameters $NPORTS 0) EEE=$(module_parameters $NPORTS 0)"
+    /sbin/modprobe e1000e_emu InterruptThrottleRate=$(module_parameters $NPORTS 0) EEE=$(module_parameters $NPORTS 0)
     echo "lsmod | grep e1000e"
     /sbin/lsmod | grep e1000e
     /sbin/lspci -k | grep -A 3 Ethernet
