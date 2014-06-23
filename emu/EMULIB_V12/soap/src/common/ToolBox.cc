@@ -1,4 +1,5 @@
 #include "emu/soap/ToolBox.h"
+
 #include "xoap/MessageFactory.h"
 #include "xoap/SOAPEnvelope.h"
 #include "xoap/SOAPSerializer.h"
@@ -414,17 +415,15 @@ xcept::Exception
 emu::soap::faultToException( xoap::SOAPFault* fault ){
 
   try{
+    // SOAP 1.1
+    stringstream ss;
+    ss << "SOAP Fault code: " << fault->getFaultCode() << ", SOAP Fault message: " << fault->getFaultString();
     if ( fault->hasDetail() ){
-      xcept::Exception ex;
-      xdaq::XceptSerializer::importFrom( fault->getDetail().getDOM(), ex );
-      return ex;
+      // Assuming that 'detail' contains no XML, just plain text:
+      ss << ", SOAP Fault detail: " << xoap::XMLCh2String( fault->getDetail().getDOM()->getFirstChild()->getTextContent() );
     }
-    else{
-      stringstream ss;
-      ss << "Fault code: " << fault->getFaultCode() << ", message: " << fault->getFaultString();
-      XCEPT_DECLARE( xcept::Exception, ex, ss.str() );
-      return ex;
-    }
+    XCEPT_DECLARE( xcept::Exception, ex, ss.str() );
+    return ex;
   }
   catch( xcept::Exception &e ){
     std::stringstream ss;
