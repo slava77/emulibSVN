@@ -315,7 +315,7 @@ public void emuhv_sendPrimaryCommand(mapping deviceParams, int command, dyn_stri
   string cmdStr;  
   cmdStr = deviceParams["hostId"] + "|";
   cmdStr += "HVPRCMD;" + 
-            deviceParams["port"] + ";" +      // port
+            "0;" + //deviceParams["port"] + ";" +      // port  // !!!!!! the port = 0 is a hack patch for the global run, should be removed later
             deviceParams["address"] + ";" +   // address
             "255;" +                          // channels
             command + ";" +                   // command code
@@ -390,7 +390,7 @@ public void emuhv_requestData(mapping chamberDeviceParams, dyn_string &exception
 public void emuhv_requestPrimaryData(mapping primaryDeviceParams, dyn_string &exceptionInfo) {
   string cmdStr = primaryDeviceParams["hostId"] + "|" +
                     "HVPRDATA;" + 
-                    primaryDeviceParams["port"] + ";" + 
+                    "0;" + //primaryDeviceParams["port"] + ";" + // !!!!!! the port = 0 is a hack patch for the global run, should be removed later
                     primaryDeviceParams["address"] + 
                     ";255;0;0;-1";
   emu_info("HV: Requesting data for primary PSU: " + primaryDeviceParams);
