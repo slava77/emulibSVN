@@ -48,8 +48,8 @@ const string HV_SERVER_STATUS_DIM_SERVICE_MINUS = \"HV_DIM_SERVER_HID500/SERVER_
 
 // ***************** DIM DNS ********************************
 
-const string HV_DIM_DNS_PLUS = \"dcspcs1a11-01\"; // csc-dcs-hv1.cern.ch
-const string HV_DIM_DNS_MINUS = \"dcspcs1a11-02\"; // csc-dcs-hv2.cern.ch
+const string HV_DIM_DNS_PLUS = \"dcspc-s1a11-01\"; // csc-dcs-hv1.cern.ch
+const string HV_DIM_DNS_MINUS = \"dcspc-s1a11-02\"; // csc-dcs-hv2.cern.ch
 const string HV_DIM_DNS_ISR = \"ufcmshv1\";
 
 const string X2P_DIM_DNS_PLUS = \"csc-dcs-pc1\"; // csc-dcs-hv1.cern.ch
@@ -724,7 +724,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 40 71 56
+E E 0 1 1 2 1 E U  0 E 30 40 78 56
 0 2 2 "0s" 0 0 0 192 0 0  30 40 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
@@ -1370,7 +1370,7 @@ main()
   if (emu_checkException(ex)) { return; }
   
   emu_info(\"creating ALCT LV alerts...\");
-  setAlctLvAlerts(ex);
+//  setAlctLvAlerts(ex);
   if (emu_checkException(ex)) { return; }
   
   emu_info(\"creating TMB LV alerts...\");
@@ -1768,14 +1768,14 @@ void setTemperatureAlerts(dyn_string &ex) {
   setDefaultValueAndRange(dps, 25, dpsToIgnore, -1, 200);
 
   // OTMB temperature warning
-  dps = dpNames(\"*CSC_ME*.otmb.v1\", \"CscMe11TempChamberMon\");
-  texts = makeDynString(\"OTMB temperature is too low\", \"\", \"OTMB temperature is too high (warning level)\", \"OTMB temperature is too high (critical level)\");
-  limits = makeDynFloat(10, 67, 72);
-  classes = makeDynString(\"_fwWarningNack\", \"\", \"_fwWarningNack\", \"_fwFatalAck\");
-  setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
-  if (emu_checkException(ex)) { return; }
-  setDefaultValueAndRange(dps, 25);
-
+//   dps = dpNames(\"*CSC_ME*.otmb.v1\", \"CscMe11TempChamberMon\");
+//   texts = makeDynString(\"OTMB temperature is too low\", \"\", \"OTMB temperature is too high (warning level)\", \"OTMB temperature is too high (critical level)\");
+//   limits = makeDynFloat(10, 67, 72);
+//   classes = makeDynString(\"_fwWarningNack\", \"\", \"_fwWarningNack\", \"_fwFatalAck\");
+//   setAndActivateAnalogAlerts(dps, texts, limits, classes, ex, dpsToIgnore);
+//   if (emu_checkException(ex)) { return; }
+//   setDefaultValueAndRange(dps, 25);
+ 
   // DCFEB FPGA
   dps = dpNames(\"*CSC_ME*.dcfeb.fpga.v*\", \"CscMe11TempChamberMon\");
   texts = makeDynString(\"DCFEB FPGA temperature is too low\", \"\", \"DCFEB FPGA temperature is too high (warning level)\", \"DCFEB FPGA temperature is too high (critical level)\");
@@ -1965,7 +1965,7 @@ LANG:1 14 Save to confDB
 main()
 {
   dyn_string ex;
-  int saveOptions = 0;
+  int saveOptions = fwConfigurationDB_deviceConfig_ALLDEVPROPS;
   
   if (radioSaveOption.number == 1) {
     saveOptions = fwConfigurationDB_deviceConfig_VALUE;
@@ -1999,7 +1999,7 @@ LANG:1 0
 
 1
 "dashclr"N "_Transparent"
-E E 0 1 1 2 1 E U  0 E 30 460 73 476
+E E 0 1 1 2 1 E U  0 E 30 460 78 476
 0 2 2 "0s" 0 0 0 192 0 0  30 460 1
 1
 LANG:1 30 Sans Serif,9,-1,5,50,0,0,0,0,0
