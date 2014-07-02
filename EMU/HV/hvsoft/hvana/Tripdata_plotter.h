@@ -28,7 +28,7 @@ private:
 	bool all_boards, all_channels;
 	int RDB, channel, num_of_meas;
 	double A,B;
-	static char *std_path, *output_dir;
+	static char *std_path, *std_mb_path, *output_dir;
 	string local_dir, log_file, log_buf;
 	string data_file, voltage_calibration_file, current_calibration_file;
 	Float_t *voltage;

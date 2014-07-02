@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <errno.h>
 #include "Tripdata_plotter.h"
 
 ///////////////////////////////////////////
@@ -53,6 +54,7 @@ Tripdata_plotter::Tripdata_plotter(int RDB, int channel)
 }
 
 char * Tripdata_plotter::std_path = "/home/hvuser/data/Remote_";
+char * Tripdata_plotter::std_mb_path = "/home/hvuser/data/Master_";
 char * Tripdata_plotter::output_dir = "/home/hvuser/plots/";
 
 /*
@@ -62,8 +64,8 @@ char * Tripdata_plotter::output_dir = "/home/hvuser/plots/";
 */
 void Tripdata_plotter::search_plot(char * dir) {
 
-	string tmp_name, RDB_str;
- 	int RDB_index, underscr_index;
+	string tmp_name, RDB_str, MB_str;
+ 	int RDB_index, MB_index, underscr_index;
  	const char *direntry;
  	void *dirp = gSystem->OpenDirectory(dir);
 
@@ -108,7 +110,34 @@ void Tripdata_plotter::search_plot(char * dir) {
 					if(read_files())
 						make_plots();
 				}
-			}
+			} else {
+			   MB_index = tmp_name.find("MB#");
+                           if (MB_index != -1) {
+                                //skip the "MB#" characters and retrieve the actual RDB number
+                                MB_index += 3;
+                                underscr_index = tmp_name.find_first_of("_", MB_index);
+                                MB_str = tmp_name.substr(MB_index, underscr_index-MB_index);
+
+                                //set the paths to the calibration files
+                                voltage_calibration_file = std_mb_path + MB_str + "/T15_M" + MB_str + ".log";
+                                current_calibration_file = std_mb_path + MB_str + "/T14_M" + MB_str + ".log";
+
+                                //handle the inputs from the constructor and make appropriate plots
+                                //if the files can be read, make plots
+                                if (all_boards && all_channels) {
+                                        if(read_files())
+                                                make_plots();
+                                }
+                                else if (!all_boards && all_channels && atoi(MB_str.c_str()) == RDB) {
+                                        if(read_files())
+                                                make_plots();
+                                }
+                                else if (!all_boards && !all_channels && atoi(MB_str.c_str()) == RDB && get_channel(tmp_name) == channel) {
+                                        if(read_files())
+                                                make_plots();
+                                }
+                            }
+                        }
 		}
  	}
 }//search_plot
@@ -270,9 +299,20 @@ void Tripdata_plotter::make_plots() {
 	Float_t min_volt = 0;
 	Float_t scale = 1;
 
-	int pos_start = data_file.find("tripdata");
-	int pos_end = data_file.find(".dump");
-	string file_name = data_file.substr(pos_start, pos_end-pos_start);
+        size_t pos_fn = data_file.find_last_of("/");
+	size_t pos_start = data_file.find("tripdata");
+	size_t pos_end = data_file.find(".dump");
+        string file_name = data_file;
+        if ((pos_start != std::string::npos) && (pos_end != std::string::npos)) {
+
+	   if (pos_fn != std::string::npos) 
+	      file_name = data_file.substr(pos_fn+1, pos_end-(pos_fn+1));
+	   else 
+   	      file_name = data_file.substr(0, pos_end);
+	   // std::cout << file_name << std::endl;
+
+        }
+
 	string output_file_name = output_dir; output_file_name += "/" + file_name + ".png";
 	log_buf += file_name + '\n';
 
@@ -367,7 +407,8 @@ void Tripdata_plotter::make_plots() {
 
 	//move the original tripdata files to the output dir
 	string rename_file = output_dir; rename_file += file_name; rename_file += ".dump";
-	rename(data_file.c_str(), rename_file.c_str());
+	int res = rename(data_file.c_str(), rename_file.c_str());
+        if (res == -1) std::cout << "Move " << data_file << " to " << rename_file << " res:" << strerror(errno) << std::endl;
 
 	//clear the voltage and current arrays for next file
 	memset(voltage, 0, num_of_meas);
