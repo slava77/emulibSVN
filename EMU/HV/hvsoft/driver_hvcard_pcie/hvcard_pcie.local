@@ -1,0 +1,179 @@
+#!/bin/bash
+# Sample init script for the a driver module <rubini@linux.it>
+
+DEVICE="hvcard_pcie"
+SECTION="hvsoft"
+
+# The list of filenames and minor numbers: $PREFIX is prefixed to all names
+PREFIX="hvcard_pcie"
+DEBUG=1
+SLOTS=2
+POLICY=0
+SKIP_MOD_INIT=0
+
+INSMOD=/sbin/insmod; # use /sbin/modprobe if you prefer
+
+function device_specific_post_load () {
+    true; # fill at will
+}
+function device_specific_pre_unload () {
+    true; # fill at will
+}
+
+# Everything below this line should work unchanged for any char device.
+# Obviously, however, no options on the command line: either in
+# /etc/${DEVICE}.conf or /etc/modules.conf (if modprobe is used)
+
+# Optional configuration file: format is
+#    owner  <ownername>
+#    group  <groupname>
+#    mode   <modename>
+#    options <insmod options>
+CFG=/etc/${DEVICE}.cfg
+
+# kernel version, used to look for modules
+KERNEL=`uname -r`
+
+#FIXME: it looks like there is no misc section. Where should it be?
+#MODDIR="/lib/modules/${KERNEL}/${SECTION}"
+MODDIR=`pwd`
+if [ ! -d $MODDIR ]; then MODDIR="/lib/modules/${KERNEL}/${SECTION}"; fi
+
+# Root or die
+if [ "$(id -u)" != "0" ]
+then
+  echo "You must be root to load or unload kernel modules"
+  exit 1
+fi
+
+# Read configuration file
+if [ -r $CFG ]; then
+    DEBUG=`awk "{FS=\"=\"} \\$1==\"DEBUG\" {print \\$2}" $CFG`
+    SLOTS=`awk "{FS=\"=\"} \\$1==\"SLOTS\" {print \\$2}" $CFG`
+    OWNER=`awk "{FS=\"=\"} \\$1==\"OWNER\" {print \\$2}" $CFG`
+    GROUP=`awk "{FS=\"=\"} \\$1==\"GROUP\" {print \\$2}" $CFG`
+    MODE=`awk "{FS=\"=\"} \\$1==\"MODE\" {print \\$2}" $CFG`
+    HOSTID=`awk "{FS=\"=\"} \\$1==\"HOSTID\" {print \\$2}" $CFG`
+    POLICY=`awk "{FS=\"=\"} \\$1==\"POLICY\" {print \\$2}" $CFG`
+    SKIP_MOD_INIT=`awk "{FS=\"=\"} \\$1==\"SKIP_MOD_INIT\" {print \\$2}" $CFG`
+    DISABLED_CARDS=`awk "{FS=\"=\"} \\$1==\"DISABLED_CARDS\" {print \\$2}" $CFG`
+    # The options string may include extra blanks or only blanks
+    # OPTIONS=`sed -n '/^options / s/options //p' $CFG`
+fi
+
+
+# Create device files
+function create_files () {
+    cd /dev
+    local devlist=""
+    local file
+    echo ""
+    for ((slot=0; slot < SLOTS; slot++))
+    do
+	file="${DEVICE}${slot}"
+	echo "/dev/$file"
+	mknod $file c $MAJOR $slot
+	devlist="$devlist $file"
+    done
+    if [ -n "$OWNER" ]; then chown $OWNER $devlist; fi
+    if [ -n "$GROUP" ]; then chgrp $GROUP $devlist; fi
+    if [ -n "$MODE"  ]; then chmod $MODE  $devlist; fi
+}
+
+# Remove device files
+function remove_files () {
+    cd /dev
+    local devlist=""
+    local file
+    for ((slot=0; slot < SLOTS; slot++))
+    do
+        file="${DEVICE}${slot}"
+	#echo "/dev/$file"
+        devlist="$devlist $file"
+    done
+
+    rm -f $devlist
+}
+
+# Load and create files
+function load_device () {
+    
+    if [ -f $MODDIR/$DEVICE.ko ]; then
+	devpath=$MODDIR/$DEVICE.ko
+    else if [ -f ./$DEVICE.ko ]; then
+	devpath=./$DEVICE.ko
+    else
+	devpath=$DEVICE; # let insmod/modprobe guess
+    fi; fi
+    if [ "$devpath" != "$DEVICE" ]; then
+	echo -n " (loading file $devpath) with options: "
+    fi
+
+	OPTIONS="hvcard_pcie_debug=$DEBUG hvcard_pcie_nr_devs=$SLOTS "
+   
+    
+    if [ -n "$HOSTID" ]; then
+        OPTIONS="$OPTIONS hvcard_pcie_hostid=$HOSTID ";
+    fi
+    # echo "OPTIONS=$OPTIONS"
+
+    if [ -n "$POLICY" ]; then
+        OPTIONS="$OPTIONS hvcard_pcie_policy=$POLICY ";
+    fi
+
+    if [ -n "$SKIP_MOD_INIT" ]; then
+        OPTIONS="$OPTIONS hvcard_pcie_skip_mod_init=$SKIP_MOD_INIT ";
+    fi
+
+    if [ -n "$DISABLED_CARDS" ]; then
+        OPTIONS="$OPTIONS hvcard_pcie_disabled_list=$DISABLED_CARDS ";
+    fi
+
+
+    # echo "OPTIONS=$OPTIONS"
+   
+
+    echo $OPTIONS 
+    if $INSMOD $devpath $OPTIONS; then
+	MAJOR=`awk "\\$2==\"$DEVICE\" {print \\$1}" /proc/devices`
+	remove_files 
+	create_files 
+	echo -n "$SLOTS device files created"
+	device_specific_post_load
+    else
+	echo " FAILED!"
+     fi
+}
+
+# Unload and remove files
+function unload_device () {
+    device_specific_pre_unload 
+    /sbin/rmmod $DEVICE
+    remove_files 
+    echo -n " $SLOTS device files deleted"
+}
+
+
+case "$1" in
+  start)
+     echo "Loading $DEVICE ..."
+     load_device
+     echo "."
+     ;;
+  stop)
+     echo "Unloading $DEVICE ..."
+     unload_device
+     echo "."
+     ;;
+  force-reload|restart)
+     echo "Reloading $DEVICE ..."
+     unload_device
+     load_device
+     echo "."
+     ;;
+  *)
+     echo "Usage: $0 {start|stop|restart|force-reload}"
+     exit 1
+esac
+
+exit 0
