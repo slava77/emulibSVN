@@ -1,0 +1,24 @@
+[PropertyInfo]
+addr,int,false,false, , ,false,<default>
+control,int,false,false, , ,false,<default>
+hostid,int,false,false, , ,false,<default>
+imax,float,false,false, , ,false,<default>
+imon,float,false,false, , ,false,<default>
+output,int,false,false, , ,false,<default>
+outset,int,false,false, , ,false,<default>
+polarity,int,false,false, , ,false,<default>
+port,int,false,false, , ,false,<default>
+printSeparator,String,false,false, , ,true,<default>
+rampdown,int,false,false, , ,false,<default>
+rampup,int,false,false, , ,false,<default>
+SEP,String,false,false, , ,false,<default>
+state,int,false,false, , ,false,<default>
+status,int,false,false, , ,false,<default>
+vcur,int,false,false, , ,false,<default>
+vmon,float,false,false, , ,false,<default>
+vset,int,false,false, , ,false,<default>
+[IconNames]
+
+
+
+

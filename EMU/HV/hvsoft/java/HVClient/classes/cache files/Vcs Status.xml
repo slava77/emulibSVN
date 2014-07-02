@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vcsstatus version="1.0">
+<file status="chiw"> HVClient.jpx</file>
+<file status="chiw"> build.xml</file>
+<file status="chiw"> hvclient.cfg</file>
+<file status="chiw"> jDIM.library</file>
+<file status="chiw"> jFreeChart.library</file>
+<file status="chiw">src/autoUpdater/ autoUpdater.java</file>
+<file status="chiw">src/hvclient/ DimRpcInfo.java</file>
+<file status="niw"> HVClient.jpx.local</file>
+<file status="nir"> HVClient-linux</file>
+<file status="nir"> HVClient.exe</file>
+<file status="nir"> HVClientW.exe</file>
+<file status="nir"> hvJavaClient.jar</file>
+</vcsstatus>

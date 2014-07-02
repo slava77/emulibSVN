@@ -1,0 +1,124 @@
+03/22/10
+= Version 1.2.18
++ Added support for DEAD channel status counters
+
+06/30/09
+= Version 1.2.17
++ Added support for Imax ramp channel parameter
+
+06/11/09
+= Version 1.2.16
++ Fixed new client windows placement bug
+
+05/11/08
+= Version 1.2.15
++ Added OV limit and delay parameters support
+
+02/16/08
+= Version 1.2.14
++ Fixed Integer Expection in PrimaryPSFrame
+
+01/10/08
+= Version 1.2.13
++ Updates for charts
+
+09/10/07
+= Version 1.2.11-1.2.12
++ Reduced connection timeout to 3 seconds for AutoUpdater
++ Added hidable table columns support for single Module and CSC windows (right click on table header to use)
+
+05/21/07
+= Version 1.2.10
++ Changed AutoUpdater
+
+04/26/07
+= Version 1.2.9
++ Added support for Forced AutoDetection command
+
+04/13/07
+= Version 1.2.8
++ Changed Wiener PL512 Services handler
+
+04/03/07
+= Version 1.2.7
++ Changed Wiener PL512 Services handler
+
+02/15/07
+= Version 1.2.6
++ Added "Set parameters..." popup menu for Wiener PL512
++ Added set group parameter for Wiener PL512 channels
+
+02/14/07
+= Version 1.2.4-1.2.5
++ Added support for Wiener PL512 Power Supply
+
+08/23/06
+= Version 1.2.3
++ Added experimental "set multiple parameters" for CSC Status Window
+
+08/21/06
+= Version 1.2.1
++ Fixed maximum set imax limit from 200 to 2000 (for Master modules)
+
+07/13/06
+= Version 1.2.0
++ Added Server Logs Window
+
+07/13/06
+= Version 1.1.9
++ Fixed  table rows sorting for Primary PS Status window
+
+07/12/06
+= Version 1.1.8
++ Added Tables Font resize keyboard shortcuts Ctrl-< Ctrl->
++ Added "Set Parametes for selected..." popup menu for Primary PS Status window
++ Fixed incorrect "Send Command" handling for Primary and Modules commands
+
+02/08/06
+= Version 1.1.7
++ Fixed handling of "CH INT TRIP" state
++ Fixed CSC set state command in CSC Status Window
+
+02/07/2006
+= Version 1.1.5-1.1.6
++ Fixed exception handling in case of invalid data for CSC and Module Status windows
++ Added multiple channels selection for CSC and Module windows
++ Added "Set Parametes for selected channels" popup menu for CSC and Module windows
++ Added Vmon and Imon visual alarms for CSC and Module windows (sharing vmon_max and imon_max thresholds)
++ DIM DNS address shown in Main Window title
+
+02/01/2006
+= Version 1.1.4
++ Startup: Fixed password encoding-decoding issue with Linux version
+
+01/31/2006
+= Version 1.1.3
++ Added startup password dialog
++ Added "Send Command" dialog, with options which are compatible with console hvClient syntax
++ Added Help tooltip with description of available options for "Send Command" Dialog
++ Added "Set Parametes for selected..." popup menu for CSC Status and Modules Status window
++ Added "Set Visual Alarm Thresholds" popup menu for CSC Status window
++ Visual alarm thresholds values are saved in HVClient configuration
+? Experimental application auto-update feature
+
+01/24/2006
+= Version 1.1
++ Added color higlighting for active channels, voltage and current monitoring in CSC status windows
++ Added table values tooltips for status windows
+
+01/23/2006
++ Major rewrite of data handling
++ Added summary status windows for CSCs and Modules
++ Added Primary PS control
+
+10/19/2005
++ HVTimeChart: Changed add() to addOrUpdate() method in addValue() to fix freezes of monitoring updates
++ HVTimeChart: Changed plot history length from 3600 to 300sec
++ Module Monitor Window: Immediate update of monitoring window if HostID, HVCard and Bus Address changed
+
+10/18/2005
++ Browser Window: Double clicks on Master# and RDB# nodes in tree open corresponding module monitoring window
++ Browser Window: Set title to current DIM DNS Node
++ Module Monitor Window: Changed Axis Tick Marks for plots
++ Main Window: Added Set DIM DNS Node dialog
++ Common Code: Fixed DimRpcInfo DimLock reset issues

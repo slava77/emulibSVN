@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Exported by JBuilder on Dec 21, 2013 9:26:17 PM-->
+<!--It is RECOMMENDED that JBuilder builds and Ant builds done with
+this exported Ant file be kept separate and be written to different
+directories. For example, the JBuilder output directory might be "classes"
+and the Ant output directory might be "classes.ant".-->
+<project basedir="." default="rebuild" name="HVClient.jpx">
+<property name="jbuilder.home" value="C:/Borland/JBuilder2006"/>
+<property name="Tomcat.home" value="${jbuilder.home}/thirdparty/jakarta-tomcat-4.1.31"/>
+<property name="jdk.home" value="C:/Program Files/Java/jdk1.6.0_18"/>
+<property name="dest" value="classes.ant"/>
+<property name="Generated.Source" value="${dest}/Temporary_Files"/>
+<property name="jDIM.home" value="C:/dim/jdim"/>
+<property name="jFreeChart.home" value="C:/Projects/Java/ext/jfreechart-1.0.13/lib"/>
+<property name="src" value="src"/>
+<path id="project.class.path">
+<pathelement location="${dest}"/>
+<pathelement location="${jDIM.home}/jDIM.jar"/>
+<pathelement location="${jFreeChart.home}/jcommon-1.0.16.jar"/>
+<pathelement location="${jFreeChart.home}/jfreechart-1.0.13.jar"/>
+<pathelement location="${jdk.home}/sample/jnlp/servlet/jardiff.jar"/>
+<pathelement location="${jdk.home}/sample/jnlp/servlet/jnlp.jar"/>
+<pathelement location="${jdk.home}/sample/jnlp/servlet/jnlp-servlet.jar"/>
+<pathelement location="${jdk.home}/lib/dt.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/profiler3/lib/jfluid-server-15.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/profiler3/lib/jfluid-server.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/profiler3/modules/org-netbeans-lib-profiler-charts.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/profiler3/modules/org-netbeans-lib-profiler-common.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/profiler3/modules/org-netbeans-lib-profiler.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/profiler3/modules/org-netbeans-modules-profiler.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/profiler3/modules/org-netbeans-lib-profiler-ui.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/core/com-sun-tools-visualvm-modules-startup.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-sa.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-heapdump.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-application-views.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-threaddump.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-host-views.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-coredump.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-core.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jvm.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jvmstat.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-tools.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-modules-appui.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-application.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-api-caching.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-jmx.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-charts.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-attach.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/visualvm/modules/com-sun-tools-visualvm-profiler.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/lib/org-openide-modules.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/lib/org-openide-util.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/lib/boot.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-core-windows.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-awt.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-options-keymap.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/ext/jh-2.0_05.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/ext/updater.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/ext/swing-layout-1.0.3.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-spi-actions.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-core-output2.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-loaders.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-windows.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-core-multiview.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-editor-mimelookup-impl.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-core.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-actions.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-core-nativeaccess.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-templates.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-io.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-api-visual.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-core-execution.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-nodes.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-masterfs.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-spi-quicksearch.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-queries.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-api-annotations-common.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-compat.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-dialogs.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-settings.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-autoupdate-services.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-api-progress.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-execution.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-swing-plaf.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-options.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-options-api.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-sendopts.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-core-io-ui.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-progress-ui.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-autoupdate-ui.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-applemenu.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-swing-tabcontrol.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-swing-outline.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-javahelp.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-explorer.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-text.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-openide-util-enumerations.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-editor-mimelookup.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-core-ui.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-print.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/modules/org-netbeans-modules-favorites.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/core/org-openide-filesystems.jar"/>
+<pathelement location="${jdk.home}/lib/visualvm/platform10/core/core.jar"/>
+<pathelement location="${jdk.home}/lib/htmlconverter.jar"/>
+<pathelement location="${jdk.home}/lib/tools.jar"/>
+<pathelement location="${jdk.home}/lib/jconsole.jar"/>
+<pathelement location="${jdk.home}/jre/lib/alt-rt.jar"/>
+<pathelement location="${jdk.home}/jre/lib/rt.jar"/>
+<pathelement location="${jdk.home}/jre/lib/ext/localedata.jar"/>
+<pathelement location="${jdk.home}/jre/lib/ext/dnsns.jar"/>
+<pathelement location="${jdk.home}/jre/lib/ext/sunpkcs11.jar"/>
+<pathelement location="${jdk.home}/jre/lib/ext/sunmscapi.jar"/>
+<pathelement location="${jdk.home}/jre/lib/ext/sunjce_provider.jar"/>
+<pathelement location="${jdk.home}/jre/lib/charsets.jar"/>
+<pathelement location="${jdk.home}/jre/lib/plugin.jar"/>
+<pathelement location="${jdk.home}/jre/lib/javaws.jar"/>
+<pathelement location="${jdk.home}/jre/lib/deploy.jar"/>
+<pathelement location="${jdk.home}/jre/lib/jce.jar"/>
+<pathelement location="${jdk.home}/jre/lib/jsse.jar"/>
+<pathelement location="${jdk.home}/jre/lib/im/thaiim.jar"/>
+<pathelement location="${jdk.home}/jre/lib/im/indicim.jar"/>
+<pathelement location="${jdk.home}/demo/jfc/Java2D/Java2Demo.jar"/>
+<pathelement location="${jdk.home}/demo/jfc/CodePointIM/CodePointIM.jar"/>
+<pathelement location="${jdk.home}/demo/scripting/jconsole-plugin/jconsole-plugin.jar"/>
+<pathelement location="${jdk.home}/demo/plugin/jfc/CodePointIM/CodePointIM.jar"/>
+<pathelement location="${jdk.home}/demo/plugin/jfc/Java2D/Java2Demo.jar"/>
+</path>
+<path id="jspc.class.path">
+<pathelement location="${Tomcat.home}/common/lib/ant.jar"/>
+<pathelement location="${Tomcat.home}/common/lib/jasper-compiler.jar"/>
+<pathelement location="${Tomcat.home}/common/lib/jasper-runtime.jar"/>
+<pathelement location="${Tomcat.home}/common/lib/naming-common.jar"/>
+<pathelement location="${Tomcat.home}/common/lib/naming-factory.jar"/>
+<pathelement location="${Tomcat.home}/common/lib/naming-resources.jar"/>
+<pathelement location="${Tomcat.home}/common/lib/servlet.jar"/>
+<pathelement location="${Tomcat.home}/common/endorsed/xercesImpl.jar"/>
+<pathelement location="${Tomcat.home}/common/endorsed/xmlParserAPIs.jar"/>
+</path>
+<!--Patternset to exclude files from the output directory:-->
+<patternset id="dest.exclude">
+<exclude name="Temporary_Files/"/>
+<exclude name="Generated Source/"/>
+<exclude name="package cache/"/>
+<exclude name="dependency cache/"/>
+<exclude name="jsp cache/"/>
+<exclude name="cache files/"/>
+</patternset>
+<target depends="init" name="javacompile">
+<javac bootclasspathref="project.class.path" debug="true" deprecation="true" destdir="${dest}" nowarn="false" source="1.5" target="1.5">
+<src path="${src}"/>
+<src path="${Generated.Source}"/>
+</javac>
+</target>
+<target depends="resource" name="executablearchive">
+<fail message="Cannot create executable jar with standard Ant tasks for &quot;Executable JAR&quot; node"/>
+</target>
+<target depends="resource" name="archive">
+<jar compress="true" destfile="hvJavaClient.jar">
+<fileset dir="${dest}">
+<patternset refid="dest.exclude"/>
+<include name="**/*.*"/>
+</fileset>
+<zipfileset src="${jDIM.home}/jDIM.jar"/>
+<zipfileset src="${jFreeChart.home}/jcommon-1.0.16.jar"/>
+<zipfileset src="${jFreeChart.home}/jfreechart-1.0.13.jar"/>
+<manifest>
+<attribute name="Main-Class" value="hvclient.HVClient"/>
+</manifest>
+</jar>
+</target>
+<target name="cleanup">
+<delete file="hvJavaClient.jar"/>
+<delete failonerror="false" includeemptydirs="true">
+<fileset dir="${dest}"/>
+</delete>
+</target>
+<target name="resource">
+<copy todir="${dest}">
+<fileset dir="${src}">
+<include name="**/*.jpe"/>
+<include name="**/*.jpeg"/>
+<include name="**/*.rmf"/>
+<include name="**/*.wav"/>
+<include name="**/*.midi"/>
+<include name="**/*.mid"/>
+<include name="**/*.au"/>
+<include name="**/*.gif"/>
+<include name="**/*.png"/>
+<include name="**/*.jpg"/>
+<include name="**/*.aiff"/>
+<include name="**/*.properties"/>
+</fileset>
+</copy>
+</target>
+<target name="javadoc"/>
+<target depends="cleanup" name="clean"/>
+<target name="precompile"/>
+<target depends="javacompile" name="compile"/>
+<target name="postcompile"/>
+<target depends="archive,executablearchive,javadoc,resource" name="package"/>
+<target name="deploy"/>
+<target depends="precompile,compile,postcompile,package,deploy" name="make"/>
+<target depends="clean,make" name="rebuild"/>
+<target name="init">
+<mkdir dir="${dest}"/>
+<mkdir dir="${Generated.Source}"/>
+</target>
+</project>

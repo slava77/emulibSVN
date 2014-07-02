@@ -1,0 +1,29 @@
+[PropertyInfo]
+fuse,int,false,false, , ,false,<default>
+imax,int,false,false, , ,false,<default>
+imon,int,false,false, , ,false,<default>
+itrip,int,false,false, , ,false,<default>
+module,int,false,false, , ,false,<default>
+printSeparator,String,false,false, , ,true,<default>
+ramp_down,int,false,false, , ,false,<default>
+ramp_up,int,false,false, , ,false,<default>
+relay,int,false,false, , ,false,<default>
+SEP,String,false,false, , ,false,<default>
+state,int,false,false, , ,false,<default>
+status,int,false,false, , ,false,<default>
+trip_cnt,int,false,false, , ,false,<default>
+trip_delay,int,false,false, , ,false,<default>
+trip_max_resets,int,false,false, , ,false,<default>
+trip_reset_delay,int,false,false, , ,false,<default>
+trip_reset_delay_cnt,int,false,false, , ,false,<default>
+trip_resets_cnt,int,false,false, , ,false,<default>
+vcur,int,false,false, , ,false,<default>
+vmax,int,false,false, , ,false,<default>
+vmon,int,false,false, , ,false,<default>
+vset,int,false,false, , ,false,<default>
+vtrip,int,false,false, , ,false,<default>
+[IconNames]
+
+
+
+

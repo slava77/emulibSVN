@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+<!--JBuilder Library Definition File-->
+<fullname>jDIM</fullname>
+<class>
+<path>[../../../dim/jdim/jDIM.jar]</path>
+</class>
+<lastmodsaved>1269342198509</lastmodsaved>
+</library>

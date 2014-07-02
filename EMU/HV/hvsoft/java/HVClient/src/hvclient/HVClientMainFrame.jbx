@@ -1,0 +1,21 @@
+[PropertyInfo]
+borderLayout1,java.awt.BorderLayout,false,false, , ,false,<default>
+desktop,javax.swing.JDesktopPane,false,false, , ,false,<default>
+image1,javax.swing.ImageIcon,false,false, , ,false,<default>
+image2,javax.swing.ImageIcon,false,false, , ,false,<default>
+image3,javax.swing.ImageIcon,false,false, , ,false,<default>
+JButton1,javax.swing.JButton,false,false, , ,false,<default>
+JButton2,javax.swing.JButton,false,false, , ,false,<default>
+JButton3,javax.swing.JButton,false,false, , ,false,<default>
+JMenuBar1,javax.swing.JMenuBar,false,false, , ,false,<default>
+JMenuFile,javax.swing.JMenu,false,false, , ,false,<default>
+JMenuFileExit,javax.swing.JMenuItem,false,false, , ,false,<default>
+JMenuHelp,javax.swing.JMenu,false,false, , ,false,<default>
+JMenuHelpAbout,javax.swing.JMenuItem,false,false, , ,false,<default>
+JToolBar,javax.swing.JToolBar,false,false, , ,false,<default>
+statusBar,javax.swing.JLabel,false,false, , ,false,<default>
+[IconNames]
+
+
+
+
