@@ -1,0 +1,11 @@
+ver. 1.6.3 (Feb 04, 2011)
++ Removed obsolete SNMP command for Wiener PL512 in hvServer and lvServer 
+
+ver. 1.6.2 (Jul 01, 2009)
++ Moved PVSS DIM services into hvServer
+
+ver. 1.6.1 (Jun 30, 2009)
++ Added current trip level check for ramping state
+
+ver. 1.6.0 (Jun 25, 2009)
++ Updated and cleaned SVN trunk   

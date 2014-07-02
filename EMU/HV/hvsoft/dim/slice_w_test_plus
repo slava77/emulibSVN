@@ -1,0 +1,53 @@
+#!/bin/sh
+
+#address and name of the LV power supply updated after replacement
+#Madorsky, 20 Oct 2009
+LV_ADDR=10.176.11.104
+#LV_ADDR=ufcmshvlvps2--cms
+
+# Get Wiener PL512 address as command line parameter
+if [ $1 ]; then 
+LV_ADDR=$1
+fi
+
+echo "=== Kill hvServer"
+killall -v -w hvServer
+#echo "=== Kill hv_pvss"
+#killall -v -w hv_pvss
+#echo "=== Kill dim/linux/dns"
+DNS_PID=`/sbin/pidof dim/linux/dns`
+#if [ $DNS_PID ]; then
+#	kill -15 $DNS_PID
+#else 
+#	echo "Can not find DIM DNS process"
+#fi 
+
+#/home/hvuser/hvcard/dim/bin/delete_processes_by_name "'hvServer '"
+#/home/hvuser/hvcard/dim/bin/delete_processes_by_name "'hv_pvss '"
+#######/home/hvuser/hvcard/dim/bin/delete_processes_by_name "'dim/linux/dns'"
+
+sleep 1
+echo "=== Turn on Wiener PL512"
+ lvClient -w${LV_ADDR} -o1
+sleep 3
+ lvClient -w${LV_ADDR} -g0 -s1
+#sleep 30
+
+#echo "=== Restart HV Driver"
+#sudo /etc/init.d/hvcard restart
+#/etc/init.d/hvcard_m restart
+# sleep 30 # needed after the hvServer killed 
+
+if [ -z $DNS_PID ]; then
+	echo "=== Start DIM DNS service"
+	cd
+#	nohup dim/linux/dns &  
+	nohup dns_wrap &
+fi
+
+sleep 2 
+
+echo "=== Start hvServer and PVSS service"
+#hvServer -s -a -w${LV_ADDR} -d
+hvServer -s -a 
+

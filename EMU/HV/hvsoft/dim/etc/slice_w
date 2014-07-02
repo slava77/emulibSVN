@@ -1,0 +1,28 @@
+#!/bin/sh
+
+
+
+
+
+/home/hvuser/hvcard/dim/bin/delete_processes_by_name "'hvServer '"
+/home/hvuser/hvcard/dim/bin/delete_processes_by_name "'hv_pvss '"
+#######/home/hvuser/hvcard/dim/bin/delete_processes_by_name "'dim/linux/dns'"
+
+sleep 2
+ lvClient -w10.176.11.104 -s1
+sleep 30
+
+/etc/init.d/hvcard_m stop
+sleep 1
+sleep 1
+sleep 1
+/etc/init.d/hvcard_m start
+sleep 30 # needed after the hvServer killed 
+cd
+dim/linux/dns &
+
+sleep 5
+
+hvServer -s -a -w10.176.11.104
+#hvServer -s
+
