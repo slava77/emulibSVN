@@ -528,7 +528,7 @@ int main(int argc, char **argv)
 
   SharedAppenderPtr append_1(new RollingFileAppender(HV_LOGSDIR+"/hvServer.log", 5*1024*1024, 10));
   append_1->setName("ServerLog");
-  append_1->setLayout( std::auto_ptr<Layout>(new TTCCLayout()) );
+  append_1->setLayout( std::auto_ptr<Layout>(new SimpleColoredLayout(false)) );
   Logger::getInstance("hvServer").addAppender(append_1);
 
   SharedAppenderPtr append_2(new ConsoleAppender());
@@ -541,7 +541,7 @@ int main(int argc, char **argv)
 
   SharedAppenderPtr append_3(new RollingFileAppender(HV_LOGSDIR+"/hvMon.log", 5*1024*1024, 10));
   append_3->setName("HVMonitorLog");
-  append_3->setLayout( std::auto_ptr<Layout>(new TTCCLayout()) );
+  append_3->setLayout( std::auto_ptr<Layout>(new SimpleColoredLayout(false)) );
   Logger::getInstance("hvMon").addAppender(append_3);
   Logger::getInstance("hvMon").addAppender(append_2);
 
@@ -549,14 +549,14 @@ int main(int argc, char **argv)
 
   SharedAppenderPtr append_4(new RollingFileAppender(HV_LOGSDIR+"/hvTiming.log", 1024*1024, 10));
   append_4->setName("HVTimingLog");
-  append_4->setLayout( std::auto_ptr<Layout>(new TTCCLayout()) );
+  append_4->setLayout( std::auto_ptr<Layout>(new SimpleColoredLayout(false)) );
   Logger::getInstance("hvTiming").addAppender(append_4);
 
   hvtiminglog = Logger::getInstance("hvTiming");
 
   SharedAppenderPtr append_5(new RollingFileAppender(HV_LOGSDIR+"/hvCommands.log", 5*1024*1024, 10));
   append_5->setName("HVCommandsLog");
-  append_5->setLayout( std::auto_ptr<Layout>(new TTCCLayout()) );
+  append_5->setLayout( std::auto_ptr<Layout>(new SimpleColoredLayout(false)) );
   Logger::getInstance("hvCommands").addAppender(append_5);
 
   hvcmdlog = Logger::getInstance("hvCommands");
@@ -564,7 +564,7 @@ int main(int argc, char **argv)
 
   SharedAppenderPtr append_6(new RollingFileAppender(HV_LOGSDIR+"/hvCalibration.log", 5*1024*1024, 10));
   append_6->setName("HVCalibrationLog");
-  append_6->setLayout( std::auto_ptr<Layout>(new TTCCLayout()) );
+  append_6->setLayout( std::auto_ptr<Layout>(new SimpleColoredLayout(false)) );
   Logger::getInstance("hvCalibration").addAppender(append_6);
   Logger::getInstance("hvCalibration").addAppender(append_2);
 
@@ -573,7 +573,7 @@ int main(int argc, char **argv)
 
   SharedAppenderPtr append_7(new RollingFileAppender(HV_LOGSDIR+"/hvDebug.log", 5*1024*1024, 10));
   append_7->setName("HVDebugLog");
-  append_7->setLayout( std::auto_ptr<Layout>(new TTCCLayout()) );
+  append_7->setLayout( std::auto_ptr<Layout>(new SimpleColoredLayout(false)) );
   Logger::getInstance("hvDebug").addAppender(append_7);
 
   hvdebug = Logger::getInstance("hvDebug");

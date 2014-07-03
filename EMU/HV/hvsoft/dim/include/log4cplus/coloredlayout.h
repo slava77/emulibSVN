@@ -55,7 +55,7 @@ class LOG4CPLUS_EXPORT SimpleColoredLayout : public Layout
 {
 public:
   SimpleColoredLayout(bool use_colors = true, bool use_gmtime = false)
-      : dateFormat( LOG4CPLUS_TEXT("%m-%d-%y %H:%M:%S") ),
+      : dateFormat( LOG4CPLUS_TEXT("%m-%d-%y %H:%M:%S,%q") ),
       useColors(use_colors),
       use_gmtime(use_gmtime)
   {
@@ -64,7 +64,7 @@ public:
 //        SimpleColoredLayout() {SetDefaultColorMap();}
   SimpleColoredLayout(const log4cplus::helpers::Properties& properties)
       : Layout(properties),
-      dateFormat( LOG4CPLUS_TEXT("%m-%d-%y %H:%M:%S") ),
+      dateFormat( LOG4CPLUS_TEXT("%m-%d-%y %H:%M:%S,%q") ),
       useColors(true),
       use_gmtime(false)
   {
@@ -89,6 +89,7 @@ public:
   {
     output << event.getTimestamp().getFormattedTime(dateFormat, use_gmtime) << "| "
     << ((useColors)?colormap[event.getLogLevel()]:"") << llmCache.toString(event.getLogLevel())
+    << " " << event.getLoggerName()
     << LOG4CPLUS_TEXT(" - ")
     << event.getMessage() << ((useColors)?NORM:"")
     << LOG4CPLUS_TEXT("\n");
