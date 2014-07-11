@@ -299,8 +299,20 @@ void *trdUpdatePrimaryControl(void* arg)
                   UINT control=h->control;
                   if (GetControlStatus( h->port, h->addr, & ( control ) ) < 0)
                     {
-                      LOG4CPLUS_WARN(hvmonlog, "Error reading control status for " << PRIMARY_STR(h));
-                      h->control = 0;
+		      h->control = 0;
+                      LOG4CPLUS_WARN(hvmonlog, "Error reading control status for " << PRIMARY_STR(h) << ". Resetting COM" << h->port << " port..." );
+                      if (ResetCOM( h->port) < 0) { 
+			LOG4CPLUS_WARN(hvmonlog, "Error resetting COM" << h->port << " port");
+                      } else {
+			SendHVCmd( h->port, h->addr, "REN" );
+                        if (GetControlStatus( h->port, h->addr, & ( control ) ) >= 0) 
+			{
+			   LOG4CPLUS_INFO(hvmonlog, "Restored reading control for " << PRIMARY_STR(h) << " after COM" << h->port << " reset.");
+			   h->control = control;
+ 			} else {
+			   LOG4CPLUS_ERROR(hvmonlog, "Unable to restore readout control for " << PRIMARY_STR(h));
+			}
+                      }
                     }
                   else h->control = control;
 
@@ -311,6 +323,10 @@ void *trdUpdatePrimaryControl(void* arg)
                       SetHVMaxVoltage( h->port, h->addr, 0 );
                       ResetHV( h->port, h->addr );
                       // SetHVMaxVoltage( h->port, h->addr, 0 );
+                      if (GetControlStatus( h->port, h->addr, & ( control ) ) >= 0)
+                        {
+                          LOG4CPLUS_INFO(hvmonlog, "Restored reading control for " << PRIMARY_STR(h));
+                        }
                       h->vcur = 0;
                       h->status = HV_STATE_ILOCK;
                       UpdatePrimaryStatus(h);
@@ -426,8 +442,8 @@ void *trdUpdatePrimaryControl(void* arg)
         }
 
       full_loop_time = ((t2.tv_sec+t2.tv_usec/1000000.) - (t0.tv_sec+t0.tv_usec/1000000.));
-//		LOG4CPLUS_DEBUG (hvtiminglog, "Pr PS timing> full loop: " << fixed << full_loop_time
-//						 << "s, ctrl loop: " << loop_time << "s, added delay: " << (delay/1000000.) <<"s");
+      LOG4CPLUS_DEBUG (hvtiminglog, "Pr PS timing> full loop: " << fixed << full_loop_time
+			 << "s, ctrl loop: " << loop_time << "s, added delay: " << (delay/1000000.) <<"s");
 
 //		if (numPS) delay /= numPS;
 

@@ -86,6 +86,7 @@ int InitCOM(int port);
 int InitHV(int port, int addr, int enable_out);
 int ResetHV(int port, int addr);
 int CloseCOM(int port);
+int ResetCOM(int port);
 int CloseHV(int port, int addr);
 int EnableHVOutput(int port, int addr);
 int DisableHVOutput(int port, int addr);

@@ -259,7 +259,8 @@ int InitCOM(int port)
   /*
      now clean the modem line and activate the settings for the port
   */
-  tcflush(comfd[port], TCIFLUSH);
+  // tcflush(comfd[port], TCIFLUSH);
+  tcflush(comfd[port], TCIOFLUSH);
   tcsetattr(comfd[port],TCSANOW,&newtio);
   return comfd[port];
 
@@ -352,6 +353,21 @@ int CloseCOM(int port)
   */
   return 0;
 
+}
+
+
+int ResetCOM(int port)
+{
+  int res = -1;
+  if (port>=MAX_COM_PORTS)
+    {
+      std::cerr << "ResetCOM: Port number is out of supported range " << MAX_COM_PORTS << std::endl;
+      return res;
+    }
+
+  if ((res = CloseCOM(port)) < 0) { std::cerr << "ResetCOM: Unable to close COM" << port << std::endl; }
+  if ((res = InitCOM(port)) < 0) { std::cerr << "ResetCOM: Unable to open COM" << port << std::endl; }
+  return res;
 }
 
 

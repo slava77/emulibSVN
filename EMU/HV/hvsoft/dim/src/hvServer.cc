@@ -1734,9 +1734,13 @@ void *trdReadDataFromDriver(void *arg)
                             {
 
                               HVhistmodule trip_data;
+
+			      pthread_mutex_lock(&IOmutex);
                               memset(&trip_data, 0, sizeof(struct HVhistmodule));
                               GetHVData(fd,i,j,0, HV_GET_MOD_HIST_DATA,
                                         (ULONG*)(&trip_data),sizeof(struct HVhistmodule));
+			      pthread_mutex_unlock(&IOmutex);
+
                               stfname << HV_LOGSDIR << "/tripdata_n" << i;
 
                               stfname << "_a" << j << "_ch" << k+1 << "_" << type << "#"
