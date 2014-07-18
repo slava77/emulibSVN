@@ -1,0 +1,1 @@
+SUBSYSTEM=="hvcardx", MODE="666", OPTIONS="last_rule"
