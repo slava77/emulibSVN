@@ -273,12 +273,13 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <utility>
 #include "emu/pc/VMEModule.h"
 #include "emu/pc/JTAG_constants.h"
 #include "emu/pc/CFEB.h"
 #include "emu/pc/Chamber.h"
 #include "emu/pc/EmuLogger.h"
-
+#include "emu/pc/Unpacker.h"
 
 namespace emu {
   namespace pc {
@@ -426,12 +427,12 @@ public:
   //
   void preamp_initx();
 // DAQMB program proms (electronics experts only)
-  void epromload_verify(DEVTYPE devnum,const char *downfile,int writ,char *cbrdnum);
+  void epromload_verify(DEVTYPE devnum,const char *downfile,int writ,const char *cbrdnum);
 	void epromread(DEVTYPE devnum);
 	int  check_eprom_readback(const char *rbkfile, const char *expfile);
-  void epromload(DEVTYPE devnum,const char *downfile,int writ,char *cbrdnum);
-  void epromload_broadcast(DEVTYPE devnum,const char *downfile,int writ,char *cbrdnum, int ipass);
-  void epromloadOld(DEVTYPE devnum,const char *downfile,int writ,char *cbrdnum);
+  void epromload(DEVTYPE devnum,const char *downfile,int writ,const char *cbrdnum);
+  void epromload_broadcast(DEVTYPE devnum,const char *downfile,int writ,const char *cbrdnum, int ipass);
+  void epromloadOld(DEVTYPE devnum,const char *downfile,int writ,const char *cbrdnum);
   void rdbkvirtex(DEVTYPE);
   void rdbkvirtexII();
 // DAQMB calibrate
@@ -822,11 +823,29 @@ public:
   inline int odmb_read_Cal_delay() { return ReadRegister(CAL_DLY) & 0xF; }   // 4 bits
   inline int odmb_read_CrateID() { return ReadRegister(ODMB_CRATEID) & 0xFF; }   // 8 bits
 
+  // various counters in ODMB
+  inline unsigned odmb_read_l1a_match(const unsigned device){return ReadRegister(L1A_MATCH_BASE | (device << 4));}
+  inline unsigned odmb_read_gap(const unsigned device){return ReadRegister(GAP_BASE | (device << 4));}
+  inline unsigned odmb_read_stored_packets(const unsigned device){return ReadRegister(STORED_PACKETS_BASE | (device << 4));}
+  inline unsigned odmb_read_shipped_packets(const unsigned device){return ReadRegister(SHIPPED_PACKETS_BASE | (device << 4));}
+  inline unsigned odmb_read_num_lcts(const unsigned device){return ReadRegister(NUM_LCTS_BASE | (device << 4));}
+
   // kill input from boards (CFEBs, TMB, ALCT) mask; multiple boards can be killed
   inline void odmb_set_kill_mask(int kill) { WriteRegister(ODMB_KILL, kill); }
   inline int odmb_read_kill_mask() { return ReadRegister(ODMB_KILL); } 
+  inline void odmb_mask_l1a_match(int mask_l1a) { WriteRegister(MASK_L1A, mask_l1a); }
+  inline int odmb_firmware_version() { return ReadRegister(read_FW_VERSION); }
 
-  inline int odmb_firmware_version() { return ReadRegister(read_FW_VERSION); }  
+  //DCFEB FIFO operations
+  inline void odmb_rst_dcfeb_fifo(const unsigned fifo_select){WriteRegister(ODMB_RST_FIFO, fifo_select & 0x7F);}
+  inline void odmb_sel_dcfeb_fifo(const unsigned dcfeb_fifo){WriteRegister(ODMB_SEL_DCFEB_FIFO, dcfeb_fifo);}
+  inline unsigned odmb_read_dcfeb_fifo_cnt(){return ReadRegister(ODMB_DCFEB_FIFO_CNT);}
+  inline unsigned odmb_read_dcfeb_fifo(){return ReadRegister(ODMB_RD_DCFEB_FIFO);}
+
+  // ODMB's DDU tx FIFO
+  inline void odmb_reset_tx()          { WriteRegister( RESET_TX, 0x01 ); }
+  inline int  odmb_read_tx_wordcount() { return ReadRegister( READ_TX_WORDCOUNT ) & 0xffff; }
+  inline int  odmb_read_tx_word()      { return ReadRegister( READ_TX_WORD      ) & 0xffff; }
 
   // this one uses discrete logic interface
   std::vector<float> odmb_fpga_sysmon();
@@ -838,10 +857,61 @@ public:
   void odmb_readparam(int paramblock,int nval,unsigned short int  *val);         
 
   void odmb_readfirmware_mcs(const char *filename);
+  int odmb_check_mcs(const char*  mcsfile, const char* bufin);
   void odmb_program_eprom(const char *mcsfile);
   void odmb_program_virtex6(const char *mcsfile);
   bool odmb_program_eprom_poll(const char *mcsfile);
   
+  void odmb_dcfeb_tests();
+  // functions for ODMB fiber test
+  inline void odmb_soft_reset() { WriteRegister(ODMB_SOFT_RESET,0x1); }
+  void odmb_set_muxes(unsigned short data_mode=0, unsigned short trig_mode=0, unsigned short lvmb_mode=0);
+  void send_dcfeb_pulse(unsigned pulse_cmd, unsigned n_pulses=1);
+  int read_nrx_pckt(unsigned dev);
+  int read_n_l1a_match(unsigned dev);
+  int read_l1a_count(){return ReadRegister(L1A_COUNTER);}
+  int read_num_ddu_packets(){return ReadRegister(DDU_PACKETS);}
+  int read_num_qpll_unlocks(){return ReadRegister(QPLL_UNLOCKS);}
+
+  //For DCFEB pipeline depth scan
+  int scan_dcfeb_pipeline_depth(const unsigned lower_depth,
+				 const unsigned upper_depth,
+				const double run_time, int &pipeline_depth_fine,
+				const bool do_a, const bool do_b);
+  float get_best_pipeline_depth(const unsigned lower_depth,
+				const unsigned upper_depth,
+				const double run_time,
+				double& err, unsigned& muons,
+				const bool do_a, const bool do_b);
+  std::vector<unsigned> get_DCFEB_packet(const time_t start_time,
+					 const double time_limit,
+					 unsigned& dcfeb);
+  float get_best_pipeline_depth(std::vector<std::pair<float, float> >& timing_data);
+  float get_timing_score(const float depth, const std::vector<std::pair<float, float> >& timing_data);
+
+  //For delay scans
+  int scan_delays(const unsigned device,
+		   const unsigned lower_limit,
+		   const unsigned upper_limit,
+		   const double run_time);
+  unsigned get_best_delay(const unsigned device,
+			  const unsigned lower_delay,
+			  const unsigned upper_delay,
+			  const double run_time);
+  unsigned odmb_read_device_delay(const unsigned device);
+  void odmb_write_device_delay(const unsigned device, const unsigned delay);
+  inline unsigned odmb_read_device_num_l1a_match(const unsigned device){return ReadRegister(0x320C | (device << 4));}
+  inline unsigned odmb_read_device_num_lct(const unsigned device){return ReadRegister(0x370C | (device << 4));}
+
+  // for SEM (provided by Bingxuan Liu of OSU)
+  void SEM_read_status(CFEB &cfeb, char status[2]);
+  int SEM_multibit_info(char status[2]);
+  void SEM_unpack_status(char status[2]);
+  void SEM_read_seu_address_linear(CFEB &cfeb, char blkadd[3]);
+  void SEM_read_seu_address_physical(CFEB &cfeb, char faradd[3]);
+  void SEM_read_errcnt(CFEB &cfeb, char *singleflip,char *multiflip);
+  void SEM_control(CFEB &cfeb);
+  void SEM_rst_doublerrorflag(CFEB &cfeb);
 
  private:
 
@@ -977,11 +1047,36 @@ public:
   // VME registers defined in ODMB for direct access
   // Liu May 29, 2013. ODMB firmware version 0.0
   //
-  static const unsigned ODMB_CTRL = 0x3000;
-  static const unsigned DCFEB_CTRL = 0x3010;
+  //static const unsigned ODMB_CTRL = 0x3000;
+  //static const unsigned DCFEB_CTRL = 0x3010;
+  
+  // updated ODMB commands
+  // Jack Bradmiller-Feld June 3, 2014. ODMB firmware version 3.06
+  static const unsigned ODMB_RST_DCFEB_JTAG = 0x1018;
+  static const unsigned ODMB_SEL_DCFEB_JTAG = 0x1020;
+  static const unsigned ODMB_DCFEB_TDO = 0x1014;
+
+  static const unsigned ODMB_MODE = 0x3000;
+  static const unsigned ODMB_SOFT_RESET = 0x3004;
+  static const unsigned DCFEB_REPROGRAM = 0x3010;
+  static const unsigned DCFEB_RESYNC = 0x3014;
   static const unsigned DCFEB_DONE = 0x3120;
   static const unsigned ODMB_QPLL = 0x3124;
-  
+  static const unsigned DCFEB_PULSE = 0x3200;
+  static const unsigned L1A_MATCH_BASE = 0x320C;
+  static const unsigned DATA_MUX = 0x3300;
+  static const unsigned TRIG_MUX = 0x3304;
+  static const unsigned LVMB_MUX = 0x3308;
+  static const unsigned GAP_BASE = 0x330C;
+  static const unsigned L1A_COUNTER = 0x33FC;
+  static const unsigned L1A_MODE = 0x3400;
+  static const unsigned MASK_L1A = 0x3408;
+  static const unsigned STORED_PACKETS_BASE = 0x340C;
+  static const unsigned DDU_PACKETS = 0x34AC;
+  static const unsigned QPLL_UNLOCKS = 0x34FC;
+  static const unsigned SHIPPED_PACKETS_BASE = 0x350C;
+  static const unsigned NUM_LCTS_BASE = 0x370C;
+
   static const unsigned LCT_L1A_DLY = 0x4000;
   static const unsigned TMB_DLY = 0x4004;
   static const unsigned PUSH_DLY = 0x4008;
@@ -995,6 +1090,15 @@ public:
   static const unsigned read_ODMB_ID = 0x4100;
   static const unsigned read_FW_VERSION = 0x4200;
   static const unsigned read_FW_BUILD = 0x4300;
+
+  static const unsigned ODMB_RD_DCFEB_FIFO = 0x5000;
+  static const unsigned ODMB_DCFEB_FIFO_CNT = 0x500C;
+  static const unsigned ODMB_SEL_DCFEB_FIFO = 0x5010;
+  static const unsigned ODMB_RST_FIFO = 0x5020;
+  static const unsigned READ_TX_WORD      = 0x5300; ///< read one 16-bit word from DDU tx FIFO
+  static const unsigned READ_TX_WORDCOUNT = 0x530c; ///< read number of 16-bit words in DDU tx FIFO
+  static const unsigned RESET_TX          = 0x5320; ///< reset DDU tx FIFO
+
 
   static const unsigned ODMB_Save_Config = 0x6000;
   static const unsigned ODMB_Retrieve_Config = 0x6004;
@@ -1021,6 +1125,15 @@ public:
   static const unsigned set_POWER_MASK = 0x8010;
   static const unsigned read_POWER_MASK = 0x8014;
   
+  // DCFEB and OTMB PULSE bit specification
+  // Jack Bradmiller-Feld June 3, 2014
+  static const unsigned INJPLS = 0x1;
+  static const unsigned EXTPLS = 0x2;
+  static const unsigned L1A_L1A_MATCH = 0x4; 
+  static const unsigned OTMB_LCT = 0x8; 
+  static const unsigned OTMB_EXT_TRIG = 0x10; 
+  static const unsigned BC0 = 0x20; 
+
 }; 
 
   } // namespace emu::pc

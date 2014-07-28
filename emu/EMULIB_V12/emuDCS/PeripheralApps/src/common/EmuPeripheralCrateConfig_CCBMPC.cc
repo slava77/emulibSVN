@@ -57,7 +57,7 @@ void EmuPeripheralCrateConfig::CCBStatus(xgi::Input * in, xgi::Output * out )
   thisCCB->RedirectOutput(&std::cout);
   //
   *out << cgicc::br() << "CCB Mode = ";
-  int ccb_mode = thisCCB->ReadRegister(0);
+  int ccb_mode = thisCCB->ReadRegister( CCB::CSRA1 );
   switch(ccb_mode & 1) {
   case 0:
     *out << "FPGA;" << std::endl;
@@ -70,13 +70,13 @@ void EmuPeripheralCrateConfig::CCBStatus(xgi::Input * in, xgi::Output * out )
     break;
   }
 
-  ccb_mode = thisCCB->ReadRegister(4);
-  if(((ccb_mode>>13)&1)==1) 
+  int ccb_status = thisCCB->ReadRegister( CCB::CSRA3 );
+  if(((ccb_status>>13)&1)==1) 
   { 
     *out << cgicc::span().set("style","color:green");
     *out << " TTCrx Ready;" << cgicc::span();
-    // Check for QPLL only if TTXrx Ready
-    if(((ccb_mode>>14)&1)==0) 
+    // Check for QPLL only if TTCrx Ready
+    if(((ccb_status>>14)&1)==0) 
     {
         *out << cgicc::span().set("style","color:green");
         *out << " QPLL Locked " << cgicc::span();
@@ -114,20 +114,24 @@ void EmuPeripheralCrateConfig::CCBStatus(xgi::Input * in, xgi::Output * out )
   *out << cgicc::br() << std::endl;
 
   //
-  *out << cgicc::br() << "CSRA1 =  " << std::hex << ccb_mode << std::endl;
-  *out << cgicc::br() << "CSRA2 =  " << std::hex << thisCCB->ReadRegister(2) << std::endl;
-  *out << cgicc::br() << "CSRA3 =  " << std::hex << thisCCB->ReadRegister(4) << std::endl;
-  *out << cgicc::br() << "CSRB1 =  " << std::hex << thisCCB->ReadRegister(0x20) << std::endl;
-  *out << cgicc::br() << "CSRB18 = " << std::hex << thisCCB->ReadRegister(0x42) << std::endl;
+  *out << cgicc::br() << "CSRA1  = 0x" << std::hex << ccb_mode                             << std::endl;
+  *out << cgicc::br() << "CSRA2  = 0x" << std::hex << thisCCB->ReadRegister( CCB::CSRA2  ) << std::endl;
+  *out << cgicc::br() << "CSRA3  = 0x" << std::hex << ccb_status                           << std::endl;
+  *out << cgicc::br() << "CSRB1  = 0x" << std::hex << thisCCB->ReadRegister( CCB::CSRB1  ) << std::endl;
+  *out << cgicc::br() << "CSRB18 = 0x" << std::hex << thisCCB->ReadRegister( CCB::CSRB18 ) << std::endl;
   //
-  unsigned lastcmd=(thisCCB->ReadRegister( CCB::CSRB15 ) & 0xff)>>2;
-  unsigned bcounter=thisCCB->ReadRegister( CCB::CSRB19_LSB ) + thisCCB->ReadRegister( CCB::CSRB19_MSB ) * 0x010000; 
-  unsigned dcounter=thisCCB->ReadRegister( CCB::CSRB21 ); 
-  unsigned lcounter=thisCCB->ReadRegister( CCB::readL1aCounterLSB ) + thisCCB->ReadRegister( CCB::readL1aCounterMSB ) * 0x010000; 
-  *out << cgicc::br() << cgicc::br() << "L1ACC counter =  " << std::dec << lcounter << std::endl;
-  *out << cgicc::br() << "BRCST counter =  " << std::dec << bcounter << std::endl;
-  *out << cgicc::br() << "DOUT  counter =  " << std::dec << dcounter << std::endl;
-  *out << cgicc::br() << "Last TTC command (hex) =  " <<  std::hex << lastcmd << std::dec << " (" << thisCCB->GetTTCCommandName( lastcmd ) << ")" << std::endl;
+  unsigned int qpllerr = thisCCB->ReadRegister( CCB::CSRB24 ) & 0xffff;
+  unsigned int qplllock= thisCCB->ReadRegister( CCB::CSRB22 ) & 0xffff;
+  unsigned int lastcmd =(thisCCB->ReadRegister( CCB::CSRB15 ) & 0xff)>>2;
+  unsigned int bcounter= thisCCB->ReadRegister( CCB::CSRB19_LSB ) + thisCCB->ReadRegister( CCB::CSRB19_MSB ) * 0x010000; 
+  unsigned int dcounter= thisCCB->ReadRegister( CCB::CSRB21 ); 
+  unsigned int lcounter= thisCCB->ReadRegister( CCB::readL1aCounterLSB ) + thisCCB->ReadRegister( CCB::readL1aCounterMSB ) * 0x010000; 
+  *out << cgicc::br() << cgicc::br() << "QPLL error (SEU) counter =  " << std::dec << qpllerr  << std::endl;
+  *out << cgicc::br()                << "QPLL lock counter =  "        << std::dec << qplllock << std::endl;
+  *out << cgicc::br() << cgicc::br() << "L1ACC counter =  "            << std::dec << lcounter << std::endl;
+  *out << cgicc::br()                << "BRCST counter =  "            << std::dec << bcounter << std::endl;
+  *out << cgicc::br()                << "DOUT  counter =  "            << std::dec << dcounter << std::endl;
+  *out << cgicc::br()                << "Last TTC command = 0x"        << std::hex << lastcmd  << std::dec << " (" << thisCCB->GetTTCCommandName( lastcmd ) << ")" << std::endl;
   
   *out << cgicc::fieldset();
   //
@@ -569,6 +573,40 @@ void EmuPeripheralCrateConfig::MPCUtils(xgi::Input * in, xgi::Output * out )
   *out << cgicc::input().set("type","submit").set("value","Read MPC Firmware in MCS format") << std::endl ;
   *out << cgicc::form() << std::endl ;
   //
+  *out << cgicc::fieldset() << cgicc::br();
+  //
+  *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;") << std::endl;
+  //
+  *out << cgicc::legend("MPC PRBS Tests").set("style","color:blue") << std::endl ;
+
+  std::string MPColdprbs =
+    toolbox::toString("/%s/MPColdPRBS",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","POST").set("action",MPColdprbs) << std::endl ;
+  *out << cgicc::input().set("type","radio").set("name","oldPRBS").set("value", "0") << "Disable PRBS";
+  *out << cgicc::input().set("type","radio").set("name","oldPRBS").set("value", "1") << "Enable PRBS";
+  if(thisMPC->GetHardwareVersion()<=1)
+    *out << cgicc::input().set("type","submit").set("value","Select MPC PRBS mode") << std::endl ;
+  else
+    *out << cgicc::input().set("type","submit").set("value","Select MPC old links PRBS mode") << std::endl ;
+  *out << cgicc::form() << std::endl ;
+
+  if(thisMPC->GetHardwareVersion()==2)
+  {
+  *out << cgicc::hr();
+  std::string MPCnewprbs =
+    toolbox::toString("/%s/MPCnewPRBS",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","POST").set("action",MPCnewprbs) << std::endl ;
+  *out << cgicc::input().set("type","radio").set("name","newPRBS").set("value", "0") << "Disable PRBS";
+  *out << cgicc::input().set("type","radio").set("name","newPRBS").set("value", "1") << "PRBS-7";
+  *out << cgicc::input().set("type","radio").set("name","newPRBS").set("value", "2") << "PRBS-15";
+  *out << cgicc::input().set("type","radio").set("name","newPRBS").set("value", "3") << "PRBS-23";
+  *out << cgicc::input().set("type","radio").set("name","newPRBS").set("value", "4") << "PRBS-31";
+  *out << cgicc::input().set("type","submit").set("value","Select MPC new links PRBS mode") << std::endl ;
+  *out << cgicc::form() << std::endl ;
+  }
+  //
+  
+
   *out << cgicc::fieldset();
   //
 }
@@ -932,6 +970,48 @@ void EmuPeripheralCrateConfig::CCBTestAll(xgi::Input * in, xgi::Output * out )
     //
     this->CCBTests(in,out);
     //
+  }
+
+void EmuPeripheralCrateConfig::MPColdPRBS(xgi::Input * in, xgi::Output * out ) 
+  throw (xgi::exception::Exception) 
+  {
+    //
+    cgicc::Cgicc cgi(in);
+    //
+    cgicc::form_iterator name2 = cgi.getElement("oldPRBS");
+    int prbsmode = -1;
+    if(name2 != cgi.getElements().end()) {
+      prbsmode = atoi(cgi["oldPRBS"]->getValue().c_str());
+    }
+    if(prbsmode != -1)  
+    {  
+       std::cout << "Set MPC old links PRBS mode to: " << prbsmode << std::endl;
+       if(prbsmode)
+         thisMPC->enablePRBS();
+       else
+         thisMPC->disablePRBS();
+    }    
+    this->MPCUtils(in,out);
+  }
+
+void EmuPeripheralCrateConfig::MPCnewPRBS(xgi::Input * in, xgi::Output * out ) 
+  throw (xgi::exception::Exception) 
+  {
+    //
+    cgicc::Cgicc cgi(in);
+    //
+    cgicc::form_iterator name2 = cgi.getElement("newPRBS");
+    int prbsmode = -1;
+    if(name2 != cgi.getElements().end()) {
+      prbsmode = atoi(cgi["newPRBS"]->getValue().c_str());
+    }
+    if(prbsmode != -1)  
+    {  
+       std::cout << "Set MPC new links PRBS mode to: " << prbsmode << std::endl;
+       thisMPC->newPRBS(prbsmode);
+    }    
+    
+    this->MPCUtils(in,out);
   }
 
  }  // namespace emu::pc

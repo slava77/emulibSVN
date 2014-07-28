@@ -51,6 +51,10 @@ public:
   //
   /// When BC0 synchronization parameters change, perform this quick scan:
   void QuickTimingScan();
+
+  //ODMB timing scans
+  void FindODMBDelays();
+  void FindPipelineDepths(const bool do_a, const bool do_b);
   //
   // clock phases...
   ///  CFEB -> TMB communication delays
@@ -229,6 +233,14 @@ public:
   inline int  GetALCTvpf_configvalue()           { return thisTMB->GetAlctVpfDelay(); }
   inline int  GetALCTL1aDelay_configvalue()      { return thisTMB->alctController()->GetWriteL1aDelay(); }
   inline int  GetAlctBx0Delay()                  { return thisTMB->GetAlctBx0Delay(); }
+  // ODMB
+  inline int  GetL1accDavDelay()        { return l1acc_dav_delay_;}
+  inline int  GetTmbDavDelay()          { return tmb_dav_delay_;}
+  inline int  GetAlctDavDelay()         { return alct_dav_delay_;}
+  inline int  GetPipelineDepthA()        { return pipeline_depth_a_;}
+  inline int  GetPipelineDepthFineA()    { return pipeline_depth_fine_a_;}
+  inline int  GetPipelineDepthB()        { return pipeline_depth_b_;}
+  inline int  GetPipelineDepthFineB()    { return pipeline_depth_fine_b_;}
   //
   // Get parameters from test summary results (not xml parameters):
   inline int  GetCFEBrxPhaseTest(int CFEB) { return CFEBrxPhase_[CFEB] ; }
@@ -387,6 +399,15 @@ private:
   int initial_clct_pattern_thresh_;
   int initial_alct_pretrig_thresh_;
   int initial_alct_pattern_thresh_;
+  // ODMB
+  int l1acc_dav_delay_;
+  int alct_dav_delay_;
+  int tmb_dav_delay_;
+  // DCFEB
+  int pipeline_depth_a_;
+  int pipeline_depth_fine_a_;
+  int pipeline_depth_b_;
+  int pipeline_depth_fine_b_;
 };
 
   } // namespace emu::pc

@@ -1,5 +1,6 @@
 #include "emu/pc/EmuPeripheralCrateConfig.h"
 #include "emu/utils/System.h"
+#include "emu/utils/String.h"
 
 #include <string>
 #include <vector>
@@ -246,6 +247,7 @@ EmuPeripheralCrateConfig::EmuPeripheralCrateConfig(xdaq::ApplicationStub * s): E
   xgi::bind(this,&EmuPeripheralCrateConfig::MeasureALCTTMBRxTxForSystem,"MeasureALCTTMBRxTxForSystem");
   xgi::bind(this,&EmuPeripheralCrateConfig::MeasureCFEBTMBRxForSystem,"MeasureCFEBTMBRxForSystem");
   xgi::bind(this,&EmuPeripheralCrateConfig::QuickScanForSystem,"QuickScanForSystem");
+  xgi::bind(this,&EmuPeripheralCrateConfig::PipelineDepthScanForSystem,"PipelineDepthScanForSystem");
   xgi::bind(this,&EmuPeripheralCrateConfig::UpdateInFlashKey, "UpdateInFlashKey");
   //
   //------------------------------
@@ -278,6 +280,11 @@ EmuPeripheralCrateConfig::EmuPeripheralCrateConfig(xdaq::ApplicationStub * s): E
   xgi::bind(this,&EmuPeripheralCrateConfig::SetTwoLayerTriggerForCrate, "SetTwoLayerTriggerForCrate");
   xgi::bind(this,&EmuPeripheralCrateConfig::QuickScanForChamber,"QuickScanForChamber");
   xgi::bind(this,&EmuPeripheralCrateConfig::QuickScanForCrate,"QuickScanForCrate");
+  xgi::bind(this,&EmuPeripheralCrateConfig::MeasureODMBDelaysForCrate,"MeasureODMBDelaysForCrate");
+  xgi::bind(this,&EmuPeripheralCrateConfig::MeasurePipelineDepthForCrate,"MeasurePipelineDepthForCrate");
+  xgi::bind(this,&EmuPeripheralCrateConfig::MeasureODMBDelaysForEndcap,"MeasureODMBDelaysForEndcap");
+  xgi::bind(this,&EmuPeripheralCrateConfig::MeasurePipelineDepthForEndcap,"MeasurePipelineDepthForEndcap");
+  xgi::bind(this,&EmuPeripheralCrateConfig::PipelineDepthScanForCrate,"PipelineDepthScanForCrate");
   //
   //-----------------------------------------------
   // CCB & MPC routines
@@ -298,6 +305,8 @@ EmuPeripheralCrateConfig::EmuPeripheralCrateConfig(xdaq::ApplicationStub * s): E
   xgi::bind(this,&EmuPeripheralCrateConfig::MPCReadFirmware, "MPCReadFirmware");
   xgi::bind(this,&EmuPeripheralCrateConfig::CCBTestAll, "CCBTestAll");
   xgi::bind(this,&EmuPeripheralCrateConfig::CCBSetTestLoops, "CCBSetTestLoops");
+  xgi::bind(this,&EmuPeripheralCrateConfig::MPColdPRBS, "MPColdPRBS");
+  xgi::bind(this,&EmuPeripheralCrateConfig::MPCnewPRBS, "MPCnewPRBS");
  
   //
   //-----------------------------------------------
@@ -347,6 +356,8 @@ EmuPeripheralCrateConfig::EmuPeripheralCrateConfig(xdaq::ApplicationStub * s): E
   //-----------------------------------------------
   // DMB utilities
   //-----------------------------------------------
+  xgi::bind(this,&EmuPeripheralCrateConfig::ReadDMBRegister, "ReadDMBRegister");
+  xgi::bind(this,&EmuPeripheralCrateConfig::WriteDMBRegister, "WriteDMBRegister");
   xgi::bind(this,&EmuPeripheralCrateConfig::CFEBStatus, "CFEBStatus");
   xgi::bind(this,&EmuPeripheralCrateConfig::DMBPrintCounters, "DMBPrintCounters");
   xgi::bind(this,&EmuPeripheralCrateConfig::DMBTurnOff, "DMBTurnOff");
@@ -366,6 +377,11 @@ EmuPeripheralCrateConfig::EmuPeripheralCrateConfig(xdaq::ApplicationStub * s): E
   xgi::bind(this,&EmuPeripheralCrateConfig::RdVfyCFEBVirtexExpT, "RdVfyCFEBVirtexExpT");
   xgi::bind(this,&EmuPeripheralCrateConfig::DMBCheckConfiguration, "DMBCheckConfiguration");
   xgi::bind(this,&EmuPeripheralCrateConfig::DMBConfigure, "DMBConfigure");
+  xgi::bind(this,&EmuPeripheralCrateConfig::DCFEBTests, "DCFEBTests");
+  xgi::bind(this,&EmuPeripheralCrateConfig::PipelineDepthScan, "PipelineDepthScan");
+  xgi::bind(this,&EmuPeripheralCrateConfig::L1ALCTScan, "L1ALCTScan");
+  xgi::bind(this,&EmuPeripheralCrateConfig::OTMBDAVScan, "OTMBDAVScan");
+  xgi::bind(this,&EmuPeripheralCrateConfig::ALCTDAVScan, "ALCTDAVScan");
   xgi::bind(this,&EmuPeripheralCrateConfig::CFEBUtils, "CFEBUtils");
   xgi::bind(this,&EmuPeripheralCrateConfig::CFEBFunction, "CFEBFunction");
   xgi::bind(this,&EmuPeripheralCrateConfig::DCFEBReadFirmware, "DCFEBReadFirmware");
@@ -383,6 +399,8 @@ EmuPeripheralCrateConfig::EmuPeripheralCrateConfig(xdaq::ApplicationStub * s): E
   //-----------------------------------------------
   // TMB utilities
   //-----------------------------------------------
+  xgi::bind(this,&EmuPeripheralCrateConfig::ReadTMBRegister, "ReadTMBRegister");
+  xgi::bind(this,&EmuPeripheralCrateConfig::WriteTMBRegister, "WriteTMBRegister");
   xgi::bind(this,&EmuPeripheralCrateConfig::ALCTStatus, "ALCTStatus");
   xgi::bind(this,&EmuPeripheralCrateConfig::RATStatus, "RATStatus");
   xgi::bind(this,&EmuPeripheralCrateConfig::CheckCrateControllerFromTMBPage, "CheckCrateControllerFromTMBPage");
@@ -611,14 +629,14 @@ void EmuPeripheralCrateConfig::MainPage(xgi::Input * in, xgi::Output * out )
      {
         // choose a ID from list
         std::vector<std::string> configIDs;
-        myTStore = GetEmuTStore();
-        if(!myTStore)
+        GetEmuTStore();
+        if(!activeTStore_)
         {  std::cout << "Can't create object TStoreReadWriter" << std::endl;
            return;
         }
-        xdata::UnsignedInteger64 flashid_64 = myTStore->readLastConfigIdFlashed((Valid_config_ID=="-1")?"plus":"minus");
+        xdata::UnsignedInteger64 flashid_64 = activeTStore_->readLastConfigIdFlashed((Valid_config_ID=="-1")?"plus":"minus");
         InFlash_config_ID = flashid_64.toString();
-        configIDs=myTStore->readIDs((Valid_config_ID=="-1")?1:2,500);
+        configIDs=activeTStore_->readIDs((Valid_config_ID=="-1")?1:2,500);
         
         *out << "Config ID in FLASH is :" << InFlash_config_ID << cgicc::br() << std::endl;
         int n_ids = configIDs.size();
@@ -1085,7 +1103,7 @@ void EmuPeripheralCrateConfig::stateChanged(toolbox::fsm::FiniteStateMachine &fs
         try 
         {
            xdata::UnsignedInteger64 id_64 = atoi(Valid_config_ID.c_str());
-           myTStore->writeFlashTime(id_64);
+           activeTStore_->writeFlashTime(id_64);
            std::cout << getLocalDateTime() << " WRITE FLASH recorded in database. Configuration ID: " << Valid_config_ID << " written to " << flashed_crates << " crates." << std::endl;
         }
         catch( const std::exception & e )
@@ -1762,6 +1780,38 @@ void EmuPeripheralCrateConfig::CrateConfiguration(xgi::Input * in, xgi::Output *
   std::string ALCTBC0ScanForCrate = toolbox::toString("/%s/ALCTBC0ScanForCrate",getApplicationDescriptor()->getURN().c_str());
   *out << cgicc::form().set("method","GET").set("action",ALCTBC0ScanForCrate) << std::endl ;
   *out << cgicc::input().set("type","submit").set("value","Synchronize ALCT BC0 for crate") << std::endl ;
+  *out << cgicc::form() << std::endl ;
+  *out << cgicc::td();
+  //
+  *out << cgicc::tr();
+  //
+  *out << cgicc::td();
+  *out << "ODMB Timing scans" << std::endl;
+  *out << cgicc::td();  
+  //
+  *out << cgicc::td();
+  std::string MeasureODMBDelaysForCrate = toolbox::toString("/%s/MeasureODMBDelaysForCrate",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",MeasureODMBDelaysForCrate) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","Find ODMB delays for crate") << std::endl ;
+  *out << cgicc::form() << std::endl ;
+  *out << cgicc::td();
+  //
+  *out << cgicc::td();
+  std::string MeasurePipelineDepthForCrate = toolbox::toString("/%s/MeasurePipelineDepthForCrate",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",MeasurePipelineDepthForCrate) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","Find pipeline depth for crate") << cgicc::br() << std::endl ;
+  *out << " A: " << cgicc::input().set("type","checkbox").set("checked","checked").set("name","check_a");
+  *out << " B: " << cgicc::input().set("type","checkbox").set("checked","checked").set("name","check_b");
+  *out << cgicc::form() << std::endl ;
+  *out << cgicc::td();
+  //
+  *out << cgicc::td();
+  std::string PipelineDepthScanForCrate = toolbox::toString("/%s/PipelineDepthScanForCrate",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",PipelineDepthScanForCrate) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","Crate-wide pipeline depth scan").set("title","Scan pipeline depth for all DCFEBs of the selected crate, and analyze them with the unpacker.")
+       << " from " << cgicc::input().set("type","text").set("size","3").set("value","55").set("name","from")
+       << " to "   << cgicc::input().set("type","text").set("size","3").set("value","75").set("name","to"  ) << std::endl ;
+  *out << pipelineDepthScanResults_ << std::endl;
   *out << cgicc::form() << std::endl ;
   *out << cgicc::td();
   //
@@ -3978,6 +4028,22 @@ void EmuPeripheralCrateConfig::ExpertToolsPage(xgi::Input * in, xgi::Output * ou
   *out << cgicc::form() << std::endl ;;
   *out << cgicc::td();
   //
+  *out << cgicc::td();
+  std::string MeasureODMBDelaysForEndcap = toolbox::toString("/%s/MeasureODMBDelaysForEndcap",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",MeasureODMBDelaysForEndcap) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","Measure ODMB delays for endcap") << std::endl ;
+  *out << cgicc::form() << std::endl ;;
+  *out << cgicc::td();
+  //
+  *out << cgicc::td();
+  std::string MeasurePipelineDepthForEndcap = toolbox::toString("/%s/MeasurePipelineDepthForEndcap",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",MeasurePipelineDepthForEndcap) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","Measure pipeline depth for endcap") << cgicc::br() << std::endl;
+  *out << " A: " << cgicc::input().set("type","checkbox").set("checked","checked").set("name","check_a");
+  *out << " B: " << cgicc::input().set("type","checkbox").set("checked","checked").set("name","check_b");
+  *out << cgicc::form() << std::endl ;;
+  *out << cgicc::td();
+  //
   *out << cgicc::table() << std::endl ;
   //
   *out << cgicc::fieldset();
@@ -4035,6 +4101,16 @@ void EmuPeripheralCrateConfig::ExpertToolsPage(xgi::Input * in, xgi::Output * ou
   std::string QuickScanForSystem = toolbox::toString("/%s/QuickScanForSystem",getApplicationDescriptor()->getURN().c_str());
   *out << cgicc::form().set("method","GET").set("action",QuickScanForSystem) << std::endl ;
   *out << cgicc::input().set("type","submit").set("value","L1As and DAVs for TOF parameters only") << std::endl ;
+  *out << cgicc::form() << std::endl ;
+  *out << cgicc::td();
+  //
+  *out << cgicc::td();
+  std::string PipelineDepthScanForSystem = toolbox::toString("/%s/PipelineDepthScanForSystem",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",PipelineDepthScanForSystem) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","Endcap-wide pipeline depth scan").set("title","Scan pipeline depth for all DCFEBs, and analyze them with the unpacker.")
+       << " from " << cgicc::input().set("type","text").set("size","3").set("value","55").set("name","from")
+       << " to "   << cgicc::input().set("type","text").set("size","3").set("value","75").set("name","to"  ) << std::endl ;
+  *out << pipelineDepthScanResults_ << std::endl;
   *out << cgicc::form() << std::endl ;
   *out << cgicc::td();
   //
@@ -4115,7 +4191,7 @@ void EmuPeripheralCrateConfig::UpdateInFlashKey(xgi::Input * in, xgi::Output * o
         try 
         {
            xdata::UnsignedInteger64 id_64 = atoi(Valid_config_ID.c_str());
-           myTStore->writeFlashTime(id_64);
+           activeTStore_->writeFlashTime(id_64);
            std::cout << getLocalDateTime() << " UPDATE IN-FLASH ID recorded in database. Configuration ID changed to: " << Valid_config_ID << std::endl;
         }
         catch( const std::exception & e )
@@ -5573,7 +5649,106 @@ void EmuPeripheralCrateConfig::QuickScanForChamber(xgi::Input * in, xgi::Output 
   //
 }
 //
+void EmuPeripheralCrateConfig::MeasureODMBDelaysForCrate(xgi::Input * in, xgi::Output * out ) 
+  throw (xgi::exception::Exception) {
+  //
+  std::cout << "Find ODMB delays for crate" << std::endl;
+  LOG4CPLUS_INFO(getApplicationLogger(), "Find L1A and DAV delays for crate");
+  //
+  cgicc::Cgicc cgi(in);
+  //
+  for(unsigned dmb(0); dmb<dmbVector.size(); ++dmb){
+    std::cout << "crate = " << current_crate_ << ", ODMB " << dmb << std::endl;
+    //
+    MyTest[dmb][current_crate_].RedirectOutput(&ChamberTestsOutput[dmb][current_crate_]);
+    MyTest[dmb][current_crate_].SetupRadioactiveTriggerConditions();
+    MyTest[dmb][current_crate_].FindODMBDelays();
+    MyTest[dmb][current_crate_].ReturnToInitialTriggerConditions();
+    MyTest[dmb][current_crate_].RedirectOutput(&std::cout);
+  }
+  //
+  this->CrateConfiguration(in,out);
+  //
+}
 //
+void EmuPeripheralCrateConfig::MeasureODMBDelaysForEndcap(xgi::Input * in, xgi::Output * out ) 
+  throw (xgi::exception::Exception) {
+  //
+  std::cout << "Find ODMB delays for crate" << std::endl;
+  LOG4CPLUS_INFO(getApplicationLogger(), "Find L1A and DAV delays for crate");
+  //
+  cgicc::Cgicc cgi(in);
+  //
+  for(unsigned crate(0); crate<crateVector.size(); ++crate){
+    if(crateVector[crate]->IsAlive()){
+      SetCurrentCrate(crate);
+      for(unsigned dmb(0); dmb<dmbVector.size(); ++dmb){
+	std::cout << "crate = " << current_crate_ << ", ODMB " << dmb << std::endl;
+	//
+	MyTest[dmb][current_crate_].RedirectOutput(&ChamberTestsOutput[dmb][current_crate_]);
+	MyTest[dmb][current_crate_].SetupRadioactiveTriggerConditions();
+	MyTest[dmb][current_crate_].FindODMBDelays();
+	MyTest[dmb][current_crate_].ReturnToInitialTriggerConditions();
+	MyTest[dmb][current_crate_].RedirectOutput(&std::cout);
+      }
+    }
+  }
+  this->Default(in, out);
+}
+//
+void EmuPeripheralCrateConfig::MeasurePipelineDepthForCrate(xgi::Input * in, xgi::Output * out ) 
+  throw (xgi::exception::Exception) {
+  //
+  std::cout << "Find pipeline depth for crate" << std::endl;
+  LOG4CPLUS_INFO(getApplicationLogger(), "Find pipeline depths for crate");
+  //
+  cgicc::Cgicc cgi(in);
+  const bool do_a(cgi.queryCheckbox("check_a"));
+  const bool do_b(cgi.queryCheckbox("check_b"));
+  //
+  for(unsigned dmb(0); dmb<dmbVector.size(); ++dmb){
+    std::cout << "crate = " << current_crate_ << ", ODMB " << dmb << std::endl;
+    //
+    MyTest[dmb][current_crate_].RedirectOutput(&ChamberTestsOutput[dmb][current_crate_]);
+    MyTest[dmb][current_crate_].SetupRadioactiveTriggerConditions();
+    MyTest[dmb][current_crate_].FindPipelineDepths(do_a, do_b);
+    MyTest[dmb][current_crate_].ReturnToInitialTriggerConditions();
+    MyTest[dmb][current_crate_].RedirectOutput(&std::cout);
+  }
+  //
+  this->CrateConfiguration(in,out);
+  //
+}
+//
+
+void EmuPeripheralCrateConfig::MeasurePipelineDepthForEndcap(xgi::Input * in, xgi::Output * out ) 
+  throw (xgi::exception::Exception) {
+  //
+  std::cout << "Find pipeline depth for crate" << std::endl;
+  LOG4CPLUS_INFO(getApplicationLogger(), "Find pipeline depths for crate");
+  //
+  cgicc::Cgicc cgi(in);
+  const bool do_a(cgi.queryCheckbox("check_a"));
+  const bool do_b(cgi.queryCheckbox("check_b"));
+  //
+  for(unsigned crate(0); crate<crateVector.size(); ++crate){
+    if(crateVector[crate]->IsAlive()){
+      SetCurrentCrate(crate);
+      for(unsigned dmb(0); dmb<dmbVector.size(); ++dmb){
+	std::cout << "crate = " << current_crate_ << ", ODMB " << dmb << std::endl;
+	//
+	MyTest[dmb][current_crate_].RedirectOutput(&ChamberTestsOutput[dmb][current_crate_]);
+	MyTest[dmb][current_crate_].SetupRadioactiveTriggerConditions();
+	MyTest[dmb][current_crate_].FindPipelineDepths(do_a, do_b);
+	MyTest[dmb][current_crate_].ReturnToInitialTriggerConditions();
+	MyTest[dmb][current_crate_].RedirectOutput(&std::cout);
+      }
+    }
+  }
+  this->Default(in, out);
+}
+//
+
 void EmuPeripheralCrateConfig::MeasureL1AsAndDAVsForCrate(xgi::Input * in, xgi::Output * out ) 
   throw (xgi::exception::Exception) {
   //
@@ -5950,6 +6125,211 @@ void EmuPeripheralCrateConfig::QuickScanForSystem(xgi::Input * in, xgi::Output *
   //
 }
 //
+std::string EmuPeripheralCrateConfig::pipelineDepthDataDir( const std::string& dateTime, Crate* crate, DAQMB* dmb, int depth ){
+  std::vector<std::string> lines( emu::utils::execShellCommand( "whoami" ) );
+  std::string userName( lines.size() > 0 ? *lines.begin() : "unknown" );
+  std::ostringstream dirName;
+  dirName << "/tmp"
+	  << "/" << userName
+	  << "/Pipeline"
+	  << "/" << dateTime;
+  if ( crate != NULL && dmb != NULL ){
+    dirName << "/" << std::setw(2) << std::setfill('0') << crate->CrateID()
+	    << "/" << std::setw(2) << std::setfill('0') << dmb->slot() 
+	    << "/" << std::setw(3) << std::setfill('0') << depth;
+  }
+  return dirName.str();
+}
+
+std::string EmuPeripheralCrateConfig::dmbsToString( std::set<DAQMB*>& dmbs ){
+  std::ostringstream oss;
+  for ( std::set<DAQMB*>::iterator dmb = dmbs.begin(); dmb != dmbs.end(); ++dmb ){
+    oss << ( dmb == dmbs.begin() ? "" : " " )
+	<< "(crate=" << (*dmb)->getCrate()->CrateID()
+	<< ",dmb="  << (*dmb)->slot()
+	<< ","      << (*dmb)->getCrate()->GetChamber( *dmb )->GetLabel()
+	<< ")";
+  }
+  return oss.str();
+}
+
+void EmuPeripheralCrateConfig::PipelineDepthScan( xgi::Input * in, xgi::Output * out, bool allCrates )
+  throw (xgi::exception::Exception){
+
+  cgicc::Cgicc cgi(in);
+  cgicc::form_iterator from = cgi.getElement("from");
+  cgicc::form_iterator to   = cgi.getElement("to"  );
+  int fromDepth = 60;
+  int toDepth   = 70;
+  if ( from != cgi.getElements().end() ) fromDepth = utils::stringTo<int>( from->getValue() );
+  if ( to   != cgi.getElements().end() )   toDepth = utils::stringTo<int>( to  ->getValue() );
+  
+  std::cout << "System-wide pipeline depth scan" << std::endl;
+  LOG4CPLUS_INFO(getApplicationLogger(), "System-wide pipeline depth scan");
+
+  if(!parsed) ParsingXML();
+  
+  enum ODMBInputKill_t { kill_None   = 0x0000,
+			 kill_DCFEB1 = 0x0001, 
+			 kill_DCFEB2 = 0x0002, 
+			 kill_DCFEB3 = 0x0004, 
+			 kill_DCFEB4 = 0x0008, 
+			 kill_DCFEB5 = 0x0010, 
+			 kill_DCFEB6 = 0x0020, 
+			 kill_DCFEB7 = 0x0040, 
+			 kill_TMB    = 0x0080,
+			 kill_ALCT   = 0x0100, 
+			 kill_DCFEBs = 0x007f,
+			 kill_All    = 0x01ff };
+  const int nReadouts = 20;
+  const int secondsToWaitForData = 40;
+  const unsigned short int minWordsToRead = 8000; // 16-bit words
+
+  struct timeval start, now;
+
+  std::string dateTime( emu::utils::getDateTime( true ) );
+
+  //
+  // Loop over pipeline depths
+  //
+  for ( int depth=fromDepth; depth<=toDepth; depth++ ){
+
+    //
+    // Set pipeline depth for all DCFEBs and create a directory for the results
+    //
+    for ( std::vector<Crate*>::iterator crate=crateVector.begin(); crate!=crateVector.end(); ++crate ){
+      if ( ( allCrates || *crate == thisCrate ) && (*crate)->IsAlive() ){
+	std::vector<DAQMB*> dmbs( (*crate)->daqmbs() );
+	for ( std::vector<DAQMB*>::iterator dmb=dmbs.begin(); dmb!=dmbs.end(); ++dmb ){
+	  if ( (*dmb)->GetHardwareVersion() >= 2 ){
+	    emu::utils::execShellCommand( "mkdir -p " + pipelineDepthDataDir( dateTime, *crate, *dmb, depth ) );
+	    std::vector<CFEB> cfebs( (*dmb)->cfebs() );
+	    for ( std::vector<CFEB>::iterator cfeb=cfebs.begin(); cfeb!=cfebs.end(); ++cfeb ){
+	      if ( cfeb->GetHardwareVersion() >= 2 ){
+		(*dmb)->dcfeb_set_PipelineDepth( *cfeb, depth ); // set the pipeline depth
+		usleep( 100000 );
+		(*dmb)->Pipeline_Restart( *cfeb ); // and then restart the pipeline
+		usleep( 100000 );
+	      } // if ( cfeb.GetHardwareVersion() >= 2 )
+	    } // for ( std::vector<CFEB>::iterator cfeb=cfebs.begin(); cfeb!=cfebs.end(); ++cfeb )
+	  } // if ( (*dmb)->GetHardwareVersion() >= 2 )
+	} // for ( std::vector<DAQMB*>::iterator dmb=dmbs.begin(); dmb!=dmbs.end(); ++dmb )
+      } // if ( ( allCrates || *crate == thisCrate ) && (*crate)->IsAlive() )
+    } // for ( std::vector<Crate*>::iterator crate=crateVector.begin(); crate!=crateVector.end(); ++crate )
+
+    //
+    // Read out ODMB's DDU tx FIFO many times to give every CFEB a chance to be hit.
+    //
+    for ( int iReadout=0; iReadout<nReadouts; ++iReadout ){
+
+      //
+      // Reset DMB's DDU tx FIFO and kill ALCT input
+      //
+      std::set<DAQMB*> dmbsWithoutData;
+      for ( std::vector<Crate*>::iterator crate=crateVector.begin(); crate!=crateVector.end(); ++crate ){
+	if ( ( allCrates || *crate == thisCrate ) && (*crate)->IsAlive() ){
+	  std::vector<DAQMB*> dmbs( (*crate)->daqmbs() );
+	  for ( std::vector<DAQMB*>::iterator dmb=dmbs.begin(); dmb!=dmbs.end(); ++dmb ){
+	    if ( (*dmb)->GetHardwareVersion() >= 2 ){
+	      dmbsWithoutData.insert( *dmb  );
+	      (*dmb)->odmb_set_kill_mask( kill_All );
+	      (*dmb)->odmb_reset_tx();
+	      (*dmb)->odmb_set_kill_mask( kill_ALCT );
+	    } // if ( (*dmb)->GetHardwareVersion() >= 2 )
+	  } // for ( std::vector<DAQMB*>::iterator dmb=dmbs.begin(); dmb!=dmbs.end(); ++dmb )
+	} // if ( ( allCrates || *crate == thisCrate ) && (*crate)->IsAlive() )
+      } // for ( std::vector<Crate*>::iterator crate=crateVector.begin(); crate!=crateVector.end(); ++crate )
+
+      //
+      // Allow FIFOs some time to fill up
+      //
+      gettimeofday( &now  , NULL );
+      gettimeofday( &start, NULL );
+      while ( dmbsWithoutData.size() > 0 && start.tv_sec + secondsToWaitForData > now.tv_sec ){
+	::usleep( 200000 );
+
+	for ( std::vector<Crate*>::iterator crate=crateVector.begin(); crate!=crateVector.end(); ++crate ){
+	  if ( ( allCrates || *crate == thisCrate ) && (*crate)->IsAlive() ){
+	    std::vector<DAQMB*> dmbs( (*crate)->daqmbs() );
+	    for ( std::vector<DAQMB*>::iterator dmb=dmbs.begin(); dmb!=dmbs.end(); ++dmb ){
+	      if ( (*dmb)->GetHardwareVersion() >= 2 ){
+		std:: cout << "Checking FIFO at depth " << depth
+			   << "  iReadout "             << iReadout
+			   << "  crate "                << (*crate)->CrateID()
+			   << "  dmb "                  << (*dmb)->slot() << std::endl;
+		if ( dmbsWithoutData.find( *dmb ) != dmbsWithoutData.end() ){
+
+		  unsigned short int nWordsInFIFO = (*dmb)->odmb_read_tx_wordcount();
+		  if ( nWordsInFIFO >= minWordsToRead ){
+		  
+		    // Open a file to save data in
+		    std::ostringstream fileName;
+		    std::ofstream file;
+		    fileName << pipelineDepthDataDir( dateTime, *crate, *dmb, depth ) << "/" << std::setw(4) << std::setfill('0') << iReadout << ".raw";
+		    if ( !file.is_open() ) file.open( fileName.str().c_str(), std::ofstream::app | std::ofstream::binary );
+		  
+		    // Read out FIFO words and write them to the file throwing away lone words
+		    const int loneWordLength = 4; // 16-bit words
+		    unsigned short int words[loneWordLength];
+		    for ( unsigned short int iWord=0; iWord<nWordsInFIFO; ++iWord ){
+
+		      words[iWord%loneWordLength] = (*dmb)->odmb_read_tx_word();
+		      if ( (iWord%loneWordLength) + 1 == loneWordLength ){
+			bool isLoneWord = true;
+			for ( int i=0; i<loneWordLength; ++i ) isLoneWord &= ( words[i] & 0xf000 == 0x8000 );
+			if ( !isLoneWord ){
+			  for ( int i=0; i<loneWordLength; ++i ) file.write( (char*)( words+i ), sizeof( unsigned short int ) );
+			}
+		      }
+		    }
+		  
+		    if ( file.is_open() ) file.close();
+
+		    dmbsWithoutData.erase( *dmb );
+
+		  } // if ( nWordsInFIFO >= minWordsToRead )
+		} // if ( (*dmb)->GetHardwareVersion() >= 2 )
+	      } // if ( dmbsWithoutData.find( *dmb ) != dmbsWithoutData.end() )
+	    } // for ( std::vector<DAQMB*>::iterator dmb=dmbs.begin(); dmb!=dmbs.end(); ++dmb )
+	  }  // if ( ( allCrates || *crate == thisCrate ) && (*crate)->IsAlive() )
+	} // for ( std::vector<Crate*>::iterator crate=crateVector.begin(); crate!=crateVector.end(); ++crate )
+
+	if ( dmbsWithoutData.size() > 0 ) std::cout << "DMBs still without data: " << dmbsToString( dmbsWithoutData ) << std::endl;
+	gettimeofday( &now, NULL );
+      } // while ( dmbsWithoutData.size() > 0 && start.tv_sec + secondsToWaitForData > now.tv_sec )
+
+      if ( start.tv_sec + secondsToWaitForData < now.tv_sec ) std::cout << "Timed out after " 
+									<< now.tv_sec - start.tv_sec 
+									<< " s."
+									<< std::endl;
+      
+    } // for ( int iReadout=0; iReadout<nReadouts; ++iReadout )
+
+  } // for ( int depth=fromDepth; depth<=toDepth; depth++ )
+
+  std::string resultsDir( pipelineDepthDataDir( dateTime, NULL, NULL, 0 ) );
+  std::string analyzerCommand( "analyzePipelineDepthScan.exe " + resultsDir + " >> " + resultsDir + "/errors.log 2>&1" );
+  std::cout << "Executing " << analyzerCommand << std::endl;
+  try{
+    emu::utils::execShellCommand( analyzerCommand );
+    pipelineDepthScanResults_ = emu::utils::readFile( resultsDir + "/results.html" );
+  }
+  catch( xcept::Exception& e ){
+    LOG4CPLUS_ERROR( getApplicationLogger(), "Error in pipeline depth scan analysis: " << stdformat_exception_history( e ) );
+  }
+}
+
+void EmuPeripheralCrateConfig::PipelineDepthScanForCrate( xgi::Input * in, xgi::Output * out )
+  throw (xgi::exception::Exception){
+  PipelineDepthScan( in, out, false );
+  this->CrateConfiguration(in,out);
+}
+
+void EmuPeripheralCrateConfig::PipelineDepthScanForSystem( xgi::Input * in, xgi::Output * out )
+  throw (xgi::exception::Exception){
+  PipelineDepthScan( in, out, true );
+  this->ExpertToolsPage(in,out);
+}
 //
 void EmuPeripheralCrateConfig::setTMBCounterReadValues(xgi::Input * in, xgi::Output * out ) 
   throw (xgi::exception::Exception) {
@@ -8594,6 +8974,32 @@ void EmuPeripheralCrateConfig::TMBUtils(xgi::Input * in, xgi::Output * out )
   //
   *out << cgicc::legend("Other TMB Utilities").set("style","color:blue") ;
   //
+  std::string ReadTMBRegister = 
+    toolbox::toString("/%s/ReadTMBRegister",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",ReadTMBRegister) << std::endl ;
+  *out << "Read Register (hex) " << std::endl;
+  sprintf(buf, "%04X", TMBRegisterRead_);  
+  *out << cgicc::input().set("type","text").set("value",buf).set("name","TMBRegister") << std::endl ;
+  sprintf(buf,"%d",tmb);
+  *out << cgicc::input().set("type","hidden").set("value",buf).set("name","tmb");
+  *out << cgicc::input().set("type","submit").set("value","Read TMB") << std::endl ;
+  *out << " Register value (hex): " << std::hex << TMBRegisterValue_ << std::endl;
+  *out << cgicc::form() << std::endl ;
+  //
+  std::string WriteTMBRegister = 
+    toolbox::toString("/%s/WriteTMBRegister",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",WriteTMBRegister) << std::endl ;
+  *out << "Write Register (hex) " << std::endl;
+  sprintf(buf, "%04X", TMBRegisterWrite_);
+  *out << cgicc::input().set("type","text").set("value",buf).set("name","TMBRegister") << std::endl ;
+  *out << "Register value (hex) " << std::endl;
+  sprintf(buf, "%04X", TMBWriteValue_);
+  *out << cgicc::input().set("type","text").set("value",buf).set("name","TMBValue") << std::endl ;
+  sprintf(buf,"%d",tmb);
+  *out << cgicc::input().set("type","hidden").set("value",buf).set("name","tmb");
+  *out << cgicc::input().set("type","submit").set("value","Write TMB") << std::endl ;
+  *out << cgicc::form() << cgicc::br() << std::endl ;
+  //
   std::string TMBDumpAllRegisters = toolbox::toString("/%s/TMBDumpAllRegisters",getApplicationDescriptor()->getURN().c_str());
   *out << cgicc::form().set("method","GET").set("action",TMBDumpAllRegisters) ;
   *out << cgicc::input().set("type","submit").set("value","Dump All TMB VME Registers") ;
@@ -10133,17 +10539,41 @@ void EmuPeripheralCrateConfig::SaveTestSummary() {
 	      << std::setw(10) << (thisChamber->GetLabel()).c_str()
 	      << std::setw(5) << thisCCB->GetReadTTCrxID() 
 	      << std::endl;
-      LogFile << "best_avg_aff_to_l1a      " 
+      LogFile << "best_avg_aff_to_l1a   " 
 	      << std::setw(10) << (thisChamber->GetLabel()).c_str()
-	      << std::setw(10) << MyTest[i][current_crate_].GetBestAverageAFFtoL1A()
+	      << std::setw(5) << MyTest[i][current_crate_].GetBestAverageAFFtoL1A()
 	      << std::endl;
-      LogFile << "best_avg_alct_dav_scope  " 
+      LogFile << "best_avg_alct_dav_scope " 
 	      << std::setw(10) << (thisChamber->GetLabel()).c_str()
-	      << std::setw(10) << MyTest[i][current_crate_].GetBestAverageALCTDAVScope()
+	      << std::setw(5) << MyTest[i][current_crate_].GetBestAverageALCTDAVScope()
 	      << std::endl;
-      LogFile << "best_avg_cfeb_dav_scope  " 
+      LogFile << "l1acc_dav_delay       " 
 	      << std::setw(10) << (thisChamber->GetLabel()).c_str()
-	      << std::setw(10) << MyTest[i][current_crate_].GetBestAverageCFEBDAVScope()
+	      << std::setw(5) << MyTest[i][current_crate_].GetL1accDavDelay()
+	      << std::endl;
+      LogFile << "tmb_dav_delay         " 
+	      << std::setw(10) << (thisChamber->GetLabel()).c_str()
+	      << std::setw(5) << MyTest[i][current_crate_].GetTmbDavDelay()
+	      << std::endl;
+      LogFile << "alct_dav_delay        " 
+	      << std::setw(10) << (thisChamber->GetLabel()).c_str()
+	      << std::setw(5) << MyTest[i][current_crate_].GetAlctDavDelay()
+	      << std::endl;
+      LogFile << "pipeline_depth_a        " 
+	      << std::setw(10) << (thisChamber->GetLabel()).c_str()
+	      << std::setw(5) << MyTest[i][current_crate_].GetPipelineDepthA()
+	      << std::endl;
+      LogFile << "pipeline_depth_fine_a   " 
+	      << std::setw(10) << (thisChamber->GetLabel()).c_str()
+	      << std::setw(5) << MyTest[i][current_crate_].GetPipelineDepthFineA()
+	      << std::endl;
+      LogFile << "pipeline_depth_b        " 
+	      << std::setw(10) << (thisChamber->GetLabel()).c_str()
+	      << std::setw(5) << MyTest[i][current_crate_].GetPipelineDepthB()
+	      << std::endl;
+      LogFile << "pipeline_depth_fine_b   " 
+	      << std::setw(10) << (thisChamber->GetLabel()).c_str()
+	      << std::setw(5) << MyTest[i][current_crate_].GetPipelineDepthFineB()
 	      << std::endl;
       //      for (int CFEBs = 0; CFEBs<5; CFEBs++) {
       //	LogFile << "cfeb" << CFEBs << "_scan " << std::setw(3) << i;
@@ -10211,7 +10641,7 @@ void EmuPeripheralCrateConfig::SaveTestSummary() {
       //
     }
     //
-    TMB * thisTMB = tmbVector[tmb];
+//    TMB * thisTMB = tmbVector[tmb];
     //
     std::string lfn="/tmp/TMBTestsLogFile_"+suffix+".log";
     //
@@ -10362,6 +10792,108 @@ void EmuPeripheralCrateConfig::SaveTestSummary() {
     CrateTestsOutput.str("");
     //
     this->CrateTests(in,out);
+    //
+  }
+
+std::string EmuPeripheralCrateConfig::GetFormString(const std::string& form_element, xgi::Input* in){
+  const cgicc::Cgicc cgi(in);
+  std::string form_value;
+  cgicc::const_form_iterator name = cgi.getElement(form_element);
+  if(name != cgi.getElements().end()){
+      form_value = cgi[form_element]->getValue();
+  }else{
+    std::cout << "Form element " << form_element << " not found." << std::endl;
+  }
+  return form_value;
+}
+
+  //
+  void EmuPeripheralCrateConfig::ReadTMBRegister(xgi::Input * in, xgi::Output * out ) 
+    throw (xgi::exception::Exception)
+  {
+    //
+    cgicc::Cgicc cgi(in);
+    //
+    cgicc::form_iterator name = cgi.getElement("tmb");
+    int tmb=0;
+    if(name != cgi.getElements().end()) {
+      tmb = cgi["tmb"]->getIntegerValue();
+      std::cout << "TMB " << tmb << std::endl;
+      TMB_ = tmb;
+    } else {
+      std::cout << "Not tmb" << std::endl ;
+      tmb = TMB_;
+    }
+    //
+    TMB * thisTMB = tmbVector[tmb];
+
+    if(thisTMB)
+    {
+      cgicc::form_iterator name2 = cgi.getElement("TMBRegister");
+      int TMBregister = -1;
+      if(name2 != cgi.getElements().end()) {
+        TMBregister = strtol(cgi["TMBRegister"]->getValue().c_str(),NULL,16);
+      }
+      if(TMBregister != -1)  
+      {  TMBRegisterRead_ = TMBregister;
+         std::cout << "TMB read Register: " << std::hex << TMBregister << std::dec << std::endl;
+         TMBRegisterValue_ = thisTMB->ReadRegister(TMBregister);
+      }    
+    } 
+    else
+    {
+      std::cout << "No TMB found!" << std::endl;
+    }
+    //
+    this->TMBUtils(in,out);
+    //
+  }
+  //
+  void EmuPeripheralCrateConfig::WriteTMBRegister(xgi::Input * in, xgi::Output * out ) 
+    throw (xgi::exception::Exception)
+  {
+    //
+    cgicc::Cgicc cgi(in);
+    //
+    cgicc::form_iterator name = cgi.getElement("tmb");
+    int tmb=0;
+    if(name != cgi.getElements().end()) {
+      tmb = cgi["tmb"]->getIntegerValue();
+      std::cout << "TMB " << tmb << std::endl;
+      TMB_ = tmb;
+    } else {
+      std::cout << "Not tmb" << std::endl ;
+      tmb = TMB_;
+    }
+    //
+    TMB * thisTMB = tmbVector[tmb];
+
+    if(thisTMB)
+    {
+      cgicc::form_iterator name2 = cgi.getElement("TMBRegister");
+      cgicc::form_iterator value2 = cgi.getElement("TMBValue");
+      int TMBregister = -1;
+      int TMBvalue = -1;
+      if(name2 != cgi.getElements().end()) {
+        TMBregister = strtol(cgi["TMBRegister"]->getValue().c_str(),NULL,16);
+      }
+      if(value2 != cgi.getElements().end()) {
+        TMBvalue = strtol(cgi["TMBValue"]->getValue().c_str(),NULL,16);
+      }
+      if( TMBregister != -1 && TMBvalue != -1)  
+      {  TMBRegisterWrite_ = TMBregister;
+         TMBWriteValue_ = TMBvalue;
+         std::cout << "TMB write Register: " << std::hex << TMBregister
+                   << ", Value: " << TMBvalue << std::dec << std::endl;
+         thisTMB->WriteRegister(TMBregister, TMBvalue);
+      }
+    } 
+    else
+    {
+      std::cout << "No TMB found!" << std::endl;
+    }
+    //
+    this->TMBUtils(in,out);
     //
   }
 

@@ -122,7 +122,7 @@ protected:
   //
   std::string xmlFile;
   xdata::UnsignedLong myParameter_;
-  emu::db::TStoreReadWriter * myTStore;
+  // emu::db::TStoreReadWriter * myTStore; // not needed; base class has it already in EmuPeripheralCrateBase::activeTStore_
   //
   //TMB * thisTMB ;
   //DAQMB* thisDMB ;
@@ -157,6 +157,8 @@ protected:
   long CFEBDataIn_, CFEBDataOut_;
   int CCBRegisterRead_, CCBRegisterValue_, CCBRegisterWrite_, CCBWriteValue_, CCBTestLoops_;
   int MPCRegisterRead_, MPCRegisterValue_, MPCRegisterWrite_, MPCWriteValue_;
+  int DMBRegisterRead_, DMBRegisterValue_, DMBRegisterWrite_, DMBWriteValue_;
+  int TMBRegisterRead_, TMBRegisterValue_, TMBRegisterWrite_, TMBWriteValue_;
   std::vector<TMB*>   tmbVector;
   std::vector<TMBTester>   tmbTestVector;
   std::vector<DAQMB*> dmbVector;
@@ -395,8 +397,15 @@ private:
   //
   // DMB utils
   void DMBUtils(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
+  void ReadDMBRegister(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
+  void WriteDMBRegister(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void DMBConfigure(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
   void DMBCheckConfiguration(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
+  void DCFEBTests(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
+  void PipelineDepthScan(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
+  void L1ALCTScan(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
+  void OTMBDAVScan(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
+  void ALCTDAVScan(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
   void MakeReference(xgi::Input * in , xgi::Output * out );
   void DMBTurnOff(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void CFEBTurnOn(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
@@ -427,6 +436,8 @@ private:
   //
   // TMB utils
   void TMBUtils(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
+  void ReadTMBRegister(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
+  void WriteTMBRegister(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void CheckCrateControllerFromTMBPage(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
   void LoadTMBFirmware(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void LoadCrateTMBFirmware(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
@@ -501,6 +512,8 @@ private:
   void MPCMask(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void MPCConfig(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
   void MPCReadFirmware(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
+  void MPColdPRBS(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
+  void MPCnewPRBS(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
   //
   // CCB utils
   void CCBUtils(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);
@@ -556,6 +569,13 @@ private:
   void QuickScanForChamber(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void QuickScanForCrate(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
   void QuickScanForSystem(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);  
+  void MeasureODMBDelaysForCrate(xgi::Input* in, xgi::Output* out) throw(xgi::exception::Exception);
+  void MeasurePipelineDepthForCrate(xgi::Input* in, xgi::Output* out) throw(xgi::exception::Exception);
+  void MeasureODMBDelaysForEndcap(xgi::Input* in, xgi::Output* out) throw(xgi::exception::Exception);
+  void MeasurePipelineDepthForEndcap(xgi::Input* in, xgi::Output* out) throw(xgi::exception::Exception);
+  void PipelineDepthScanForCrate (xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);  
+  void PipelineDepthScanForSystem(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception);  
+
   //
   // BC0 scan functions
   void ALCTBC0Scan(xgi::Input * in, xgi::Output * out ) throw (xgi::exception::Exception); 
@@ -603,6 +623,7 @@ private:
   void SetTwoLayerTrigger(int tmb);
   //
   void DefineFirmwareFilenames();
+  std::string GetFormString(const std::string& form_element, xgi::Input* in);
 
   //
   std::vector<TMBTester> InitTMBTests(Crate *);
@@ -620,6 +641,11 @@ private:
   int bc0_sync[60][9];
 	int total_bad_cfeb_bits;
 	int total_good_cfeb_bits;
+  //
+  std::string pipelineDepthScanResults_;
+  void PipelineDepthScan( xgi::Input * in, xgi::Output * out, bool allCrates ) throw (xgi::exception::Exception);
+  std::string pipelineDepthDataDir( const std::string& dateTime, Crate* crate, DAQMB* dmb, int depth );
+  std::string dmbsToString( std::set<DAQMB*>& dmbs );
   //
   void SaveTestSummary();
   void SaveLog();

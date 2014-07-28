@@ -1782,6 +1782,32 @@ std::cout << "Power Read: " << std::hex << power_read << std::dec <<std::endl;
   //
   *out << cgicc::legend("DMB Utils").set("style","color:blue") ;
   //
+  //
+  std::string ReadDMBRegister = 
+    toolbox::toString("/%s/ReadDMBRegister",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",ReadDMBRegister) << std::endl ;
+  *out << "Read Register (hex) " << std::endl;
+  sprintf(buf, "%04X", DMBRegisterRead_);  
+  *out << cgicc::input().set("type","text").set("value",buf).set("name","DMBRegister") << std::endl ;
+  sprintf(buf,"%d",dmb);
+  *out << cgicc::input().set("type","hidden").set("value",buf).set("name","dmb");
+  *out << cgicc::input().set("type","submit").set("value","Read DMB") << std::endl ;
+  *out << " Register value (hex): " << std::hex << DMBRegisterValue_ << std::endl;
+  *out << cgicc::form() << std::endl ;
+  //
+  std::string WriteDMBRegister = 
+    toolbox::toString("/%s/WriteDMBRegister",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",WriteDMBRegister) << std::endl ;
+  *out << "Write Register (hex) " << std::endl;
+  sprintf(buf, "%04X", DMBRegisterWrite_);
+  *out << cgicc::input().set("type","text").set("value",buf).set("name","DMBRegister") << std::endl ;
+  *out << "Register value (hex) " << std::endl;
+  sprintf(buf, "%04X", DMBWriteValue_);
+  *out << cgicc::input().set("type","text").set("value",buf).set("name","DMBValue") << std::endl ;
+  sprintf(buf,"%d",dmb);
+  *out << cgicc::input().set("type","hidden").set("value",buf).set("name","dmb");
+  *out << cgicc::input().set("type","submit").set("value","Write DMB") << std::endl ;
+  *out << cgicc::form() << cgicc::br() << std::endl ;
   std::string DMBPrintCounters = toolbox::toString("/%s/DMBPrintCounters",getApplicationDescriptor()->getURN().c_str());
   *out << cgicc::form().set("method","GET").set("action",DMBPrintCounters) << std::endl ;
   *out << cgicc::input().set("type","submit").set("value","DMB Print Counters") << std::endl ;
@@ -1803,6 +1829,69 @@ std::cout << "Power Read: " << std::hex << power_read << std::dec <<std::endl;
   std::string DMBConfigure = toolbox::toString("/%s/DMBConfigure",getApplicationDescriptor()->getURN().c_str());
   *out << cgicc::form().set("method","GET").set("action",DMBConfigure) << std::endl ;
   *out << cgicc::input().set("type","submit").set("value","Configure DMB+CFEBs") << std::endl ;
+  sprintf(buf,"%d",dmb);
+  *out << cgicc::input().set("type","hidden").set("value",buf).set("name","dmb");
+  *out << cgicc::form() << std::endl ;
+  *out << cgicc::br();
+  //
+  // new tests for DCFEB communication
+  std::string DCFEBTests = toolbox::toString("/%s/DCFEBTests",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",DCFEBTests) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","DCFEB copper/fiber mapping test") << std::endl ;
+  sprintf(buf,"%d",dmb);
+  *out << cgicc::input().set("type","hidden").set("value",buf).set("name","dmb");
+  *out << cgicc::form() << std::endl ;
+  //
+  *out << cgicc::fieldset() << cgicc::br();
+  //  
+  *out << cgicc::fieldset().set("style","font-size: 11pt; font-family: arial;") << std::endl ;
+
+  // Pipeline Depth Scan
+  //
+  *out << cgicc::legend("ODMB Timing Scans (N.B.: must be taking cosmics to use!)").set("style","color:blue") ;
+  std::string pipeline_depth_scan = toolbox::toString("/%s/PipelineDepthScan",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",pipeline_depth_scan) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","Pipeline Depth Scan").set("style", "width: 256px") << std::endl ;
+  *out << " Scan lower bound: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","63").set("name","lower_limit");
+  *out << " Scan upper bound: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","71").set("name","upper_limit");
+  *out << " Run time: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","60").set("name","run_time") << " seconds.";
+  *out << " A: " << cgicc::input().set("type","checkbox").set("checked","checked").set("name","check_a");
+  *out << " B: " << cgicc::input().set("type","checkbox").set("checked","checked").set("name","check_b");
+  sprintf(buf,"%d",dmb);
+  *out << cgicc::input().set("type","hidden").set("value",buf).set("name","dmb");
+  *out << cgicc::form() << std::endl ;
+  //
+  *out << cgicc::br();
+  //  
+
+  std::string l1a_lct_scan = toolbox::toString("/%s/L1ALCTScan",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",l1a_lct_scan) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","L1A_LCT_DLY Scan").set("style", "width: 256px") << std::endl ;
+  *out << " Scan lower bound: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","34").set("name","lower_limit");
+  *out << " Scan upper bound: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","40").set("name","upper_limit");
+  *out << " Run time: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","15").set("name","run_time") << " seconds.";
+  sprintf(buf,"%d",dmb);
+  *out << cgicc::input().set("type","hidden").set("value",buf).set("name","dmb");
+  *out << cgicc::form() << std::endl ;
+
+  //
+  std::string otmbdav_scan = toolbox::toString("/%s/OTMBDAVScan",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",otmbdav_scan) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","OTMBDAV_DLY Scan").set("style", "width: 256px") << std::endl ;
+  *out << " Scan lower bound: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","0").set("name","lower_limit");
+  *out << " Scan upper bound: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","6").set("name","upper_limit");
+  *out << " Run time: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","15").set("name","run_time") << " seconds.";
+  sprintf(buf,"%d",dmb);
+  *out << cgicc::input().set("type","hidden").set("value",buf).set("name","dmb");
+  *out << cgicc::form() << std::endl ;
+
+  //
+  std::string ALCTDAV_scan = toolbox::toString("/%s/ALCTDAVScan",getApplicationDescriptor()->getURN().c_str());
+  *out << cgicc::form().set("method","GET").set("action",ALCTDAV_scan) << std::endl ;
+  *out << cgicc::input().set("type","submit").set("value","ALCTDAV_DLY Scan").set("style", "width: 256px") << std::endl ;
+  *out << " Scan lower bound: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","28").set("name","lower_limit");
+  *out << " Scan upper bound: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","34").set("name","upper_limit");
+  *out << " Run time: " << cgicc::input().set("type","text").set("style", "width: 64px").set("value","15").set("name","run_time") << " seconds.";
   sprintf(buf,"%d",dmb);
   *out << cgicc::input().set("type","hidden").set("value",buf).set("name","dmb");
   *out << cgicc::form() << std::endl ;
@@ -2739,6 +2828,153 @@ void EmuPeripheralCrateConfig::DMBConfigure(xgi::Input * in, xgi::Output * out )
   //
 }
 
+// New test button
+void EmuPeripheralCrateConfig::DCFEBTests(xgi::Input * in, xgi::Output * out )
+  throw (xgi::exception::Exception) { 
+  
+  cgicc::Cgicc cgi(in);      
+  //
+  cgicc::form_iterator name = cgi.getElement("dmb");
+  //
+  int dmb=0;
+  if(name != cgi.getElements().end()) {
+    dmb = cgi["dmb"]->getIntegerValue();
+    std::cout << getLocalDateTime() << " DCFEBTests  DMB " << dmb << std::endl;
+    DMB_ = dmb;
+  }
+  //
+  DAQMB * thisDMB = dmbVector[dmb];
+  // write to output box
+  thisDMB->RedirectOutput(&OutputStringDMBStatus[dmb]);
+  thisDMB->odmb_dcfeb_tests();
+  thisDMB->RedirectOutput(&std::cout);
+  //
+  this->DMBUtils(in,out);
+  //
+}
+
+// Pipeline Depth Scan button
+// Adam Dishaw, 2014-06-11
+void EmuPeripheralCrateConfig::PipelineDepthScan(xgi::Input * in, xgi::Output * out )
+  throw (xgi::exception::Exception) { 
+  
+  cgicc::Cgicc cgi(in);      
+  //
+  cgicc::form_iterator name = cgi.getElement("dmb");
+  //
+  int dmb=0;
+  if(name != cgi.getElements().end()) {
+    dmb = cgi["dmb"]->getIntegerValue();
+    std::cout << getLocalDateTime() << " Pipeline Depth Scan  DMB " << dmb << std::endl;
+    DMB_ = dmb;
+  }
+  //
+  DAQMB * thisDMB = dmbVector[dmb];
+  // write to output box
+  thisDMB->RedirectOutput(&OutputStringDMBStatus[dmb]);
+  const unsigned lower_limit(strtoul(GetFormString("lower_limit",in).c_str(), NULL, 0));
+  const unsigned upper_limit(strtoul(GetFormString("upper_limit",in).c_str(), NULL, 0));
+  const double run_time(strtod(GetFormString("run_time",in).c_str(), NULL));
+  const bool do_a(cgi.queryCheckbox("check_a"));
+  const bool do_b(cgi.queryCheckbox("check_b"));
+  int pipeline_depth_fine;
+  MyTest[dmb][current_crate_].SetupRadioactiveTriggerConditions();
+  thisDMB->scan_dcfeb_pipeline_depth(lower_limit, upper_limit, run_time, pipeline_depth_fine, do_a, do_b);
+  MyTest[dmb][current_crate_].ReturnToInitialTriggerConditions();
+  thisDMB->RedirectOutput(&std::cout);
+  //
+  this->DMBUtils(in,out);
+  //
+}
+
+// Timing Scan button
+void EmuPeripheralCrateConfig::L1ALCTScan(xgi::Input * in, xgi::Output * out )
+  throw (xgi::exception::Exception) { 
+  
+  cgicc::Cgicc cgi(in);      
+  //
+  cgicc::form_iterator name = cgi.getElement("dmb");
+  //
+  int dmb=0;
+  if(name != cgi.getElements().end()) {
+    dmb = cgi["dmb"]->getIntegerValue();
+    std::cout << getLocalDateTime() << " L1A_LCT_DLY Scan " << dmb << std::endl;
+    DMB_ = dmb;
+  }
+  //
+  DAQMB * thisDMB = dmbVector[dmb];
+  // write to output box
+  thisDMB->RedirectOutput(&OutputStringDMBStatus[dmb]);
+  const unsigned lower_limit(strtoul(GetFormString("lower_limit",in).c_str(), NULL, 0));
+  const unsigned upper_limit(strtoul(GetFormString("upper_limit",in).c_str(), NULL, 0));
+  const double run_time(strtod(GetFormString("run_time",in).c_str(), NULL));
+  MyTest[dmb][current_crate_].SetupRadioactiveTriggerConditions();
+  thisDMB->scan_delays(0x1, lower_limit, upper_limit, run_time);
+  MyTest[dmb][current_crate_].ReturnToInitialTriggerConditions();
+  thisDMB->RedirectOutput(&std::cout);
+  //
+  this->DMBUtils(in,out);
+  //
+}
+
+void EmuPeripheralCrateConfig::OTMBDAVScan(xgi::Input * in, xgi::Output * out )
+  throw (xgi::exception::Exception) { 
+  
+  cgicc::Cgicc cgi(in);      
+  //
+  cgicc::form_iterator name = cgi.getElement("dmb");
+  //
+  int dmb=0;
+  if(name != cgi.getElements().end()) {
+    dmb = cgi["dmb"]->getIntegerValue();
+    std::cout << getLocalDateTime() << " OTMBDAV_DLY Scan " << dmb << std::endl;
+    DMB_ = dmb;
+  }
+  //
+  DAQMB * thisDMB = dmbVector[dmb];
+  // write to output box
+  thisDMB->RedirectOutput(&OutputStringDMBStatus[dmb]);
+  const unsigned lower_limit(strtoul(GetFormString("lower_limit",in).c_str(), NULL, 0));
+  const unsigned upper_limit(strtoul(GetFormString("upper_limit",in).c_str(), NULL, 0));
+  const double run_time(strtod(GetFormString("run_time",in).c_str(), NULL));
+  MyTest[dmb][current_crate_].SetupRadioactiveTriggerConditions();
+  thisDMB->scan_delays(0x80, lower_limit, upper_limit, run_time);
+  MyTest[dmb][current_crate_].ReturnToInitialTriggerConditions();
+  thisDMB->RedirectOutput(&std::cout);
+  //
+  this->DMBUtils(in,out);
+  //
+}
+
+void EmuPeripheralCrateConfig::ALCTDAVScan(xgi::Input * in, xgi::Output * out )
+  throw (xgi::exception::Exception) { 
+  
+  cgicc::Cgicc cgi(in);      
+  //
+  cgicc::form_iterator name = cgi.getElement("dmb");
+  //
+  int dmb=0;
+  if(name != cgi.getElements().end()) {
+    dmb = cgi["dmb"]->getIntegerValue();
+    std::cout << getLocalDateTime() << " ALCTDAV_DLY Scan " << dmb << std::endl;
+    DMB_ = dmb;
+  }
+  //
+  DAQMB * thisDMB = dmbVector[dmb];
+  // write to output box
+  thisDMB->RedirectOutput(&OutputStringDMBStatus[dmb]);
+  const unsigned lower_limit(strtoul(GetFormString("lower_limit",in).c_str(), NULL, 0));
+  const unsigned upper_limit(strtoul(GetFormString("upper_limit",in).c_str(), NULL, 0));
+  const double run_time(strtod(GetFormString("run_time",in).c_str(), NULL));
+  MyTest[dmb][current_crate_].SetupRadioactiveTriggerConditions();
+  thisDMB->scan_delays(0x100, lower_limit, upper_limit, run_time);
+  MyTest[dmb][current_crate_].ReturnToInitialTriggerConditions();
+  thisDMB->RedirectOutput(&std::cout);
+  //
+  this->DMBUtils(in,out);
+  //
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 // DMB status
 ///////////////////////////////////////////////////////////////////////////////////
@@ -2773,7 +3009,7 @@ void EmuPeripheralCrateConfig::DMBStatus(xgi::Input * in, xgi::Output * out )
   std::string chamber=thisChamber->GetLabel();
   int hversion=thisDMB->GetHardwareVersion();
   char buf[2000], sbuf[100];
-  int nadcs, indx, cfebs, vstart, feed;
+  int nadcs, cfebs, vstart, feed;
   unsigned short *ubuf=(unsigned short *)buf;
   double val, fvalue[100];
   nadcs=5;
@@ -3652,20 +3888,102 @@ void EmuPeripheralCrateConfig::ConfigDCFEBs(xgi::Input * in, xgi::Output * out )
 
      std::vector<CFEB> cfebs = thisDMB->cfebs() ;
 
-     unsigned short int bufload[34];
      for(std::vector<CFEB>::iterator cfeb = cfebs.begin(); cfeb != cfebs.end(); cfeb++)
      {
-         if(cfeb->GetHardwareVersion() == 2)
-         {
-              std::cout << "writing parameters to DCFEB " << (cfeb - cfebs.begin () + 1) << "..." << std::endl;
-              thisDMB->set_dcfeb_parambuffer(*cfeb, bufload);
-              thisDMB->write_cfeb_selector(cfeb->SelectorBit());
-              thisDMB->dcfeb_loadparam(3, 34, bufload);
-         }
+          thisDMB->dcfeb_configure(*cfeb);
      }
      this->CFEBUtils(in,out);
 }
 
+  //
+  void EmuPeripheralCrateConfig::ReadDMBRegister(xgi::Input * in, xgi::Output * out ) 
+    throw (xgi::exception::Exception)
+  {
+    //
+    cgicc::Cgicc cgi(in);
+    //
+    cgicc::form_iterator name = cgi.getElement("dmb");
+    int dmb=0;
+    if(name != cgi.getElements().end()) {
+      dmb = cgi["dmb"]->getIntegerValue();
+      std::cout << "DMB " << dmb << std::endl;
+      DMB_ = dmb;
+    } else {
+      std::cout << "Not dmb" << std::endl ;
+      dmb = DMB_;
+    }
+    //
+    DAQMB * thisDMB = dmbVector[dmb];
+
+    if(thisDMB)
+    {
+      cgicc::form_iterator name2 = cgi.getElement("DMBRegister");
+      int DMBregister = -1;
+      if(name2 != cgi.getElements().end()) {
+        DMBregister = strtol(cgi["DMBRegister"]->getValue().c_str(),NULL,16);
+      }
+      if(DMBregister != -1)  
+      {  DMBRegisterRead_ = DMBregister;
+         std::cout << "DMB read Register: " << std::hex << DMBregister << std::dec << std::endl;
+         DMBRegisterValue_ = thisDMB->ReadRegister(DMBregister);
+      }    
+    } 
+    else
+    {
+      std::cout << "No DMB found!" << std::endl;
+    }
+    //
+    this->DMBUtils(in,out);
+    //
+  }
+  //
+  void EmuPeripheralCrateConfig::WriteDMBRegister(xgi::Input * in, xgi::Output * out ) 
+    throw (xgi::exception::Exception)
+  {
+    //
+    cgicc::Cgicc cgi(in);
+    //
+    cgicc::form_iterator name = cgi.getElement("dmb");
+    int dmb=0;
+    if(name != cgi.getElements().end()) {
+      dmb = cgi["dmb"]->getIntegerValue();
+      std::cout << "DMB " << dmb << std::endl;
+      DMB_ = dmb;
+    } else {
+      std::cout << "Not dmb" << std::endl ;
+      dmb = DMB_;
+    }
+    //
+    DAQMB * thisDMB = dmbVector[dmb];
+
+    if(thisDMB)
+    {
+      cgicc::form_iterator name2 = cgi.getElement("DMBRegister");
+      cgicc::form_iterator value2 = cgi.getElement("DMBValue");
+      int DMBregister = -1;
+      int DMBvalue = -1;
+      if(name2 != cgi.getElements().end()) {
+        DMBregister = strtol(cgi["DMBRegister"]->getValue().c_str(),NULL,16);
+      }
+      if(value2 != cgi.getElements().end()) {
+        DMBvalue = strtol(cgi["DMBValue"]->getValue().c_str(),NULL,16);
+      }
+      if( DMBregister != -1 && DMBvalue != -1)  
+      {  DMBRegisterWrite_ = DMBregister;
+         DMBWriteValue_ = DMBvalue;
+         std::cout << "DMB write Register: " << std::hex << DMBregister
+                   << ", Value: " << DMBvalue << std::dec << std::endl;
+         thisDMB->WriteRegister(DMBregister, DMBvalue);
+      }
+    } 
+    else
+    {
+      std::cout << "No DMB found!" << std::endl;
+    }
+    //
+    this->DMBUtils(in,out);
+    //
+  }
 
  }  // namespace emu::pc
 }  // namespace emu
