@@ -316,18 +316,18 @@ extern struct delayed_work dma_dac_write_work;
 extern struct mutex dma_op_mutex;
 
 
-// Data structure for DMA transfer handling
-typedef struct hvcard_pcie_dma {
-/*
-   dma_addr_t           dma_addr;
-   UINT*                buf;
-*/
-   dma_addr_t           adc_dma_addr;
-   UINT*                adc_buf;
-   dma_addr_t           dac_dma_addr;
-   UINT*                dac_buf;
+typedef struct perf_stats
+{
+  ktime_t start;
+  ktime_t end;
+  uint64_t cnt;
+  s64 sum_time;
+  s64 cur_time;
+  s64 min_time;
+  s64 max_time;
+  s64 avg_time;
+} perf_cnt;
 
-} hvcard_pcie_dma;
 
 typedef union
 {

@@ -119,6 +119,9 @@ UINT ramp_cnt 	= 0;
 ULONG dma_read_cnt = 0;
 ULONG dma_write_cnt = 0;
 
+struct perf_stats adc_read_stats;
+struct perf_stats dac_write_stats;
+
 spinlock_t hvdata_lock = SPIN_LOCK_UNLOCKED;
 
 hvcard_pcie_card **hostcard;  // one hostcard entry
@@ -2591,7 +2594,30 @@ static void hvcardx_adc_read_work(struct work_struct *work)
 {
   int i;
   int rc;
+  struct perf_stats stats;
 
+  stats.start = ktime_get();
+  adc_read_stats.end = ktime_get();
+  if (adc_read_stats.cnt) {
+	adc_read_stats.cur_time = ktime_to_ns(ktime_sub(adc_read_stats.end, adc_read_stats.start));
+
+	if (adc_read_stats.cur_time > 30000000) {
+          pr_info(PFX "read_adc() work loop time (ns) sample exceeded 30ms - %lld\n", adc_read_stats.cur_time);
+ 	}
+		
+	if (adc_read_stats.cnt == 1) {
+		adc_read_stats.min_time = adc_read_stats.cur_time;
+		adc_read_stats.max_time = adc_read_stats.cur_time;
+	}
+
+	if (adc_read_stats.cur_time > adc_read_stats.max_time) adc_read_stats.max_time = adc_read_stats.cur_time;
+ 	if (adc_read_stats.cur_time < adc_read_stats.min_time) adc_read_stats.min_time = adc_read_stats.cur_time;
+
+	adc_read_stats.sum_time += adc_read_stats.cur_time;
+	adc_read_stats.avg_time = adc_read_stats.sum_time/adc_read_stats.cnt;
+  } 
+  
+  
   for (i = 0; i < hvcard_pcie_nr_devs; i++)
     {
       rc = hvcardx_read_adc_data(i);
@@ -2599,7 +2625,23 @@ static void hvcardx_adc_read_work(struct work_struct *work)
     }
   
   dma_read_cnt++;
-  if (dma_read_cnt%15000 == 0) pr_info(PFX "Scheduled ADC read was called %ld times\n", dma_read_cnt);
+  stats.end = ktime_get();
+
+  if (dma_read_cnt%15000 == 0) {
+	 pr_info(PFX "Scheduled ADC read was called %ld times\n", dma_read_cnt);
+	 stats.cur_time = ktime_to_ns(ktime_sub(stats.end, stats.start));
+	 pr_info(PFX "read_adc() exec time: %lld ns\n",(long long)stats.cur_time);
+
+ 	 pr_info(PFX "read_adc() work loop time (ns) - current: %lld, min: %lld, max: %lld, avg: %lld\n",
+		(long long)adc_read_stats.cur_time,
+		(long long)adc_read_stats.min_time,
+		(long long)adc_read_stats.max_time,
+		(long long)adc_read_stats.avg_time);
+
+  }
+ 
+  adc_read_stats.cnt++;
+  adc_read_stats.start = adc_read_stats.end;
 }
 
 
@@ -2607,6 +2649,24 @@ static void hvcardx_dac_write_work(struct work_struct *work)
 {
   int i;
   int rc;
+  struct perf_stats stats;
+
+  stats.start = ktime_get();
+  
+  dac_write_stats.end = ktime_get();
+  if (dac_write_stats.cnt) {
+        dac_write_stats.cur_time = ktime_to_ns(ktime_sub(dac_write_stats.end, dac_write_stats.start));
+        if (dac_write_stats.cnt == 1) {
+                dac_write_stats.min_time = dac_write_stats.cur_time;
+                dac_write_stats.max_time = dac_write_stats.cur_time;
+        }
+        if (dac_write_stats.cur_time > dac_write_stats.max_time) dac_write_stats.max_time = dac_write_stats.cur_time;
+        if (dac_write_stats.cur_time < dac_write_stats.min_time) dac_write_stats.min_time = dac_write_stats.cur_time;
+        dac_write_stats.sum_time += dac_write_stats.cur_time;
+        dac_write_stats.avg_time = dac_write_stats.sum_time/dac_write_stats.cnt;
+  }
+
+  
 
   for (i = 0; i < hvcard_pcie_nr_devs; i++)
     {
@@ -2615,7 +2675,21 @@ static void hvcardx_dac_write_work(struct work_struct *work)
     }
 
   dma_write_cnt++;  
-  if (dma_write_cnt%3000 == 0) pr_info(PFX "Scheduled DAC write was called %ld times \n", dma_write_cnt);
+  stats.end = ktime_get();
+
+  if (dma_write_cnt%3000 == 0) {
+	 pr_info(PFX "Scheduled DAC write was called %ld times \n", dma_write_cnt);
+	 stats.cur_time = ktime_to_ns(ktime_sub(stats.end, stats.start));
+         pr_info(PFX "write_dac() exec time: %lld ns\n",(long long)stats.cur_time);
+	 pr_info(PFX "write_dac() work loop time (ns) - current: %lld, min: %lld, max: %lld, avg: %lld\n",
+                (long long)dac_write_stats.cur_time,
+                (long long)dac_write_stats.min_time,
+                (long long)dac_write_stats.max_time,
+                (long long)dac_write_stats.avg_time);
+  }
+
+  dac_write_stats.cnt++;
+  dac_write_stats.start = dac_write_stats.end;
 }
 
 static int __init hvcardx_init(void)
