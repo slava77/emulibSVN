@@ -1,0 +1,1242 @@
+#include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <termios.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+#include <ncurses.h>
+#include <unistd.h>
+#include <semaphore.h>
+#include <math.h>
+
+#include "hvprimary.h"
+#include "hvserver.h"
+
+static int st;
+static int debug=0;
+static unsigned int port=1; // COM1 by default
+static unsigned int addr=1;   // Unit #1 by default
+// check address switches on the back
+// of GP-IB interface module
+// static int fActive=0;
+// int fd[10];
+sem_t com_sems[MAX_COM_PORTS];
+
+struct termios oldtio,newtio;
+
+Logger hvcomdebug = Logger::getInstance("hvComDebug");
+
+
+
+// =========================================
+// Start of HV Library Functions Definitions
+// =========================================
+
+// =========================================
+// Send Command to HV power supply
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// cmd  - command string
+// returns number of bytes sent via serial
+// port or -1 in case of transmission problem
+// =========================================
+int SendHVCmd(int port, int addr, char* cmd)
+{
+  char buf[100];
+  int nbytes=0;
+  int nread;
+  int size;
+
+  memset(buf, 0, sizeof(buf));
+//	if (fActive) // Comment if dont wanna use open COM port status flag
+  {
+    sprintf(buf,"#%d %s\r",addr, cmd);
+    size=strlen(buf);
+    // printf("%s\n", cmd, size);
+    nbytes = ComWrt(port, buf,size);
+    // printf("%d\n", nbytes);
+    if (nbytes != size) {
+     LOG4CPLUS_WARN(hvcomdebug, "PS:" << port << ":" << addr<< " failed to send " << cmd << " command");
+     return -1;
+    }
+  }
+
+  return nbytes;
+}
+
+int ComWrt(int port, char *buf, int size)
+{
+  int res = -1;
+  if (port>=MAX_COM_PORTS)
+    {
+      LOG4CPLUS_ERROR(hvcomdebug, "InitCOM: Port number is out of supported range " << MAX_COM_PORTS);
+      return res;
+    }
+  /*
+    if (comfd[port] >= 0) {
+    if (&(com_sems[port])) {
+    while (sem_wait(&(com_sems[port])) == -1)
+    if(errno != EINTR) {
+    fprintf(stderr, "Thread failed to lock semaphore\n");
+    // return res;
+    }
+
+    }
+    // std::cout <<  "Took " << port << " from write" << std::endl;
+    */
+  res = write(comfd[port], buf, size);
+  /*
+    if (sem_post(&(com_sems[port])) == -1)         /
+    fprintf(stderr, "Thread failed to unlock semaphore\n");
+    // else std::cout <<  "Released " << port << " from write" << std::endl;
+
+    return res;
+    }
+  */
+  return res;
+}
+
+int ComRdTerm(int port, char *buf, int size, char delim)
+{
+  int max_delay=100000;
+  int delay=0;
+  int len, i=0, bytes=0;
+  int res = -1;
+  if (port>=MAX_COM_PORTS)
+    {
+      LOG4CPLUS_ERROR(hvcomdebug, "InitCOM: Port number is out of supported range " << MAX_COM_PORTS);
+      return res;
+    }
+  /*
+    if (comfd[port] >= 0) {
+    if (&(com_sems[port])) {
+    while (sem_wait(&(com_sems[port])) == -1)
+    if(errno != EINTR) {
+    fprintf(stderr, "Thread failed to lock semaphore\n");
+    // return res;
+    }
+
+    }
+    // std::cout <<  "Took " << port << " from read" << std::endl;
+    */
+  while (bytes==0 && delay<=max_delay)
+    {
+      usleep(20000);
+      delay+=20000;
+      ioctl(comfd[port], TIOCINQ, &bytes);
+    }
+  if (delay>max_delay)
+    {
+      LOG4CPLUS_WARN(hvcomdebug, "Timeout reading from COM" << port );
+      res -1; 
+      return res;
+    }
+  if (bytes)
+    {
+      // std::cout << "ComRdTerm: " <<  bytes << " " <<  delay << std::endl;
+      // fcntl(comfd[port], F_SETFL, FNDELAY);
+      len = read(comfd[port], buf, size);
+      if (buf[0]=='!')
+        {
+          len = read(comfd[port], buf, size);
+        }
+      // printf("%d ", len);
+      // printf("%s", buf);
+      while ((buf[i] != delim) && (i<len)) i++;
+      buf[i]=0;
+      // printf("%s", buf);
+      // fcntl(comfd[port], F_SETFL, 0);
+      // return i;
+      res = i;
+    }
+  /*
+    if (sem_post(&(com_sems[port])) == -1)
+    fprintf(stderr, "Thread failed to unlock semaphore\n");
+    // else std::cout <<  "Released " << port << " from read" << std::endl;
+    }
+  */
+  return res;
+}
+
+int Fmt(char *str, const char *format, va_list ap)
+{
+  return vsprintf(str, format, ap);
+}
+
+int InitCOM(int port)
+{
+
+  // ----------------------
+  // Open Serial COM Port
+  // Speed - 9600bps
+  // Data Length - 8
+  // Stop Bits - 1
+  // Parity - None
+  // Flow Control - None
+  // ----------------------
+
+  char device[20];
+//      struct termios oldtio,newtio;
+  if (port>=MAX_COM_PORTS)
+    {
+      LOG4CPLUS_ERROR(hvcomdebug, "InitCOM: Port number is out of supported range " << MAX_COM_PORTS);
+      return -1;
+    }
+  /*
+    if (sem_init (&(com_sems[port]), 0, 1) == -1) {
+    perror("Failed to initialize semaphore");
+    } else {
+    if (debug) std::cout << "InitCOM: semaphore " << port << " initialised" << std::endl;
+    }
+  */
+  sprintf(device,"%s%d", SERIALDEVICE, port);
+  comfd[port] = open(device, O_RDWR | O_NOCTTY );
+  // fd[port] = open(device, O_RDWR );
+  if (comfd[port] <=0)
+    {
+      perror(device);
+      return -1;
+    }
+
+  tcgetattr(comfd[port],&oldtio); /* save current serial port settings */
+  bzero(&newtio, sizeof(newtio)); /* clear struct for new port settings */
+
+  /*
+     BAUDRATE: Set bps rate. You could also use cfsetispeed and cfsetospeed.
+     CRTSCTS : output hardware flow control (only used if the cable has
+     all necessary lines. See sect. 7 of Serial-HOWTO)
+     CS8     : 8n1 (8bit,no parity,1 stopbit)
+     CLOCAL  : local connection, no modem contol
+     CREAD   : enable receiving characters
+  */
+  newtio.c_cflag = BAUDRATE | CS8 | CLOCAL | CREAD;
+
+  /*
+    IGNPAR  : ignore bytes with parity errors
+    ICRNL   : map CR to NL (otherwise a CR input on the other computer
+    will not terminate input)
+    otherwise make device raw (no other input processing)
+  */
+  newtio.c_iflag = IGNPAR | ICRNL;
+
+  /*
+    Raw output.
+  */
+  newtio.c_oflag = 0;
+
+  /*
+    ICANON  : enable canonical input
+    disable all echo functionality, and don't send signals to calling program
+  */
+  newtio.c_lflag = ICANON;
+  // newtio.c_lflag = 0;
+
+  newtio.c_cc[VTIME]    = 0;   /* inter-character timer unused */
+  newtio.c_cc[VMIN]     = 1;   /* blocking read until 5 chars received */
+
+
+  /*
+     initialize all control characters
+     default values can be found in /usr/include/termios.h, and are given
+     in the comments, but we don't need them here
+  */
+
+  newtio.c_cc[VINTR]    = 0;     /* Ctrl-c */
+  newtio.c_cc[VQUIT]    = 0;     /* Ctrl-\ */
+  newtio.c_cc[VERASE]   = 0;     /* del */
+  newtio.c_cc[VKILL]    = 0;     /* @ */
+  newtio.c_cc[VEOF]     = 4;     /* Ctrl-d */
+  newtio.c_cc[VTIME]    = 0;     /* inter-character timer unused */
+  newtio.c_cc[VMIN]     = 1;     /* blocking read until 1 character arrives */
+  newtio.c_cc[VSWTC]    = 0;     /* '\0' */
+  newtio.c_cc[VSTART]   = 0;     /* Ctrl-q */
+  newtio.c_cc[VSTOP]    = 0;     /* Ctrl-s */
+  newtio.c_cc[VSUSP]    = 0;     /* Ctrl-z */
+  newtio.c_cc[VEOL]     = 0;     /* '\0' */
+  newtio.c_cc[VREPRINT] = 0;     /* Ctrl-r */
+  newtio.c_cc[VDISCARD] = 0;     /* Ctrl-u */
+  newtio.c_cc[VWERASE]  = 0;     /* Ctrl-w */
+  newtio.c_cc[VLNEXT]   = 0;     /* Ctrl-v */
+  newtio.c_cc[VEOL2]    = 0;     /* '\0' */
+
+
+  /*
+     now clean the modem line and activate the settings for the port
+  */
+  // tcflush(comfd[port], TCIFLUSH);
+  tcflush(comfd[port], TCIOFLUSH);
+  tcsetattr(comfd[port],TCSANOW,&newtio);
+  LOG4CPLUS_INFO(hvcomdebug, "COM" << port << " is opened.");
+  return comfd[port];
+
+}
+
+// =========================================
+// HV Initialization
+// -----------------------------------------
+// Opens specified serial port and enables
+// remote control operation of HV via GPIB
+// port - serial port number
+// addr - GPIB unit number
+// enable_out  - enable HV output on power supply
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int InitHV(int port, int addr, int enable_out)
+{
+  if (InitCOM(port)<0) return -1;
+
+  //  Enable and start HV Remote Control
+  if (SendHVCmd(port, addr, "REN")<0)
+    return -1;
+
+  // Set Maximum Output Current to 50% of the rated
+  SetHVMaxCurrentPercent(port, addr, 50);
+  // Reset cut-off state
+  ResetHV(port, addr);
+
+  if (enable_out)
+    {
+      // Enable HV Outpur
+      EnableHVOutput(port, addr);
+    }
+  return 0;
+
+}
+
+// =========================================
+// Reset cut-off state of HV and enable to output
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ResetHV(int port, int addr)
+{
+  if (SendHVCmd(port, addr, "REN")<0)
+    return -1;
+  // Reset HV cut-off state
+  SetHVMaxCurrentPercent(port, addr, 50);
+  if (SendHVCmd(port, addr, "RST")<0)
+    {
+      // if (debug) LOG4CPLUS_WARN(hvcomdebug, "ResetHV: Failed to send RST command");
+      return -1;
+    }
+
+  return 0;
+}
+
+int CloseCOM(int port)
+{
+  int res = -1;
+  if (port>=MAX_COM_PORTS)
+    {
+      LOG4CPLUS_ERROR( hvcomdebug, "CloseCOM: Port number is out of supported range " << MAX_COM_PORTS);
+      return res;
+    }
+  tcsetattr(comfd[port],TCSANOW,&oldtio);
+  if (close(comfd[port])<0)
+    return res;
+  comfd[port]=-1;
+  /*
+    if (&(com_sems[port])) {
+    while (sem_wait(&(com_sems[port])) == -1)
+    if(errno != EINTR) {
+    fprintf(stderr, "Thread failed to lock semaphore\n");
+    //               return res;
+    }
+
+    // std::cout <<  "Took " << port << " from close" << std::endl;
+    if (sem_destroy(&(com_sems[port])) == -1) {
+    perror("Failed to destroy semA");
+    } else {
+    // com_sems[port]=NULL;
+    if (debug) std::cout << "CloseCOM: semaphore " << port << " destroyed" << std::endl;
+    }
+    }
+  */
+  LOG4CPLUS_INFO(hvcomdebug, "COM" << port << " is closed.");
+  return 0;
+
+}
+
+
+int ResetCOM(int port)
+{
+  int res = -1;
+  if (port>=MAX_COM_PORTS)
+    {
+      LOG4CPLUS_ERROR(hvcomdebug, "ResetCOM: Port number is out of supported range " << MAX_COM_PORTS);
+      return res;
+    }
+
+  if ((res = CloseCOM(port)) < 0) { LOG4CPLUS_WARN( hvcomdebug,"ResetCOM: Unable to close COM" << port);}
+  if ((res = InitCOM(port)) < 0) { LOG4CPLUS_WARN( hvcomdebug, "ResetCOM: Unable to open COM" << port); }
+  return res;
+}
+
+
+// =========================================
+// Disables remote control of HV supply
+// and closes serial port
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int CloseHV(int port, int addr)
+{
+  int i;
+  // Exit and disable HV Remote Control
+  SendHVCmd(port, addr, "GTL");
+  // for (i=0; i<0xFFFFF; i++) {}; // Need some delay before closing COM port
+  usleep(200000);
+  return CloseCOM(port);
+
+}
+
+
+// =========================================
+// Enables HV output
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int EnableHVOutput(int port, int addr)
+{
+  // Enabble HV Output
+  if (SendHVCmd(port, addr, "SW1")<0)
+    {
+      if (debug) LOG4CPLUS_WARN(hvcomdebug, "EnableHVOutput: Failed to send SW1 command");
+      return -1;
+    }
+  return 0;
+}
+
+// =========================================
+// Disables HV output
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int DisableHVOutput(int port, int addr)
+{
+  // Disable HV Output
+  if (SendHVCmd(port, addr, "SW0")<0)
+    {
+      if (debug) LOG4CPLUS_WARN(hvcomdebug, "DisableHVOutput: Failed to send SW0 command");;
+      return -1;
+    }
+
+
+  return 0;
+}
+
+
+int SetPolarity(int port, int addr, unsigned int polarity)
+{
+  if (SendHVCmd(port, addr, (polarity>0)? (char *)"PL1": (char *)"PL0") <0) {
+    return -1;
+  }
+  return 0;
+}
+
+int GetPolarityStatus(int port, int addr, unsigned int* status)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "PLM") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  sbuf =  strstr (buf,"PLM=");
+  if (sbuf && (sscanf(sbuf+4,"%d", &val) >0))
+    {
+      *status = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+int GetPolaritySetting(int port, int addr, unsigned int* setting)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "PL?") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  sbuf =  strstr (buf,"PL");
+  if (sbuf && (sscanf(sbuf+2,"%d", &val) >0))
+    {
+      *setting = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+int GetOutputSetting(int port, int addr, unsigned int* output)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "SW?") <0)
+    {
+      if (debug) LOG4CPLUS_WARN(hvcomdebug, "GetOutputSetting: Failed to send SW? command");
+      return -1;
+    }
+  if (ComRdTerm(port, buf, sizeof(buf), 13) < 0)
+    {
+      if (debug) LOG4CPLUS_WARN(hvcomdebug, "GetOutputSetting: Failed to read data-> " << buf);
+      return -1;
+    }
+  sbuf =  strstr (buf,"SW");
+  if (sbuf && (sscanf(sbuf+2,"%d", &val) >0))
+    {
+      *output = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+
+int GetOutputStatus(int port, int addr, unsigned int* outstatus)
+{
+  char buf[20];
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "STS") <0)
+    {
+      if (debug) LOG4CPLUS_WARN(hvcomdebug, "GetOutputStatus: Failed to send STS command");
+      return -1;
+    }
+  usleep(10000);
+  if (ComRdTerm(port, buf, sizeof(buf), 13) < 0)
+    {
+      if (debug) LOG4CPLUS_WARN(hvcomdebug, "GetOutputStatus: Failed to read data-> " << buf);
+      return -1;
+    }
+  // printf("%s", buf);
+  // *outstatus = 0;
+  if (strstr (buf,"CF"))
+    {
+      *outstatus = 0;
+      return 0;
+    }
+  if (strstr (buf,"CO"))
+    {
+      *outstatus = 1;
+      return 0;
+    }
+  // printf("output status received: %s\n", buf);
+  return -1;
+}
+
+
+int GetControlStatus(int port, int addr, unsigned int* ctrlstatus)
+{
+  char buf[20];
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "STS") <0)
+    {/*printf("error sending STS\n");*/
+      return -1;
+    };
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0)
+    {/*printf("error receiving STS\n");*/
+      return -1;
+    };
+  if (strstr (buf,"!"))
+    {
+      // Send command second time if received undefined output
+      if (SendHVCmd(port, addr, "STS") <0)
+      {/*printf("error sending STS\n");*/
+        return -1;
+      };
+      if (ComRdTerm(port, buf, sizeof(buf), 13) <0)
+        {/*printf("error receiving STS\n");*/
+         return -1;
+        };
+    }
+  // *ctrlstatus = 1;
+  if (strstr (buf,"LO"))
+    {
+      *ctrlstatus = 0;
+      return 0;
+    }
+  if (strstr (buf,"RM"))
+    {
+      *ctrlstatus = 1;
+      return 0;
+    }
+  
+  // printf("control status received: %s\n", buf);
+  return -1;
+}
+
+
+// =========================================
+// Set Maximum output current (percentage)
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// percent - percentage of the rated (XX.XX%)
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int SetHVMaxCurrentPercent(int port, int addr, float percent)
+{
+  char buf[20];
+  sprintf(buf,"ICN %f[p2]", percent);
+  // Set Max Output current as percentage
+  if (SendHVCmd(port, addr, buf)<0)
+  {
+    return -1;
+  }
+
+  return 0;
+
+}
+
+// =========================================
+// Set Maximum output voltage (percentage)
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// percent - percentage of the rated (XX.XX%)
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int SetHVMaxVoltagePercent(int port, int addr, float percent)
+{
+  char buf[20];
+  sprintf(buf,"VCN %f[p2]", percent);
+  // Set Maximum Output Voltage as percentage
+  if (SendHVCmd(port, addr, buf)<0)
+  {
+    return -1;
+  }
+
+  return 0;
+
+}
+
+
+// =========================================
+// Set Maximum output current (HEX mode)
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// hexvalue - current value in HEX format (0x0..0xFFFF)
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int SetHVMaxCurrentHex(int port, int addr, int hexvalue)
+{
+  char buf[20];
+  sprintf(buf,"CH1 %x", hexvalue);
+  // Set Maximum Output Current in HEX value
+  if (SendHVCmd(port, addr, buf)<0)
+  {
+    return -1;
+  }
+
+  return 0;
+
+}
+
+// =========================================
+// Set Maximum output voltage (HEX mode)
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// hexvalue - voltage value in HEX format (0x0..0xFFFF)
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int SetHVMaxVoltageHex(int port, int addr, int hexvalue)
+{
+  char buf[20];
+  sprintf(buf,"CH0 %x", hexvalue);
+  // Set Maximum Output Voltage in HEX value
+  if (SendHVCmd(port, addr, buf)<0)
+  {
+    return -1;
+  }
+
+  return 0;
+
+}
+
+// =========================================
+// Set Maximum output current in mkA
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// hexvalue - current value in HEX format (0x0..0xFFFF)
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int SetHVMaxCurrent(int port, int addr, float current)
+{
+  char buf[20];
+  float hexvalue;
+  hexvalue = current*CURR_STEP;
+  sprintf(buf,"CH1 %x", (int)hexvalue);
+  // Set Maximum Output Current in mkA
+  if (SendHVCmd(port, addr, buf)<0)
+  {
+    return -1;
+  }
+
+  return 0;
+
+}
+
+// =========================================
+// Set Maximum output voltage in Volts
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// hexvalue - voltage value in HEX format (0x0..0xFFFF)
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int SetHVMaxVoltage(int port, int addr, float voltage)
+{
+  char buf[20];
+  float hexvalue;
+  hexvalue = (voltage+DAC_OFFSET)*VOLT_STEP*DAC_COMPENSE;
+  sprintf(buf,"CH0 %x", (int)hexvalue);
+  // Set Maximum Output Voltage in Volts
+  if (SendHVCmd(port, addr, buf)<0)
+  {
+    return -1;
+  }
+
+  return 0;
+
+}
+
+// =========================================
+// Read setting value of output current (HEX mode)
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// current - current value in HEX format (0x0..0xFFFF)
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVMaxCurrentHex(int port, int addr, int* current)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "CH1?") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // index =  FindPattern (buf, 0, -1, "CH1=", 0, 0) + 4;
+  // if (Scan(buf,"%s[i*]>%x", index, &val) >0)
+  sbuf =  strstr (buf, "CH1=");
+  if (sbuf && (sscanf(sbuf+4,"%x", &val) >0))
+    {
+      *current = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+// =========================================
+// Read setting value of output voltage (HEX mode)
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// voltage - current value in HEX format (0x0..0xFFFF)
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVMaxVoltageHex(int port, int addr, int* voltage)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "CH0?") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  //index =  FindPattern (buf, 0, -1, "CH0=", 0, 0) + 4;
+  //if (Scan(buf,"%s[i*]>%x", index, &val) >0)
+  sbuf =  strstr (buf,"CH0=");
+  if (sbuf && (sscanf(sbuf+4,"%x", &val) >0))
+    {
+      *voltage = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+// =========================================
+// Read setting value of output current as percentage
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// current - current value as percentage of the rated
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVMaxCurrentPercent(int port, int addr, float* current)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  float val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "ICN?") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // index =  FindPattern (buf, 0, -1, "ICN=", 0, 0) + 4;
+  // if (Scan(buf,"%s[i*]>%f", index, &val) >0)
+  sbuf =  strstr (buf,"ICN=");
+  if (sbuf && (sscanf(sbuf+4,"%f", &val) >0))
+    {
+      *current = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+// =========================================
+// Read setting value of output voltage as percentage
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// voltage - voltage value as percentage of the rated
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVMaxVoltagePercent(int port, int addr, float* voltage)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  float val=0.0;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "VCN?") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // index =  FindPattern (buf, 0, -1, "VCN=", 0, 0) + 4;
+  // if (Scan(buf,"%s[i*]>%f", index, &val) >0)
+
+  sbuf =  strstr (buf,"VCN=");
+  if (sbuf && (sscanf(sbuf+4,"%f", &val) >0))
+    {
+      *voltage = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+// =========================================
+// Read setting value of output voltage in Volts
+// -----------------------------------------
+// converted from HEX
+// port - serial port number
+// addr - GPIB unit number
+// voltage - voltage value in Volts
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVMaxVoltage(int port, int addr, float* voltage)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "CH0?") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // index =  FindPattern (buf, 0, -1, "CH0=", 0, 0) + 4;
+  // if (Scan(buf,"%s[i*]>%x", index, &val) >0)
+  sbuf =  strstr (buf,"CH0=");
+  if (sbuf && (sscanf(sbuf+4,"%x", &val) >0))
+    {
+      *voltage = round((MAX_VOLT*val)/65535.0);
+      return 0;
+    }
+  else { return -1; }
+}
+
+// =========================================
+// Read setting value of output current in mkA
+// -----------------------------------------
+// converted from HEX
+// port - serial port number
+// addr - GPIB unit number
+// current - current value in mkA
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVMaxCurrent(int port, int addr, float* current)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "CH1?") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // index =  FindPattern (buf, 0, -1, "CH1=", 0, 0) + 4;
+  // if (Scan(buf,"%s[i*]>%x", index, &val) >0)
+  sbuf =  strstr (buf,"CH1=");
+  if (sbuf && (sscanf(sbuf+4,"%x", &val) >0))
+    {
+      *current = round((MAX_CURR*val)/65535.0);
+      return 0;
+    }
+  else { return -1; }
+}
+
+// =========================================
+// Read monitored value of output voltage in HEX
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// voltage - voltage value in HEX (0x0..0xFFF) !!! 12 bit ADC
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVVoltageHex(int port, int addr, int* voltage)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "MN1") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // index =  FindPattern (buf, 0, -1, "MONI1=", 0, 0) + 6;
+  // if (Scan(buf,"%s[i*]>%x", index, &val) > 0)
+  sbuf =  strstr (buf,"MONI1=");
+  if (sbuf && (sscanf(sbuf+6,"%x", &val) >0))
+    {
+      *voltage = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+// =========================================
+// Read monitored value of output current in HEX
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// current - current value in HEX (0x0..0xFFF) !!! 12 bit ADC
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVCurrentHex(int port, int addr, int* current)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "MN2") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // index =  FindPattern (buf, 0, -1, "MONI2=", 0, 0) + 6;
+  // if (Scan(buf,"%s[i*]>%x", index, &val) > 0)
+  sbuf =  strstr (buf,"MONI2=");
+  if (sbuf && (sscanf(sbuf+6,"%x", &val) >0))
+    {
+      *current = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+
+// =========================================
+// Read monitored value of output voltage as percentage
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// voltage - voltage value as percentage of the rated
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVVoltagePercent(int port, int addr, float* voltage)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  float val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "VM") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // index =  FindPattern (buf, 0, -1, "VM=", 0, 0) + 3;
+  // if (Scan(buf,"%s[i*]>%f", index, &val)>0)
+  sbuf =  strstr (buf,"VM=");
+  if (sbuf && (sscanf(sbuf+3,"%f", &val) >0))
+    {
+      *voltage = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+
+// =========================================
+// Read monitored value of output current as percentage
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// current - current value as percentage of the rated
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVCurrentPercent(int port, int addr, float* current)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  float val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "IM") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // printf("%s", buf);
+  // index =  FindPattern (buf, 0, -1, "IM=", 0, 0) + 3;
+  // if (Scan(buf,"%s[i*]>%f", index, &val) >0)
+  sbuf =  strstr (buf,"IM=");
+  // printf("%s\n", sbuf);
+  if (sbuf && (sscanf(sbuf+3,"%f", &val) >0))
+    {
+      //printf("IM: %.2f\n", val);
+      *current = val;
+      return 0;
+    }
+  else { return -1; }
+}
+
+// =========================================
+// Read monitored value of output voltage in Volts
+// converted from HEX
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// voltage - voltage value in Volts
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVVoltage(int port, int addr, float* voltage)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "MN1") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // index =  FindPattern (buf, 0, -1, "MONI1=", 0, 0) + 6;
+  // if (Scan(buf,"%s[i*]>%x", index, &val) >0)
+  sbuf =  strstr (buf,"MONI1=");
+  if (sbuf && (sscanf(sbuf+6,"%x", &val) >0))
+    {
+      *voltage = (MAX_VOLT*val)/4095.0;
+      return 0;
+    }
+  else { return -1; }
+}
+
+
+// =========================================
+// Read monitored value of output current in mkA
+// converted from HEX
+// -----------------------------------------
+// port - serial port number
+// addr - GPIB unit number
+// current - current value in mkA
+// returns 0 if success or
+//  	  -1 error
+// =========================================
+int ReadHVCurrent(int port, int addr, float* current)
+{
+  char buf[20];
+  char *sbuf;
+  int index;
+  int val;
+  memset(buf, 0, sizeof(buf));
+  if (SendHVCmd(port, addr, "MN2") <0) return -1;
+  if (ComRdTerm(port, buf, sizeof(buf), 13) <0) return -1;
+  // index =  FindPattern (buf, 0, -1, "MONI2=", 0, 0) + 6;
+  // if (Scan(buf,"%s[i*]>%x", index, &val) >0)
+  sbuf =  strstr (buf,"MONI2=");
+  if (sbuf && (sscanf(sbuf+6,"%x", &val)) >0)
+    {
+      *current = (MAX_CURR*val)/4095.0;
+      return 0;
+    }
+  else { return -1; }
+}
+
+
+// =========================================
+// End of HV Library Functions
+// =========================================
+/*
+  void usage()
+  {
+  printf("Usage: HVLib -[options]\n");
+  printf("Options:\n");
+  printf("\t-h(-?)\tshow this usage info\n");
+  printf("\t-pN\tset serial port to use (default 0)\n");
+  printf("\t-aN\tset GPIB module address (default 1)\n");
+  printf("\t-e\tenable HV power supply output\n");
+  printf("\t-d\tdisable HV powersupply output\n");
+  printf("\t-r\treset HV power supply\n");
+  printf("\t-iNN\tset maximum output current in percents (default 10% = 6mA)\n");
+  printf("\t-vNNNN\tset output voltage in Volts\n");
+  printf("\t-u\tset ramping speed in Volts/sec (default 50V/s)\n");
+
+  };
+
+
+  int main(int argc, char **argv)
+  {
+  int port=0, addr=1, imax=10, vset=-1, ramp=50, vcur=0, delta=0;
+  int fEnaOut=1, fReset=0, fShow=1;
+  int val=0,i=0;
+  float fval;
+  if (argc >= 2) {
+  for(i=1; i< argc; i++) {
+  if(argv[i][0] == '-') {
+  switch(argv[i][1]) {
+  case 'h' :
+  case '?' :
+  usage();
+  return 0;
+  case 'p' :
+  port = atoi(argv[i]+2);
+  port = (port>0) ? (port<2?port:1):0;
+  break;
+  case 'a' :
+  addr =  atoi(argv[i]+2);
+  addr = (addr>0) ? (addr<=0x10?addr:0x10) :0;
+  break;
+  case 'e' :
+  fEnaOut=1;
+  break;
+  case 'd' :
+  fEnaOut=0;
+  break;
+  case 'r' :
+  fReset=1;
+  break;
+  case 'i' :
+  imax = atoi(argv[i]+2);
+  imax = (imax>0) ? (imax<100?imax:100):0;
+  break;
+  case 'v' :
+  vset = atoi(argv[i]+2);
+  vset = (vset>0) ? (vset<4000?vset:4000):0;
+  break;
+  case 'u' :
+  ramp = atoi(argv[i]+2);
+  ramp = (ramp>0) ? (ramp<4000?ramp:4000):1;
+  break;
+  default :
+  printf("Unknown option %s\n",argv[i]);
+
+  }
+  }
+
+  }
+  } else {
+  usage();
+  return 0;
+  }
+
+
+  if (InitHV(port, addr, fEnaOut)==0) {
+  printf("COM Port%d for Module%d is opened fd%d\n", port, addr, fd[port]);
+  }
+  if (fReset) ResetHV(port, addr);
+  SetHVMaxCurrentPercent(port, addr, (float)imax);
+
+  if (fEnaOut) EnableHVOutput(port, addr);
+  else DisableHVOutput(port, addr);
+
+  // if ((vset>-1) && (vset<=5000))
+  // 	SetHVMaxVoltage(port, addr, (float)vset);
+
+  // ReadHVMaxCurrent(port, addr, &fval);
+  // printf("Imax(mkA): %.f ", fval);
+  ReadHVVoltage(port, addr, &fval);
+  vcur = (int)fval;
+
+  initscr();
+  while(1) {
+  sleep(1);
+  mvprintw(0,0,"COM:%d GPIB Addr:%d\n", port, addr);
+
+  ReadHVMaxCurrent(port, addr, &fval);
+  printw("Imax:\t %4.f mkA ", fval);
+  ReadHVMaxCurrentHex(port, addr, &val);
+  printw("\t0x%04x ", val);
+  ReadHVMaxCurrentPercent(port, addr, &fval);
+  printw("\t%5.2f\%\n", fval);
+
+  ReadHVMaxVoltage(port, addr, &fval);
+  printw("Vmax:\t %4.f V ", fval);
+  ReadHVMaxVoltageHex(port, addr, &val);
+  printw("\t0x%04x ", val);
+  ReadHVMaxVoltagePercent(port, addr, &fval);
+  printw("\t%5.2f\%\n", fval);
+
+
+  ReadHVCurrent(port, addr, &fval);
+  printw("Imon:\t %4.f mkA ", fval);
+  ReadHVCurrentHex(port, addr, &val);
+  printw("\t0x%04x ", val);
+  ReadHVCurrentPercent(port, addr, &fval);
+  printw("\t%5.2f\%\n", fval);
+
+  ReadHVVoltage(port, addr, &fval);
+  printw("Vmon:\t %4.f V ", fval);
+  ReadHVVoltageHex(port, addr, &val);
+  printw("\t0x%04x ", val);
+  ReadHVVoltagePercent(port, addr, &fval);
+  printw("\t%5.2f\%\n", fval);
+
+
+  if ((vset>-1) && (vset<=4000)) {
+  delta = vset - vcur;
+  delta = (delta>0)?(ramp>abs(delta)?delta:ramp):(ramp>abs(delta)?delta:-ramp);
+  vcur += delta;
+  SetHVMaxVoltage(port, addr, (float)vcur);
+  }
+  refresh();
+
+  }
+  endwin();
+//	sleep(2);
+if (CloseHV(port,addr)==0) {
+printf("COM Port%d for Module%d is closed fd%d\n", port, addr, fd[port]);
+}
+
+}
+*/
