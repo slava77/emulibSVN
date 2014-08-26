@@ -133,8 +133,8 @@ DRIVERS_DIR=${0%/*}
 typeset -A IF_NAME
 if [[ $(uname -r | grep -c '^2\.6\.32-') -gt 0 ]]; then
     IF_NAME=(
-	0 e1
-	1 e2
+	0 em1
+	1 em2
 	2 p1p1
 	3 p1p2
 	4 p2p1
